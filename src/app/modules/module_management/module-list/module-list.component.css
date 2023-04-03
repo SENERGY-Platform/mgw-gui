@@ -1,0 +1,41 @@
+#modules-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 100px;
+}
+
+mat-card {
+    width: 40%;
+    padding: 30px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.status {
+    text-align: center;
+    padding: 10px 20px;
+    margin-right: 20px;
+    border-radius: 20px;
+    color: white;
+}
+
+.running {
+    background-color: #008700;
+}
+
+.stopped {
+    background-color: #db0000;
+}
+
+.status-box {
+    display: flex;
+    align-items: center;
+}
+
+button {
+    margin-right: 10px;
+}

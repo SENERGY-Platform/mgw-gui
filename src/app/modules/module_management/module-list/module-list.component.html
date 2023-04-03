@@ -1,0 +1,24 @@
+<div id="modules-container">
+    <H1>Modules</H1>
+
+    <mat-card *ngFor="let module of modules">
+        <div>
+            <h2>{{module.name}}</h2>
+            <p>{{module.description}}</p>
+        </div>
+     
+        <div class="status-box">
+            <div *ngIf="module.running" class="running status">Running</div>
+            <div *ngIf="!module.running" class="stopped status">Stopped</div>
+
+            <button mat-fab color="primary">
+                <mat-icon>autorenew</mat-icon>
+            </button>
+            <button mat-fab color="primary">
+                <mat-icon>comment</mat-icon>
+            </button>
+        </div>
+    </mat-card>
+
+    <button mat-raised-button color="primary" [routerLink] = "'/modules/add'">Add Module</button>
+</div>

@@ -1,0 +1,38 @@
+version: '3.7'
+services:
+  local_dev:
+    build:
+      context: ..
+      dockerfile: ./build/Dockerfile
+      target: local_dev
+    ports:
+      - 4200:4200
+    volumes:
+      - ./:/home/node/app
+      - node_modules:/home/node/app/node_modules
+  
+  serve:
+    build:
+      context: ..
+      dockerfile: ./build/Dockerfile
+      target: serve
+    image: mgwgui
+    container_name: mgwgui
+    ports:
+      - 4200:80
+
+  mgw-secret-manager:
+    container_name: mgw-secret-manager
+    image: mgw-secret-manager
+    ports:
+      - 8080:8080
+    environment:
+      - TMPFS_PATH=/tmp
+      - ENABLE_ENCRYPTION=true
+      - DB_FILE_PATH=/tmp/db.sqlite
+      - MASTER_KEY_FILE_PATH=/tmp/key
+    volumes:
+      - /tmp:/tmp
+
+volumes:
+  node_modules:
