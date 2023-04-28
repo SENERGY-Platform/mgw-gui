@@ -9,9 +9,9 @@ export class AppComponent {
   title = 'MGW';
 
   sections = [{
-    "name": "Modules",
+    "name": "Deployments",
     "icon": "home",
-    "link": "/modules"
+    "link": "/deployments"
   }, {
     "name": "Settings",
     "icon": "settings",

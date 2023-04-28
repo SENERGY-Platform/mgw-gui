@@ -1,0 +1,28 @@
+
+.form-container {
+    display: flex;
+    justify-content: center;
+}
+
+.form-container form {
+    width: 40%;
+}
+
+.form-field-container {
+    margin-bottom: 20px;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+.secret-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.secret-container mat-form-field {
+    width: 60%;
+}

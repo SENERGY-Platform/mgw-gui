@@ -16,7 +16,7 @@
  *
  */
 
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 
@@ -25,17 +25,17 @@ import {Observable} from 'rxjs';
     providedIn: 'root'
   })
 export class ApiService {
-    public baseUrl: string = 'http://localhost:8080';
+    public baseUrl: string = 'http://localhost:80/api';
 
     constructor(private httpClient: HttpClient) {
     }
 
-    public get(path: string): Observable<unknown> {
-        return this.httpClient.get(this.baseUrl + path);
+    public get<T>(path: string, params: HttpParams = new HttpParams()): Observable<unknown> {
+        return this.httpClient.get<T>(this.baseUrl + path, {"params": params});
     }
 
-    public post<T>(path: string, payload: any): Observable<T> {
-        return this.httpClient.post<T>(this.baseUrl + path, payload);
+    public post<T>(path: string, payload: any, params: HttpParams = new HttpParams()): Observable<T> {
+        return this.httpClient.post<T>(this.baseUrl + path, payload, {"params": params});
     }
 
     public put(path: string, payload: any): Observable<unknown> {

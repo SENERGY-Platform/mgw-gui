@@ -8,16 +8,19 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatIconModule} from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
-import { ModuleListComponent } from './module-list/module-list.component';
+import { ModuleListComponent } from './deployment-list/module-list.component';
 import {MatCardModule} from '@angular/material/card';
 import {RouterModule, Routes} from '@angular/router';
-import { ModulesComponent } from './input_form/modules.component';
-import { CreateCertSecretDialog } from './create-cert-secret-dialog/create-secret-dialog';
-import { CreateBasicAuthSecretDialog } from './create-basic-auth-secret-dialog/create-secret-dialog';
+import { ModulesComponent } from './add-deployment/modules.component';
+import { CreateCertSecretDialog } from './add-deployment/components/create-cert-secret-dialog/create-secret-dialog';
+import { CreateBasicAuthSecretDialog } from './add-deployment/components/create-basic-auth-secret-dialog/create-secret-dialog';
 import { ModuleManagementComponent } from './module-management.component';
+import { DeploymentTemplate } from './add-deployment/components/deployment-template/deployment-template';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { ChangeDependenciesDialog } from './deployment-list/components/change-dependencies-dialog/change-dependencies-dialog';
 
 const routes: Routes = [
-  {path: 'modules' , component: ModuleManagementComponent, children: [
+  {path: 'deployments' , component: ModuleManagementComponent, children: [
     {path: 'add', component: ModulesComponent},
     {path: '', component: ModuleListComponent},
   ]},
@@ -27,12 +30,15 @@ const routes: Routes = [
   declarations: [
     ModuleListComponent,
     ModulesComponent,
+    DeploymentTemplate,
     CreateBasicAuthSecretDialog,
     CreateCertSecretDialog,
     ModuleManagementComponent,
+    ChangeDependenciesDialog
   ],
   imports: [
     MatInputModule,
+    MatCheckboxModule,
     CommonModule,
     RouterModule.forChild(routes),
     MatChipsModule,
@@ -47,8 +53,7 @@ const routes: Routes = [
     ReactiveFormsModule
   ],
   exports: [
-    ModuleListComponent,
-    ModulesComponent
+    
   ]
 })
 export class ModuleManagementModule { }

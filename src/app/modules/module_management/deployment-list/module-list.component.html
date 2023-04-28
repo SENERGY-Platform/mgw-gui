@@ -1,0 +1,30 @@
+<div id="modules-container">
+    <H1>Deployments</H1>
+
+    <mat-card *ngFor="let deployment of deployments">
+        <div>
+            <h2>{{deployment.name}}</h2>
+        </div>
+     
+        <div class="status-box">
+            <div *ngIf="!deployment.stopped" class="running status">Running</div>
+            <div *ngIf="deployment.stopped" class="stopped status">Stopped</div>
+
+
+            <button mat-fab color="primary" (click)="stop(deployment.id)">
+                <mat-icon>stop</mat-icon>
+            </button>
+            <button mat-fab color="primary" (click)="start(deployment.id)">
+                <mat-icon>start</mat-icon>
+            </button>
+            <button mat-fab color="primary" (click)="restart(deployment.id)">
+                <mat-icon>autorenew</mat-icon>
+            </button>
+            <button mat-fab color="primary">
+                <mat-icon>comment</mat-icon>
+            </button>
+        </div>
+    </mat-card>
+
+    <button mat-raised-button color="primary" [routerLink] = "'/deployments/add'">Add Deployment</button>
+</div>

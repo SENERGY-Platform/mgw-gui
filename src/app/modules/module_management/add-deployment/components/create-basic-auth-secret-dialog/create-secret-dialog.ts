@@ -1,6 +1,6 @@
 import {MatDialog, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import { Component, Inject } from '@angular/core';
-import { SecretManagerServiceService } from '../services/secret-manager/secret-manager-service.service';
+import { SecretManagerServiceService } from '../../../services/secret-manager/secret-manager-service.service';
 import { FormBuilder, FormControl, ValidatorFn, Validators } from '@angular/forms';
 
 @Component({
@@ -34,5 +34,9 @@ export class CreateBasicAuthSecretDialog {
       this.secretService.createSecret(this.type, this.form.get("name")?.value as string, JSON.stringify({"username": this.form.get("username")?.value as string, "password": this.form.get("password")?.value as string})).subscribe((id: any) => {
           this.dialogRef.close({"id": id, "name": this.form.get("name")?.value})
       })
+    }
+
+    cancel() {
+      this.dialogRef.close()
     }
 }
