@@ -256,6 +256,11 @@ export class ModuleManagerServiceService {
     })
   }  
 
+  public loadDeployment(deploymentID: string) {
+   var url = "/deployment/" + deploymentID 
+   //return <Observable<Deployment[]>>this.http.get<Deployment[]>(url);
+  }
+
   public controlDeployments(deploymentID: string, action: string, changeDependencies: boolean) {
     let params = new HttpParams()
     if(changeDependencies) {

@@ -2,3 +2,41 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.layout-margin {
+    padding: 12px 12px 12px;
+}
+
+.search-button-container {
+    align-items: center;
+    margin-bottom: 10px;
+    display: flex;
+}
+
+.search-button-container senergy-searchbar {
+    width: 100%;
+}
+
+.table-container {
+    max-height: calc(100vh - 200px);
+    overflow: auto;
+    position: relative;
+}
+
+.table-container-with-button {
+    max-height: calc(100vh - 300px);
+}
+
+.table-container table {
+    width: 100%;
+}
+
+.table-container .button-column {
+    width: 4%;
+}
+
+.fixed-bottom-right-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}

@@ -18,6 +18,8 @@ import { ModuleManagementComponent } from './module-management.component';
 import { DeploymentTemplate } from './add-deployment/components/deployment-template/deployment-template';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { ChangeDependenciesDialog } from './deployment-list/components/change-dependencies-dialog/change-dependencies-dialog';
+import {MatTableModule} from '@angular/material/table';
+import { CoreModule } from 'src/app/core/core.module';
 
 const routes: Routes = [
   {path: 'deployments' , component: ModuleManagementComponent, children: [
@@ -39,6 +41,8 @@ const routes: Routes = [
   imports: [
     MatInputModule,
     MatCheckboxModule,
+    CoreModule,
+    MatTableModule,
     CommonModule,
     RouterModule.forChild(routes),
     MatChipsModule,

@@ -1,5 +1,7 @@
+import { SelectionModel } from '@angular/cdk/collections';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { ModuleManagerServiceService } from 'src/app/modules/module_management/services/module-manager/module-manager-service.service';
 import { Deployment } from '../models/deployment_models';
 import { ChangeDependenciesDialog } from './components/change-dependencies-dialog/change-dependencies-dialog';
@@ -10,14 +12,22 @@ import { ChangeDependenciesDialog } from './components/change-dependencies-dialo
   styleUrls: ['./module-list.component.css']
 })
 export class ModuleListComponent implements OnInit{
-  deployments: Deployment[] = []
+  dataSource = new MatTableDataSource<Deployment>();
+  selection = new SelectionModel<Deployment>(true, []);
+  ready: Boolean = false;
 
   constructor(public dialog: MatDialog, private moduleService: ModuleManagerServiceService) {}
 
   ngOnInit(): void {
-      this.moduleService.loadDeployments().subscribe(deployments => {
-        this.deployments = deployments
-      })
+      this.loadDeployments();
+  }
+
+  loadDeployments(): void {
+    this.ready = false;
+    this.moduleService.loadDeployments().subscribe(deployments => {
+      this.dataSource.data = deployments;
+      this.ready = true;
+    })
   }
 
   askForDependencyAndSendControlRequest(deploymentID: string, status_change: string) {
@@ -27,10 +37,14 @@ export class ModuleListComponent implements OnInit{
 
       if(status_change == "restart") {
         this.moduleService.controlDeployments(deploymentID, status_change, changeDependency).subscribe(result => {
-          this.moduleService.controlDeployments(deploymentID, status_change, changeDependency)
+          this.moduleService.controlDeployments(deploymentID, status_change, changeDependency).subscribe(result => {
+            this.loadDeployments()
+          })
         })
       } else {
-        this.moduleService.controlDeployments(deploymentID, status_change, changeDependency)
+        this.moduleService.controlDeployments(deploymentID, status_change, changeDependency).subscribe(result => {
+          this.loadDeployments()
+        })
       }
     
     })
@@ -47,4 +61,31 @@ export class ModuleListComponent implements OnInit{
   start(deploymentID: string) {
     this.askForDependencyAndSendControlRequest(deploymentID, "start")
   }
+
+  show(deployment: Deployment) {
+
+  }
+
+  edit(deployment: Deployment) {
+
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const currentViewed = this.dataSource.connect().value.length;
+    return numSelected === currentViewed;
+}
+
+masterToggle() {
+    if (this.isAllSelected()) {
+        this.selectionClear();
+    } else {
+        this.dataSource.connect().value.forEach((row) => this.selection.select(row));
+    }
+}
+
+selectionClear(): void {
+    this.selection.clear();
+}
+
 }

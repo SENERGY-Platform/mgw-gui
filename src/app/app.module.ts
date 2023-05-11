@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
-    AppComponent 
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -20,6 +20,8 @@ import { MatIconModule } from '@angular/material/icon';
     ModuleManagementModule,
     MatSidenavModule,
     HttpClientModule
+  ],
+  exports: [
   ],
   providers: [],
   bootstrap: [AppComponent]
