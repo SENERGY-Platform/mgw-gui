@@ -1,7 +1,9 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { UtilService } from 'src/app/core/services/util/util.service';
 import { ModuleManagerServiceService } from 'src/app/modules/module_management/services/module-manager/module-manager-service.service';
 import { Deployment } from '../models/deployment_models';
 import { ChangeDependenciesDialog } from './components/change-dependencies-dialog/change-dependencies-dialog';
@@ -15,11 +17,25 @@ export class ModuleListComponent implements OnInit{
   dataSource = new MatTableDataSource<Deployment>();
   selection = new SelectionModel<Deployment>(true, []);
   ready: Boolean = false;
-
-  constructor(public dialog: MatDialog, private moduleService: ModuleManagerServiceService) {}
+  @ViewChild(MatSort) sort!: MatSort;
+  displayColumns = ['select', 'status', 'name', 'created', 'info', 'edit', 'start', 'stop', 'restart']
+  
+  constructor(public dialog: MatDialog, private moduleService: ModuleManagerServiceService, public utilsService: UtilService) {}
 
   ngOnInit(): void {
       this.loadDeployments();
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.sortingDataAccessor = (row: Deployment, sortHeaderId: string) => {
+      var value = (<any>row)[sortHeaderId];
+      value = (typeof(value) === 'string') ? value.toUpperCase(): value;
+      if(sortHeaderId == 'status') {
+        value = row.stopped ? 0 : 1
+      }
+      return value
+    };
+    this.dataSource.sort = this.sort;
   }
 
   loadDeployments(): void {
@@ -62,30 +78,22 @@ export class ModuleListComponent implements OnInit{
     this.askForDependencyAndSendControlRequest(deploymentID, "start")
   }
 
-  show(deployment: Deployment) {
-
-  }
-
-  edit(deployment: Deployment) {
-
-  }
-
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const currentViewed = this.dataSource.connect().value.length;
     return numSelected === currentViewed;
-}
+  }
 
-masterToggle() {
-    if (this.isAllSelected()) {
-        this.selectionClear();
-    } else {
-        this.dataSource.connect().value.forEach((row) => this.selection.select(row));
-    }
-}
+  masterToggle() {
+      if (this.isAllSelected()) {
+          this.selectionClear();
+      } else {
+          this.dataSource.connect().value.forEach((row) => this.selection.select(row));
+      }
+  }
 
-selectionClear(): void {
-    this.selection.clear();
-}
+  selectionClear(): void {
+      this.selection.clear();
+  }
 
 }

@@ -35,8 +35,3 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     width: 4%;
 }
 
-.fixed-bottom-right-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-}

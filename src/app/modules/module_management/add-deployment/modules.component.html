@@ -1,18 +1,3 @@
-<div id="modules-container">
-  <section id="modules">
-    <form [formGroup]="form">
-      <h2>Module</h2>
-      <deployment-template *ngIf="ready" [displayData]="displayDataBinding" [module_id]="module_id" [IsDependency]="false"
-        [secretOptions]="secretOptionsBinding"></deployment-template>
-
-      <H2>Dependencies</H2>
-      <div *ngIf="ready">
-        <deployment-template 
-          [displayData]="displayDataBinding" [secretOptions]="secretOptionsBinding" [module_id]="module_id" [IsDependency]="true"
-          *ngFor="let module_id of dependencies_module_ids"></deployment-template>
-      </div>
-      <button mat-raised-button color="primary" type="submit">Deploy</button>
-      <p>{{formStr}}</p>
-    </form>
-  </section>
+<div class="layout-margin">
+    <deployment *ngIf="ready" mode="new" [deploymentTemplate]="deploymentTemplate"></deployment>
 </div>

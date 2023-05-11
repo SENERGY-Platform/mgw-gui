@@ -1,6 +1,6 @@
 import {MatDialog, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import { Component, Inject } from '@angular/core';
-import { SecretManagerServiceService } from '../../../services/secret-manager/secret-manager-service.service';
+import { SecretManagerServiceService } from '../../services/secret-manager/secret-manager-service.service';
 import { FormBuilder, FormControl, ValidatorFn, Validators } from '@angular/forms';
 
 @Component({

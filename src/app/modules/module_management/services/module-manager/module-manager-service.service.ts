@@ -34,7 +34,7 @@ export class ModuleManagerServiceService {
         {
           "module_id":"modID",
           "host_resources":{
-             "hr":{
+             "bluetooth":{
                 "name":"Bluetooth Adapter",
                 "description":"Select adapter connected to gateway",
                 "group":"G1",
@@ -77,7 +77,7 @@ export class ModuleManagerServiceService {
           },
           "configs":{
              "c1":{
-              "name":"Config 1",
+              "name":"Port",
               "description":"Some text value.",
               "required":true,
               "group":"cfg",
@@ -94,7 +94,7 @@ export class ModuleManagerServiceService {
               "is_list":false
            },
            "c2":{
-              "name":"Config 2",
+              "name":"Hosts",
               "description":"List of text values.",
               "required":false,
               "group":"cfg",
@@ -112,7 +112,7 @@ export class ModuleManagerServiceService {
               "is_list":true
            },
            "c3":{
-              "name":"Config 3",
+              "name":"Names",
               "description":"The alphabet with duplicates.",
               "required":true,
               "group":"cfg",
@@ -132,7 +132,7 @@ export class ModuleManagerServiceService {
               "is_list":true
            },
            "c4":{
-              "name":"Config 4",
+              "name":"Number of instances",
               "description":"Select alternative option.",
               "required":false,
               "group":"cfg",
@@ -200,7 +200,7 @@ export class ModuleManagerServiceService {
                          "Sec Tag"
                       ],
                       "required":false,
-                      "type":"sec type"
+                      "type":"certificate"
                    }
                 },
                 "configs":{
@@ -250,15 +250,63 @@ export class ModuleManagerServiceService {
     var url = "/deployment" 
     //return <Observable<Deployment[]>>this.http.get<Deployment[]>(url);
     return new Observable((subscriber) => {
-      var template = [{"module_id": "id", "name": "Deployment1", "stopped": true, "id": "id"}, {"id": "id", "module_id": "id", "name": "Deployment2", "stopped": false}]
+      var template = [
+         {
+            "module_id": "modID", 
+            "name": "Deployment1", 
+            "stopped": true, 
+            "id": "id", 
+            'indirect': true, 
+            'created': new Date(), 
+            'updated': new Date(),
+            'secrets': [],
+            'host_resources': [],
+            'configs': [],
+            'dep_requiring': [],
+            'required_dep': []
+         }, 
+         {
+            "id": "id", 
+            "module_id": 
+            "id", 
+            'indirect': true, 
+            'created': new Date(), 
+            'updated': new Date(), 
+            "name": "Deployment2", 
+            "stopped": false,
+            'secrets': [],
+            'host_resources': [],
+            'configs': [],
+            'dep_requiring': [],
+            'required_dep': []
+      }]
       subscriber.next(template)
       subscriber.complete()
     })
   }  
 
-  public loadDeployment(deploymentID: string) {
+  public loadDeployment(deploymentID: string): Observable<Deployment> {
    var url = "/deployment/" + deploymentID 
    //return <Observable<Deployment[]>>this.http.get<Deployment[]>(url);
+   
+   return new Observable((subscriber) => {
+      var template = {
+         "module_id": "modID", 
+         "name": "Deployment1", 
+         "stopped": true, 
+         "id": "id", 
+         'indirect': true, 
+         'created': new Date(), 
+         'updated': new Date(),
+         'secrets': {"cert": "cert", "login": "login"},
+         'host_resources': {"zigbee": "value", "bluetooth": "b2"},
+         'configs': {"c1": "test", "c2": ["test1", "test2"], "c3": ["test3", "test4"], "c4": 1, "c5": 4},
+         'dep_requiring': [],
+         'required_dep': []
+      }
+      subscriber.next(template)
+      subscriber.complete()
+    })
   }
 
   public controlDeployments(deploymentID: string, action: string, changeDependencies: boolean) {

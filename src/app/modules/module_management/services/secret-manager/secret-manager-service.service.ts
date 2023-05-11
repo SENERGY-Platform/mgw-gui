@@ -13,7 +13,7 @@ export class SecretManagerServiceService {
   loadAvailableSecretTypes(): Observable<Secret[]> {
     //return this.http.get("/secrets")
     return new Observable((subscriber) => {
-      var template = [{"type": "basic-auth", "id": "id-login", "name": "login"}, {"type": 'certificate', 'id': 'cert-login', "name": "cert"}]
+      var template = [{"type": "basic-auth", "id": "login", "name": "login"}, {"type": 'certificate', 'id': 'cert', "name": "cert"}]
       subscriber.next(template)
       subscriber.complete()
     }) 

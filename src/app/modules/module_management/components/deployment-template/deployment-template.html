@@ -3,38 +3,50 @@
 
     <mat-form-field appearance="fill">
       <mat-label>Deployment Name</mat-label>
-      <input matInput formControlName="name">
+      <input matInput formControlName="name" [readonly]="mode == 'show'">
     </mat-form-field>
 
-    <H3>Host Resources</H3>
-    <div *ngFor="let host_resource of displayData['host_resources'];" formGroupName="host_resources" class="form-field-container">
-      <mat-form-field appearance="fill" [hintLabel]="host_resource.description">
-        <mat-label>{{host_resource.name}}</mat-label>
-        <input matInput [formControlName]="host_resource.id">
+    <div *ngIf="deploymentData">
+      <mat-form-field appearance="fill">
+        <mat-label>Deployment ID</mat-label>
+        <input matInput [readonly]="mode == 'show'" [value]="deploymentData.id">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Module ID</mat-label>
+        <input matInput [readonly]="mode == 'show'" [value]="deploymentData.module_id">
       </mat-form-field>
     </div>
 
-    <H3>Secrets</H3>
-    <div *ngFor="let secret of displayData['secrets']" formGroupName="secrets" class="form-field-container">
+    <h2>Host Resources</h2>
+    <div *ngFor="let host_resource of deploymentTemplateData['host_resources'];" formGroupName="host_resources" class="form-field-container">
+      <mat-form-field appearance="fill" [hintLabel]="host_resource.description">
+        <mat-label>{{host_resource.name}}</mat-label>
+        <input matInput [formControlName]="host_resource.id" [readonly]="mode == 'show'">
+      </mat-form-field>
+    </div>
+
+    <H2>Secrets</H2>
+    <div *ngFor="let secret of deploymentTemplateData['secrets']" formGroupName="secrets" class="form-field-container">
       <!-- Create new Secret -->
       <div class="secret-container">
         <!-- Select from available secrets -->
         <mat-form-field appearance="fill" [hintLabel]="secret.description">
           <mat-label>{{secret.name}}</mat-label>
-          <mat-select [formControlName]="secret.id">
+          <mat-select [formControlName]="secret.id" >
             <mat-option *ngFor="let secret of secretOptions[secret.type]" [value]="secret.id">
               {{secret.name}}
             </mat-option>
           </mat-select>
         </mat-form-field>
 
-        <button mat-raised-button color="primary" (click)="createSecret(secret.type)">Create Secret</button>
+        <button *ngIf="!deploymentData" mat-raised-button color="primary" (click)="createSecret(secret.type)">Create Secret</button>
       </div>
 
     </div>
 
-    <H3>Configs</H3>
-    <div *ngFor="let config of displayData['configs'];" formGroupName="configs" class="form-field-container">
+    <h2>Configs</h2>
+    <div *ngFor="let config of deploymentTemplateData['configs'];" formGroupName="configs" class="form-field-container">
       <mat-form-field appearance="fill" [hintLabel]="config.description">
         <mat-label>{{config.name}}</mat-label>
         <!-- Single Value Config -->
@@ -42,16 +54,16 @@
           <!-- Free -->
           <span *ngIf="!config.options">
             <span *ngIf="config.type == 'text'">
-              <input matInput [formControlName]="config.id">
+              <input matInput [formControlName]="config.id" [readonly]="mode == 'show'">
             </span>
             <span *ngIf="config.type == 'number'">
-              <input matInput [formControlName]="config.id" type="number">
+              <input matInput [formControlName]="config.id" type="number" [readonly]="mode == 'show'">
             </span>
           </span>
 
           <!-- Dropdown -->
           <span *ngIf="config.options">
-            <mat-select [formControlName]="config.id">
+            <mat-select [formControlName]="config.id" >
               <mat-option *ngFor="let option of config.options" [value]="option">
                 {{option}}
               </mat-option>
