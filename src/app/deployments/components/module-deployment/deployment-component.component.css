@@ -1,0 +1,12 @@
+form {
+    width: 40%;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+}
+
+.deps {
+    margin-top: 80px;
+}

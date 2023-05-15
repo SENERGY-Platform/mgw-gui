@@ -13,6 +13,10 @@ export class AppComponent {
     "icon": "home",
     "link": "/deployments"
   }, {
+    "name": "Modules",
+    "icon": "settings",
+    "link": "/modules"
+  }, {
     "name": "Settings",
     "icon": "settings",
     "link": "/settings"

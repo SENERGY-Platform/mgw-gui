@@ -1,0 +1,92 @@
+<div class="form-container">
+  <form [formGroup]="form">
+
+    <mat-form-field appearance="fill">
+      <mat-label>Deployment Name</mat-label>
+      <input matInput formControlName="name" [readonly]="mode == 'show'">
+    </mat-form-field>
+
+    <div *ngIf="mode == 'show'">
+      <mat-form-field appearance="fill">
+        <mat-label>Deployment ID</mat-label>
+        <input matInput [readonly]="mode == 'show'" [value]="id">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Module ID</mat-label>
+        <input matInput [readonly]="mode == 'show'" [value]="deploymentTemplateData.module_id">
+      </mat-form-field>
+    </div>
+
+    <h2>Host Resources</h2>
+    <div *ngFor="let host_resource of deploymentTemplateData['host_resources'];" formGroupName="host_resources" class="form-field-container">
+      <mat-form-field appearance="fill" [hintLabel]="host_resource.description">
+        <mat-label>{{host_resource.name}}</mat-label>
+        <input matInput [formControlName]="host_resource.id" [readonly]="mode == 'show'">
+      </mat-form-field>
+    </div>
+
+    <H2>Secrets</H2>
+    <div *ngFor="let secret of deploymentTemplateData['secrets']" formGroupName="secrets" class="form-field-container">
+      <!-- Create new Secret -->
+      <div class="secret-container">
+        <!-- Select from available secrets -->
+        <mat-form-field appearance="fill" [hintLabel]="secret.description">
+          <mat-label>{{secret.name}}</mat-label>
+          <mat-select [formControlName]="secret.id" >
+            <mat-option *ngFor="let secret of secretOptions[secret.type]" [value]="secret.id">
+              {{secret.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button *ngIf="mode != 'show'" mat-raised-button color="primary" (click)="createSecret(secret.type)">Create Secret</button>
+      </div>
+
+    </div>
+
+    <h2>Configs</h2>
+    <div *ngFor="let config of deploymentTemplateData['configs'];" formGroupName="configs" class="form-field-container">
+      <mat-form-field appearance="fill" [hintLabel]="config.description">
+        <mat-label>{{config.name}}</mat-label>
+        <!-- Single Value Config -->
+        <span *ngIf="!config.is_list">
+          <!-- Free -->
+          <span *ngIf="!config.options">
+            <span *ngIf="config.type == 'text'">
+              <input matInput [formControlName]="config.id" [readonly]="mode == 'show'">
+            </span>
+            <span *ngIf="config.type == 'number'">
+              <input matInput [formControlName]="config.id" type="number" [readonly]="mode == 'show'">
+            </span>
+          </span>
+
+          <!-- Dropdown -->
+          <span *ngIf="config.options">
+            <mat-select [formControlName]="config.id" >
+              <mat-option *ngFor="let option of config.options" [value]="option">
+                {{option}}
+              </mat-option>
+            </mat-select>
+          </span>
+        </span>
+
+        <!-- Multi Value Config -->
+        <span *ngIf="config.is_list">
+          <mat-chip-grid #chipGrid [formControlName]="config.id">
+            <mat-chip-row *ngFor="let option of form?.get('configs')?.get(config.id)?.value"
+              (removed)="remove(option, 'configs', config.id)" [editable]="true">
+              {{option}}
+              <button matChipRemove>
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+            <input placeholder="New value..." [matChipInputFor]="chipGrid"
+              (matChipInputTokenEnd)="add($event, 'configs', config.id)" />
+          </mat-chip-grid>
+        </span>
+
+      </mat-form-field>
+    </div>
+  </form>
+</div>

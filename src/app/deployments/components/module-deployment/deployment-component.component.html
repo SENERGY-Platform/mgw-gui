@@ -1,0 +1,20 @@
+<div class="form-container">
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding" [id]="id"
+      [IsDependency]="false" [secretOptions]="secretOptionsBinding"></deployment-template>
+
+    <div class="deps" *ngIf="dependencies_module_ids.length > 0">
+      <H1>Dependencies</H1>
+      <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding"
+        [secretOptions]="secretOptionsBinding" [id]="module_id" [IsDependency]="true"
+        *ngFor="let module_id of dependencies_module_ids">
+      </deployment-template>
+    </div>
+
+    <button *ngIf="mode == 'new'" mat-raised-button color="primary" type="submit">Deploy</button>
+    <button *ngIf="mode == 'edit'" mat-raised-button color="primary" type="submit">Update</button>
+
+    <p>{{formStr}}</p>
+  </form>
+
+</div>
