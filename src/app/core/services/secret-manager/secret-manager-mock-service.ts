@@ -6,12 +6,16 @@ import { Secret } from '../../models/secret_models';
 @Injectable({
   providedIn: 'root'
 })
-export class SecretManagerServiceService {
+export class SecretManagerMockService {
 
   constructor(private http: ApiService) {}
 
   loadAvailableSecretTypes(): Observable<Secret[]> {
-    return <Observable<Secret[]>>this.http.get("/secrets")
+    return new Observable((subscriber) => {
+      var template = [{"type": "basic-auth", "id": "login", "name": "login"}, {"type": 'certificate', 'id': 'cert', "name": "cert"}]
+      subscriber.next(template)
+      subscriber.complete()
+    }) 
   }
 
   createSecret(type: string, name: string, value: string) {
