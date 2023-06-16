@@ -58,6 +58,7 @@ export class ListComponent {
     this.moduleService.loadModules().subscribe(modules => {
       this.dataSource.data = modules
       this.ready = true
+      console.log(modules)
     })
   }
 
