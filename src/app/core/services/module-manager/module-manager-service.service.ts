@@ -33,12 +33,12 @@ export class ModuleManagerServiceService {
   } 
   
   public loadDeployments(): Observable<Deployment[]> {
-    var url = "/deployment" 
+    var url = "/deployments" 
     return <Observable<Deployment[]>>this.http.get<Deployment[]>(url);
   }  
 
   public loadDeployment(deploymentID: string): Observable<Deployment> {
-   var url = "/deployment/" + deploymentID 
+   var url = "/deployments/" + deploymentID 
    return <Observable<Deployment>>this.http.get(url);
   }
 
