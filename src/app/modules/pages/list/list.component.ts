@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ModuleManagerServiceService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { Module } from '../../models/module_models';
 import { SelectionModel } from '@angular/cdk/collections';
+import { ModuleManagerMockService } from 'src/app/core/services/module-manager/module-manager-mock.service';
 
 @Component({
   selector: 'app-list',
@@ -20,7 +21,7 @@ export class ListComponent {
   
   constructor(
     public dialog: MatDialog, 
-    private moduleService: ModuleManagerServiceService, 
+    private moduleService: ModuleManagerMockService, 
   ) {}
 
   ngOnInit(): void {
