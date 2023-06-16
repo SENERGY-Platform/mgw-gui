@@ -63,5 +63,4 @@ export interface DeploymentTemplateBase {
 }
 
 export interface DeploymentTemplate extends DeploymentTemplateBase {
-    module_id: string;
 }
