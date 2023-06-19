@@ -11,39 +11,41 @@ import { JobResponse } from '../../models/module.models';
   providedIn: 'root'
 })
 export class ModuleManagerServiceService {
+  moduleManagerPath = "/module-manager"
+
   constructor(
     private http: ApiService,
     private errorService: ErrorService
   ) { }  
   
   public deployModule(deploymentRequest: DeploymentRequest): Observable<JobResponse> {
-    var path = "/modules" 
+    var path = this.moduleManagerPath + "/modules" 
     // returns deployment id 
     return this.http.post(path, deploymentRequest);
   }  
 
   public loadDeploymentTemplate(module_id: string): Observable<DeploymentTemplate>  {
-    var url = "/modules/" + module_id + '/depTemplate' 
+    var url = this.moduleManagerPath + "/modules/" + encodeURIComponent(module_id) + '/depTemplate' 
     return <Observable<DeploymentTemplate>>this.http.get(url);
   }
 
   public loadModules(): Observable<Module[]> {
-    var url = "/modules" 
+    var url = this.moduleManagerPath + "/modules" 
     return <Observable<Module[]>>this.http.get(url);
   } 
   
   public loadDeployments(): Observable<Deployment[]> {
-    var url = "/deployments" 
+    var url = this.moduleManagerPath + "/deployments" 
     return <Observable<Deployment[]>>this.http.get<Deployment[]>(url);
   }  
 
   public loadDeployment(deploymentID: string): Observable<Deployment> {
-   var url = "/deployments/" + deploymentID 
+   var url = this.moduleManagerPath + "/deployments/" + deploymentID 
    return <Observable<Deployment>>this.http.get(url);
   }
 
   public loadDeploymentUpdateTemplate(module_id: string): Observable<DeploymentTemplate> {
-      var url = "/modules/" + module_id + '/updateTemplate' 
+      var url = this.moduleManagerPath + "/modules/" + encodeURIComponent(module_id) + '/updateTemplate' 
       return <Observable<DeploymentTemplate>>this.http.get(url);
   }
 
@@ -53,18 +55,18 @@ export class ModuleManagerServiceService {
       params.set("depD", "true")
     }
 
-    var url = "/deployments" + deploymentID + '/ctrl' 
+    var url = this.moduleManagerPath + "/deployments" + deploymentID + '/ctrl' 
     var payload = {'cmd': action}
     return this.http.post(url, payload, params).pipe(catchError((error: HttpErrorResponse) => this.errorService.handleError(ModuleManagerServiceService.name, "controlDeployment", error)));
   }
 
   addModule(module: AddModule): Observable<any> {
-   var url = "/modules" 
+   var url = this.moduleManagerPath + "/modules" 
    return this.http.post(url, module).pipe(catchError((error: HttpErrorResponse) => this.errorService.handleError(ModuleManagerServiceService.name, "addModule", error)));
   }
 
   getJobStatus(jobID: string): Observable<unknown | JobResponse> {
-     var url = "/jobs/" + jobID
+     var url = this.moduleManagerPath + "/jobs/" + jobID
      return this.http.get(url).pipe(catchError((error: HttpErrorResponse) => this.errorService.handleError(ModuleManagerServiceService.name, "getJobStatus", error)));
   }
 }
