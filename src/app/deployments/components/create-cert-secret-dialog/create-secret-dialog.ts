@@ -30,9 +30,11 @@ export class CreateCertSecretDialog {
     }
 
     createSecret() {
-      this.secretService.createSecret(this.type, this.form.get("name")?.value as string, this.form.get("cert")?.value as string).subscribe((id: any) => {
-          this.dialogRef.close({"id": id, "name": this.form.get("name")?.value})
-      })
+      if(this.form.valid) {
+        this.secretService.createSecret(this.type, this.form.get("name")?.value as string, this.form.get("cert")?.value as string).subscribe((id: any) => {
+            this.dialogRef.close({"id": id, "name": this.form.get("name")?.value})
+        })
+      }
     }
 
     cancel() {

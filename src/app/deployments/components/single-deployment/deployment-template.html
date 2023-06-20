@@ -1,7 +1,7 @@
 <div class="form-container">
   <form [formGroup]="form">
 
-    <mat-form-field appearance="fill" *ngIf="mode == 'new'">
+    <mat-form-field appearance="fill" *ngIf="mode != 'show'">
       <mat-label>Deployment Name</mat-label>
       <input matInput formControlName="name">
     </mat-form-field>

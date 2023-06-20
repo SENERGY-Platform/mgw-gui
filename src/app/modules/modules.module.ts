@@ -16,11 +16,14 @@ import { MatSortModule } from '@angular/material/sort';
 import { ListComponent } from './pages/list/list.component';
 import { AddComponent } from './pages/add/add.component';
 import { ModulesComponent } from './modules.component';
+import { InfoComponent } from './pages/info/info.component';
 
 const routes: Routes = [
   {path: 'modules' , component: ModulesComponent, children: [
     {path: 'add', component: AddComponent},
-    {path: '', component: ListComponent}
+    {path: '', component: ListComponent},
+    // TODO edit module {path: 'edit/:id', component: ShowModuleComponentComponent},
+    {path: 'show/:id', component: InfoComponent}
   ]},
 ];
 
@@ -28,7 +31,8 @@ const routes: Routes = [
   declarations: [
     ListComponent,
     AddComponent,
-    ModulesComponent
+    ModulesComponent,
+    InfoComponent
   ],
   imports: [
     MatInputModule,

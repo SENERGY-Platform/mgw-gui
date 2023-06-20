@@ -14,10 +14,6 @@
     <input matInput [readonly]="true" [value]="deployment.module_id">
   </mat-form-field>
 
-  <mat-checkbox [disabled]="true" [ngModel]="deployment.stopped">Stopped</mat-checkbox>
-
-  <mat-checkbox [disabled]="true" [ngModel]="deployment.indirect">Indirect</mat-checkbox>
-
   <mat-form-field appearance="fill">
     <mat-label>Created</mat-label>
     <input matInput [readonly]="true" [value]="deployment.created | date: 'short'">
@@ -27,5 +23,10 @@
     <mat-label>Updated</mat-label>
     <input matInput [readonly]="true" [value]="deployment.updated | date: 'short'">
   </mat-form-field>
+
+  <mat-checkbox [disabled]="true" [ngModel]="deployment.stopped">Stopped</mat-checkbox>
+
+  <mat-checkbox [disabled]="true" [ngModel]="deployment.indirect">Indirect</mat-checkbox>
+
 
 </div>

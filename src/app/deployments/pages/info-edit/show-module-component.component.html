@@ -2,7 +2,7 @@
     <spinner [show]="!ready"></spinner>
 
     <div *ngIf="ready">
-        <deployment-info [deployment]="deployment"></deployment-info>
+        <deployment-info *ngIf="mode == 'show'" [deployment]="deployment"></deployment-info>
         <deployment [mode]="mode" [deploymentTemplate]="deploymentTemplate" [id]="id"></deployment>
     </div>
 </div>

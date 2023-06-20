@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -14,10 +14,11 @@ import { ErrorService } from 'src/app/core/services/util/error.service';
   templateUrl: './deployment-list.component.html',
   styleUrls: ['./deployment-list.component.css']
 })
-export class DeploymentListComponent implements OnInit{
+export class DeploymentListComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<Deployment>();
   selection = new SelectionModel<Deployment>(true, []);
   ready: Boolean = false;
+  interval: any
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['status', 'name', 'created', 'info', 'edit', 'start', 'stop', 'delete']
   
@@ -30,6 +31,13 @@ export class DeploymentListComponent implements OnInit{
 
   ngOnInit(): void {
       this.loadDeployments();
+      this.interval = setInterval(() => { 
+        this.loadDeployments(); 
+      }, 3000);
+  }
+
+  ngOnDestroy(): void {
+      clearTimeout(this.interval)
   }
 
   ngAfterViewInit(): void {
@@ -63,10 +71,18 @@ export class DeploymentListComponent implements OnInit{
   askForDependencyAndSendControlRequest(deploymentID: string, status_change: string) {
     var dialogRef = this.dialog.open(ChangeDependenciesDialog, {data: {status_change: status_change}});
     dialogRef?.afterClosed().subscribe(result => {
+      this.ready = false
       var changeDependency = result['changeDependency']
-        this.moduleService.controlDeployment(deploymentID, status_change, changeDependency).subscribe(result => {
-          this.loadDeployments()
-        })
+      this.moduleService.controlDeployment(deploymentID, status_change, changeDependency).subscribe(
+        {
+          next: (_) => {
+            this.loadDeployments()
+          },
+          error: (err) => {
+            this.errorService.handleError(DeploymentListComponent.name, "askForDependencyAndSendControlRequest", err)
+          }
+        }
+      )
     })
   }
 
@@ -75,14 +91,32 @@ export class DeploymentListComponent implements OnInit{
   }
 
   start(deploymentID: string) {
-    this.moduleService.controlDeployment(deploymentID, "start", false).subscribe(result => {
-      this.loadDeployments()
-    })
+    this.ready = false
+    this.moduleService.controlDeployment(deploymentID, "start", false).subscribe(
+      {
+        next: (_) => {
+          this.loadDeployments()
+        },
+        error: (err) => {
+          this.errorService.handleError(DeploymentListComponent.name, "start", err)
+          this.ready = true
+        }
+      }
+    )
   }
 
   delete(deploymentID: string) {
-    this.moduleService.deleteDeployment(deploymentID).subscribe(_ => {
-      this.loadDeployments()
-    })
+    this.ready = false
+    this.moduleService.deleteDeployment(deploymentID).subscribe(
+      {
+        next: (_) => {
+          this.loadDeployments()
+        },
+        error:(err) => {
+          this.errorService.handleError(DeploymentListComponent.name, "delete", err)
+          this.ready = true
+        }
+      }
+    )
   }
 }

@@ -1,6 +1,7 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
+import { ErrorService } from 'src/app/core/services/util/error.service';
 import { DeploymentTemplate } from '../../models/deployment_models';
 
 @Component({
@@ -16,6 +17,7 @@ export class ModulesComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
@@ -23,10 +25,18 @@ export class ModulesComponent implements OnInit {
     this.route.url.subscribe(url => {
       this.id = url[1].path
 
-      this.moduleService.loadDeploymentTemplate(this.id).subscribe((template: any) => {
-        this.deploymentTemplate = template
-        this.ready = true
-      })
+      this.moduleService.loadDeploymentTemplate(this.id).subscribe(
+        {
+          next: (template: any) => {
+            this.deploymentTemplate = template
+            this.ready = true
+          },
+          error: (err) => {
+            this.errorService.handleError(ModulesComponent.name, "ngOnInit", err)
+            this.ready = true
+          }
+        }
+      )
     })
   }
 }

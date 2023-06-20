@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { Secret } from '../../../core/models/secret_models';
 import { ModuleManagerService } from '../../../core/services/module-manager/module-manager-service.service';
 import { SecretManagerServiceService } from '../../../core/services/secret-manager/secret-manager-service.service';
-import { Deployment, DeploymentRequest, DeploymentTemplate } from '../../models/deployment_models';
+import { DeploymentRequest, DeploymentTemplate } from '../../models/deployment_models';
 
 @Component({
   selector: 'deployment',
@@ -41,7 +41,7 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   dependencies_module_ids: string[] = []
 
   constructor(
-    private fb: NonNullableFormBuilder, 
+    private fb: FormBuilder, 
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
     @Inject('SecretManagerService') private secretSercice: SecretManagerServiceService, 
     public dialog: MatDialog, 
@@ -64,10 +64,9 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     this.mode = changes['mode'].currentValue   
     var deploymentTemplate = changes['deploymentTemplate'].currentValue 
     this.id = changes['id'].currentValue 
+    this.inputForm.module_id.patchValue(this.id)
 
     this.setup(deploymentTemplate)
-
-    this.inputForm.module_id.patchValue(this.id)
   }
 
   public setupDisplayData(module_id: string) {
@@ -121,13 +120,22 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     })
   }
 
+  filterNullValuesInForm(object: any) {
+    Object.keys(object).forEach(key => {
+      if (object[key] && typeof object[key] === "object") {
+        this.filterNullValuesInForm(object[key]);
+      } else if (object[key] === null) {
+        delete object[key];
+      }
+    });
+  }
+
   submit() {
     this.form.markAllAsTouched()
     if(this.form.valid) {
       var deploymentRequest: DeploymentRequest = JSON.parse(JSON.stringify(this.form.value))
-      console.log(this.form.value)
+      this.filterNullValuesInForm(deploymentRequest)
       this.moduleService.deployModule(deploymentRequest).subscribe(jobResponse => {
-        var jobID = jobResponse.job_id
         this.router.navigate(["/modules"])
       })
     }
@@ -135,7 +143,7 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
 
   setupFormControl(form: any, id: string, required: boolean, defaultValue: [], is_list: boolean) {
     // no default value
-    var emptyValue: any = ''
+    var emptyValue: any = null // null gets filtered out of the form data
     if(is_list) {
       emptyValue = []
     } 

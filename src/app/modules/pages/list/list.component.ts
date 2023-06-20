@@ -19,7 +19,7 @@ export class ListComponent {
   selection = new SelectionModel<Module>(true, []);
   ready: Boolean = false;
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['name', 'version', 'deploy', 'delete']
+  displayColumns = ['name', 'version', 'info', 'deploy', 'delete']
   
   constructor(
     public dialog: MatDialog, 
@@ -72,6 +72,11 @@ export class ListComponent {
 
   deployModule(moduleID: string) {
     var path = "/deployments/add/" + encodeURIComponent(moduleID)
+    this.router.navigateByUrl(path)
+  }
+
+  showModuleInfo(moduleID: string) {
+    var path = "/modules/show/" + encodeURIComponent(moduleID)
     this.router.navigateByUrl(path)
   }
 }

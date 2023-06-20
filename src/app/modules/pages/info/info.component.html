@@ -1,0 +1,43 @@
+<spinner [show]="!ready"></spinner>
+
+<div class="form-margin" *ngIf="ready">
+  <mat-form-field appearance="fill">
+    <mat-label>Module Name</mat-label>
+    <input matInput [readonly]="true" [value]="module.name">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Module ID</mat-label>
+    <input matInput [readonly]="true" [value]="module.id">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Author</mat-label>
+    <input matInput [readonly]="true" [value]="module.author">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Version</mat-label>
+    <input matInput [readonly]="true" [value]="module.version">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Type</mat-label>
+    <input matInput [readonly]="true" [value]="module.type">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Deployment Type</mat-label>
+    <input matInput [readonly]="true" [value]="module.deployment_type">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Description</mat-label>
+    <input matInput [readonly]="true" [value]="module.description">
+  </mat-form-field>
+
+  <mat-chip-listbox aria-label="Tags">
+    <mat-chip-option *ngFor="let tag of module.tags">{{tag}}</mat-chip-option>
+  </mat-chip-listbox>
+
+</div>

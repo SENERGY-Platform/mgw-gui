@@ -34,8 +34,9 @@ export class ApiService {
         return this.httpClient.get<T>(this.baseUrl + path, {"params": params});
     }
 
-    public post<T>(path: string, payload: any, params: HttpParams = new HttpParams()): Observable<T> {
-        return this.httpClient.post<T>(this.baseUrl + path, payload, {"params": params});
+    public post<T>(path: string, payload: any, queryParams?: HttpParams): Observable<T> {
+        console.log(queryParams)
+        return this.httpClient.post<T>(this.baseUrl + path, payload, {params: queryParams});
     }
 
     public put(path: string, payload: any): Observable<unknown> {

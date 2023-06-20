@@ -72,14 +72,14 @@ export class ModuleManagerService {
   }
 
   public controlDeployment(deploymentID: string, action: string, changeDependencies: boolean): Observable<unknown | JobResponse> {
-    let params = new HttpParams()
+    let queryParams = new HttpParams()
     if(changeDependencies) {
-      params.set("dependencies", "true")
+      queryParams = queryParams.set("dependencies", "true")
     }
 
     var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/ctrl' 
     var payload = {'cmd': action}
-    return this.http.post(url, payload, params)
+    return this.http.post(url, payload, queryParams)
   }
 
   getJobStatus(jobID: string): Observable<unknown | JobResponse> {

@@ -31,9 +31,11 @@ export class CreateBasicAuthSecretDialog {
     }
 
     createSecret() {
-      this.secretService.createSecret(this.type, this.form.get("name")?.value as string, JSON.stringify({"username": this.form.get("username")?.value as string, "password": this.form.get("password")?.value as string})).subscribe((id: any) => {
-          this.dialogRef.close({"id": id, "name": this.form.get("name")?.value})
-      })
+      if(this.form.valid) {
+        this.secretService.createSecret(this.type, this.form.get("name")?.value as string, JSON.stringify({"username": this.form.get("username")?.value as string, "password": this.form.get("password")?.value as string})).subscribe((id: any) => {
+            this.dialogRef.close({"id": id, "name": this.form.get("name")?.value})
+        })
+      }
     }
 
     cancel() {

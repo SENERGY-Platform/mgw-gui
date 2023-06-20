@@ -8,8 +8,7 @@ import { ErrorService } from '../util/error.service';
 import { JobResponse } from '../../models/module.models';
 
 
-const TEMPLATE =       {
-   "module_id":"modID",
+const TEMPLATE = {
    "host_resources":{
       "bluetooth":{
          "name":"Bluetooth Adapter",
@@ -239,6 +238,22 @@ export class ModuleManagerMockService {
     })
   }  
 
+  public loadModule(_: Module): Observable<Module> {
+   return new Observable(obs => {
+      obs.next({
+         "id": "id",
+         "name": "module 1",
+         "description": "bla",
+         "version": "v.1.0",
+         "author": "Author",
+         "deployment_type": "single",
+         "licence": "Licence",
+         "tags": ["tag1", "tag2", "tag3"],
+         "type": "type"
+      })
+   })
+ } 
+
   public loadDeploymentTemplate(module_id: string): Observable<DeploymentTemplate>  {
     return new Observable((subscriber) => {
       subscriber.next(TEMPLATE)
@@ -341,7 +356,7 @@ export class ModuleManagerMockService {
   }
 
   public controlDeployment(deploymentID: string, action: string, changeDependencies: boolean): Observable<unknown | JobResponse> {
-      return new Observable(obs => {
+   return new Observable(obs => {
          obs.next({"job_id": "id"})
       })
    }
