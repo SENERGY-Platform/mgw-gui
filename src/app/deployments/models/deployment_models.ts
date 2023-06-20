@@ -3,6 +3,7 @@ export interface DeploymentRequest {
     host_resources: Record<string, string>;
     configs: Record<string, any>;
     secrets: Record<string, string>;
+    module_id: string;
 }
 
 export interface Deployment {

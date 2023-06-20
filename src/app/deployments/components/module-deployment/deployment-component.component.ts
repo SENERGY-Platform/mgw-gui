@@ -25,6 +25,7 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   secretOptionsBinding: any 
 
   inputForm = {
+    "module_id": this.fb.control(""),
     "secrets": this.fb.group({}),
     "configs": this.fb.group({}),
     "host_resources": this.fb.group({}),
@@ -65,6 +66,8 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     this.id = changes['id'].currentValue 
 
     this.setup(deploymentTemplate)
+
+    this.inputForm.module_id.patchValue(deploymentTemplate.module_id)
   }
 
   public setupDisplayData(module_id: string) {
@@ -122,6 +125,7 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     this.form.markAllAsTouched()
     if(this.form.valid) {
       var deploymentRequest: DeploymentRequest = JSON.parse(JSON.stringify(this.form.value))
+      console.log(deploymentRequest)
       this.moduleService.deployModule(deploymentRequest).subscribe(jobResponse => {
         var jobID = jobResponse.job_id
         this.router.navigate(["/modules"])
