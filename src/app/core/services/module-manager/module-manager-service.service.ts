@@ -74,7 +74,7 @@ export class ModuleManagerService {
   public controlDeployment(deploymentID: string, action: string, changeDependencies: boolean): Observable<unknown | JobResponse> {
     let params = new HttpParams()
     if(changeDependencies) {
-      params.set("depD", "true")
+      params.set("dependencies", "true")
     }
 
     var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/ctrl' 

@@ -6,6 +6,8 @@ import { ModuleManagerService } from 'src/app/core/services/module-manager/modul
 import { Module } from '../../models/module_models';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ErrorService } from 'src/app/core/services/util/error.service';
+import { HttpUrlEncodingCodec } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list',
@@ -22,7 +24,8 @@ export class ListComponent {
   constructor(
     public dialog: MatDialog, 
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -65,5 +68,10 @@ export class ListComponent {
         }
       }
     )
+  }
+
+  deployModule(moduleID: string) {
+    var path = "/deployments/add/" + encodeURIComponent(moduleID)
+    this.router.navigateByUrl(path)
   }
 }
