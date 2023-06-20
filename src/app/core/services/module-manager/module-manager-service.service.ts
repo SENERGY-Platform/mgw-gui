@@ -19,7 +19,7 @@ export class ModuleManagerService {
   
   // Modules
   public loadDeploymentTemplate(module_id: string): Observable<DeploymentTemplate >  {
-    var url = this.moduleManagerPath + "/modules/" + encodeURIComponent(module_id) + '/dep_template' 
+    var url = this.moduleManagerPath + "/modules/" + encodeURIComponent(encodeURIComponent(module_id)) + '/dep_template' 
     return <Observable<DeploymentTemplate>>this.http.get(url)
   }
 
