@@ -7,6 +7,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     padding: 12px 12px 12px;
 }
 
+.form-margin {
+    margin: 12px 20% 0 20%
+}
+
 .search-button-container {
     align-items: center;
     margin-bottom: 10px;

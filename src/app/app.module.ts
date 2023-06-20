@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
@@ -8,6 +8,9 @@ import { DeploymentsModule } from './deployments/deployments.module';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { ModulesModule } from './modules/modules.module';
+import { environment } from '../environments/environment';
+import { registerLocaleData } from '@angular/common';
+import localeDe from '@angular/common/locales/de';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,24 @@ import { ModulesModule } from './modules/modules.module';
   ],
   exports: [
   ],
-  providers: [],
+  providers: [
+    {
+      'provide': 'ModuleManagerService',
+      'useClass': environment.moduleManagerService
+    },
+    {
+      'provide': 'SecretManagerService',
+      'useClass': environment.secretManagerService
+    },
+    {
+      'provide': LOCALE_ID, 
+      'useValue': 'de-DE' 
+    }
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+    registerLocaleData(localeDe)
+  }
+ }

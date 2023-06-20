@@ -1,12 +1,12 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, NonNullableFormBuilder, ValidatorFn } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Secret } from '../../../core/models/secret_models';
-import { ModuleManagerServiceService } from '../../../core/services/module-manager/module-manager-service.service';
+import { ModuleManagerService } from '../../../core/services/module-manager/module-manager-service.service';
 import { SecretManagerServiceService } from '../../../core/services/secret-manager/secret-manager-service.service';
-import { DeploymentRequest } from '../../models/deployment_models';
+import { Deployment, DeploymentRequest, DeploymentTemplate } from '../../models/deployment_models';
 
 @Component({
   selector: 'deployment',
@@ -16,7 +16,8 @@ import { DeploymentRequest } from '../../models/deployment_models';
 
 export class DeploymentComponentComponent implements OnInit, OnChanges {
   @Input() mode: string = "new"
-  @Input() id: string = ""
+  @Input() deploymentTemplate!: DeploymentTemplate
+  @Input() id!: string
 
   formStr: any = ''
   ready: boolean = false
@@ -40,8 +41,8 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
 
   constructor(
     private fb: NonNullableFormBuilder, 
-    private moduleService: ModuleManagerServiceService, 
-    private secretSercice: SecretManagerServiceService, 
+    @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
+    @Inject('SecretManagerService') private secretSercice: SecretManagerServiceService, 
     public dialog: MatDialog, 
     private router: Router) {
   }
@@ -60,17 +61,10 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.mode = changes['mode'].currentValue   
+    var deploymentTemplate = changes['deploymentTemplate'].currentValue 
     this.id = changes['id'].currentValue 
 
-    if(this.mode == "new") {
-      this.moduleService.loadDeploymentTemplate(this.id).subscribe((template: any) => {
-        this.setup(template)
-      })
-    } else {
-      this.moduleService.loadDeploymentUpdateTemplate(this.id).subscribe(deploymentUpdateTemplate => {
-        this.setup(deploymentUpdateTemplate)
-      })
-    }
+    this.setup(deploymentTemplate)
   }
 
   public setupDisplayData(module_id: string) {

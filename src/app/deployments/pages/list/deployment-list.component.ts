@@ -1,26 +1,32 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { UtilService } from 'src/app/core/services/util/util.service';
-import { ModuleManagerServiceService } from 'src/app/core/services/module-manager/module-manager-service.service';
+import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { ChangeDependenciesDialog } from '../../components/change-dependencies-dialog/change-dependencies-dialog';
 import { Deployment } from '../../models/deployment_models';
+import { ErrorService } from 'src/app/core/services/util/error.service';
 
 @Component({
-  selector: 'module-list',
-  templateUrl: './module-list.component.html',
-  styleUrls: ['./module-list.component.css']
+  selector: 'deployment-list',
+  templateUrl: './deployment-list.component.html',
+  styleUrls: ['./deployment-list.component.css']
 })
-export class ModuleListComponent implements OnInit{
+export class DeploymentListComponent implements OnInit{
   dataSource = new MatTableDataSource<Deployment>();
   selection = new SelectionModel<Deployment>(true, []);
   ready: Boolean = false;
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['select', 'status', 'name', 'created', 'info', 'edit', 'start', 'stop']
+  displayColumns = ['status', 'name', 'created', 'info', 'edit', 'start', 'stop', 'delete']
   
-  constructor(public dialog: MatDialog, private moduleService: ModuleManagerServiceService, public utilsService: UtilService) {}
+  constructor(
+    public dialog: MatDialog, 
+    @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
+    public utilsService: UtilService,
+    private errorService: ErrorService
+  ) {}
 
   ngOnInit(): void {
       this.loadDeployments();
@@ -40,10 +46,18 @@ export class ModuleListComponent implements OnInit{
 
   loadDeployments(): void {
     this.ready = false;
-    this.moduleService.loadDeployments().subscribe(deployments => {
-      this.dataSource.data = deployments;
-      this.ready = true;
-    })
+    this.moduleService.loadDeployments().subscribe(
+      {
+        next: (deployments) => {
+          this.dataSource.data = deployments
+          this.ready = true
+        }, 
+        error: (err) => {
+          this.errorService.handleError(DeploymentListComponent.name, "loadDeployments", err)
+          this.ready = true
+        }
+      }
+    )
   }
 
   askForDependencyAndSendControlRequest(deploymentID: string, status_change: string) {
@@ -66,22 +80,9 @@ export class ModuleListComponent implements OnInit{
     })
   }
 
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const currentViewed = this.dataSource.connect().value.length;
-    return numSelected === currentViewed;
+  delete(deploymentID: string) {
+    this.moduleService.deleteDeployment(deploymentID).subscribe(_ => {
+      this.loadDeployments()
+    })
   }
-
-  masterToggle() {
-      if (this.isAllSelected()) {
-          this.selectionClear();
-      } else {
-          this.dataSource.connect().value.forEach((row) => this.selection.select(row));
-      }
-  }
-
-  selectionClear(): void {
-      this.selection.clear();
-  }
-
 }

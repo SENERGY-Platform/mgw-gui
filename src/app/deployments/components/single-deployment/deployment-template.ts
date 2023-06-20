@@ -1,7 +1,6 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ModuleManagerServiceService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { CreateBasicAuthSecretDialog } from '../create-basic-auth-secret-dialog/create-secret-dialog';
 import { CreateCertSecretDialog } from '../create-cert-secret-dialog/create-secret-dialog';
 
@@ -23,7 +22,8 @@ export class DeploymentTemplate implements OnInit {
     constructor(
       public dialog: MatDialog, 
       private rootFormGroup: FormGroupDirective
-    ) {}
+    ) {
+    }
 
     ngOnInit(): void {
       // Child components can access parent form group via directive

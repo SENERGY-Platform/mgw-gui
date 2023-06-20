@@ -1,22 +1,10 @@
 <div class="form-container">
   <form [formGroup]="form">
 
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="fill" *ngIf="mode == 'new'">
       <mat-label>Deployment Name</mat-label>
-      <input matInput formControlName="name" [readonly]="mode == 'show'">
+      <input matInput formControlName="name">
     </mat-form-field>
-
-    <div *ngIf="mode == 'show'">
-      <mat-form-field appearance="fill">
-        <mat-label>Deployment ID</mat-label>
-        <input matInput [readonly]="mode == 'show'" [value]="id">
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Module ID</mat-label>
-        <input matInput [readonly]="mode == 'show'" [value]="deploymentTemplateData.module_id">
-      </mat-form-field>
-    </div>
 
     <h2>Host Resources</h2>
     <div *ngFor="let host_resource of deploymentTemplateData['host_resources'];" formGroupName="host_resources" class="form-field-container">

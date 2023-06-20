@@ -8,7 +8,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatIconModule} from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
-import { ModuleListComponent } from './pages/list/module-list.component';
+import { DeploymentListComponent } from './pages/list/deployment-list.component';
 import {RouterModule, Routes} from '@angular/router';
 import { ModulesComponent } from './pages/add/modules.component';
 import { CreateCertSecretDialog } from './components/create-cert-secret-dialog/create-secret-dialog';
@@ -22,11 +22,12 @@ import { CoreModule } from 'src/app/core/core.module';
 import { MatSortModule } from '@angular/material/sort';
 import { DeploymentComponentComponent } from './components/module-deployment/deployment-component.component';
 import { ShowModuleComponentComponent } from './pages/info-edit/show-module-component.component';
+import { DeploymentInfoComponent } from './components/deployment-info/deployment-info.component';
 
 const routes: Routes = [
   {path: 'deployments' , component: ModuleManagementComponent, children: [
     {path: 'add/:id', component: ModulesComponent},
-    {path: '', component: ModuleListComponent},
+    {path: '', component: DeploymentListComponent},
     {path: 'edit/:id', component: ShowModuleComponentComponent},
     {path: 'show/:id', component: ShowModuleComponentComponent}
   ]},
@@ -34,7 +35,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    ModuleListComponent,
+    DeploymentListComponent,
     ModulesComponent,
     DeploymentTemplate,
     CreateBasicAuthSecretDialog,
@@ -42,7 +43,9 @@ const routes: Routes = [
     ModuleManagementComponent,
     ChangeDependenciesDialog,
     DeploymentComponentComponent,
-    ShowModuleComponentComponent
+    DeploymentInfoComponent,
+    ShowModuleComponentComponent,
+    
   ],
   imports: [
     MatInputModule,

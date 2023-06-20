@@ -1,3 +1,4 @@
-<div class="layout-margin">
-    <deployment [id]="id" mode="new"></deployment>
+<div class="form-margin">
+    <spinner [show]="!ready"></spinner>
+    <deployment *ngIf="ready" [deploymentTemplate]="deploymentTemplate" mode="new" [id]="id"></deployment>
 </div>

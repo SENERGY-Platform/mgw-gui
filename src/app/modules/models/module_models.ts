@@ -1,5 +1,3 @@
-import { NonNullAssert } from "@angular/compiler";
-
 export interface Module {
     id: string;
     name: string;

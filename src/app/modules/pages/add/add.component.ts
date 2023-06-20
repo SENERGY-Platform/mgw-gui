@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { catchError } from 'rxjs';
-import { ModuleManagerServiceService } from 'src/app/core/services/module-manager/module-manager-service.service';
+import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { AddModule } from '../../models/module_models';
 
@@ -19,7 +19,7 @@ export class AddComponent {
 
   constructor(
     private fb: FormBuilder,
-    private moduleService: ModuleManagerServiceService,
+    @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
     private router: Router,
   ) {}
 

@@ -1,11 +1,11 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ModuleManagerServiceService } from 'src/app/core/services/module-manager/module-manager-service.service';
+import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { Module } from '../../models/module_models';
 import { SelectionModel } from '@angular/cdk/collections';
-import { ModuleManagerMockService } from 'src/app/core/services/module-manager/module-manager-mock.service';
+import { ErrorService } from 'src/app/core/services/util/error.service';
 
 @Component({
   selector: 'app-list',
@@ -17,11 +17,12 @@ export class ListComponent {
   selection = new SelectionModel<Module>(true, []);
   ready: Boolean = false;
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['select', 'name', 'version', 'deploy']
+  displayColumns = ['name', 'version', 'deploy', 'delete']
   
   constructor(
     public dialog: MatDialog, 
-    private moduleService: ModuleManagerMockService, 
+    @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
+    private errorService: ErrorService
   ) {}
 
   ngOnInit(): void {
@@ -37,29 +38,32 @@ export class ListComponent {
     this.dataSource.sort = this.sort;
   }
 
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const currentViewed = this.dataSource.connect().value.length;
-    return numSelected === currentViewed;
-  }
-
-  masterToggle() {
-      if (this.isAllSelected()) {
-          this.selectionClear();
-      } else {
-          this.dataSource.connect().value.forEach((row) => this.selection.select(row));
-      }
-  }
-
-  selectionClear(): void {
-      this.selection.clear();
-  }
-
   loadModules() {
-    this.moduleService.loadModules().subscribe(modules => {
-      this.dataSource.data = modules
-      this.ready = true
-    })
+    this.moduleService.loadModules().subscribe(
+      {
+        next: (modules) => {
+          this.dataSource.data = modules
+          this.ready = true
+        }, 
+        error: (err) => {
+          this.errorService.handleError(ListComponent.name, "loadModules", err)
+          this.ready = true
+        }
+      }
+    )
   }
 
+  deleteModule(moduleID: string) {
+    this.moduleService.deleteModule(moduleID).subscribe(
+      {
+        next: (_) => {
+          this.loadModules()
+        }, 
+        error: (err) => {
+          this.errorService.handleError(ListComponent.name, "deleteModule", err)
+          this.ready = true
+        }
+      }
+    )
+  }
 }

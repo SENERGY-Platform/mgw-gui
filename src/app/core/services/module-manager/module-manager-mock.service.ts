@@ -357,4 +357,10 @@ export class ModuleManagerMockService {
          obs.next({"job_id": "id"})
       })
    }
+
+   deleteModule(_: string): Observable<any> {
+      return new Observable(obs => {
+         obs.next(true)
+      })
+   }
 }
