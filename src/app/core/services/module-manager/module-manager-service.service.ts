@@ -77,7 +77,7 @@ export class ModuleManagerService {
       params.set("depD", "true")
     }
 
-    var url = this.moduleManagerPath + "/deployments" + deploymentID + '/ctrl' 
+    var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/ctrl' 
     var payload = {'cmd': action}
     return this.http.post(url, payload, params)
   }
