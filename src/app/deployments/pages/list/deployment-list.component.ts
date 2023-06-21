@@ -95,7 +95,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
             this.checkJobStatus(jobID, message)
           },
           error: (err) => {
-            this.errorService.handleError(DeploymentListComponent.name, "stopDeployment", err)
+            this.errorService.handleError(DeploymentListComponent.name, "stop", err)
           }
         }
       )

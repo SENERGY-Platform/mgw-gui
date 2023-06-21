@@ -30,9 +30,9 @@ export class AddComponent {
     this.form.markAllAsTouched()
     if(this.form.valid) {
       var module: AddModule = JSON.parse(JSON.stringify(this.form.value))
-      this.moduleService.addModule(module).subscribe(jobResponse => {
+      this.moduleService.addModule(module).subscribe(jobID => {
         var message = "Module creation is running"
-        this.checkJobStatus(jobResponse.job_id, message)
+        this.checkJobStatus(jobID, message)
       })
     }
   }

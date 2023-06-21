@@ -32,7 +32,7 @@ export class ModuleManagerService {
     return <Observable<Module[]>>this.http.get(url)
   } 
 
-  addModule(module: AddModule): Observable<JobResponse> {
+  addModule(module: AddModule): Observable<string> {
     var url = this.moduleManagerPath + "/modules" 
     return this.http.post(url, module)
    }
@@ -64,9 +64,9 @@ export class ModuleManagerService {
    return <Observable<Deployment>>this.http.get(url);
   }
 
-  updateDeployment(deploymentID: string, update: any): Observable<JobResponse> {
+  updateDeployment(deploymentID: string, update: any): Observable<string> {
     var url = this.moduleManagerPath + "/deployments/" + deploymentID 
-    return <Observable<JobResponse>>this.http.patch(url, update);
+    return <Observable<string>>this.http.patch(url, update);
   }
 
   deleteDeployment(deploymentID: string): Observable<any> {
@@ -86,7 +86,7 @@ export class ModuleManagerService {
     }
 
     var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/stop' 
-    return <Observable<string>>this.http.patch(url, queryParams)
+    return <Observable<string>>this.http.patch(url, null, queryParams)
   }
 
   startDeployment(deploymentID: string): Observable<JobResponse> {
