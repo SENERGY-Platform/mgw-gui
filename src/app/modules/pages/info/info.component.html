@@ -32,12 +32,29 @@
   </mat-form-field>
 
   <mat-form-field appearance="fill">
+    <mat-label>Licence</mat-label>
+    <input matInput [readonly]="true" [value]="module.licence">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
     <mat-label>Description</mat-label>
     <input matInput [readonly]="true" [value]="module.description">
   </mat-form-field>
 
+  <mat-form-field appearance="fill">
+    <mat-label>Added</mat-label>
+    <input matInput [readonly]="true" [value]="module.added | date: 'short'">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Updated</mat-label>
+    <input matInput [readonly]="true" [value]="module.updated | date: 'short'">
+  </mat-form-field>
+
   <mat-chip-listbox aria-label="Tags">
-    <mat-chip-option *ngFor="let tag of module.tags">{{tag}}</mat-chip-option>
+    <mat-chip *ngFor="let tag of module.tags">{{tag}}</mat-chip>
   </mat-chip-listbox>
+
+  <mat-checkbox [disabled]="true" [ngModel]="module.indirect">Indirect</mat-checkbox>
 
 </div>

@@ -250,7 +250,10 @@ export class ModuleManagerMockService {
          "deployment_type": "single",
          "licence": "Licence",
          "tags": ["tag1", "tag2", "tag3"],
-         "type": "type"
+         "type": "type",
+         "indirect": false,
+         "added": new Date(),
+         "updated": new Date()
       })
    })
  } 
@@ -274,7 +277,10 @@ export class ModuleManagerMockService {
             "deployment_type": "single",
             "licence": "Licence",
             "tags": [],
-            "type": "type"
+            "type": "type",
+            "indirect": false,
+            "added": new Date(),
+            "updated": new Date()
          }, {
             "id": "id2",
             "name": "module 2",
@@ -284,7 +290,10 @@ export class ModuleManagerMockService {
             "deployment_type": "single",
             "licence": "Licence",
             "tags": [],
-            "type": "type"
+            "type": "type",
+            "indirect": false,
+            "added": new Date(),
+            "updated": new Date()
          }
       ])
       subscriber.complete()

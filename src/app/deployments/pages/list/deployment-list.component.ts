@@ -10,6 +10,7 @@ import { Deployment } from '../../models/deployment_models';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { JobResponse } from 'src/app/core/models/module.models';
 import { JobLoaderModalComponent } from '../../../core/components/job-loader-modal/job-loader-modal.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'deployment-list',
@@ -29,7 +30,8 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
     public utilsService: UtilService,
     private errorService: ErrorService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
       this.loadDeployments(false);
@@ -91,7 +93,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         {
           next: (jobID) => {
             // Stop results in a job which needs to be polled 
-            var message = "Deployment deletion is running"
+            var message = "Deployment stop is running"
             this.checkJobStatus(jobID, message)
           },
           error: (err) => {

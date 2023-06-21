@@ -30,7 +30,7 @@ export class ErrorService {
     
   handleError(service: string, method: string, error: HttpErrorResponse) {
         console.error('Error =>> Service: ' + service + ' =>> Method: ' + method);
-        this.notifierService.showError("There was a problem")
+        this.notifierService.showError("There was a problem: " + error.error)
         
         if (error.status === 0) {
           // A client-side or network error occurred. Handle it accordingly.

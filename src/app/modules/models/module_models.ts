@@ -8,6 +8,9 @@ export interface Module {
     version: string;
     type: string;
     deployment_type: string; 
+    added: Date;
+    indirect: boolean;
+    updated: Date;
 }
 
 export interface AddModule {
