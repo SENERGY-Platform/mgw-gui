@@ -79,14 +79,14 @@ export class ModuleManagerService {
       return <Observable<DeploymentTemplate>>this.http.get(url);
   }
 
-  stopDeployment(deploymentID: string, changeDependencies: boolean): Observable<JobResponse> {
+  stopDeployment(deploymentID: string, changeDependencies: boolean): Observable<string> {
     let queryParams = new HttpParams()
     if(changeDependencies) {
       queryParams = queryParams.set("dependencies", "true")
     }
 
     var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/stop' 
-    return <Observable<JobResponse>>this.http.patch(url, queryParams)
+    return <Observable<string>>this.http.patch(url, queryParams)
   }
 
   startDeployment(deploymentID: string): Observable<JobResponse> {

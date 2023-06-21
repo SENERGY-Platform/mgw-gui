@@ -89,13 +89,13 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
       var changeDependency = result['changeDependency']
       this.moduleService.stopDeployment(deploymentID, changeDependency).subscribe(
         {
-          next: (jobResponse: JobResponse) => {
+          next: (jobID) => {
             // Stop results in a job which needs to be polled 
             var message = "Deployment deletion is running"
-            this.checkJobStatus(jobResponse.job_id, message)
+            this.checkJobStatus(jobID, message)
           },
           error: (err) => {
-            this.errorService.handleError(DeploymentListComponent.name, "askForDependencyAndSendControlRequest", err)
+            this.errorService.handleError(DeploymentListComponent.name, "stopDeployment", err)
           }
         }
       )
