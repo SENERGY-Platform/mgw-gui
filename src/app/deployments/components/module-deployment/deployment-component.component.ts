@@ -3,6 +3,9 @@ import { FormBuilder, FormControl, FormGroup, NonNullableFormBuilder, ValidatorF
 import { Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { JobLoaderModalComponent } from 'src/app/core/components/job-loader-modal/job-loader-modal.component';
+import { ErrorService } from 'src/app/core/services/util/error.service';
+import { UtilService } from 'src/app/core/services/util/util.service';
 import { Secret } from '../../../core/models/secret_models';
 import { ModuleManagerService } from '../../../core/services/module-manager/module-manager-service.service';
 import { SecretManagerServiceService } from '../../../core/services/secret-manager/secret-manager-service.service';
@@ -46,7 +49,10 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
     @Inject('SecretManagerService') private secretSercice: SecretManagerServiceService, 
     public dialog: MatDialog, 
-    private router: Router) {
+    private router: Router,
+    private errorService: ErrorService,
+    private utilsService: UtilService
+  ) {
   }
 
   public ngOnInit() {
@@ -148,14 +154,27 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
       var deploymentRequest: DeploymentRequest = JSON.parse(JSON.stringify(this.form.value))
       this.filterNullValuesInForm(deploymentRequest)
 
-      console.log(deploymentRequest)
       if(this.mode == "new") {
-        this.moduleService.deployModule(deploymentRequest).subscribe(_ => {
-          this.router.navigate(["/modules"])
+        this.moduleService.deployModule(deploymentRequest).subscribe({
+          next: () => {
+              this.router.navigate(["/deployments"])
+          },
+          error: (err) => {
+            this.errorService.handleError(DeploymentComponentComponent.name, "submit", err)
+          }
         })
       } else if(this.mode == "edit") {
-        this.moduleService.updateDeployment(this.deploymentID, deploymentRequest).subscribe(jobResponse => {
-          this.router.navigate(["/modules"])
+        this.moduleService.updateDeployment(this.deploymentID, deploymentRequest).subscribe({
+          next: (jobID) => {
+            var message = "Deployment update is running"
+            var self = this
+            this.utilsService.checkJobStatus(jobID, message, function() {
+              self.router.navigate(["/deployments"])
+            })
+          },
+          error: (err) => {
+            this.errorService.handleError(DeploymentComponentComponent.name, "submit", err)
+          }
         })
       }
       

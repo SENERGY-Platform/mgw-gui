@@ -5,7 +5,7 @@ import { ApiService } from '../api/api.service';
 import { AddModule, Module } from '../../../modules/models/module_models';
 import { Deployment, DeploymentRequest, DeploymentTemplate } from 'src/app/deployments/models/deployment_models';
 import { ErrorService } from '../util/error.service';
-import { JobResponse } from '../../models/module.models';
+import { Job } from 'src/app/jobs/models/job.model';
 
 @Injectable({
   providedIn: 'root'
@@ -94,9 +94,9 @@ export class ModuleManagerService {
     return this.http.patch(url)
   }
 
-  getJobStatus(jobID: string): Observable<JobResponse> {
+  getJobStatus(jobID: string): Observable<Job> {
      var url = this.moduleManagerPath + "/jobs/" + jobID
-     return <Observable<JobResponse>>this.http.get(url)
+     return <Observable<Job>>this.http.get(url)
   }
 
   stopJob(jobID: string): Observable<any> {
@@ -104,8 +104,8 @@ export class ModuleManagerService {
     return <Observable<any>>this.http.patch(url)
   }
 
-  getJobs(): Observable<JobResponse[]> {
+  getJobs(): Observable<Job[]> {
     var url = this.moduleManagerPath + "/jobs"
-     return <Observable<JobResponse[]>>this.http.get(url)
+     return <Observable<Job[]>>this.http.get(url)
   }
 }

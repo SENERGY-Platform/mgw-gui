@@ -1,4 +1,3 @@
-import { SelectionModel } from '@angular/cdk/collections';
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
@@ -8,9 +7,6 @@ import { ModuleManagerService } from 'src/app/core/services/module-manager/modul
 import { ChangeDependenciesDialog } from '../../components/change-dependencies-dialog/change-dependencies-dialog';
 import { Deployment } from '../../models/deployment_models';
 import { ErrorService } from 'src/app/core/services/util/error.service';
-import { JobResponse } from 'src/app/core/models/module.models';
-import { JobLoaderModalComponent } from '../../../core/components/job-loader-modal/job-loader-modal.component';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'deployment-list',
@@ -19,7 +15,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class DeploymentListComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<Deployment>();
-  selection = new SelectionModel<Deployment>(true, []);
   ready: Boolean = false;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
@@ -75,16 +70,6 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     )
   }
 
-  checkJobStatus(jobID: string, message: string) {
-    var dialogRef = this.dialog.open(JobLoaderModalComponent, {data: {jobID: jobID, message: message}});
-    
-    dialogRef?.afterClosed().subscribe(jobIsCompleted => {
-      if(jobIsCompleted) {
-        this.loadDeployments(false)
-      }
-    });
-  }
-
   stop(deploymentID: string) {
     var dialogRef = this.dialog.open(ChangeDependenciesDialog, {data: {status_change: 'stop'}});
     dialogRef?.afterClosed().subscribe(result => {
@@ -94,7 +79,10 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           next: (jobID) => {
             // Stop results in a job which needs to be polled 
             var message = "Deployment stop is running"
-            this.checkJobStatus(jobID, message)
+            var self = this
+            this.utilsService.checkJobStatus(jobID, message, function() {
+              self.loadDeployments(false)
+            })
           },
           error: (err) => {
             this.errorService.handleError(DeploymentListComponent.name, "stop", err)

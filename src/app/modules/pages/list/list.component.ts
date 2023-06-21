@@ -16,7 +16,6 @@ import { Router } from '@angular/router';
 })
 export class ListComponent {
   dataSource = new MatTableDataSource<Module>();
-  selection = new SelectionModel<Module>(true, []);
   ready: Boolean = false;
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['name', 'version', 'info', 'deploy', 'delete']

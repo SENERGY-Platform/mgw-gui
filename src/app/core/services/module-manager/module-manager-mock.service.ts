@@ -5,7 +5,7 @@ import { ApiService } from '../api/api.service';
 import { AddModule, Module } from '../../../modules/models/module_models';
 import { Deployment, DeploymentRequest, DeploymentTemplate } from 'src/app/deployments/models/deployment_models';
 import { ErrorService } from '../util/error.service';
-import { JobResponse } from '../../models/module.models';
+import { Job } from 'src/app/jobs/models/job.model';
 
 
 const TEMPLATE = {
@@ -233,9 +233,9 @@ export class ModuleManagerMockService {
     private errorService: ErrorService
   ) { }  
   
-  public deployModule(deploymentRequest: DeploymentRequest): Observable<JobResponse> {
+  public deployModule(deploymentRequest: DeploymentRequest): Observable<Job> {
     return new Observable(obs => {
-       obs.next({"job_id": "id", "completed": new Date(), "error": ""})
+       obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
     })
   }  
 
@@ -371,27 +371,33 @@ export class ModuleManagerMockService {
        })
   }
 
-  public startDeployment(deploymentID: string): Observable<JobResponse> {
+  public startDeployment(deploymentID: string): Observable<Job> {
    return new Observable(obs => {
-         obs.next({"job_id": "id", "completed": new Date(), "error": ""})
+         obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
       })
    }
 
-   public stopDeployment(deploymentID: string, changeDependencies: boolean): Observable<JobResponse> {
+   public stopDeployment(deploymentID: string, changeDependencies: boolean): Observable<Job> {
       return new Observable(obs => {
-            obs.next({"job_id": "id", "completed": new Date(), "error": ""})
+            obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
          })
    }
 
    addModule(module: AddModule): Observable<any> {
       return new Observable(obs => {
-         obs.next({"job_id": "id", "completed": new Date(), "error": ""})
+         obs.next({"id": "id", "completed": new Date(), "error": ""})
       })
    }
 
-  getJobStatus(jobID: string): Observable<unknown | JobResponse> {
+  getJobStatus(jobID: string): Observable<unknown | Job> {
       return new Observable(obs => {
-         obs.next({"job_id": "id", "completed": new Date(), "error": null})
+         obs.next({"id": "id", "completed": new Date(), "error": null})
+      })
+   }
+
+   getJobs(): Observable<Job[]> {
+      return new Observable(obs => {
+         obs.next([{"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()}])
       })
    }
 

@@ -6,6 +6,7 @@ import { catchError } from 'rxjs';
 import { JobLoaderModalComponent } from 'src/app/core/components/job-loader-modal/job-loader-modal.component';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
+import { UtilService } from 'src/app/core/services/util/util.service';
 import { AddModule } from '../../models/module_models';
 
 @Component({
@@ -24,6 +25,7 @@ export class AddComponent {
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
     private router: Router,
     public dialog: MatDialog, 
+    private utilsService: UtilService
   ) {}
 
   addModule() {
@@ -32,18 +34,11 @@ export class AddComponent {
       var module: AddModule = JSON.parse(JSON.stringify(this.form.value))
       this.moduleService.addModule(module).subscribe(jobID => {
         var message = "Module creation is running"
-        this.checkJobStatus(jobID, message)
+        var self = this
+        this.utilsService.checkJobStatus(jobID, message, function() {
+          self.router.navigate(["/modules"])
+        })
       })
     }
-  }
-
-  checkJobStatus(jobID: string, message: string) {
-    var dialogRef = this.dialog.open(JobLoaderModalComponent, {data: {jobID: jobID, message: message}});
-    
-    dialogRef?.afterClosed().subscribe(jobIsCompleted => {
-      if(jobIsCompleted) {
-        this.router.navigate(["/modules"])
-      }
-    });
   }
 }

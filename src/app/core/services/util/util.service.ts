@@ -18,13 +18,19 @@
 
 import { HttpErrorResponse } from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { throwError } from 'rxjs';
+import { JobLoaderModalComponent } from '../../components/job-loader-modal/job-loader-modal.component';
 
 
 @Injectable({
     providedIn: 'root'
   })
 export class UtilService {
+    constructor(
+        public dialog: MatDialog
+    ) {}
+
     dateIsToday(dateTime: string | number): Boolean {
         var today = new Date()
         today.setHours(0,0,0,0)
@@ -36,4 +42,15 @@ export class UtilService {
         date.setHours(0,0,0,0)
         return date.getTime() === today.getTime()
     }
+
+
+  checkJobStatus(jobID: string, message: string, callback: any) {
+    var dialogRef = this.dialog.open(JobLoaderModalComponent, {data: {jobID: jobID, message: message}});
+    
+    dialogRef?.afterClosed().subscribe(jobIsCompleted => {
+      if(jobIsCompleted) {
+          callback()
+      }
+    });
+  }
 }

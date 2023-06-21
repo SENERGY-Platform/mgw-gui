@@ -17,8 +17,8 @@ export class AppComponent {
     "icon": "settings",
     "link": "/modules"
   }, {
-    "name": "Settings",
-    "icon": "settings",
-    "link": "/settings"
+    "name": "Jobs",
+    "icon": "work",
+    "link": "/jobs"
   }]
 }
