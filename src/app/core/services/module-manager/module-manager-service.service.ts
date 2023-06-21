@@ -86,12 +86,12 @@ export class ModuleManagerService {
     }
 
     var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/stop' 
-    return <Observable<string>>this.http.patch(url, null, queryParams)
+    return <Observable<string>>this.http.patch(url, null, queryParams, 'text')
   }
 
-  startDeployment(deploymentID: string): Observable<JobResponse> {
+  startDeployment(deploymentID: string): Observable<any> {
     var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/start' 
-    return <Observable<JobResponse>>this.http.patch(url)
+    return this.http.patch(url)
   }
 
   getJobStatus(jobID: string): Observable<JobResponse> {

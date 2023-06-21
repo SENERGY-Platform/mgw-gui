@@ -46,7 +46,11 @@ export class ApiService {
         return this.httpClient.request('DELETE', this.baseUrl + path, {body});
     }
 
-    public patch(path: string, payload?: any, queryParams?: HttpParams): Observable<unknown> {
-        return this.httpClient.patch(this.baseUrl + path, payload, {params: queryParams});
+    public patch(path: string, payload?: any, queryParams?: HttpParams, responseType?: string): Observable<unknown> {
+        var params: any = {params: queryParams}
+        if(responseType) {
+            params['responseType'] = responseType
+        }
+        return this.httpClient.patch(this.baseUrl + path, payload, params);
     }
 }
