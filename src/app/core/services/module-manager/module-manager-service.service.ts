@@ -101,7 +101,7 @@ export class ModuleManagerService {
 
   stopJob(jobID: string): Observable<any> {
     var url = this.moduleManagerPath + "/jobs/" + jobID + "/cancel"
-    return <Observable<any>>this.http.post(url)
+    return <Observable<any>>this.http.patch(url)
   }
 
   getJobs(): Observable<JobResponse[]> {
