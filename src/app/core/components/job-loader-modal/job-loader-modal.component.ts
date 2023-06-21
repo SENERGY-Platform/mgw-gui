@@ -37,7 +37,7 @@ export class JobLoaderModalComponent implements OnInit {
           this.close()
         }
       }); 
-    }, 1);
+    }, 1000);
   }
 
   cancel() {
