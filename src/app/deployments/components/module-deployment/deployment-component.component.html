@@ -1,12 +1,12 @@
 <div>
   <form [formGroup]="form" (ngSubmit)="submit()">
-    <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding" [id]="id"
+    <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding" [moduleID]="moduleID"
       [IsDependency]="false" [secretOptions]="secretOptionsBinding"></deployment-template>
 
     <div class="deps" *ngIf="dependencies_module_ids.length > 0">
       <H1>Dependencies</H1>
       <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding"
-        [secretOptions]="secretOptionsBinding" [id]="module_id" [IsDependency]="true"
+        [secretOptions]="secretOptionsBinding" [moduleID]="module_id" [IsDependency]="true"
         *ngFor="let module_id of dependencies_module_ids">
       </deployment-template>
     </div>

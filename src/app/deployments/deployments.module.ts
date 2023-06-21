@@ -21,15 +21,16 @@ import {MatTableModule} from '@angular/material/table';
 import { CoreModule } from 'src/app/core/core.module';
 import { MatSortModule } from '@angular/material/sort';
 import { DeploymentComponentComponent } from './components/module-deployment/deployment-component.component';
-import { ShowModuleComponentComponent } from './pages/info-edit/show-module-component.component';
-import { DeploymentInfoComponent } from './components/deployment-info/deployment-info.component';
+import { ShowModuleComponentComponent } from './pages/edit/show-module-component.component';
+import { JobLoaderModalComponent } from '../core/components/job-loader-modal/job-loader-modal.component';
+import { InfoComponent } from './pages/info/info.component';
 
 const routes: Routes = [
   {path: 'deployments' , component: ModuleManagementComponent, children: [
     {path: 'add/:id', component: ModulesComponent},
     {path: '', component: DeploymentListComponent},
     {path: 'edit/:id', component: ShowModuleComponentComponent},
-    {path: 'show/:id', component: ShowModuleComponentComponent}
+    {path: 'show/:id', component: InfoComponent}
   ]},
 ];
 
@@ -43,8 +44,9 @@ const routes: Routes = [
     ModuleManagementComponent,
     ChangeDependenciesDialog,
     DeploymentComponentComponent,
-    DeploymentInfoComponent,
     ShowModuleComponentComponent,
+    JobLoaderModalComponent,
+    InfoComponent,
     
   ],
   imports: [

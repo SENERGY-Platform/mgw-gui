@@ -1,0 +1,19 @@
+#outer {
+    padding: 50px 50px
+}
+
+mat-form-field {
+    width: 100%
+}
+
+button {
+    margin-top: 50px;
+}
+
+.loader {
+    display: flex;
+}
+
+spinner {
+    margin-right: 30px;
+}

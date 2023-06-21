@@ -8,6 +8,8 @@ import { ModuleManagerService } from 'src/app/core/services/module-manager/modul
 import { ChangeDependenciesDialog } from '../../components/change-dependencies-dialog/change-dependencies-dialog';
 import { Deployment } from '../../models/deployment_models';
 import { ErrorService } from 'src/app/core/services/util/error.service';
+import { JobResponse } from 'src/app/core/models/module.models';
+import { JobLoaderModalComponent } from '../../../core/components/job-loader-modal/job-loader-modal.component';
 
 @Component({
   selector: 'deployment-list',
@@ -30,10 +32,10 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-      this.loadDeployments();
+      this.loadDeployments(false);
       this.interval = setInterval(() => { 
-        this.loadDeployments(); 
-      }, 3000);
+        this.loadDeployments(true); 
+      }, 5000);
   }
 
   ngOnDestroy(): void {
@@ -52,8 +54,11 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.dataSource.sort = this.sort;
   }
 
-  loadDeployments(): void {
-    this.ready = false;
+  loadDeployments(background: boolean): void {
+    if(!background) {
+      this.ready = false;
+    }
+
     this.moduleService.loadDeployments().subscribe(
       {
         next: (deployments) => {
@@ -68,15 +73,26 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     )
   }
 
-  askForDependencyAndSendControlRequest(deploymentID: string, status_change: string) {
-    var dialogRef = this.dialog.open(ChangeDependenciesDialog, {data: {status_change: status_change}});
+  checkJobStatus(jobID: string, message: string) {
+    var dialogRef = this.dialog.open(JobLoaderModalComponent, {data: {jobID: jobID, message: message}});
+    
+    dialogRef?.afterClosed().subscribe(jobIsCompleted => {
+      if(jobIsCompleted) {
+        this.loadDeployments(false)
+      }
+    });
+  }
+
+  stop(deploymentID: string) {
+    var dialogRef = this.dialog.open(ChangeDependenciesDialog, {data: {status_change: 'stop'}});
     dialogRef?.afterClosed().subscribe(result => {
-      this.ready = false
       var changeDependency = result['changeDependency']
-      this.moduleService.controlDeployment(deploymentID, status_change, changeDependency).subscribe(
+      this.moduleService.stopDeployment(deploymentID, changeDependency).subscribe(
         {
-          next: (_) => {
-            this.loadDeployments()
+          next: (jobResponse: JobResponse) => {
+            // Stop results in a job which needs to be polled 
+            var message = "Deployment deletion is running"
+            this.checkJobStatus(jobResponse.job_id, message)
           },
           error: (err) => {
             this.errorService.handleError(DeploymentListComponent.name, "askForDependencyAndSendControlRequest", err)
@@ -86,16 +102,12 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     })
   }
 
-  stop(deploymentID: string) {
-    this.askForDependencyAndSendControlRequest(deploymentID, "stop")
-  }
-
   start(deploymentID: string) {
     this.ready = false
-    this.moduleService.controlDeployment(deploymentID, "start", false).subscribe(
+    this.moduleService.startDeployment(deploymentID).subscribe(
       {
         next: (_) => {
-          this.loadDeployments()
+          this.loadDeployments(false)
         },
         error: (err) => {
           this.errorService.handleError(DeploymentListComponent.name, "start", err)
@@ -110,7 +122,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.moduleService.deleteDeployment(deploymentID).subscribe(
       {
         next: (_) => {
-          this.loadDeployments()
+          this.loadDeployments(false)
         },
         error:(err) => {
           this.errorService.handleError(DeploymentListComponent.name, "delete", err)

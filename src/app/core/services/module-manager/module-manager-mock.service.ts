@@ -9,6 +9,7 @@ import { JobResponse } from '../../models/module.models';
 
 
 const TEMPLATE = {
+   "name": "deployment",
    "host_resources":{
       "bluetooth":{
          "name":"Bluetooth Adapter",
@@ -234,7 +235,7 @@ export class ModuleManagerMockService {
   
   public deployModule(deploymentRequest: DeploymentRequest): Observable<JobResponse> {
     return new Observable(obs => {
-       obs.next({"job_id": "id"})
+       obs.next({"job_id": "id", "completed": new Date(), "error": ""})
     })
   }  
 
@@ -339,7 +340,13 @@ export class ModuleManagerMockService {
          'updated': new Date(),
          'secrets': {"cert": "cert", "login": "login"},
          'host_resources': {"zigbee": "value", "bluetooth": "b2"},
-         'configs': {"c1": "test", "c2": ["test1", "test2"], "c3": ["test3", "test4"], "c4": 1, "c5": 4},
+         'configs': {
+            "c1": {"is_slice": false, "value": "value", "data_type": "string"}, 
+            "c2": {"is_slice": true, "value": ["value", "value2"], "data_type": "string"}, 
+            "c3": {"is_slice": true, "value": ["value"], "data_type": "string"}, 
+            "c4": {"is_slice": false, "value": 1, "data_type": "number"},
+            "c5": {"is_slice": false, "value": 2, "data_type": "number"},
+         },
          'dep_requiring': [],
          'required_dep': []
       }
@@ -355,21 +362,27 @@ export class ModuleManagerMockService {
        })
   }
 
-  public controlDeployment(deploymentID: string, action: string, changeDependencies: boolean): Observable<unknown | JobResponse> {
+  public startDeployment(deploymentID: string): Observable<JobResponse> {
    return new Observable(obs => {
-         obs.next({"job_id": "id"})
+         obs.next({"job_id": "id", "completed": new Date(), "error": ""})
       })
+   }
+
+   public stopDeployment(deploymentID: string, changeDependencies: boolean): Observable<JobResponse> {
+      return new Observable(obs => {
+            obs.next({"job_id": "id", "completed": new Date(), "error": ""})
+         })
    }
 
    addModule(module: AddModule): Observable<any> {
       return new Observable(obs => {
-         obs.next({"job_id": "id"})
+         obs.next({"job_id": "id", "completed": new Date(), "error": ""})
       })
    }
 
   getJobStatus(jobID: string): Observable<unknown | JobResponse> {
       return new Observable(obs => {
-         obs.next({"job_id": "id"})
+         obs.next({"job_id": "id", "completed": new Date(), "error": null})
       })
    }
 
@@ -378,4 +391,15 @@ export class ModuleManagerMockService {
          obs.next(true)
       })
    }
-}
+
+   stopJob(jobId: string): Observable<any> {
+      return new Observable(obs => {
+         obs.next(true)
+      })
+   }
+
+   deleteDeployment(deploymentID: string): Observable<any> {
+      return new Observable(obs => {
+         obs.next(true)
+      })
+   }}

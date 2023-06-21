@@ -10,7 +10,7 @@ import { CreateCertSecretDialog } from '../create-cert-secret-dialog/create-secr
     styleUrls: ['deployment-template.css']
 })
 export class DeploymentTemplate implements OnInit {
-    @Input() id: string = ""
+    @Input() moduleID: string = ""
     @Input() IsDependency: boolean = false 
 
     form: FormGroup = new FormGroup("")
@@ -32,7 +32,7 @@ export class DeploymentTemplate implements OnInit {
         this.form = this.rootFormGroup.control
       } else {
         // Dependency Module Deployment
-        this.form = this.rootFormGroup.control.get('dependencies')!.get(this.id) as FormGroup;
+        this.form = this.rootFormGroup.control.get('dependencies')!.get(this.moduleID) as FormGroup;
       }
     }
 
@@ -40,7 +40,7 @@ export class DeploymentTemplate implements OnInit {
         this.secretOptions = changes['secretOptions'].currentValue
 
         // TODO deploymentTemplateData direkt fuer module id nicht erst key
-        this.deploymentTemplateData = changes['deploymentTemplateData'].currentValue[this.id]
+        this.deploymentTemplateData = changes['deploymentTemplateData'].currentValue[this.moduleID]
         this.mode = changes['mode'].currentValue
     }
 

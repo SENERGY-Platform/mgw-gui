@@ -23,7 +23,6 @@ import { Component, Input } from '@angular/core';
 })
 export class SpinnerComponent {
     @Input() show = false;
-    @Input() elementCount = 0;
 
     constructor() {}
 }

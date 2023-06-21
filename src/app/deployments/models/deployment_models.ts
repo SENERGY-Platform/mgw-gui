@@ -6,6 +6,12 @@ export interface DeploymentRequest {
     module_id: string;
 }
 
+export interface DeploymentConfig {
+    value: any;
+    data_type: any;
+    is_slice: boolean;
+}
+
 export interface Deployment {
     id: string;
     module_id: string; 
@@ -15,7 +21,7 @@ export interface Deployment {
     created: Date;
     updated: Date;
     host_resources: Record<string, string>;
-    configs: Record<string, any>;
+    configs: Record<string, DeploymentConfig>;
     secrets: Record<string, string>;
     required_dep: string[];
     dep_requiring: string[];
@@ -64,4 +70,8 @@ export interface DeploymentTemplateBase {
 }
 
 export interface DeploymentTemplate extends DeploymentTemplateBase {
+}
+
+export interface DeploymentUpdateTemplate extends DeploymentTemplateBase {
+    name: string;
 }

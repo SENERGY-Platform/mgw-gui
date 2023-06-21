@@ -34,8 +34,7 @@ export class ApiService {
         return this.httpClient.get<T>(this.baseUrl + path, {"params": params});
     }
 
-    public post<T>(path: string, payload: any, queryParams?: HttpParams): Observable<T> {
-        console.log(queryParams)
+    public post<T>(path: string, payload?: any, queryParams?: HttpParams): Observable<T> {
         return this.httpClient.post<T>(this.baseUrl + path, payload, {params: queryParams});
     }
 
@@ -47,7 +46,7 @@ export class ApiService {
         return this.httpClient.request('DELETE', this.baseUrl + path, {body});
     }
 
-    public patch(path: string, payload: any): Observable<unknown> {
-        return this.httpClient.patch(this.baseUrl + path, payload);
+    public patch(path: string, payload?: any, queryParams?: HttpParams): Observable<unknown> {
+        return this.httpClient.patch(this.baseUrl + path, payload, {params: queryParams});
     }
 }

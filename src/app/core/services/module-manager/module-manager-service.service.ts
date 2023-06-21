@@ -16,79 +16,96 @@ export class ModuleManagerService {
   constructor(
     private http: ApiService,
   ) { }  
+
+  doubleEncode(moduleID: string) {
+    return encodeURIComponent(encodeURIComponent(moduleID))
+  }
   
   // Modules
-  public loadDeploymentTemplate(module_id: string): Observable<DeploymentTemplate >  {
-    var url = this.moduleManagerPath + "/modules/" + encodeURIComponent(encodeURIComponent(module_id)) + '/dep_template' 
+  loadDeploymentTemplate(moduleId: string): Observable<DeploymentTemplate >  {
+    var url = this.moduleManagerPath + "/modules/" + this.doubleEncode(moduleId) + '/dep_template' 
     return <Observable<DeploymentTemplate>>this.http.get(url)
   }
 
-  public loadModules(): Observable<Module[]> {
+  loadModules(): Observable<Module[]> {
     var url = this.moduleManagerPath + "/modules" 
     return <Observable<Module[]>>this.http.get(url)
   } 
 
-  addModule(module: AddModule): Observable<any> {
+  addModule(module: AddModule): Observable<JobResponse> {
     var url = this.moduleManagerPath + "/modules" 
     return this.http.post(url, module)
    }
 
   deleteModule(moduleId: string): Observable<any> {
-    var url = this.moduleManagerPath + "/modules/" + moduleId 
+    var url = this.moduleManagerPath + "/modules/" + this.doubleEncode(moduleId) 
     return this.http.delete(url)
   }
 
   loadModule(moduleId: string): Observable<any> {
-    var url = this.moduleManagerPath + "/modules/" + moduleId 
+    var url = this.moduleManagerPath + "/modules/" + this.doubleEncode(moduleId) 
     return this.http.get(url)
   }
 
-
   // Deployments
-  public deployModule(deploymentRequest: DeploymentRequest): Observable<JobResponse> {
+  deployModule(deploymentRequest: DeploymentRequest): Observable<any> {
     var path = this.moduleManagerPath + "/deployments" 
     // returns deployment id 
     return this.http.post(path, deploymentRequest);
   }  
 
-  public loadDeployments(): Observable<Deployment[]> {
+  loadDeployments(): Observable<Deployment[]> {
     var url = this.moduleManagerPath + "/deployments" 
     return <Observable<Deployment[]>>this.http.get<Deployment[]>(url);
   }  
 
-  public loadDeployment(deploymentID: string): Observable<Deployment> {
+  loadDeployment(deploymentID: string): Observable<Deployment> {
    var url = this.moduleManagerPath + "/deployments/" + deploymentID 
    return <Observable<Deployment>>this.http.get(url);
   }
 
-  public deleteDeployment(deploymentID: string): Observable<Deployment> {
+  updateDeployment(deploymentID: string, update: any): Observable<JobResponse> {
     var url = this.moduleManagerPath + "/deployments/" + deploymentID 
-    return <Observable<Deployment>>this.http.delete(url);
+    return <Observable<JobResponse>>this.http.patch(url, update);
+  }
+
+  deleteDeployment(deploymentID: string): Observable<any> {
+    var url = this.moduleManagerPath + "/deployments/" + deploymentID 
+    return <Observable<any>>this.http.delete(url);
    }
 
-  public loadDeploymentUpdateTemplate(module_id: string): Observable<DeploymentTemplate> {
-      var url = this.moduleManagerPath + "/deployments/" + encodeURIComponent(module_id) + '/upt_template' 
+  loadDeploymentUpdateTemplate(moduleId: string): Observable<DeploymentTemplate> {
+      var url = this.moduleManagerPath + "/deployments/" + this.doubleEncode(moduleId) + '/upt_template' 
       return <Observable<DeploymentTemplate>>this.http.get(url);
   }
 
-  public controlDeployment(deploymentID: string, action: string, changeDependencies: boolean): Observable<unknown | JobResponse> {
+  stopDeployment(deploymentID: string, changeDependencies: boolean): Observable<JobResponse> {
     let queryParams = new HttpParams()
     if(changeDependencies) {
       queryParams = queryParams.set("dependencies", "true")
     }
 
-    var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/ctrl' 
-    var payload = {'cmd': action}
-    return this.http.post(url, payload, queryParams)
+    var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/stop' 
+    return <Observable<JobResponse>>this.http.patch(url, queryParams)
   }
 
-  getJobStatus(jobID: string): Observable<unknown | JobResponse> {
+  startDeployment(deploymentID: string): Observable<JobResponse> {
+    var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/start' 
+    return <Observable<JobResponse>>this.http.patch(url)
+  }
+
+  getJobStatus(jobID: string): Observable<JobResponse> {
      var url = this.moduleManagerPath + "/jobs/" + jobID
-     return this.http.get(url)
+     return <Observable<JobResponse>>this.http.get(url)
   }
 
-  getJobs(): Observable<unknown | JobResponse> {
+  stopJob(jobID: string): Observable<any> {
+    var url = this.moduleManagerPath + "/jobs/" + jobID + "/cancel"
+    return <Observable<any>>this.http.post(url)
+  }
+
+  getJobs(): Observable<JobResponse[]> {
     var url = this.moduleManagerPath + "/jobs"
-     return this.http.get(url)
+     return <Observable<JobResponse[]>>this.http.get(url)
   }
 }

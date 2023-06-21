@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { Secret } from '../../../core/models/secret_models';
 import { ModuleManagerService } from '../../../core/services/module-manager/module-manager-service.service';
 import { SecretManagerServiceService } from '../../../core/services/secret-manager/secret-manager-service.service';
-import { DeploymentRequest, DeploymentTemplate } from '../../models/deployment_models';
+import { DeploymentRequest, DeploymentTemplate, DeploymentUpdateTemplate } from '../../models/deployment_models';
 
 @Component({
   selector: 'deployment',
@@ -16,8 +16,9 @@ import { DeploymentRequest, DeploymentTemplate } from '../../models/deployment_m
 
 export class DeploymentComponentComponent implements OnInit, OnChanges {
   @Input() mode: string = "new"
-  @Input() deploymentTemplate!: DeploymentTemplate
-  @Input() id!: string
+  @Input() deploymentTemplate!: DeploymentTemplate | DeploymentUpdateTemplate
+  @Input() moduleID!: string
+  @Input() deploymentID!: string
 
   formStr: any = ''
   ready: boolean = false
@@ -25,7 +26,7 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   secretOptionsBinding: any 
 
   inputForm = {
-    "module_id": this.fb.control(this.id),
+    "module_id": this.fb.control(this.moduleID),
     "secrets": this.fb.group({}),
     "configs": this.fb.group({}),
     "host_resources": this.fb.group({}),
@@ -53,18 +54,26 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   }
 
   setup(template: any) {
-    this.setupDisplayData(this.id);
-    this.setupFormOfModule(this.form, template, this.id)
+    this.setupDisplayData(this.moduleID);
+    this.setupFormOfModule(this.form, template, this.moduleID)
     this.setupDependencies(template)
     this.deploymentTemplateDataBinding = this.deploymentTemplateData
     this.ready = true;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    // get changes as deployment template is loaded async
     this.mode = changes['mode'].currentValue   
     var deploymentTemplate = changes['deploymentTemplate'].currentValue 
-    this.id = changes['id'].currentValue 
-    this.inputForm.module_id.patchValue(this.id)
+
+    if(changes['moduleID']) {
+      this.moduleID = changes['moduleID'].currentValue 
+      this.inputForm.module_id.patchValue(this.moduleID)
+    }
+
+    if(changes['deploymentID']) {
+      this.deploymentID = changes['deploymentID'].currentValue 
+    }
 
     this.setup(deploymentTemplate)
   }
@@ -79,13 +88,16 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   }
 
   public setupFormOfModule(form: any, inputTemplate: any, module_id: string) {
+    if(this.mode != 'new') {
+      form.controls.name.patchValue(inputTemplate.name)
+    }
+
     this.setupConfigs(form, inputTemplate, module_id)
     this.setupSecrets(form, inputTemplate, module_id)
     this.setupHostResources(form, inputTemplate, module_id)
   }
 
   public setupDependencies(inputTemplate: any) {
-
     if(inputTemplate['dependencies']) {
       for (const [moduleIDOfDep, inputTemplateOfDep] of Object.entries(inputTemplate['dependencies'])) {
         this.dependencies_module_ids.push(moduleIDOfDep);
@@ -135,9 +147,18 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     if(this.form.valid) {
       var deploymentRequest: DeploymentRequest = JSON.parse(JSON.stringify(this.form.value))
       this.filterNullValuesInForm(deploymentRequest)
-      this.moduleService.deployModule(deploymentRequest).subscribe(jobResponse => {
-        this.router.navigate(["/modules"])
-      })
+
+      console.log(deploymentRequest)
+      if(this.mode == "new") {
+        this.moduleService.deployModule(deploymentRequest).subscribe(_ => {
+          this.router.navigate(["/modules"])
+        })
+      } else if(this.mode == "edit") {
+        this.moduleService.updateDeployment(this.deploymentID, deploymentRequest).subscribe(jobResponse => {
+          this.router.navigate(["/modules"])
+        })
+      }
+      
     }
   }
 

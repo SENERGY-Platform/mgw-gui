@@ -1,0 +1,8 @@
+<div id="outer">
+    <div class="loader">
+        <spinner [show]="!jobIsCompleted"></spinner>
+        <span>{{ message }}</span>
+    </div>
+
+    <button mat-raised-button color="primary"  (click)="cancel()">Cancel</button>       
+</div>

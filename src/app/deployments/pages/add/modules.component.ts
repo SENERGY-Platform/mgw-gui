@@ -12,7 +12,7 @@ import { DeploymentTemplate } from '../../models/deployment_models';
 export class ModulesComponent implements OnInit {
   deploymentTemplate!: DeploymentTemplate
   ready: boolean = false
-  id!: string
+  moduleID!: string
 
   constructor(
     private route: ActivatedRoute,
@@ -23,9 +23,9 @@ export class ModulesComponent implements OnInit {
   ngOnInit() {
     // Override mode to show/edit depending on URL
     this.route.url.subscribe(url => {
-      this.id = url[1].path
+      this.moduleID = url[1].path
 
-      this.moduleService.loadDeploymentTemplate(this.id).subscribe(
+      this.moduleService.loadDeploymentTemplate(this.moduleID).subscribe(
         {
           next: (template: any) => {
             this.deploymentTemplate = template

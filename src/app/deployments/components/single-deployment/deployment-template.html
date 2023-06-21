@@ -1,7 +1,7 @@
 <div class="form-container">
   <form [formGroup]="form">
 
-    <mat-form-field appearance="fill" *ngIf="mode != 'show'">
+    <mat-form-field appearance="fill">
       <mat-label>Deployment Name</mat-label>
       <input matInput formControlName="name">
     </mat-form-field>
@@ -10,7 +10,7 @@
     <div *ngFor="let host_resource of deploymentTemplateData['host_resources'];" formGroupName="host_resources" class="form-field-container">
       <mat-form-field appearance="fill" [hintLabel]="host_resource.description">
         <mat-label>{{host_resource.name}}</mat-label>
-        <input matInput [formControlName]="host_resource.id" [readonly]="mode == 'show'">
+        <input matInput [formControlName]="host_resource.id">
       </mat-form-field>
     </div>
 
@@ -28,7 +28,7 @@
           </mat-select>
         </mat-form-field>
 
-        <button *ngIf="mode != 'show'" mat-raised-button color="primary" (click)="createSecret(secret.type)">Create Secret</button>
+        <button mat-raised-button color="primary" (click)="createSecret(secret.type)">Create Secret</button>
       </div>
 
     </div>
@@ -42,10 +42,10 @@
           <!-- Free -->
           <span *ngIf="!config.options">
             <span *ngIf="config.type == 'text'">
-              <input matInput [formControlName]="config.id" [readonly]="mode == 'show'">
+              <input matInput [formControlName]="config.id">
             </span>
             <span *ngIf="config.type == 'number'">
-              <input matInput [formControlName]="config.id" type="number" [readonly]="mode == 'show'">
+              <input matInput [formControlName]="config.id" type="number">
             </span>
           </span>
 

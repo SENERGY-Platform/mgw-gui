@@ -10,9 +10,8 @@ import { Deployment, DeploymentTemplate } from '../../models/deployment_models';
   styleUrls: ['./show-module-component.component.css']
 })
 export class ShowModuleComponentComponent implements OnInit {
-  deployment!: Deployment
   deploymentTemplate!: DeploymentTemplate
-  id!: string
+  deploymentID!: string
   mode: string = "show" 
   ready: boolean = false 
 
@@ -27,15 +26,11 @@ export class ShowModuleComponentComponent implements OnInit {
     this.route.url.subscribe(url => this.mode = url[0].path)
 
     this.routeSub = this.route.params.subscribe(params => {
-      this.id = params['id']
-      this.moduleService.loadDeployment(this.id).subscribe(deployment => {
-        this.deployment = deployment
-
-        this.moduleService.loadDeploymentUpdateTemplate(this.id).subscribe((template: any) => {
+      this.deploymentID = params['id']
+        this.moduleService.loadDeploymentUpdateTemplate(this.deploymentID).subscribe((template: any) => {
           this.deploymentTemplate = template
           this.ready = true
         })
-      })
     })
   }
 
