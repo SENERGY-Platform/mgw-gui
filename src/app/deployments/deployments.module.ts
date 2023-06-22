@@ -24,7 +24,7 @@ import { DeploymentComponentComponent } from './components/module-deployment/dep
 import { ShowModuleComponentComponent } from './pages/edit/show-module-component.component';
 import { JobLoaderModalComponent } from '../core/components/job-loader-modal/job-loader-modal.component';
 import { InfoComponent } from './pages/info/info.component';
-
+import {MatCardModule} from '@angular/material/card'; 
 const routes: Routes = [
   {path: 'deployments' , component: ModuleManagementComponent, children: [
     {path: 'add/:id', component: ModulesComponent},
@@ -53,6 +53,7 @@ const routes: Routes = [
     MatInputModule,
     MatCheckboxModule,
     CoreModule,
+    MatCardModule,
     MatTableModule,
     CommonModule,
     RouterModule.forChild(routes),

@@ -16,3 +16,15 @@ mat-form-field {
 .secret-container mat-form-field {
     width: 60%;
 }
+
+.deployment-box {
+    padding: 30px
+}
+
+#module-info-text h1 {
+    font-weight: bold;
+}
+
+#module-info-text p {
+    color: grey
+}

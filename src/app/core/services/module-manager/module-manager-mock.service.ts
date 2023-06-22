@@ -234,9 +234,9 @@ export class ModuleManagerMockService {
     private errorService: ErrorService
   ) { }  
   
-  public deployModule(deploymentRequest: DeploymentRequest): Observable<Job> {
+  public deployModule(deploymentRequest: DeploymentRequest): Observable<string> {
     return new Observable(obs => {
-       obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
+       obs.next("id")
     })
   }  
 

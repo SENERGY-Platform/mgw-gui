@@ -34,7 +34,7 @@ export class ModuleManagerService {
 
   addModule(module: AddModule): Observable<string> {
     var url = this.moduleManagerPath + "/modules" 
-    return this.http.post(url, module)
+    return <Observable<string>>this.http.post(url, module)
    }
 
   deleteModule(moduleId: string): Observable<any> {
@@ -48,10 +48,10 @@ export class ModuleManagerService {
   }
 
   // Deployments
-  deployModule(deploymentRequest: DeploymentRequest): Observable<any> {
+  deployModule(deploymentRequest: DeploymentRequest): Observable<string> {
     var path = this.moduleManagerPath + "/deployments" 
     // returns deployment id 
-    return this.http.post(path, deploymentRequest);
+    return <Observable<string>>this.http.post(path, deploymentRequest, undefined, 'text');
   }  
 
   loadDeployments(): Observable<Deployment[]> {

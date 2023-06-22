@@ -27,10 +27,12 @@ export class ShowModuleComponentComponent implements OnInit {
 
     this.routeSub = this.route.params.subscribe(params => {
       this.deploymentID = params['id']
-        this.moduleService.loadDeploymentUpdateTemplate(this.deploymentID).subscribe((template: any) => {
-          this.deploymentTemplate = template
-          this.ready = true
-        })
+
+      this.moduleService.loadDeploymentUpdateTemplate(this.deploymentID).subscribe((template: any) => {
+        this.deploymentTemplate = template
+        this.ready = true
+      })
+
     })
   }
 

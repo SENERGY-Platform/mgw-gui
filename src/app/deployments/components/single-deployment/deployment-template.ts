@@ -1,6 +1,10 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
+import { ErrorService } from 'src/app/core/services/util/error.service';
+import { Module } from 'src/app/modules/models/module_models';
+import { Deployment } from '../../models/deployment_models';
 import { CreateBasicAuthSecretDialog } from '../create-basic-auth-secret-dialog/create-secret-dialog';
 import { CreateCertSecretDialog } from '../create-cert-secret-dialog/create-secret-dialog';
 
@@ -9,23 +13,61 @@ import { CreateCertSecretDialog } from '../create-cert-secret-dialog/create-secr
     templateUrl: 'deployment-template.html',
     styleUrls: ['deployment-template.css']
 })
-export class DeploymentTemplate implements OnInit {
+export class DeploymentTemplate implements OnChanges {
     @Input() moduleID: string = ""
+    @Input() deploymentID: string = ""
     @Input() IsDependency: boolean = false 
 
     form: FormGroup = new FormGroup("")
     @Input() deploymentTemplateData: any
     @Input() secretOptions: any
     @Input() mode: string = "show"
-    deployment: any
+    @Input() dependencyFormIDToModuleID!: Record<string, string>
+    module!: Module
+    deployment!: Deployment
+    ready: boolean = false
 
     constructor(
       public dialog: MatDialog, 
-      private rootFormGroup: FormGroupDirective
+      private rootFormGroup: FormGroupDirective,
+      @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
+      private errorService: ErrorService
     ) {
     }
 
-    ngOnInit(): void {
+    loadModuleInfo() {
+      var moduleID = this.moduleID
+
+      // Dependency Module IDs are replaced by UUIDs
+      if(this.IsDependency) {
+        moduleID = this.dependencyFormIDToModuleID[this.moduleID]
+      }
+      this.moduleService.loadModule(moduleID).subscribe({
+        next: (module) => {
+          this.module = module
+          this.ready = true
+        },
+        error: (err) => {
+          this.errorService.handleError(DeploymentTemplate.name, "submit", err)
+          this.ready = true
+        } 
+      })
+    }
+
+    loadDeploymentInfo() {
+      this.moduleService.loadDeployment(this.deploymentID).subscribe({
+        next: (deployment) => {
+          this.deployment = deployment
+          this.ready = true
+        },
+        error: (err) => {
+          this.errorService.handleError(DeploymentTemplate.name, "submit", err)
+          this.ready = true
+        } 
+      })
+    }
+
+    loadForm() {
       // Child components can access parent form group via directive
       if(!this.IsDependency) {
         // Main Module Deployment
@@ -37,13 +79,27 @@ export class DeploymentTemplate implements OnInit {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        this.secretOptions = changes['secretOptions'].currentValue
+      // get changes as deployment template and IDs are loaded async
 
-        if(changes['deploymentTemplateData']) {
-          // TODO deploymentTemplateData direkt fuer module id nicht erst key
-          this.deploymentTemplateData = changes['deploymentTemplateData'].currentValue[this.moduleID]
-          this.mode = changes['mode'].currentValue
+      var attributes: string[] = ['secretOptions', 'deploymentTemplateData', 'moduleID', 'mode', 'IsDependency', 'deploymentID', 'dependencyFormIDToModuleID']
+      type ObjectKey = keyof typeof this;
+      attributes.forEach(attribute => {
+        if (changes[attribute] && changes[attribute].currentValue) {
+          if(attribute == "deploymentTemplateData") {
+            this.deploymentTemplateData = changes['deploymentTemplateData'].currentValue[this.moduleID]
+          } else {
+            this[attribute as ObjectKey] = changes[attribute].currentValue
+          }
         }
+      });
+
+      if(this.mode == 'new') {
+        this.loadModuleInfo()
+      } else {
+        this.loadDeploymentInfo()
+      }
+
+      this.loadForm()
     }
 
     add(event: any, formGroup: string, config_id: string): void {

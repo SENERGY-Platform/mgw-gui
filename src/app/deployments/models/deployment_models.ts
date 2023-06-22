@@ -4,6 +4,7 @@ export interface DeploymentRequest {
     configs: Record<string, any>;
     secrets: Record<string, string>;
     module_id: string;
+    dependencies: Record<string, DeploymentRequest>;
 }
 
 export interface DeploymentConfig {

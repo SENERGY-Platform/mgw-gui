@@ -43,6 +43,8 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   deploymentTemplateDataBinding: any // need a second varaible to trigger change detection, as detection does not work with nested objects
 
   dependencies_module_ids: string[] = []
+  dependencies_deployment_ids: string[] = []
+  dependencyFormIDToModuleID: any = {}
 
   constructor(
     private fb: FormBuilder, 
@@ -60,8 +62,6 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   }
 
   setup(template: any) {
-    console.log("INIT FORM")
-    console.log(this.form)
     this.setupDisplayData(this.moduleID);
     this.setupFormOfModule(this.form, template, this.moduleID)
     this.setupDependencies(template)
@@ -71,20 +71,23 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // get changes as deployment template is loaded async
-    this.mode = changes['mode'].currentValue   
-    var deploymentTemplate = changes['deploymentTemplate'].currentValue 
+    // get changes as deployment template and IDs are loaded async
+    var attributes: string[] = ['mode', 'deploymentTemplate', 'moduleID', 'deploymentID']
 
-    if(changes['moduleID']) {
-      this.moduleID = changes['moduleID'].currentValue 
+    type ObjectKey = keyof typeof this;
+    attributes.forEach(attribute => {
+      if (changes[attribute] && changes[attribute].currentValue) {
+        this[attribute as ObjectKey] = changes[attribute].currentValue
+      }
+    });
+
+    if(this.moduleID) {
       this.inputForm.module_id.patchValue(this.moduleID)
     }
 
-    if(changes['deploymentID']) {
-      this.deploymentID = changes['deploymentID'].currentValue 
+    if(this.deploymentTemplate) {
+      this.setup(this.deploymentTemplate)
     }
-
-    this.setup(deploymentTemplate)
   }
 
   public setupDisplayData(module_id: string) {
@@ -107,11 +110,12 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   }
 
   public setupDependencies(inputTemplate: any) {
-    console.log("setup dep")
     if(inputTemplate['dependencies']) {
       for (const [moduleIDOfDep, inputTemplateOfDep] of Object.entries(inputTemplate['dependencies'])) {
-        // NO points as form control identifiers!
-        var encodedModuleIDOfDep = moduleIDOfDep.replaceAll(".", "")
+        // NO points as form control identifiers! -> use an alternative ID for module IDs
+        var encodedModuleIDOfDep: string = self.crypto.randomUUID()
+        this.dependencyFormIDToModuleID[encodedModuleIDOfDep] = moduleIDOfDep
+
         this.dependencies_module_ids.push(encodedModuleIDOfDep);
         this.setupDisplayData(encodedModuleIDOfDep);
 
@@ -149,16 +153,32 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     Object.keys(object).forEach(key => {
       if (object[key] && typeof object[key] === "object") {
         this.filterNullValuesInForm(object[key]);
-      } else if (object[key] === null) {
+      } else if (object[key] === null || object[key] === undefined) {
         delete object[key];
       }
     });
+  }
+
+  replaceDependencyID(request: DeploymentRequest) {
+    var oldIDs: string[] = []
+    Object.keys(request.dependencies).forEach(dependencyFormularID => {
+      oldIDs.push(dependencyFormularID)
+      var correctDependencyID: string = this.dependencyFormIDToModuleID[dependencyFormularID]
+      request.dependencies[correctDependencyID] = request.dependencies[dependencyFormularID]
+    })
+
+    oldIDs.forEach(id => {
+      delete request.dependencies[id] // deletes from request: formularID: undefined
+    });
+
   }
 
   submit() {
     this.form.markAllAsTouched()
     if(this.form.valid) {
       var deploymentRequest: DeploymentRequest = JSON.parse(JSON.stringify(this.form.value))
+
+      this.replaceDependencyID(deploymentRequest)
       this.filterNullValuesInForm(deploymentRequest)
 
       if(this.mode == "new") {
