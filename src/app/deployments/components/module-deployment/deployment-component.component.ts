@@ -72,6 +72,9 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     this.mode = changes['mode'].currentValue   
     var deploymentTemplate = changes['deploymentTemplate'].currentValue 
 
+    console.log("CHANGE depTemp")
+    console.log(deploymentTemplate)
+
     if(changes['moduleID']) {
       this.moduleID = changes['moduleID'].currentValue 
       this.inputForm.module_id.patchValue(this.moduleID)

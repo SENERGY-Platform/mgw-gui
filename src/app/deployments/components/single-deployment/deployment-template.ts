@@ -39,9 +39,11 @@ export class DeploymentTemplate implements OnInit {
     ngOnChanges(changes: SimpleChanges): void {
         this.secretOptions = changes['secretOptions'].currentValue
 
-        // TODO deploymentTemplateData direkt fuer module id nicht erst key
-        this.deploymentTemplateData = changes['deploymentTemplateData'].currentValue[this.moduleID]
-        this.mode = changes['mode'].currentValue
+        if(changes['deploymentTemplateData']) {
+          // TODO deploymentTemplateData direkt fuer module id nicht erst key
+          this.deploymentTemplateData = changes['deploymentTemplateData'].currentValue[this.moduleID]
+          this.mode = changes['mode'].currentValue
+        }
     }
 
     add(event: any, formGroup: string, config_id: string): void {

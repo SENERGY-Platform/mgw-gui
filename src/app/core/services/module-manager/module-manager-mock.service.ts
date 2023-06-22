@@ -302,8 +302,8 @@ export class ModuleManagerMockService {
   
   public loadDeployments(): Observable<Deployment[]> {
     return new Observable((subscriber) => {
-      var template = [
-         {
+      var template: any = [
+         /*{
             "module_id": "modID", 
             "name": "Deployment1", 
             "stopped": true, 
@@ -331,7 +331,7 @@ export class ModuleManagerMockService {
             'configs': {},
             'dep_requiring': [],
             'required_dep': []
-      }]
+      }*/]
       subscriber.next(template)
       subscriber.complete()
     })
