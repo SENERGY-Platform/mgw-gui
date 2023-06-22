@@ -60,6 +60,8 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   }
 
   setup(template: any) {
+    console.log("SETUP")
+    console.log(this.form)
     this.setupDisplayData(this.moduleID);
     this.setupFormOfModule(this.form, template, this.moduleID)
     this.setupDependencies(template)
@@ -72,8 +74,8 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     this.mode = changes['mode'].currentValue   
     var deploymentTemplate = changes['deploymentTemplate'].currentValue 
 
-    console.log("CHANGE depTemp")
-    console.log(deploymentTemplate)
+    console.log("CHANGES")
+    console.log(changes)
 
     if(changes['moduleID']) {
       this.moduleID = changes['moduleID'].currentValue 
