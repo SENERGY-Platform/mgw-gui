@@ -60,13 +60,12 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   }
 
   setup(template: any) {
-    
+    console.log("INIT FORM")
+    console.log(this.form)
     this.setupDisplayData(this.moduleID);
     this.setupFormOfModule(this.form, template, this.moduleID)
-
-    console.log("SETUP")
-    console.log(this.form)
     this.setupDependencies(template)
+
     this.deploymentTemplateDataBinding = this.deploymentTemplateData
     this.ready = true;
   }
@@ -75,9 +74,6 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     // get changes as deployment template is loaded async
     this.mode = changes['mode'].currentValue   
     var deploymentTemplate = changes['deploymentTemplate'].currentValue 
-
-    console.log("CHANGES")
-    console.log(changes)
 
     if(changes['moduleID']) {
       this.moduleID = changes['moduleID'].currentValue 
@@ -111,24 +107,26 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   }
 
   public setupDependencies(inputTemplate: any) {
-    console.log("SETUP DEPS")
-    console.log(inputTemplate['dependencies'])
+    console.log("setup dep")
     if(inputTemplate['dependencies']) {
       for (const [moduleIDOfDep, inputTemplateOfDep] of Object.entries(inputTemplate['dependencies'])) {
-        this.dependencies_module_ids.push(moduleIDOfDep);
-        this.setupDisplayData(moduleIDOfDep);
+        // NO points as form control identifiers!
+        var encodedModuleIDOfDep = moduleIDOfDep.replaceAll(".", "")
+        this.dependencies_module_ids.push(encodedModuleIDOfDep);
+        this.setupDisplayData(encodedModuleIDOfDep);
 
         // first add empty FormGroup, then add single controls, new Formgroup(this.inputForm) does not work
-        (<FormGroup>this.form.get("dependencies")).addControl(moduleIDOfDep, new FormGroup({}));
-        var dependencyFormGroup = (<FormGroup>this.form.get("dependencies")?.get(moduleIDOfDep))
+        (<FormGroup>this.form.get("dependencies")).addControl(encodedModuleIDOfDep, new FormGroup({}));
+        var dependenciesFormGroup = (<FormGroup>this.form.controls.dependencies)
+        var dependencyFormGroup = (<FormGroup>dependenciesFormGroup.get(encodedModuleIDOfDep))
+
         dependencyFormGroup.addControl("secrets", this.fb.group({}))
         dependencyFormGroup.addControl("configs", this.fb.group({}))
         dependencyFormGroup.addControl("host_resources", this.fb.group({}))
         dependencyFormGroup.addControl("name", new FormControl(""))
 
         dependencyFormGroup.get('name')?.setValidators([Validators.required])
-        
-        this.setupFormOfModule(this.form.get("dependencies")?.get(moduleIDOfDep), inputTemplateOfDep, moduleIDOfDep)
+        this.setupFormOfModule(this.form.get("dependencies")?.get(encodedModuleIDOfDep), inputTemplateOfDep, encodedModuleIDOfDep)
       }
     }
   }

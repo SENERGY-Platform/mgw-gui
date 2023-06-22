@@ -1,11 +1,12 @@
 import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { AddModule, Module } from '../../../modules/models/module_models';
 import { Deployment, DeploymentRequest, DeploymentTemplate } from 'src/app/deployments/models/deployment_models';
 import { ErrorService } from '../util/error.service';
 import { Job } from 'src/app/jobs/models/job.model';
+import { delay } from "rxjs/operators";
 
 
 const TEMPLATE = {
@@ -165,7 +166,7 @@ const TEMPLATE = {
       }
    },
    "dependencies":{
-      "dep":{
+      "github.com/SENERGY-Platform/mgw-test-module-a":{
          "host_resources":{
             "hr":{
                "name":"HR Input Name",
@@ -259,7 +260,8 @@ export class ModuleManagerMockService {
  } 
 
   public loadDeploymentTemplate(module_id: string): Observable<DeploymentTemplate>  {
-    return new Observable((subscriber) => {
+   return of(TEMPLATE).pipe(delay(2000));    
+   return new Observable((subscriber) => {
       subscriber.next(TEMPLATE)
       subscriber.complete()
     })

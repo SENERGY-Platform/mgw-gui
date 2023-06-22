@@ -25,7 +25,7 @@ import {Observable} from 'rxjs';
     providedIn: 'root'
   })
 export class ApiService {
-    public baseUrl: string = '/api';
+    public baseUrl: string = 'http://localhost:8080/api'; // TODO IMPORTANT "/api"
 
     constructor(private httpClient: HttpClient) {
     }
