@@ -60,10 +60,12 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   }
 
   setup(template: any) {
-    console.log("SETUP")
-    console.log(this.form)
+    
     this.setupDisplayData(this.moduleID);
     this.setupFormOfModule(this.form, template, this.moduleID)
+
+    console.log("SETUP")
+    console.log(this.form)
     this.setupDependencies(template)
     this.deploymentTemplateDataBinding = this.deploymentTemplateData
     this.ready = true;
@@ -109,6 +111,8 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   }
 
   public setupDependencies(inputTemplate: any) {
+    console.log("SETUP DEPS")
+    console.log(inputTemplate['dependencies'])
     if(inputTemplate['dependencies']) {
       for (const [moduleIDOfDep, inputTemplateOfDep] of Object.entries(inputTemplate['dependencies'])) {
         this.dependencies_module_ids.push(moduleIDOfDep);
