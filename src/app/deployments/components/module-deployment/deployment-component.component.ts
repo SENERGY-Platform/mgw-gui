@@ -33,7 +33,7 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     "secrets": this.fb.group({}),
     "configs": this.fb.group({}),
     "host_resources": this.fb.group({}),
-    "name": this.fb.control("", Validators.required),
+    "name": this.fb.control(""),
     "dependencies": this.fb.group({})
   }
 
@@ -102,6 +102,10 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   public setupFormOfModule(form: any, inputTemplate: any, module_id: string) {
     if(this.mode != 'new') {
       form.controls.name.patchValue(inputTemplate.name)
+    }
+
+    if(this.mode == 'new') {
+      form.controls.name.setValidators([Validators.required])
     }
 
     this.setupConfigs(form, inputTemplate, module_id)
