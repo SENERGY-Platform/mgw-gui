@@ -104,10 +104,6 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
       form.controls.name.patchValue(inputTemplate.name)
     }
 
-    if(this.mode == 'new') {
-      form.controls.name.setValidators([Validators.required])
-    }
-
     this.setupConfigs(form, inputTemplate, module_id)
     this.setupSecrets(form, inputTemplate, module_id)
     this.setupHostResources(form, inputTemplate, module_id)
