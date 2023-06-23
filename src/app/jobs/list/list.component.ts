@@ -13,6 +13,7 @@ import { Job } from '../models/job.model';
 export class ListComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<Job>();
   ready: Boolean = false;
+  init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['id', 'description', 'created', 'started', 'completed', 'canceled', 'error', 'cancel']
@@ -21,10 +22,11 @@ export class ListComponent implements OnInit, AfterViewInit {
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
     private errorService: ErrorService,
   ) {
-      this.loadJobs(true)
+      this.loadJobs()
       this.interval = setInterval(() => { 
-        this.loadJobs(true); 
+        this.loadJobs(); 
       }, 5000);
+      this.init = false
   }
 
   ngOnDestroy(): void {
@@ -32,10 +34,7 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
   
 
-  loadJobs(background: boolean) {
-    if(!background) {
-      this.ready = false
-    }
+  loadJobs() {
     this.moduleService.getJobs().subscribe({
       next: (jobs) => {
         this.dataSource.data = jobs
@@ -59,11 +58,11 @@ export class ListComponent implements OnInit, AfterViewInit {
   cancelJob(jobID: string) {
     this.moduleService.stopJob(jobID).subscribe({
       next: (_) => {
-        this.loadJobs(false)
+        this.loadJobs()
       },
       error: (err) => {
         this.errorService.handleError(ListComponent.name, "cancelJob", err)
-        this.loadJobs(false)
+        this.loadJobs()
       }
     })
   }

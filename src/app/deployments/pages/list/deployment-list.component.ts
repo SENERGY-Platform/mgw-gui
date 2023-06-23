@@ -16,6 +16,7 @@ import { ErrorService } from 'src/app/core/services/util/error.service';
 export class DeploymentListComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<Deployment>();
   ready: Boolean = false;
+  init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['status', 'name', 'created', 'info', 'edit', 'start', 'stop', 'delete']
@@ -29,10 +30,11 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-      this.loadDeployments(false);
+      this.loadDeployments();
       this.interval = setInterval(() => { 
-        this.loadDeployments(true); 
+        this.loadDeployments(); 
       }, 5000);
+      this.init = false
   }
 
   ngOnDestroy(): void {
@@ -51,11 +53,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.dataSource.sort = this.sort;
   }
 
-  loadDeployments(background: boolean): void {
-    if(!background) {
-      this.ready = false;
-    }
-
+  loadDeployments(): void {
     this.moduleService.loadDeployments().subscribe(
       {
         next: (deployments) => {
@@ -81,7 +79,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
             var message = "Deployment stop is running"
             var self = this
             this.utilsService.checkJobStatus(jobID, message, function() {
-              self.loadDeployments(false)
+              self.loadDeployments()
             })
           },
           error: (err) => {
@@ -97,7 +95,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.moduleService.startDeployment(deploymentID).subscribe(
       {
         next: (_) => {
-          this.loadDeployments(false)
+          this.loadDeployments()
         },
         error: (err) => {
           this.errorService.handleError(DeploymentListComponent.name, "start", err)
@@ -112,7 +110,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.moduleService.deleteDeployment(deploymentID).subscribe(
       {
         next: (_) => {
-          this.loadDeployments(false)
+          this.loadDeployments()
         },
         error:(err) => {
           this.errorService.handleError(DeploymentListComponent.name, "delete", err)

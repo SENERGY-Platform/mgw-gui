@@ -32,7 +32,7 @@ export class JobLoaderModalComponent implements OnInit {
           this.jobIsCompleted = true
           this.close()
         } else if (jobResponse.error) {
-          var err = new HttpErrorResponse({}) 
+          var err = new Error(jobResponse.error)
           this.errorService.handleError(JobLoaderModalComponent.name, "ngOnInit", err)
           this.close()
         }

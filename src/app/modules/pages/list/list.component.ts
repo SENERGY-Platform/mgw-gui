@@ -17,6 +17,7 @@ import { Router } from '@angular/router';
 export class ListComponent {
   dataSource = new MatTableDataSource<Module>();
   ready: Boolean = false;
+  init: Boolean = true;
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['name', 'version', 'info', 'deploy', 'delete']
   
@@ -29,6 +30,7 @@ export class ListComponent {
 
   ngOnInit(): void {
       this.loadModules();
+      this.init = false;
   }
 
   ngAfterViewInit(): void {

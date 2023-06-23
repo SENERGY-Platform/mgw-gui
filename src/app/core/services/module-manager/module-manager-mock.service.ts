@@ -261,82 +261,73 @@ export class ModuleManagerMockService {
 
   public loadDeploymentTemplate(module_id: string): Observable<DeploymentTemplate>  {
    return of(TEMPLATE).pipe(delay(2000));    
-   return new Observable((subscriber) => {
-      subscriber.next(TEMPLATE)
-      subscriber.complete()
-    })
   }
 
   public loadModules(): Observable<Module[]> {
-    return new Observable((subscriber) => {
-      subscriber.next([
-         {
-            "id": "id",
-            "name": "module 1",
-            "description": "bla",
-            "version": "v.1.0",
-            "author": "Author",
-            "deployment_type": "single",
-            "licence": "Licence",
-            "tags": [],
-            "type": "type",
-            "indirect": false,
-            "added": new Date(),
-            "updated": new Date()
-         }, {
-            "id": "id2",
-            "name": "module 2",
-            "description": "bla",
-            "version": "v.1.0",
-            "author": "Author",
-            "deployment_type": "single",
-            "licence": "Licence",
-            "tags": [],
-            "type": "type",
-            "indirect": false,
-            "added": new Date(),
-            "updated": new Date()
-         }
-      ])
-      subscriber.complete()
-   })
+     var modules = [
+      {
+         "id": "id",
+         "name": "module 1",
+         "description": "bla",
+         "version": "v.1.0",
+         "author": "Author",
+         "deployment_type": "single",
+         "licence": "Licence",
+         "tags": [],
+         "type": "type",
+         "indirect": false,
+         "added": new Date(),
+         "updated": new Date()
+      }, {
+         "id": "id2",
+         "name": "module 2",
+         "description": "bla",
+         "version": "v.1.0",
+         "author": "Author",
+         "deployment_type": "single",
+         "licence": "Licence",
+         "tags": [],
+         "type": "type",
+         "indirect": false,
+         "added": new Date(),
+         "updated": new Date()
+      }
+   ]
+   return of(modules).pipe(delay(2000));
   } 
   
   public loadDeployments(): Observable<Deployment[]> {
-    return new Observable((subscriber) => {
-      var template: any = [
-         /*{
-            "module_id": "modID", 
-            "name": "Deployment1", 
-            "stopped": true, 
-            "id": "id", 
-            'indirect': true, 
-            'created': new Date(), 
-            'updated': new Date(),
-            'secrets': {},
-            'host_resources': {},
-            'configs': {},
-            'dep_requiring': [],
-            'required_dep': []
-         }, 
-         {
-            "id": "id", 
-            "module_id": 
-            "id", 
-            'indirect': true, 
-            'created': new Date(), 
-            'updated': new Date(), 
-            "name": "Deployment2", 
-            "stopped": false,
-            'secrets': {},
-            'host_resources': {},
-            'configs': {},
-            'dep_requiring': [],
-            'required_dep': []
-      }*/]
-      subscriber.next(template)
-      subscriber.complete()
-    })
+     var deployments = [
+      {
+         "module_id": "modID", 
+         "name": "Deployment1", 
+         "stopped": true, 
+         "id": "id", 
+         'indirect': true, 
+         'created': new Date(), 
+         'updated': new Date(),
+         'secrets': {},
+         'host_resources': {},
+         'configs': {},
+         'dep_requiring': [],
+         'required_dep': []
+      }, 
+      {
+         "id": "id", 
+         "module_id": 
+         "id", 
+         'indirect': true, 
+         'created': new Date(), 
+         'updated': new Date(), 
+         "name": "Deployment2", 
+         "stopped": false,
+         'secrets': {},
+         'host_resources': {},
+         'configs': {},
+         'dep_requiring': [],
+         'required_dep': []
+      }]
+      return of(deployments).pipe(delay(2000));
   }  
 
   public loadDeployment(deploymentID: string): Observable<Deployment> {   
@@ -398,9 +389,8 @@ export class ModuleManagerMockService {
    }
 
    getJobs(): Observable<Job[]> {
-      return new Observable(obs => {
-         obs.next([{"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()}])
-      })
+      var jobs = [{"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()}]
+      return of(jobs).pipe(delay(2000));
    }
 
    deleteModule(_: string): Observable<any> {

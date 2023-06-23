@@ -3,3 +3,9 @@
     bottom: 20px;
     right: 20px;
 }
+
+spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}

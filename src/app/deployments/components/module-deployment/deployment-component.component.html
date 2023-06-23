@@ -1,18 +1,24 @@
 <div>
   <form [formGroup]="form" (ngSubmit)="submit()">
-
+    <div class="deployment-container">
       <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding" [moduleID]="moduleID"
-        [IsDependency]="false" [secretOptions]="secretOptionsBinding" [deploymentID]="deploymentID"></deployment-template>
+        [IsDependency]="false" [secretOptions]="secretOptionsBinding" [deploymentID]="deploymentID">
+      </deployment-template>
 
-      <div class="deps" *ngIf="dependencies_module_ids.length > 0">
+    </div>
+
+    <div *ngIf="dependencies_module_ids.length > 0">
+      <div class="deployment-container" *ngFor="let formModuleID of dependencies_module_ids">
         <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding"
-          [secretOptions]="secretOptionsBinding" [moduleID]="formModuleID" [dependencyFormIDToModuleID]="dependencyFormIDToModuleID"
-          [IsDependency]="true" *ngFor="let formModuleID of dependencies_module_ids">
+          [secretOptions]="secretOptionsBinding" [moduleID]="formModuleID"
+          [dependencyFormIDToModuleID]="dependencyFormIDToModuleID" [IsDependency]="true">
         </deployment-template>
       </div>
 
-      <button *ngIf="mode == 'new'" mat-raised-button color="primary" type="submit">Deploy</button>
-      <button *ngIf="mode == 'edit'" mat-raised-button color="primary" type="submit">Update</button>
+    </div>
+
+    <button *ngIf="mode == 'new'" mat-raised-button color="primary" type="submit">Deploy</button>
+    <button *ngIf="mode == 'edit'" mat-raised-button color="primary" type="submit">Update</button>
   </form>
 
 </div>

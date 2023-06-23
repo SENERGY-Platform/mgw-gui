@@ -45,12 +45,17 @@ export class UtilService {
 
 
   checkJobStatus(jobID: string, message: string, callback: any) {
+    /* 
+      Shows a Modal with a loading circle.
+      When the job completed successfully, the modal will close
+      When the job returned an error, it will be shown in the snackbar
+      Callback will be called in both cases.
+    */ 
+
     var dialogRef = this.dialog.open(JobLoaderModalComponent, {data: {jobID: jobID, message: message}});
     
     dialogRef?.afterClosed().subscribe(jobIsCompleted => {
-      if(jobIsCompleted) {
-          callback()
-      }
+      callback()
     });
   }
 }

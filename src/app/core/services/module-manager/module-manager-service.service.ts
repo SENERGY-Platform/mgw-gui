@@ -66,7 +66,7 @@ export class ModuleManagerService {
 
   updateDeployment(deploymentID: string, update: any): Observable<string> {
     var url = this.moduleManagerPath + "/deployments/" + deploymentID 
-    return <Observable<string>>this.http.patch(url, update);
+    return <Observable<string>>this.http.patch(url, update, undefined, "text");
   }
 
   deleteDeployment(deploymentID: string): Observable<any> {
