@@ -128,8 +128,6 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
         dependencyFormGroup.addControl("configs", this.fb.group({}))
         dependencyFormGroup.addControl("host_resources", this.fb.group({}))
         dependencyFormGroup.addControl("name", new FormControl(""))
-
-        dependencyFormGroup.get('name')?.setValidators([Validators.required])
         this.setupFormOfModule(this.form.get("dependencies")?.get(encodedModuleIDOfDep), inputTemplateOfDep, encodedModuleIDOfDep)
       }
     }

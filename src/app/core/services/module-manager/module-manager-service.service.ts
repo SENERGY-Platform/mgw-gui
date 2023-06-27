@@ -34,7 +34,7 @@ export class ModuleManagerService {
 
   addModule(module: AddModule): Observable<string> {
     var url = this.moduleManagerPath + "/modules" 
-    return <Observable<string>>this.http.post(url, module)
+    return <Observable<string>>this.http.post(url, module, undefined, 'text')
    }
 
   deleteModule(moduleId: string): Observable<any> {
