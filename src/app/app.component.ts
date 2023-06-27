@@ -20,5 +20,9 @@ export class AppComponent {
     "name": "Jobs",
     "icon": "work",
     "link": "/jobs"
+  }, {
+    "name": "Secrets",
+    "icon": "work",
+    "link": "/secrets"
   }]
 }

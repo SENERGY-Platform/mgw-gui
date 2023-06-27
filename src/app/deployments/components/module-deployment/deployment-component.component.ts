@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { JobLoaderModalComponent } from 'src/app/core/components/job-loader-modal/job-loader-modal.component';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { UtilService } from 'src/app/core/services/util/util.service';
-import { Secret } from '../../../core/models/secret_models';
+import { Secret } from '../../../secrets/models/secret_models';
 import { ModuleManagerService } from '../../../core/services/module-manager/module-manager-service.service';
 import { SecretManagerServiceService } from '../../../core/services/secret-manager/secret-manager-service.service';
 import { DeploymentRequest, DeploymentTemplate, DeploymentUpdateTemplate } from '../../models/deployment_models';
@@ -134,7 +134,7 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   }
 
   loadAvailableSecrets() {
-    this.secretSercice.loadAvailableSecretTypes().subscribe((secrets: Secret[]) => {
+    this.secretSercice.getSecrets().subscribe((secrets: Secret[]) => {
       secrets.forEach((secret: any) => {
         var secretType = secret.type
         if(!(secretType in this.secretOptions)) {

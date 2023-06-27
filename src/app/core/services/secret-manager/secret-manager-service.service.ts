@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Secret } from 'src/app/secrets/models/secret_models';
 import { ApiService } from '../../../core/services/api/api.service';
-import { Secret } from '../../models/secret_models';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class SecretManagerServiceService {
 
   constructor(private http: ApiService) {}
 
-  loadAvailableSecretTypes(): Observable<Secret[]> {
+  getSecrets(): Observable<Secret[]> {
     return <Observable<Secret[]>>this.http.get("/secrets")
   }
 
