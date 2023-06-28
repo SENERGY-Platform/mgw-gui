@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
 import { ApiService } from '../api/api.service';
-import { AddModule, Module } from '../../../modules/models/module_models';
+import { AddModule, Module, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdates } from '../../../modules/models/module_models';
 import { Deployment, DeploymentRequest, DeploymentTemplate } from 'src/app/deployments/models/deployment_models';
 import { ErrorService } from '../util/error.service';
 import { Job } from 'src/app/jobs/models/job.model';
@@ -260,7 +260,7 @@ export class ModuleManagerMockService {
  } 
 
   public loadDeploymentTemplate(module_id: string): Observable<DeploymentTemplate>  {
-   return of(TEMPLATE).pipe(delay(2000));    
+   return of(TEMPLATE).pipe(delay(1000));    
   }
 
   public loadModules(): Observable<Module[]> {
@@ -293,9 +293,43 @@ export class ModuleManagerMockService {
          "updated": new Date()
       }
    ]
-   return of(modules).pipe(delay(2000));
+   return of(modules).pipe(delay(1000));
   } 
   
+  checkForUpdates(): Observable<string> {
+   return of("job_ID").pipe(delay(200));    
+ }
+
+ getAvailableUpdates(): Observable<any> {
+  var moduleUpdates: ModuleUpdates = 
+   {
+      "github.com/SENERGY-Platform/mgw-test-module-a": {
+         "versions":["v2.0.15"],"checked": new Date(),"pending":false
+      },
+      "github.com/SENERGY-Platform/mgw-test-module-b/mgw-module": {
+         "versions":["v0.1.2","v0.1.3","v0.1.4"],"checked": new Date(),"pending":false
+      }
+   }
+  return of(moduleUpdates).pipe(delay(1000));    
+ }
+
+ getAvailableModuleUpdates(moduleID: string): Observable<ModuleUpdate> {
+   var moduleUpdates: ModuleUpdate = {
+         "versions": ["v1", "v2"],
+         "checked": new Date(),
+         "pending": true // ready to be updated
+      }
+   return of(moduleUpdates).pipe(delay(1000));   
+ }
+
+ checkIfModuleUpdateCanBeDone(moduleID: string, payload: ModuleUpdatePrepare): Observable<string> {
+   return of("job_ID").pipe(delay(1000));    
+ }
+
+ getModuleUpdateTemplate(moduleID: string): Observable<DeploymentTemplate> {
+   return of(TEMPLATE).pipe(delay(500))
+}
+
   public loadDeployments(): Observable<Deployment[]> {
      var deployments = [
       {
@@ -327,7 +361,7 @@ export class ModuleManagerMockService {
          'dep_requiring': [],
          'required_dep': []
       }]
-      return of(deployments).pipe(delay(2000));
+      return of(deployments).pipe(delay(1000));
   }  
 
   public loadDeployment(deploymentID: string): Observable<Deployment> {   
@@ -390,7 +424,7 @@ export class ModuleManagerMockService {
 
    getJobs(): Observable<Job[]> {
       var jobs = [{"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()}]
-      return of(jobs).pipe(delay(2000));
+      return of(jobs).pipe(delay(1000));
    }
 
    deleteModule(_: string): Observable<any> {

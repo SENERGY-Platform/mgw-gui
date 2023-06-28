@@ -39,3 +39,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     width: 4%;
 }
 
+/* Modals */
+.modal-outer {
+    padding: 50px 50px;
+}

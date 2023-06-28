@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable } from 'rxjs';
 import { ApiService } from '../api/api.service';
-import { AddModule, Module } from '../../../modules/models/module_models';
+import { AddModule, Module, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdates } from '../../../modules/models/module_models';
 import { Deployment, DeploymentRequest, DeploymentTemplate } from 'src/app/deployments/models/deployment_models';
 import { ErrorService } from '../util/error.service';
 import { Job } from 'src/app/jobs/models/job.model';
@@ -45,6 +45,31 @@ export class ModuleManagerService {
   loadModule(moduleId: string): Observable<any> {
     var url = this.moduleManagerPath + "/modules/" + this.doubleEncode(moduleId) 
     return this.http.get(url)
+  }
+
+  checkForUpdates(): Observable<string> {
+    var url = this.moduleManagerPath + "/module_updates" 
+    return <Observable<string>>this.http.post(url, undefined, undefined, "text")
+  }
+
+  getAvailableUpdates(): Observable<ModuleUpdates> {
+    var url = this.moduleManagerPath + "/module_updates" 
+    return <Observable<ModuleUpdates>>this.http.get(url)
+  }
+
+  getAvailableModuleUpdates(moduleID: string): Observable<ModuleUpdate> {
+    var url = this.moduleManagerPath + "/module_updates/" + this.doubleEncode(moduleID) 
+    return <Observable<ModuleUpdate>>this.http.get(url)
+  }
+
+  checkIfModuleUpdateCanBeDone(moduleID: string, payload: ModuleUpdatePrepare): Observable<string> {
+    var url = this.moduleManagerPath + "/module_updates/" + this.doubleEncode(moduleID) + '/prepare' 
+    return <Observable<string>>this.http.patch(url, payload, undefined, "text")
+  }
+
+  getModuleUpdateTemplate(moduleID: string): Observable<DeploymentTemplate> {
+    var url = this.moduleManagerPath + "/module_updates/" + this.doubleEncode(moduleID) + '/upt_template' 
+    return <Observable<DeploymentTemplate>>this.http.get(url)
   }
 
   // Deployments

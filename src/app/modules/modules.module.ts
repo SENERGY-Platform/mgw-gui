@@ -15,11 +15,12 @@ import { CoreModule } from 'src/app/core/core.module';
 import { MatSortModule } from '@angular/material/sort';
 import { ListComponent } from './pages/list/list.component';
 import { AddComponent } from './pages/add/add.component';
-import { ModulesComponent } from './modules.component';
 import { InfoComponent } from './pages/info/info.component';
+import { UpdateModalComponent } from './components/update-modal/update-modal.component';
+import { MatCardModule } from '@angular/material/card';
 
 const routes: Routes = [
-  {path: 'modules' , component: ModulesComponent, children: [
+  {path: 'modules', children: [
     {path: 'add', component: AddComponent},
     {path: '', component: ListComponent},
     // TODO edit module {path: 'edit/:id', component: ShowModuleComponentComponent},
@@ -31,13 +32,14 @@ const routes: Routes = [
   declarations: [
     ListComponent,
     AddComponent,
-    ModulesComponent,
-    InfoComponent
+    InfoComponent,
+    UpdateModalComponent
   ],
   imports: [
     MatInputModule,
     MatCheckboxModule,
     CoreModule,
+    MatCardModule,
     MatTableModule,
     CommonModule,
     RouterModule.forChild(routes),

@@ -3,11 +3,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
-import { Module } from '../../models/module_models';
+import { Module, ModuleUpdates } from '../../models/module_models';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { HttpUrlEncodingCodec } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { UtilService } from 'src/app/core/services/util/util.service';
+import { UpdateModalComponent } from '../../components/update-modal/update-modal.component';
 
 @Component({
   selector: 'app-list',
@@ -20,17 +22,52 @@ export class ListComponent {
   init: Boolean = true;
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['name', 'version', 'info', 'deploy', 'delete']
+  moduleIDsReadyForUpdate: Record<string, string[]> = {}
+  availableModuleUpdates: any 
   
   constructor(
     public dialog: MatDialog, 
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
     private errorService: ErrorService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private utilService: UtilService
+  ) {
+
+  }
 
   ngOnInit(): void {
       this.loadModules();
       this.init = false;
+  }
+
+  checkForUpdates() {
+    this.moduleService.checkForUpdates().subscribe(
+      {
+        next: (jobID) => {
+          var message = "Check for module updates"
+          var self = this
+          this.utilService.checkJobStatus(jobID, message, function() {
+            self.showAvailableUpdates()
+          })
+        }, 
+        error: (err) => {
+          this.errorService.handleError(ListComponent.name, "checkForUpdates", err)
+        }
+      }
+    )
+  }
+
+  showAvailableUpdates() {
+    this.moduleService.getAvailableUpdates().subscribe(
+      {
+        next: (availableModuleUpdates: ModuleUpdates) => {
+          var dialogRef = this.dialog.open(UpdateModalComponent, {data: {availableModuleUpdates: availableModuleUpdates}});
+        }, 
+        error: (err) => {
+          this.errorService.handleError(ListComponent.name, "showAvailableUpdates", err)
+        }
+      }
+    )
   }
 
   ngAfterViewInit(): void {

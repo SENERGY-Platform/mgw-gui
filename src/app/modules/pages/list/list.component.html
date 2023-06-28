@@ -69,8 +69,11 @@
                 <tr mat-row *matRowDef="let m; columns: displayColumns;"></tr>
             </table>
         </div>
+
+        <button mat-raised-button color="primary" (click)="checkForUpdates()" id="update-button">Check for Updates</button>
     </div>
 </div>
+
 
 <button mat-fab color="primary" class="fab fixed-bottom-right-button" matTooltip="Add module" [routerLink] = "'/modules/add'">
     <mat-icon>add</mat-icon>

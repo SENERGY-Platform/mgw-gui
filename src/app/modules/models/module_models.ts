@@ -17,3 +17,18 @@ export interface AddModule {
     id?: string;
     version?: string;
 }
+
+export interface ModuleUpdate {
+    pending: boolean;
+    checked: Date;
+    versions: string[];
+}
+
+export interface ModuleUpdates {
+    [module_id: string]: ModuleUpdate;
+}
+
+export interface ModuleUpdatePrepare {
+    version: string
+}
+

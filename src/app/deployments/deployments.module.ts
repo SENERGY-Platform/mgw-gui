@@ -13,7 +13,6 @@ import {RouterModule, Routes} from '@angular/router';
 import { ModulesComponent } from './pages/add/modules.component';
 import { CreateCertSecretDialog } from './components/create-cert-secret-dialog/create-secret-dialog';
 import { CreateBasicAuthSecretDialog } from './components/create-basic-auth-secret-dialog/create-secret-dialog';
-import { ModuleManagementComponent } from './deployments.component';
 import { DeploymentTemplate } from './components/single-deployment/deployment-template';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { ChangeDependenciesDialog } from './components/change-dependencies-dialog/change-dependencies-dialog';
@@ -26,7 +25,7 @@ import { JobLoaderModalComponent } from '../core/components/job-loader-modal/job
 import { InfoComponent } from './pages/info/info.component';
 import {MatCardModule} from '@angular/material/card'; 
 const routes: Routes = [
-  {path: 'deployments' , component: ModuleManagementComponent, children: [
+  {path: 'deployments', children: [
     {path: 'add/:id', component: ModulesComponent},
     {path: '', component: DeploymentListComponent},
     {path: 'edit/:id', component: ShowModuleComponentComponent},
@@ -41,7 +40,6 @@ const routes: Routes = [
     DeploymentTemplate,
     CreateBasicAuthSecretDialog,
     CreateCertSecretDialog,
-    ModuleManagementComponent,
     ChangeDependenciesDialog,
     DeploymentComponentComponent,
     ShowModuleComponentComponent,
