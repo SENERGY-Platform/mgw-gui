@@ -18,13 +18,16 @@ import { AddComponent } from './pages/add/add.component';
 import { InfoComponent } from './pages/info/info.component';
 import { UpdateModalComponent } from './components/update-modal/update-modal.component';
 import { MatCardModule } from '@angular/material/card';
+import { UpdateComponent } from './pages/update/update.component';
+import { DeploymentsModule } from '../deployments/deployments.module';
 
 const routes: Routes = [
   {path: 'modules', children: [
     {path: 'add', component: AddComponent},
     {path: '', component: ListComponent},
-    // TODO edit module {path: 'edit/:id', component: ShowModuleComponentComponent},
-    {path: 'show/:id', component: InfoComponent}
+    {path: 'show/:id', component: InfoComponent},
+    {path: 'update/:id', component: UpdateComponent}
+
   ]},
 ];
 
@@ -33,12 +36,14 @@ const routes: Routes = [
     ListComponent,
     AddComponent,
     InfoComponent,
-    UpdateModalComponent
+    UpdateModalComponent,
+    UpdateComponent
   ],
   imports: [
     MatInputModule,
     MatCheckboxModule,
     CoreModule,
+    DeploymentsModule,
     MatCardModule,
     MatTableModule,
     CommonModule,

@@ -5,8 +5,6 @@ import { ModuleManagerService } from 'src/app/core/services/module-manager/modul
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Module } from 'src/app/modules/models/module_models';
 import { Deployment } from '../../models/deployment_models';
-import { CreateBasicAuthSecretDialog } from '../create-basic-auth-secret-dialog/create-secret-dialog';
-import { CreateCertSecretDialog } from '../create-cert-secret-dialog/create-secret-dialog';
 
 @Component({
     selector: 'deployment-template',
@@ -93,7 +91,7 @@ export class DeploymentTemplate implements OnChanges {
         }
       });
 
-      if(this.mode == 'new') {
+      if(this.mode == 'new' || this.mode == 'update') {
         this.loadModuleInfo()
       } else {
         this.loadDeploymentInfo()
@@ -119,20 +117,5 @@ export class DeploymentTemplate implements OnChanges {
         if (index >= 0) {
           this.form?.get(formGroup)?.get(config_id)?.value.splice(index, 1);
         }
-      }
-    
-      createSecret(type: string) {
-        var dialogRef
-        if(type == "certificate") {
-          dialogRef = this.dialog.open(CreateCertSecretDialog, {data: {type: type}});
-        } else if (type == "basic-auth") {
-          dialogRef = this.dialog.open(CreateBasicAuthSecretDialog, {data: {type: type}});
-        }
-    
-        dialogRef?.afterClosed().subscribe(createdSecret => {
-          if(createdSecret) {
-            this.secretOptions[type].push(createdSecret)
-          }
-        });
       }
 }

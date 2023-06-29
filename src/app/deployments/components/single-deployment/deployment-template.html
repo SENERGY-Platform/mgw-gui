@@ -3,7 +3,7 @@
   <mat-card class="deployment-box">
 
     <div class="form-container">
-      <div id="module-info-text" *ngIf="mode == 'new' && module">
+      <div id="module-info-text" *ngIf="(mode == 'new' || mode == 'update') && module">
         <h1>{{ module.name }}</h1>
         <p>{{ module.id }}</p>
       </div>
@@ -14,7 +14,7 @@
       </div>
 
 
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="fill" *ngIf="mode != 'update'">
         <mat-label>Deployment Name</mat-label>
         <input matInput formControlName="name">
       </mat-form-field>
@@ -42,8 +42,6 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-
-          <button mat-raised-button color="primary" (click)="createSecret(secret.type)">Create Secret</button>
         </div>
 
       </div>

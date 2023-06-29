@@ -76,3 +76,5 @@ export interface DeploymentTemplate extends DeploymentTemplateBase {
 export interface DeploymentUpdateTemplate extends DeploymentTemplateBase {
     name: string;
 }
+
+export interface ModuleUpdateTemplate extends DeploymentTemplate {}

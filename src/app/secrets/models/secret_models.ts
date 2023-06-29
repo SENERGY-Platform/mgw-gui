@@ -15,3 +15,9 @@ export interface SecretType {
     name: string;
     id: string;
 }
+
+export enum SecretTypes {
+    Certificate = 'certificate',
+    BasicAuth = 'basic-auth',
+    APIKey = 'api-key'
+}

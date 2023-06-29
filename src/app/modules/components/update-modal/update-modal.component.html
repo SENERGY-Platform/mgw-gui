@@ -1,23 +1,18 @@
 <div id="container" class="modal-outer">
-  <mat-card *ngFor="let moduleUpdateItem of availableModuleUpdates | keyvalue" class="module-container">
-    <form [formGroup]="forms[moduleUpdateItem.key]">
-        <h2>{{ moduleUpdateItem.key }}</h2>
-        <div>
-          <mat-form-field appearance="fill">
-            <mat-label>Available Versions</mat-label>
-            <mat-select formControlName="version">
-              <mat-option *ngFor="let version of moduleUpdateItem.value.versions" [value]="version">
-                {{version}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-       
-        <button mat-raised-button color="primary" (click)="checkCompatibility(moduleUpdateItem.key)" *ngIf="!moduleIsReadyToBeInstalled[moduleUpdateItem.key]">Check for Compatibility</button>
-        <button mat-raised-button color="primary" (click)="startUpdate(moduleUpdateItem.key)" *ngIf="moduleIsReadyToBeInstalled[moduleUpdateItem.key]">Update</button>
-
-    </form>
-  </mat-card>
-
-  <button mat-raised-button color="primary"  (click)="cancel()">Cancel</button>   
+  <form [formGroup]="form">
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Available Versions</mat-label>
+        <mat-select formControlName="version">
+          <mat-option *ngFor="let version of availableModuleUpdate.versions" [value]="version">
+            {{version}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+  <button mat-raised-button color="primary" (click)="checkCompatibility()" *ngIf="!moduleIsReadyToBeInstalled">Check
+    for Compatibility</button>
+  <button mat-raised-button color="primary" (click)="startUpdate()" *ngIf="moduleIsReadyToBeInstalled">Update</button>
+  <button mat-raised-button color="primary" (click)="cancel()">Cancel</button>
 </div>

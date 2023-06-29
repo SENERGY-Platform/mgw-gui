@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable } from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { AddModule, Module, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdates } from '../../../modules/models/module_models';
-import { Deployment, DeploymentRequest, DeploymentTemplate } from 'src/app/deployments/models/deployment_models';
+import { Deployment, DeploymentRequest, DeploymentTemplate, ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
 import { ErrorService } from '../util/error.service';
 import { Job } from 'src/app/jobs/models/job.model';
 
@@ -48,28 +48,28 @@ export class ModuleManagerService {
   }
 
   checkForUpdates(): Observable<string> {
-    var url = this.moduleManagerPath + "/module_updates" 
+    var url = this.moduleManagerPath + "/updates" 
     return <Observable<string>>this.http.post(url, undefined, undefined, "text")
   }
 
   getAvailableUpdates(): Observable<ModuleUpdates> {
-    var url = this.moduleManagerPath + "/module_updates" 
+    var url = this.moduleManagerPath + "/updates" 
     return <Observable<ModuleUpdates>>this.http.get(url)
   }
 
   getAvailableModuleUpdates(moduleID: string): Observable<ModuleUpdate> {
-    var url = this.moduleManagerPath + "/module_updates/" + this.doubleEncode(moduleID) 
+    var url = this.moduleManagerPath + "/updates/" + this.doubleEncode(moduleID) 
     return <Observable<ModuleUpdate>>this.http.get(url)
   }
 
   checkIfModuleUpdateCanBeDone(moduleID: string, payload: ModuleUpdatePrepare): Observable<string> {
-    var url = this.moduleManagerPath + "/module_updates/" + this.doubleEncode(moduleID) + '/prepare' 
+    var url = this.moduleManagerPath + "/updates/" + this.doubleEncode(moduleID) + '/prepare' 
     return <Observable<string>>this.http.patch(url, payload, undefined, "text")
   }
 
-  getModuleUpdateTemplate(moduleID: string): Observable<DeploymentTemplate> {
-    var url = this.moduleManagerPath + "/module_updates/" + this.doubleEncode(moduleID) + '/upt_template' 
-    return <Observable<DeploymentTemplate>>this.http.get(url)
+  getModuleUpdateTemplate(moduleID: string): Observable<ModuleUpdateTemplate> {
+    var url = this.moduleManagerPath + "/updates/" + this.doubleEncode(moduleID) + '/upt_template' 
+    return <Observable<ModuleUpdateTemplate>>this.http.get(url)
   }
 
   // Deployments

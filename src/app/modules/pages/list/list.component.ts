@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -21,9 +21,9 @@ export class ListComponent {
   ready: Boolean = false;
   init: Boolean = true;
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['name', 'version', 'info', 'deploy', 'delete']
+  displayColumns = ['name', 'version', 'info', 'deploy', 'delete', 'update']
   moduleIDsReadyForUpdate: Record<string, string[]> = {}
-  availableModuleUpdates: any 
+  availableModuleUpdates: ModuleUpdates = {} 
   
   constructor(
     public dialog: MatDialog, 
@@ -47,7 +47,16 @@ export class ListComponent {
           var message = "Check for module updates"
           var self = this
           this.utilService.checkJobStatus(jobID, message, function() {
-            self.showAvailableUpdates()
+            self.moduleService.getAvailableUpdates().subscribe(
+              {
+                next: (availableModuleUpdates: ModuleUpdates) => {
+                  self.availableModuleUpdates = availableModuleUpdates
+                }, 
+                error: (err) => {
+                  self.errorService.handleError(ListComponent.name, "checkForUpdates", err)
+                }
+              }
+            )
           })
         }, 
         error: (err) => {
@@ -57,17 +66,8 @@ export class ListComponent {
     )
   }
 
-  showAvailableUpdates() {
-    this.moduleService.getAvailableUpdates().subscribe(
-      {
-        next: (availableModuleUpdates: ModuleUpdates) => {
-          var dialogRef = this.dialog.open(UpdateModalComponent, {data: {availableModuleUpdates: availableModuleUpdates}});
-        }, 
-        error: (err) => {
-          this.errorService.handleError(ListComponent.name, "showAvailableUpdates", err)
-        }
-      }
-    )
+  showAvailableUpdates(moduleID: string) {
+    var dialogRef = this.dialog.open(UpdateModalComponent, {data: {availableModuleUpdate: this.availableModuleUpdates[moduleID]}});
   }
 
   ngAfterViewInit(): void {

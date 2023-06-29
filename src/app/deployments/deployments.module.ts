@@ -11,8 +11,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { DeploymentListComponent } from './pages/list/deployment-list.component';
 import {RouterModule, Routes} from '@angular/router';
 import { ModulesComponent } from './pages/add/modules.component';
-import { CreateCertSecretDialog } from './components/create-cert-secret-dialog/create-secret-dialog';
-import { CreateBasicAuthSecretDialog } from './components/create-basic-auth-secret-dialog/create-secret-dialog';
 import { DeploymentTemplate } from './components/single-deployment/deployment-template';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { ChangeDependenciesDialog } from './components/change-dependencies-dialog/change-dependencies-dialog';
@@ -25,12 +23,15 @@ import { JobLoaderModalComponent } from '../core/components/job-loader-modal/job
 import { InfoComponent } from './pages/info/info.component';
 import {MatCardModule} from '@angular/material/card'; 
 const routes: Routes = [
-  {path: 'deployments', children: [
-    {path: 'add/:id', component: ModulesComponent},
-    {path: '', component: DeploymentListComponent},
-    {path: 'edit/:id', component: ShowModuleComponentComponent},
-    {path: 'show/:id', component: InfoComponent}
-  ]},
+  {
+    path: 'deployments', 
+    children: [
+      {path: 'add/:id', component: ModulesComponent},
+      {path: '', component: DeploymentListComponent},
+      {path: 'edit/:id', component: ShowModuleComponentComponent},
+      {path: 'show/:id', component: InfoComponent}
+    ]
+  }
 ];
 
 @NgModule({
@@ -38,8 +39,6 @@ const routes: Routes = [
     DeploymentListComponent,
     ModulesComponent,
     DeploymentTemplate,
-    CreateBasicAuthSecretDialog,
-    CreateCertSecretDialog,
     ChangeDependenciesDialog,
     DeploymentComponentComponent,
     ShowModuleComponentComponent,
@@ -67,7 +66,7 @@ const routes: Routes = [
     ReactiveFormsModule
   ],
   exports: [
-    
+    DeploymentComponentComponent
   ]
 })
 export class DeploymentsModule { }

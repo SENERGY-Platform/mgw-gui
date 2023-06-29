@@ -13,10 +13,6 @@ mat-form-field {
     margin-bottom: 30px;
 }
 
-.secret-container mat-form-field {
-    width: 60%;
-}
-
 .deployment-box {
     padding: 30px
 }

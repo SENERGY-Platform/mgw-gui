@@ -266,7 +266,7 @@ export class ModuleManagerMockService {
   public loadModules(): Observable<Module[]> {
      var modules = [
       {
-         "id": "id",
+         "id": "github.com/SENERGY-Platform/mgw-test-module-a",
          "name": "module 1",
          "description": "bla",
          "version": "v.1.0",
@@ -279,7 +279,7 @@ export class ModuleManagerMockService {
          "added": new Date(),
          "updated": new Date()
       }, {
-         "id": "id2",
+         "id": "github.com/SENERGY-Platform/mgw-test-module-b/mgw-module",
          "name": "module 2",
          "description": "bla",
          "version": "v.1.0",

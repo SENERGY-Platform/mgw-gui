@@ -3,7 +3,6 @@ import { FormBuilder, FormControl, FormGroup, NonNullableFormBuilder, ValidatorF
 import { Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { JobLoaderModalComponent } from 'src/app/core/components/job-loader-modal/job-loader-modal.component';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { Secret } from '../../../secrets/models/secret_models';
@@ -88,6 +87,7 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     if(this.deploymentTemplate) {
       this.setup(this.deploymentTemplate)
     }
+
   }
 
   public setupDisplayData(module_id: string) {
