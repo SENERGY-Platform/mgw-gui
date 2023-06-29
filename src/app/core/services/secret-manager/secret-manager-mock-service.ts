@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { delay, Observable, of } from 'rxjs';
 import { ApiService } from '../../../core/services/api/api.service';
-import { Secret } from '../../../secrets/models/secret_models';
+import { Secret, SecretType } from '../../../secrets/models/secret_models';
 
 @Injectable({
   providedIn: 'root'
@@ -26,5 +26,8 @@ export class SecretManagerMockService {
     return this.http.post("/secret", {"type": type, "name": name, "value": value})
   }
 
-  
+  getSecretTypes(): Observable<SecretType[]>  {
+    var types = [{"name": "Certificate", "id": "cert"}, {"name": "API Key", "id": "key"}, {"name": "Credentials", "id": "basic-auth"}]
+    return of(types).pipe(delay(200))
+  }
 }

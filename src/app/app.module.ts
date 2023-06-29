@@ -12,6 +12,7 @@ import { environment } from '../environments/environment';
 import { registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 import { JobsModule } from './jobs/jobs.module';
+import { SecretsModule } from './secrets/secrets.module';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { JobsModule } from './jobs/jobs.module';
     JobsModule,
     ModulesModule,
     MatSidenavModule,
+    SecretsModule,
     HttpClientModule
   ],
   exports: [

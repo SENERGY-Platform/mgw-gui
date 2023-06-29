@@ -1,20 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Secret } from 'src/app/secrets/models/secret_models';
+import { CreateSecret, Secret, SecretType } from 'src/app/secrets/models/secret_models';
 import { ApiService } from '../../../core/services/api/api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SecretManagerServiceService {
+  secretManagerPath = "/secret-manager"
 
   constructor(private http: ApiService) {}
 
   getSecrets(): Observable<Secret[]> {
-    return <Observable<Secret[]>>this.http.get("/secrets")
+    return <Observable<Secret[]>>this.http.get(this.secretManagerPath + "/secrets")
   }
 
-  createSecret(type: string, name: string, value: string) {
-    return this.http.post("/secret", {"type": type, "name": name, "value": value})
+  createSecret(secretRequest: CreateSecret) {
+    return this.http.post(this.secretManagerPath + "/secrets", secretRequest)
+  }
+
+  getSecretTypes(): Observable<SecretType[]>  {
+    return <Observable<SecretType[]>>this.http.get(this.secretManagerPath + "/types")
   }
 }

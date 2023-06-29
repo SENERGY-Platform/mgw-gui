@@ -7,8 +7,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     padding: 12px 12px 12px;
 }
 
+/* Container for pages with forms */
 .form-margin {
     margin: 12px 20% 0 20%
+}
+
+.form-margin mat-form-field {
+    width: 100%;
 }
 
 .search-button-container {
@@ -37,6 +42,21 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .table-container .button-column {
     width: 4%;
+}
+
+/* Buttons */
+.fixed-bottom-right-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+
+
+/* Global centered Spinner */
+.global-centered-spinner {
+    position: fixed!important;
+    top: 50%;
+    left: 50%;
 }
 
 /* Modals */

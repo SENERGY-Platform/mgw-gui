@@ -4,3 +4,14 @@ export interface Secret {
     name: string;
     value: string;
 }
+
+export interface CreateSecret {
+    type: string;
+    name: string;
+    value: string;
+}
+
+export interface SecretType {
+    name: string;
+    id: string;
+}
