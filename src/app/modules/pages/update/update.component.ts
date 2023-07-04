@@ -11,7 +11,6 @@ import { ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_mode
   styleUrls: ['./update.component.css']
 })
 export class UpdateComponent implements OnInit {
-  moduleUpdateTemplate!: ModuleUpdateTemplate
   ready: boolean = false
   moduleID!: string
 
@@ -25,19 +24,7 @@ export class UpdateComponent implements OnInit {
     // Override mode to show/edit depending on URL
     this.route.url.subscribe(url => {
       this.moduleID = url[1].path
-
-      this.moduleService.getModuleUpdateTemplate(this.moduleID).subscribe(
-        {
-          next: (template: any) => {
-            this.moduleUpdateTemplate = template
-            this.ready = true
-          },
-          error: (err) => {
-            this.errorService.handleError(UpdateComponent.name, "ngOnInit", err)
-            this.ready = true
-          }
-        }
-      )
+      this.ready = true
     })
   }
 }

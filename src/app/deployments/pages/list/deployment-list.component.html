@@ -19,7 +19,7 @@
     </span>
 
     <div *ngIf="dataSource.data.length === 0 && ready">No deployments found.</div>
-    <spinner [show]="!ready"></spinner>
+    <spinner class="global-centered-spinner" [show]="!ready"></spinner>
 
     <div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
         <div class="table-container table-container-with-button">

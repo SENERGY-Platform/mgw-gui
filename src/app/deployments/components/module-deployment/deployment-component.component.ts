@@ -8,7 +8,9 @@ import { UtilService } from 'src/app/core/services/util/util.service';
 import { Secret } from '../../../secrets/models/secret_models';
 import { ModuleManagerService } from '../../../core/services/module-manager/module-manager-service.service';
 import { SecretManagerServiceService } from '../../../core/services/secret-manager/secret-manager-service.service';
-import { DeploymentRequest, DeploymentTemplate, DeploymentUpdateTemplate } from '../../models/deployment_models';
+import { DeploymentRequest, DeploymentTemplate, DeploymentUpdateTemplate, ModuleUpdateTemplate } from '../../models/deployment_models';
+import { HostManagerService } from 'src/app/core/services/host-manager/host-manager.service';
+import { forkJoin, Observable } from 'rxjs';
 
 @Component({
   selector: 'deployment',
@@ -16,16 +18,19 @@ import { DeploymentRequest, DeploymentTemplate, DeploymentUpdateTemplate } from 
   styleUrls: ['./deployment-component.component.css']
 })
 
-export class DeploymentComponentComponent implements OnInit, OnChanges {
+export class DeploymentComponentComponent implements OnInit {
   @Input() mode: string = "new"
-  @Input() deploymentTemplate!: DeploymentTemplate | DeploymentUpdateTemplate
   @Input() moduleID!: string
   @Input() deploymentID!: string
 
+  deploymentTemplate!: DeploymentTemplate | DeploymentUpdateTemplate | ModuleUpdateTemplate
   formStr: any = ''
   ready: boolean = false
+
   secretOptions: any = {}
   secretOptionsBinding: any 
+
+  hostResourcesOptions: any = {}
 
   inputForm = {
     "module_id": this.fb.control(this.moduleID),
@@ -49,6 +54,7 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     private fb: FormBuilder, 
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
     @Inject('SecretManagerService') private secretSercice: SecretManagerServiceService, 
+    @Inject('HostManagerService') private hostService: HostManagerService, 
     public dialog: MatDialog, 
     private router: Router,
     private errorService: ErrorService,
@@ -57,10 +63,72 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
   }
 
   public ngOnInit() {
-    this.loadAvailableSecrets()
+    var obs = []
+    obs.push(this.loadAvailableSecrets())
+    obs.push(this.loadAvailableHostResources())
+    
+    if(this.mode == "new") {
+      obs.push(this.loadDeploymentTemplate())
+    } else if(this.mode == "edit") {
+      obs.push(this.loadDeploymentUpdateTemplate())
+    } else if(this.mode == "update") {
+      obs.push(this.loadDeploymentUpdateTemplate())
+    } 
+
+    forkJoin(obs).subscribe((_) => {
+      this.setup(this.deploymentTemplate)
+    })
+  }
+
+  loadDeploymentUpdateTemplate(): Observable<any> {
+    return new Observable(obs => {
+      this.moduleService.loadDeploymentUpdateTemplate(this.deploymentID).subscribe((template: any) => {
+        this.deploymentTemplate = template
+        obs.next(true)
+        obs.complete()
+      })
+    })
+  }
+
+  loadModuleUpdateTemplate(): Observable<any> {
+    return new Observable(obs => {
+      this.moduleService.getModuleUpdateTemplate(this.moduleID).subscribe(
+        {
+          next: (template: any) => {
+            this.deploymentTemplate = template
+            obs.next(true)
+            obs.complete()
+          },
+          error: (err) => {
+            this.errorService.handleError(DeploymentComponentComponent.name, "loadModuleUpdateTemplate", err)
+          }
+        }
+      )
+    })
+  }
+
+  loadDeploymentTemplate(): Observable<any> {
+    return new Observable(obs => {
+      this.moduleService.loadDeploymentTemplate(this.moduleID).subscribe(
+        {
+          next: (template: any) => {
+            this.deploymentTemplate = template
+            obs.next(true)
+            obs.complete()
+          },
+          error: (err) => {
+            this.errorService.handleError(DeploymentComponentComponent.name, "loadDeploymentTemplate", err)
+          }
+        }
+      )
+    })
   }
 
   setup(template: any) {
+    if(this.moduleID) {
+      this.inputForm.module_id.patchValue(this.moduleID)
+    }
+
     this.setupDisplayData(this.moduleID);
     this.setupFormOfModule(this.form, template, this.moduleID)
     this.setupDependencies(template)
@@ -69,6 +137,8 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     this.ready = true;
   }
 
+  /*
+  Needed when input values are loaded async and need to be updated
   ngOnChanges(changes: SimpleChanges): void {
     // get changes as deployment template and IDs are loaded async
     var attributes: string[] = ['mode', 'deploymentTemplate', 'moduleID', 'deploymentID']
@@ -88,7 +158,7 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
       this.setup(this.deploymentTemplate)
     }
 
-  }
+  }*/
 
   public setupDisplayData(module_id: string) {
     this.deploymentTemplateData[module_id] = {
@@ -133,17 +203,38 @@ export class DeploymentComponentComponent implements OnInit, OnChanges {
     }
   }
 
-  loadAvailableSecrets() {
-    this.secretSercice.getSecrets().subscribe((secrets: Secret[]) => {
-      secrets.forEach((secret: any) => {
-        var secretType = secret.type
-        if(!(secretType in this.secretOptions)) {
-          this.secretOptions[secret.type] = []
+  loadAvailableSecrets(): Observable<any> {
+    return new Observable(obs => {
+      this.secretSercice.getSecrets().subscribe((secrets: Secret[]) => {
+        secrets.forEach((secret: any) => {
+          var secretType = secret.type
+          if(!(secretType in this.secretOptions)) {
+            this.secretOptions[secret.type] = []
+          }
+          
+          this.secretOptions[secret.type].push(secret)
+        });
+        this.secretOptionsBinding = this.secretOptions
+        obs.next(true)
+        obs.complete()
+      })
+    })
+  }
+
+  loadAvailableHostResources(): Observable<any> {
+    return new Observable(obs => {
+      this.hostService.getHostResources().subscribe(
+        {
+          next: (hostResources) => {
+            this.hostResourcesOptions = hostResources
+            obs.next(true)
+            obs.complete()
+          },
+          error: (err) => {
+            this.errorService.handleError(DeploymentComponentComponent.name, "loadAvailableHostResources", err)
+          }
         }
-        
-        this.secretOptions[secret.type].push(secret)
-      });
-      this.secretOptionsBinding = this.secretOptions
+      )
     })
   }
 

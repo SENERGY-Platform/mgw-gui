@@ -11,7 +11,7 @@ import { Deployment } from '../../models/deployment_models';
     templateUrl: 'deployment-template.html',
     styleUrls: ['deployment-template.css']
 })
-export class DeploymentTemplate implements OnChanges {
+export class DeploymentTemplate implements OnInit {
     @Input() moduleID: string = ""
     @Input() deploymentID: string = ""
     @Input() IsDependency: boolean = false 
@@ -19,6 +19,7 @@ export class DeploymentTemplate implements OnChanges {
     form: FormGroup = new FormGroup("")
     @Input() deploymentTemplateData: any
     @Input() secretOptions: any
+    @Input() hostResourcesOptions: any
     @Input() mode: string = "show"
     @Input() dependencyFormIDToModuleID!: Record<string, string>
     module!: Module
@@ -31,6 +32,18 @@ export class DeploymentTemplate implements OnChanges {
       @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
       private errorService: ErrorService
     ) {
+    }
+
+    ngOnInit(): void {
+      this.deploymentTemplateData = this.deploymentTemplateData[this.moduleID]
+
+      if(this.mode == 'new' || this.mode == 'update') {
+        this.loadModuleInfo()
+      } else {
+        this.loadDeploymentInfo()
+      }
+
+      this.loadForm()
     }
 
     loadModuleInfo() {
@@ -76,10 +89,11 @@ export class DeploymentTemplate implements OnChanges {
       }
     }
 
+    /*
     ngOnChanges(changes: SimpleChanges): void {
       // get changes as deployment template and IDs are loaded async
 
-      var attributes: string[] = ['secretOptions', 'deploymentTemplateData', 'moduleID', 'mode', 'IsDependency', 'deploymentID', 'dependencyFormIDToModuleID']
+      var attributes: string[] = ['secretOptions', 'deploymentTemplateData', 'moduleID', 'mode', 'IsDependency', 'deploymentID', 'dependencyFormIDToModuleID', 'hostResourcesOptions']
       type ObjectKey = keyof typeof this;
       attributes.forEach(attribute => {
         if (changes[attribute] && changes[attribute].currentValue) {
@@ -98,7 +112,7 @@ export class DeploymentTemplate implements OnChanges {
       }
 
       this.loadForm()
-    }
+    }*/
 
     add(event: any, formGroup: string, config_id: string): void {
         const value = (event.value || '').trim();

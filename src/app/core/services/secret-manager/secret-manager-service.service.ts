@@ -7,12 +7,17 @@ import { ApiService } from '../../../core/services/api/api.service';
   providedIn: 'root'
 })
 export class SecretManagerServiceService {
-  secretManagerPath = "/secret-manager"
+  //secretManagerPath = "/secret-manager"
+  secretManagerPath = ""
 
   constructor(private http: ApiService) {}
 
   getSecrets(): Observable<Secret[]> {
     return <Observable<Secret[]>>this.http.get(this.secretManagerPath + "/secrets")
+  }
+
+  getSecret(secretID: string): Observable<Secret> {
+    return <Observable<Secret>>this.http.get(this.secretManagerPath + "/secrets/" + secretID)
   }
 
   createSecret(secretRequest: CreateSecret) {
@@ -21,5 +26,13 @@ export class SecretManagerServiceService {
 
   getSecretTypes(): Observable<SecretType[]>  {
     return <Observable<SecretType[]>>this.http.get(this.secretManagerPath + "/types")
+  }
+
+  updateSecret(secretRequest: CreateSecret, id: string): Observable<any>  {
+    return <Observable<any>>this.http.put(this.secretManagerPath + "/secrets/" + id , secretRequest)
+  }
+
+  deleteSecret(secretID: string): Observable<any> {
+    return <Observable<any>>this.http.delete(this.secretManagerPath + "/secrets/" + secretID)
   }
 }

@@ -24,7 +24,11 @@
         class="form-field-container">
         <mat-form-field appearance="fill" [hintLabel]="host_resource.description">
           <mat-label>{{host_resource.name}}</mat-label>
-          <input matInput [formControlName]="host_resource.id">
+          <mat-select [formControlName]="host_resource.id">
+            <mat-option *ngFor="let hostResource of hostResourcesOptions" [value]="hostResource.id">
+              {{hostResource.name}}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
       </div>
 

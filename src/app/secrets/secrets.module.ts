@@ -11,19 +11,24 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import {TextFieldModule} from '@angular/cdk/text-field'; 
+import {TextFieldModule} from '@angular/cdk/text-field';
+import { EditComponent } from './pages/edit/edit.component';
+import { FormComponent } from './components/form/form.component'; 
 
 const routes: Routes = [
   {path: 'secrets', children: [
     {path: '', component: ListComponent},
-    {path: 'add', component: AddComponent}
+    {path: 'add', component: AddComponent},
+    {path: 'edit/:id', component: EditComponent}
   ]},
 ];
 
 @NgModule({
   declarations: [
     ListComponent,
-    AddComponent
+    AddComponent,
+    EditComponent,
+    FormComponent
   ],
   imports: [
     CommonModule,

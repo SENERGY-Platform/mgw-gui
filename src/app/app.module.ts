@@ -42,8 +42,12 @@ import { SecretsModule } from './secrets/secrets.module';
       'useClass': environment.secretManagerService
     },
     {
+      'provide': 'HostManagerService',
+      'useClass': environment.hostManagerService
+    },
+    {
       'provide': LOCALE_ID, 
-      'useValue': 'de-DE' 
+      'useValue': 'de' 
     }
   ],
   bootstrap: [AppComponent]

@@ -34,9 +34,8 @@ export class ErrorService {
         // client errros like network problems 
         
         var errorMessage 
-
         if(error instanceof HttpErrorResponse) {
-          errorMessage = error.error
+            errorMessage = error.error
 
           if (error.status === 0) {
             // A client-side or network error occurred before getting a response. Handle it accordingly.

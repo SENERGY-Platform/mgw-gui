@@ -1,8 +1,10 @@
 <div>
-  <form [formGroup]="form" (ngSubmit)="submit()">
+  <spinner class="global-centered-spinner" [show]="!ready"></spinner>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" *ngIf="ready">
     <div class="deployment-container">
       <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding" [moduleID]="moduleID"
-        [IsDependency]="false" [secretOptions]="secretOptionsBinding" [deploymentID]="deploymentID">
+        [IsDependency]="false" [secretOptions]="secretOptionsBinding" [deploymentID]="deploymentID" [hostResourcesOptions]="hostResourcesOptions">
       </deployment-template>
 
     </div>
@@ -11,7 +13,7 @@
       <div class="deployment-container" *ngFor="let formModuleID of dependencies_module_ids">
         <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding"
           [secretOptions]="secretOptionsBinding" [moduleID]="formModuleID"
-          [dependencyFormIDToModuleID]="dependencyFormIDToModuleID" [IsDependency]="true">
+          [dependencyFormIDToModuleID]="dependencyFormIDToModuleID" [IsDependency]="true" [hostResourcesOptions]="hostResourcesOptions">
         </deployment-template>
       </div>
 

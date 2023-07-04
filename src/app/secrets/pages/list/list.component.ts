@@ -16,7 +16,7 @@ export class ListComponent {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['name', 'info', 'delete']
+  displayColumns = ['name', 'info', 'edit', 'delete']
 
   constructor(
     @Inject("SecretManagerService") private secretService: SecretManagerServiceService, 
@@ -40,6 +40,15 @@ export class ListComponent {
   }
 
   delete(secretID: string) {
-
+    this.secretService.deleteSecret(secretID).subscribe({
+      next: (_) => {
+        this.ready = false
+        this.loadSecrets()
+      },
+      error: (err) => {
+        this.errorService.handleError(ListComponent.name, "delete", err)
+        this.ready = true
+      }
+    })
   }
 }

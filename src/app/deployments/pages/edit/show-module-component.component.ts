@@ -10,15 +10,13 @@ import { Deployment, DeploymentTemplate } from '../../models/deployment_models';
   styleUrls: ['./show-module-component.component.css']
 })
 export class ShowModuleComponentComponent implements OnInit {
-  deploymentTemplate!: DeploymentTemplate
   deploymentID!: string
   mode: string = "show" 
   ready: boolean = false 
 
   private routeSub: Subscription = new Subscription();
   constructor(
-    private route: ActivatedRoute,
-    @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
@@ -27,12 +25,7 @@ export class ShowModuleComponentComponent implements OnInit {
 
     this.routeSub = this.route.params.subscribe(params => {
       this.deploymentID = params['id']
-
-      this.moduleService.loadDeploymentUpdateTemplate(this.deploymentID).subscribe((template: any) => {
-        this.deploymentTemplate = template
-        this.ready = true
-      })
-
+      this.ready = true
     })
   }
 

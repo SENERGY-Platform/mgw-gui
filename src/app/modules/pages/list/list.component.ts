@@ -67,7 +67,7 @@ export class ListComponent {
   }
 
   showAvailableUpdates(moduleID: string) {
-    var dialogRef = this.dialog.open(UpdateModalComponent, {data: {availableModuleUpdate: this.availableModuleUpdates[moduleID]}});
+    var dialogRef = this.dialog.open(UpdateModalComponent, {data: {availableModuleUpdate: this.availableModuleUpdates[moduleID], moduleID: moduleID}});
   }
 
   ngAfterViewInit(): void {

@@ -10,7 +10,6 @@ import { DeploymentTemplate } from '../../models/deployment_models';
   styleUrls: ['./modules.component.css']
 })
 export class ModulesComponent implements OnInit {
-  deploymentTemplate!: DeploymentTemplate
   ready: boolean = false
   moduleID!: string
 
@@ -24,19 +23,7 @@ export class ModulesComponent implements OnInit {
     // Override mode to show/edit depending on URL
     this.route.url.subscribe(url => {
       this.moduleID = url[1].path
-
-      this.moduleService.loadDeploymentTemplate(this.moduleID).subscribe(
-        {
-          next: (template: any) => {
-            this.deploymentTemplate = template
-            this.ready = true
-          },
-          error: (err) => {
-            this.errorService.handleError(ModulesComponent.name, "ngOnInit", err)
-            this.ready = true
-          }
-        }
-      )
+      this.ready = true
     })
   }
 }
