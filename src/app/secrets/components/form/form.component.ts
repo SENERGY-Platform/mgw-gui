@@ -85,9 +85,9 @@ export class FormComponent implements OnChanges, OnInit {
       var password = ""
 
       if(!!secret) {
-        var credentialData = JSON.parse(secretValue)
-        username = credentialData['username']
-        password = credentialData['password']
+        var credentials = secretValue.split(":")
+        username = credentials[0]
+        password = credentials[0]
       }
 
       this.form = this.fb.group({
@@ -116,7 +116,7 @@ export class FormComponent implements OnChanges, OnInit {
       secretRequest = {
         "name": this.form.get("name").value,
         "type": this.form.get("type").value,
-        "value": JSON.stringify({"username": this.form.get("username").value, "password": this.form.get("password").value})
+        "value": this.form.get("username").value + ":" + this.form.get("password").value)
       }
     } else {
       secretRequest = this.form.value
