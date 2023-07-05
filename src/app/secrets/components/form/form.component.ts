@@ -116,7 +116,7 @@ export class FormComponent implements OnChanges, OnInit {
       secretRequest = {
         "name": this.form.get("name").value,
         "type": this.form.get("type").value,
-        "value": this.form.get("username").value + ":" + this.form.get("password").value)
+        "value": this.form.get("username").value + ":" + this.form.get("password").value
       }
     } else {
       secretRequest = this.form.value
