@@ -22,7 +22,7 @@ export class AppComponent {
     "link": "/jobs"
   }, {
     "name": "Secrets",
-    "icon": "work",
+    "icon": "key",
     "link": "/secrets"
   }]
 }
