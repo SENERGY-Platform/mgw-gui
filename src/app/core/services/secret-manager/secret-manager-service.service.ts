@@ -7,8 +7,7 @@ import { ApiService } from '../../../core/services/api/api.service';
   providedIn: 'root'
 })
 export class SecretManagerServiceService {
-  //secretManagerPath = "/secret-manager"
-  secretManagerPath = ""
+  secretManagerPath = "/secret-manager"
 
   constructor(private http: ApiService) {}
 

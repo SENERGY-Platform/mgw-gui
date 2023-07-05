@@ -7,7 +7,7 @@ import { ApiService } from '../api/api.service';
   providedIn: 'root'
 })
 export class HostManagerService {
-  hostManagerPath = "/host-manager"
+  hostManagerPath = "/module-manager"
 
   constructor(
     private http: ApiService,

@@ -33,7 +33,7 @@ export class AddComponent {
     if(this.form.valid) {
       var module: AddModule = JSON.parse(JSON.stringify(this.form.value))
       this.moduleService.addModule(module).subscribe(jobID => {
-        var message = "Module installtion is running"
+        var message = "Module installation is running"
         var self = this
         this.utilsService.checkJobStatus(jobID, message, function() {
           self.router.navigate(["/modules"])
