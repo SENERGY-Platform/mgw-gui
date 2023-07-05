@@ -205,7 +205,9 @@ export class DeploymentComponentComponent implements OnInit {
 
   loadAvailableSecrets(): Observable<any> {
     return new Observable(obs => {
+      console.log("LOAD SECRETS")
       this.secretSercice.getSecrets().subscribe((secrets: Secret[]) => {
+        console.log(secrets)
         secrets.forEach((secret: any) => {
           var secretType = secret.type
           if(!(secretType in this.secretOptions)) {
