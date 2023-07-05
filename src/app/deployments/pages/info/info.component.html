@@ -43,6 +43,7 @@
     <div class="secret-container">
       <!-- Select from available secrets -->
       <mat-form-field appearance="fill">
+        <mat-label>{{secretItem.key}}</mat-label>
         <input matInput [readonly]="true" [value]="secretItem.value">
       </mat-form-field>
     </div>
