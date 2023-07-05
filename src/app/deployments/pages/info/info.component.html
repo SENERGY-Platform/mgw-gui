@@ -33,7 +33,7 @@
     class="form-field-container">
     <mat-form-field appearance="fill">
       <mat-label>{{hostResourceItem.key}}</mat-label>
-      <input matInput>
+      <input [readonly]="true" matInput [value]="hostResourceItem.value">
     </mat-form-field>
   </div>
 
