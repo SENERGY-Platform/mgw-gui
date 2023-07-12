@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable } from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { AddModule, Module, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdates } from '../../../modules/models/module_models';
-import { Deployment, DeploymentRequest, DeploymentTemplate, ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
+import { Deployment, DeploymentHealth, DeploymentHealths, DeploymentRequest, DeploymentTemplate, ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
 import { ErrorService } from '../util/error.service';
 import { Job } from 'src/app/jobs/models/job.model';
+import { Instance, Instances } from 'src/app/container/models/container';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class ModuleManagerService {
   
   // Modules
   loadDeploymentTemplate(moduleId: string): Observable<DeploymentTemplate >  {
-    var url = this.moduleManagerPath + "/modules/" + this.doubleEncode(moduleId) + '/dep_template' 
+    var url = this.moduleManagerPath + "/modules/" + this.doubleEncode(moduleId) + '/dep-template' 
     return <Observable<DeploymentTemplate>>this.http.get(url)
   }
 
@@ -68,7 +69,7 @@ export class ModuleManagerService {
   }
 
   getModuleUpdateTemplate(moduleID: string): Observable<ModuleUpdateTemplate> {
-    var url = this.moduleManagerPath + "/updates/" + this.doubleEncode(moduleID) + '/upt_template' 
+    var url = this.moduleManagerPath + "/updates/" + this.doubleEncode(moduleID) + '/upt-template' 
     return <Observable<ModuleUpdateTemplate>>this.http.get(url)
   }
 
@@ -100,7 +101,7 @@ export class ModuleManagerService {
    }
 
   loadDeploymentUpdateTemplate(moduleId: string): Observable<DeploymentTemplate> {
-      var url = this.moduleManagerPath + "/deployments/" + this.doubleEncode(moduleId) + '/upt_template' 
+      var url = this.moduleManagerPath + "/deployments/" + this.doubleEncode(moduleId) + '/upt-template' 
       return <Observable<DeploymentTemplate>>this.http.get(url);
   }
 
@@ -110,14 +111,16 @@ export class ModuleManagerService {
       queryParams = queryParams.set("dependencies", "true")
     }
 
-    var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/stop' 
+    var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/disable' 
     return <Observable<string>>this.http.patch(url, null, queryParams, 'text')
   }
 
   startDeployment(deploymentID: string): Observable<any> {
-    var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/start' 
+    var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/enable' 
     return this.http.patch(url)
   }
+
+  // Jobs
 
   getJobStatus(jobID: string): Observable<Job> {
      var url = this.moduleManagerPath + "/jobs/" + jobID
@@ -132,5 +135,27 @@ export class ModuleManagerService {
   getJobs(): Observable<Job[]> {
     var url = this.moduleManagerPath + "/jobs"
      return <Observable<Job[]>>this.http.get(url)
+  }
+
+  // Instances/Containers 
+  getDeploymentInstances(deploymentID: string): Observable<Instance> {
+    var url = this.moduleManagerPath + "/instances" + deploymentID
+     return <Observable<Instance>>this.http.get(url)
+  }
+
+  getAllInstances(): Observable<Instances> {
+    var url = this.moduleManagerPath + "/instances"
+     return <Observable<Instances>>this.http.get(url)
+  }
+
+  // Health
+  getHealth(): Observable<DeploymentHealths> {
+    var url = this.moduleManagerPath + "/health"
+    return <Observable<DeploymentHealths>>this.http.get(url)
+  }
+
+  getDeploymentHealth(deploymentID: string): Observable<DeploymentHealth> {
+    var url = this.moduleManagerPath + "/health/" + deploymentID
+    return <Observable<DeploymentHealth>>this.http.get(url)
   }
 }

@@ -24,7 +24,7 @@
     <input matInput [readonly]="true" [value]="deployment.updated | date: 'short'">
   </mat-form-field>
 
-  <mat-checkbox [disabled]="true" [ngModel]="deployment.stopped">Stopped</mat-checkbox>
+  <mat-checkbox [disabled]="true" [ngModel]="deployment.enabled">Enabled</mat-checkbox>
 
   <mat-checkbox [disabled]="true" [ngModel]="deployment.indirect">Indirect</mat-checkbox>
 

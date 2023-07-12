@@ -1,3 +1,5 @@
+import { ContainerHealth } from "src/app/container/models/container";
+
 export interface DeploymentRequest {
     name: string;
     host_resources: Record<string, string>;
@@ -17,7 +19,7 @@ export interface Deployment {
     id: string;
     module_id: string; 
     name: string;
-    stopped: boolean;
+    enabled: boolean;
     indirect: boolean;
     created: Date;
     updated: Date;
@@ -78,3 +80,12 @@ export interface DeploymentUpdateTemplate extends DeploymentTemplateBase {
 }
 
 export interface ModuleUpdateTemplate extends DeploymentTemplate {}
+
+export interface DeploymentHealth {
+    status: string;
+    containers: ContainerHealth[]
+}
+
+export interface DeploymentHealths {
+    [deployment_id: string]: DeploymentHealth
+}

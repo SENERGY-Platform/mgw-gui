@@ -16,7 +16,7 @@ export class ListComponent {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['name', 'info', 'edit', 'delete']
+  displayColumns = ['name', 'edit', 'delete']
 
   constructor(
     @Inject("SecretManagerService") private secretService: SecretManagerServiceService, 

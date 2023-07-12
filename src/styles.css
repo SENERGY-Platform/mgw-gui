@@ -63,3 +63,34 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .modal-outer {
     padding: 50px 50px;
 }
+
+/* State Circles red/green */
+.running {
+    background: #008700;
+}
+
+.stopped {
+    background: #db0000;
+}
+
+.circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+/* Code and Log Highlighting */
+/* for block of numbers */
+td.hljs-ln-numbers {
+    user-select: none;
+    text-align: center;
+    border-right: 1px solid gray;
+    vertical-align: top;
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+  }
+  
+/* for block of code */
+td.hljs-ln-code {
+padding-left: 8px !important;
+}

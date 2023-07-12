@@ -27,8 +27,8 @@
                 <ng-container matColumnDef="status">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Status</th>
                     <td mat-cell *matCellDef="let deployment">
-                        <div class="circle stopped" *ngIf="deployment.stopped"></div>
-                        <div class="circle running" *ngIf="!deployment.stopped"></div>
+                        <div class="circle stopped" *ngIf="deployment.enabled"></div>
+                        <div class="circle running" *ngIf="!deployment.enabled"></div>
                     </td>
                 </ng-container>
 
@@ -36,6 +36,14 @@
                     <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
                     <td mat-cell *matCellDef="let deployment">
                         {{deployment.name}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="enabled">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Enabled</th>
+                    <td mat-cell *matCellDef="let deployment">
+                        <mat-checkbox [disabled]="true" [ngModel]="deployment.enabled" *ngIf="deployment.enabled"></mat-checkbox>
+                        <mat-checkbox [disabled]="true" [ngModel]="!deployment.enabled" *ngIf="!deployment.enabled"></mat-checkbox>
                     </td>
                 </ng-container>
 
@@ -69,7 +77,7 @@
                 <ng-container matColumnDef="stop">
                     <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Stop</th>
                     <td mat-cell *matCellDef="let deployment">
-                        <button mat-icon-button color="primary" (click)="stop(deployment.id)" matTooltip="Stop" [disabled]="deployment.stopped">
+                        <button mat-icon-button color="primary" (click)="stop(deployment.id)" matTooltip="Stop" [disabled]="deployment.enabled">
                             <mat-icon>stop</mat-icon>
                         </button>
                     </td>
@@ -78,7 +86,7 @@
                 <ng-container matColumnDef="start">
                     <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Start</th>
                     <td mat-cell *matCellDef="let deployment">
-                        <button mat-icon-button color="primary" (click)="start(deployment.id)" matTooltip="Start" [disabled]="!deployment.stopped">
+                        <button mat-icon-button color="primary" (click)="start(deployment.id)" matTooltip="Start" [disabled]="!deployment.enabled">
                             <mat-icon>start</mat-icon>
                         </button>
                     </td>
@@ -87,8 +95,17 @@
                 <ng-container matColumnDef="delete">
                     <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Delete</th>
                     <td mat-cell *matCellDef="let deployment">
-                        <button mat-icon-button color="primary" (click)="delete(deployment.id)" matTooltip="Delete" [disabled]="!deployment.stopped">
+                        <button mat-icon-button color="primary" (click)="delete(deployment.id)" matTooltip="Delete" [disabled]="!deployment.enabled">
                             <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="show">
+                    <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Show</th>
+                    <td mat-cell *matCellDef="let deployment">
+                        <button mat-icon-button color="primary" (click)="showInstances(deployment.id)" matTooltip="Show Instances">
+                            <mat-icon>input</mat-icon>
                         </button>
                     </td>
                 </ng-container>

@@ -3,10 +3,11 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { AddModule, Module, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdates } from '../../../modules/models/module_models';
-import { Deployment, DeploymentRequest, DeploymentTemplate } from 'src/app/deployments/models/deployment_models';
+import { Deployment, DeploymentHealth, DeploymentHealths, DeploymentRequest, DeploymentTemplate } from 'src/app/deployments/models/deployment_models';
 import { ErrorService } from '../util/error.service';
 import { Job } from 'src/app/jobs/models/job.model';
 import { delay } from "rxjs/operators";
+import { Instance, Instances } from 'src/app/container/models/container';
 
 
 const TEMPLATE = {
@@ -335,7 +336,7 @@ export class ModuleManagerMockService {
       {
          "module_id": "modID", 
          "name": "Deployment1", 
-         "stopped": true, 
+         "enabled": true, 
          "id": "id", 
          'indirect': true, 
          'created': new Date(), 
@@ -354,7 +355,7 @@ export class ModuleManagerMockService {
          'created': new Date(), 
          'updated': new Date(), 
          "name": "Deployment2", 
-         "stopped": false,
+         "enabled": false,
          'secrets': {},
          'host_resources': {},
          'configs': {},
@@ -369,7 +370,7 @@ export class ModuleManagerMockService {
       var template = {
          "module_id": "modID", 
          "name": "Deployment1", 
-         "stopped": true, 
+         "enabled": true, 
          "id": "id", 
          'indirect': true, 
          'created': new Date(), 
@@ -443,4 +444,62 @@ export class ModuleManagerMockService {
       return new Observable(obs => {
          obs.next(true)
       })
-   }}
+   }
+
+   // Instances/Containers 
+   getDeploymentInstances(deploymentID: string): Observable<Instance> {
+      var instance = {
+         "id": "sdsd",
+         "created": new Date(),
+         "containers": [{
+            "id": "sdsd",
+            "ref": "ref",
+            "order": 1
+         }]
+      }
+      return of(instance).pipe(delay(1000));
+
+   }
+
+   getAllInstances(): Observable<Instances> {
+      var instances = {
+         "ssdsd": {
+         "id": "sdsd",
+         "created": new Date(),
+         "containers": [{
+            "id": "sdsd",
+            "ref": "ref",
+            "order": 1
+         }]
+         }
+      }
+      return of(instances).pipe(delay(1000));
+   }
+
+   // Health
+   getHealth(): Observable<DeploymentHealths> {
+     var health = {
+        "id": {
+           "status": "healthy",
+           "containers": [{
+              "id": "id2",
+              "ref": "Ref",
+              "state": "running"
+           }]
+        }
+     }
+     return of(health).pipe(delay(500))
+   }
+
+   getDeploymentHealth(deploymentID: string): Observable<DeploymentHealth> {
+      var health = {
+            "status": "healthy",
+            "containers": [{
+               "id": "id2",
+               "ref": "Ref",
+               "state": "running"
+            }]
+      }
+      return of(health).pipe(delay(500))
+   }
+}

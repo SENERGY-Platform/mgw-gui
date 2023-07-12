@@ -13,6 +13,8 @@ import { registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 import { JobsModule } from './jobs/jobs.module';
 import { SecretsModule } from './secrets/secrets.module';
+import { ContainerModule } from './container/container.module';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,7 @@ import { SecretsModule } from './secrets/secrets.module';
     BrowserAnimationsModule,
     DeploymentsModule,
     JobsModule,
+    ContainerModule,
     ModulesModule,
     MatSidenavModule,
     SecretsModule,
@@ -46,8 +49,24 @@ import { SecretsModule } from './secrets/secrets.module';
       'useClass': environment.hostManagerService
     },
     {
+      'provide': 'ContainerEngineManagerService',
+      'useClass': environment.containerEngineManagerService
+    },
+    {
       'provide': LOCALE_ID, 
       'useValue': 'de' 
+    },
+    {
+      'provide': HIGHLIGHT_OPTIONS,
+      'useValue': {
+        coreLibraryLoader: () => import('highlight.js/lib/core'),
+        lineNumbersLoader: () => import('ngx-highlightjs/line-numbers'),
+        lineNumbers: true,
+        languages: {
+          typescript: () => import('highlight.js/lib/languages/typescript'),
+        },
+        themePath: "assets/styles/code-themes/github-dark.css"
+      }
     }
   ],
   bootstrap: [AppComponent]

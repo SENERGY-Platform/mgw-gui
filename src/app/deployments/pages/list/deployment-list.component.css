@@ -7,20 +7,6 @@
     color: white;
 }
 
-.running {
-    background: #008700;
-}
-
-.stopped {
-    background: #db0000;
-}
-
-.circle {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-}
-
 spinner {
     position: fixed;
     top: 50%;

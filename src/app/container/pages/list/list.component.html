@@ -1,0 +1,65 @@
+<!--
+  ~ Copyright 2021 InfAI (CC SES)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+  <div class="layout-margin">
+    <span class="search-button-container">
+    </span>
+
+    <div *ngIf="dataSource.data.length === 0 && ready">No containers found.</div>
+    <spinner class="global-centered-spinner" [show]="!ready"></spinner>
+
+    <div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
+        <div class="table-container table-container-with-button">
+            <table mat-table [dataSource]="dataSource" matSort matSortActive="status" matSortDirection="desc">
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef>ID</th>
+                    <td mat-cell *matCellDef="let container">
+                        {{container.id}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="ref">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef>Reference</th>
+                    <td mat-cell *matCellDef="let container">
+                        {{container.ref}}
+                    </td>
+                </ng-container>
+               
+
+                <ng-container matColumnDef="state">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">State</th>
+                    <td mat-cell *matCellDef="let container">
+                        <div class="circle running" *ngIf="container.state == 'running'"></div>
+                        <div class="circle stopped" *ngIf="container.state == 'unhealthy'"></div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="logs">
+                    <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Logs</th>
+                    <td mat-cell *matCellDef="let container">
+                        <button mat-icon-button color="primary" (click)="showLogs(container.id)" matTooltip="Show Logs">
+                            <mat-icon>description</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let m; columns: displayColumns;"></tr>
+            </table>
+        </div>
+    </div>
+</div>
+

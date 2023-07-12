@@ -7,6 +7,7 @@ import { ModuleManagerService } from 'src/app/core/services/module-manager/modul
 import { ChangeDependenciesDialog } from '../../components/change-dependencies-dialog/change-dependencies-dialog';
 import { Deployment } from '../../models/deployment_models';
 import { ErrorService } from 'src/app/core/services/util/error.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'deployment-list',
@@ -19,13 +20,14 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['status', 'name', 'created', 'info', 'edit', 'start', 'stop', 'delete']
+  displayColumns = ['status', 'name', 'enabled', 'created', 'info', 'edit', 'start', 'stop', 'delete', 'show']
   
   constructor(
     public dialog: MatDialog, 
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
     public utilsService: UtilService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private router: Router
   ) {
   }
 
@@ -46,7 +48,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
       var value = (<any>row)[sortHeaderId];
       value = (typeof(value) === 'string') ? value.toUpperCase(): value;
       if(sortHeaderId == 'status') {
-        value = row.stopped ? 0 : 1
+        value = row.enabled ? 0 : 1
       }
       return value
     };
@@ -118,5 +120,9 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         }
       }
     )
+  }
+
+  showInstances(deploymentID: string) {
+    this.router.navigate(["/instances/" + deploymentID])
   }
 }
