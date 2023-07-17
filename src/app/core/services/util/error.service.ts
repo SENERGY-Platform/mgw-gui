@@ -35,7 +35,13 @@ export class ErrorService {
         
         var errorMessage 
         if(error instanceof HttpErrorResponse) {
-            errorMessage = error.error
+            if(typeof(error.error) == 'object') {
+              // e.g cant parse response body
+              errorMessage = error.message
+            } else {
+              // backend message
+              errorMessage = error.error
+            }
 
           if (error.status === 0) {
             // A client-side or network error occurred before getting a response. Handle it accordingly.
@@ -46,6 +52,7 @@ export class ErrorService {
             console.error(`Backend returned code ${error.status}, Error: `, errorMessage);
           }
         } else {
+          // e.g. custom Exception
           errorMessage = error.message
           console.error(errorMessage)
         }

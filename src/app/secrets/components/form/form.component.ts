@@ -39,7 +39,11 @@ export class FormComponent implements OnChanges, OnInit {
     if (changes[attribute] && changes[attribute].currentValue) {
       this.secretID = changes[attribute].currentValue
       this.ready = false
-      this.secretService.getSecret(this.secretID).subscribe(
+
+      var secretRequest = {
+        "id": this.secretID
+      }
+      this.secretService.getSecret(secretRequest).subscribe(
         {
           next: (secret) => {
             this.selectedSecretType = secret.type
@@ -77,18 +81,11 @@ export class FormComponent implements OnChanges, OnInit {
     if(!!secret) {
       secretName = secret.name
       secretType = secret.type
-      secretValue = secret.value
     }
 
     if(this.selectedSecretType == this.SecretTypesConst.BasicAuth) {
       var username = ""
       var password = ""
-
-      if(!!secret) {
-        var credentials = secretValue.split(":")
-        username = credentials[0]
-        password = credentials[0]
-      }
 
       this.form = this.fb.group({
         "name": this.fb.control(secretName),
@@ -116,7 +113,7 @@ export class FormComponent implements OnChanges, OnInit {
       secretRequest = {
         "name": this.form.get("name").value,
         "type": this.form.get("type").value,
-        "value": this.form.get("username").value + ":" + this.form.get("password").value
+        "value": JSON.stringify({"username": this.form.get("username").value, "password": this.form.get("password").value})
       }
     } else {
       secretRequest = this.form.value

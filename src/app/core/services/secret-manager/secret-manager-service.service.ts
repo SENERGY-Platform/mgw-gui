@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CreateSecret, Secret, SecretType } from 'src/app/secrets/models/secret_models';
+import { CreateSecret, Secret, SecretRequest, SecretType } from 'src/app/secrets/models/secret_models';
 import { ApiService } from '../../../core/services/api/api.service';
 
 @Injectable({
@@ -15,12 +15,12 @@ export class SecretManagerServiceService {
     return <Observable<Secret[]>>this.http.get(this.secretManagerPath + "/secrets")
   }
 
-  getSecret(secretID: string): Observable<Secret> {
-    return <Observable<Secret>>this.http.get(this.secretManagerPath + "/secrets/" + secretID)
+  getSecret(secretRequest: SecretRequest): Observable<Secret> {
+    return <Observable<Secret>>this.http.post(this.secretManagerPath + "/secret", secretRequest)
   }
 
   createSecret(secretRequest: CreateSecret) {
-    return this.http.post(this.secretManagerPath + "/secrets", secretRequest)
+    return this.http.post(this.secretManagerPath + "/secrets", secretRequest, undefined, "text")
   }
 
   getSecretTypes(): Observable<SecretType[]>  {

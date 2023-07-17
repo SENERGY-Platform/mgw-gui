@@ -21,3 +21,9 @@ export enum SecretTypes {
     BasicAuth = 'basic-auth',
     APIKey = 'api-key'
 }
+
+export interface SecretRequest {
+    id: string;
+    item?: string;
+    ref?: string;
+}
