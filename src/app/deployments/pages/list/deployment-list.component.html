@@ -74,7 +74,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="stop">
-                    <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Stop</th>
+                    <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Disable</th>
                     <td mat-cell *matCellDef="let deployment">
                         <button mat-icon-button color="primary" (click)="stop(deployment.id)" matTooltip="Stop" [disabled]="!deployment.enabled">
                             <mat-icon>stop</mat-icon>
@@ -83,7 +83,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="start">
-                    <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Start</th>
+                    <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Enable</th>
                     <td mat-cell *matCellDef="let deployment">
                         <button mat-icon-button color="primary" (click)="start(deployment.id)" matTooltip="Start" [disabled]="deployment.enabled">
                             <mat-icon>start</mat-icon>
