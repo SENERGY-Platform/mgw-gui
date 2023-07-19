@@ -63,7 +63,7 @@ import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
         lineNumbersLoader: () => import('ngx-highlightjs/line-numbers'),
         lineNumbers: true,
         languages: {
-          typescript: () => import('highlight.js/lib/languages/typescript'),
+          //typescript: () => import('highlight.js/lib/languages/typescript'),
         },
         themePath: "assets/styles/code-themes/github-dark.css"
       }
