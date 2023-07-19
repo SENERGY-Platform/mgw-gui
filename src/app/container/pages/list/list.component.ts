@@ -20,7 +20,7 @@ export class ListComponent implements OnDestroy {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['id', 'ref', 'logs', 'state']
+  displayColumns = ['id', 'ref', 'state', 'logs']
   deploymentID!: string
   
   constructor(
