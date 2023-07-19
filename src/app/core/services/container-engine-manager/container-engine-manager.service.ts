@@ -15,6 +15,6 @@ export class ContainerEngineManagerService {
     var url = this.logPath + "/" + containerID
     let queryParams = new HttpParams()
     queryParams.set("max_lines", max_lines)
-    return <Observable<string>>this.http.get(url, queryParams)
+    return <Observable<string>>this.http.get(url, queryParams, "text")
   }
 }
