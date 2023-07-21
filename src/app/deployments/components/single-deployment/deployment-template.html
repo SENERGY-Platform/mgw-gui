@@ -21,7 +21,7 @@
 
       <h2>Host Resources</h2>
       <div *ngFor="let host_resource of deploymentTemplateData['host_resources'];" formGroupName="host_resources"
-        class="form-field-container">
+        class="form-field-container" id="hostResources">
         <mat-form-field appearance="fill" [hintLabel]="host_resource.description">
           <mat-label>{{host_resource.name}}</mat-label>
           <mat-select [formControlName]="host_resource.id">
@@ -30,6 +30,10 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+
+        <button mat-fab color="primary" class="fab" matTooltip="Reload Host Resources" (click)="reloadHostRes()">
+          <mat-icon>refresh</mat-icon>
+        </button>
       </div>
 
       <h2>Secrets</h2>

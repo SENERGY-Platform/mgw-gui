@@ -14,6 +14,6 @@ export class HostManagerService {
   ) { } 
   
   getHostResources(): Observable<HostResource[]> {
-    return <Observable<HostResource[]>>this.http.get(this.hostManagerPath + "/resources")
+    return <Observable<HostResource[]>>this.http.get(this.hostManagerPath + "/host-resources")
   }
 }

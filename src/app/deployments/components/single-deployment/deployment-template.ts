@@ -1,6 +1,7 @@
 import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { HostManagerService } from 'src/app/core/services/host-manager/host-manager.service';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Module } from 'src/app/modules/models/module_models';
@@ -30,7 +31,8 @@ export class DeploymentTemplate implements OnInit {
       public dialog: MatDialog, 
       private rootFormGroup: FormGroupDirective,
       @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
-      private errorService: ErrorService
+      private errorService: ErrorService,
+      @Inject('HostManagerService') private hostService: HostManagerService
     ) {
     }
 
@@ -131,5 +133,18 @@ export class DeploymentTemplate implements OnInit {
         if (index >= 0) {
           this.form?.get(formGroup)?.get(config_id)?.value.splice(index, 1);
         }
+      }
+
+      reloadHostRes() {
+        this.hostService.getHostResources().subscribe(
+          {
+            next: (hostResources) => {
+              this.hostResourcesOptions = hostResources
+            },
+            error: (err) => {
+              this.errorService.handleError(DeploymentTemplate.name, "reloadHostRes", err)
+            }
+          }
+        )
       }
 }

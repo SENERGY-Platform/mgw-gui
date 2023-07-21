@@ -17,6 +17,7 @@ export class LogsComponent implements OnDestroy {
   interval: any
   maxLines: any = 100
   logs: string = ""
+  autoRefreshEnabled = true
 
   constructor(
     @Inject("ContainerEngineManagerService") private containerService: ContainerEngineManagerService, 

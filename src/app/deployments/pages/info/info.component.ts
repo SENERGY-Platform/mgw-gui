@@ -18,6 +18,7 @@ export class InfoComponent {
   ) {
     this.route.params.subscribe(params => {
       this.moduleService.loadDeployment(params['id']).subscribe(deployment => {
+        console.log(deployment)
         this.deployment = deployment
       })
     })

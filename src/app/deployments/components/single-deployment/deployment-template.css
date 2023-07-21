@@ -6,6 +6,15 @@ mat-form-field {
     width: 100%;
 }
 
+#hostResources {
+    display: flex;
+    justify-content: space-between;
+}
+
+#hostResources mat-form-field {
+    width: 80%;
+}
+
 .secret-container {
     display: flex;
     align-items: center;

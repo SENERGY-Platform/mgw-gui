@@ -12,7 +12,7 @@ pre {
 pre code {
   flex: 1;
   line-height: 1.5em;
-  font-size: 14px;
+  font-size: 12px;
   min-height: 100%;
   padding: 1em 1.2em;
 }
@@ -29,4 +29,7 @@ pre code .hljs-line-numbers {
   transition: border ease 1s;
 }
 
-
+#logs code{
+  overflow-y: scroll;
+  max-height: calc(100vh - 150px);
+}

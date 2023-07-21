@@ -40,10 +40,7 @@ export class FormComponent implements OnChanges, OnInit {
       this.secretID = changes[attribute].currentValue
       this.ready = false
 
-      var secretRequest = {
-        "id": this.secretID
-      }
-      this.secretService.getSecret(secretRequest).subscribe(
+      this.secretService.getSecret(this.secretID).subscribe(
         {
           next: (secret) => {
             this.selectedSecretType = secret.type

@@ -477,7 +477,7 @@ export class ModuleManagerMockService {
    }
 
    // Health
-   getHealth(): Observable<DeploymentHealths> {
+   getDeploymentsHealth(): Observable<DeploymentHealths> {
      var health = {
         "id": {
            "status": "healthy",

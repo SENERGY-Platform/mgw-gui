@@ -7,7 +7,7 @@ import { ModuleManagerMockService } from "../app/core/services/module-manager/mo
 export const environment = {
     production: false,
     moduleManagerService: ModuleManagerMockService,
-    secretManagerService: SecretManagerServiceService,
+    secretManagerService: SecretManagerMockService,
     hostManagerService: HostManagerMockService,
     containerEngineManagerService: ContainerEngineManagerMockService
 };

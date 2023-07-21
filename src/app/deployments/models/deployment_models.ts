@@ -1,5 +1,6 @@
 import { ContainerHealth } from "src/app/container/models/container";
 
+// Create a new Deployment
 export interface DeploymentRequest {
     name: string;
     host_resources: Record<string, string>;
@@ -9,6 +10,7 @@ export interface DeploymentRequest {
     dependencies: Record<string, DeploymentRequest>;
 }
 
+// Deployment Details
 export interface DeploymentConfig {
     value: any;
     data_type: any;
@@ -30,6 +32,7 @@ export interface Deployment {
     dep_requiring: string[];
 }
 
+// Deployment Template -> Info for loading the form
 export interface HostResourcesTemplate {
     name: string;
     description: string;
@@ -81,6 +84,7 @@ export interface DeploymentUpdateTemplate extends DeploymentTemplateBase {
 
 export interface ModuleUpdateTemplate extends DeploymentTemplate {}
 
+// Health
 export interface DeploymentHealth {
     status: string;
     containers: ContainerHealth[]
@@ -89,3 +93,6 @@ export interface DeploymentHealth {
 export interface DeploymentHealths {
     [deployment_id: string]: DeploymentHealth
 }
+
+// Deployment Info + Health
+export interface DeploymentWithHealth extends Deployment, DeploymentHealth {}

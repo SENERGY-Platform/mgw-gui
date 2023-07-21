@@ -149,7 +149,7 @@ export class ModuleManagerService {
   }
 
   // Health
-  getHealth(): Observable<DeploymentHealths> {
+  getDeploymentsHealth(): Observable<DeploymentHealths> {
     var url = this.moduleManagerPath + "/health"
     return <Observable<DeploymentHealths>>this.http.get(url)
   }

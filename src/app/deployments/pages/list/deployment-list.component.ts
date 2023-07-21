@@ -4,10 +4,10 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
-import { ChangeDependenciesDialog } from '../../components/change-dependencies-dialog/change-dependencies-dialog';
-import { Deployment } from '../../models/deployment_models';
+import { Deployment, DeploymentWithHealth } from '../../models/deployment_models';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Router } from '@angular/router';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'deployment-list',
@@ -20,7 +20,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['status', 'name', 'enabled', 'created', 'info', 'edit', 'start', 'stop', 'delete', 'show']
+  displayColumns = ['status', 'name', 'created', 'enabled', 'info', 'edit', 'delete', 'show']
   
   constructor(
     public dialog: MatDialog, 
@@ -59,8 +59,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.moduleService.loadDeployments().subscribe(
       {
         next: (deployments) => {
-          this.dataSource.data = deployments
-          this.ready = true
+          this.loadDeploymentHealthStates(deployments)
         }, 
         error: (err) => {
           this.errorService.handleError(DeploymentListComponent.name, "loadDeployments", err)
@@ -70,26 +69,48 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     )
   }
 
-  stop(deploymentID: string) {
-    var dialogRef = this.dialog.open(ChangeDependenciesDialog, {data: {status_change: 'stop'}});
-    dialogRef?.afterClosed().subscribe(result => {
-      var changeDependency = result['changeDependency']
-      this.moduleService.stopDeployment(deploymentID, changeDependency).subscribe(
-        {
-          next: (jobID) => {
-            // Stop results in a job which needs to be polled 
-            var message = "Deployment stop is running"
-            var self = this
-            this.utilsService.checkJobStatus(jobID, message, function() {
-              self.loadDeployments()
-            })
-          },
-          error: (err) => {
-            this.errorService.handleError(DeploymentListComponent.name, "stop", err)
-          }
+  loadDeploymentHealthStates(deployments: Deployment[]) {
+    this.moduleService.getDeploymentsHealth().subscribe(
+      {
+        next: (deploymentHealthStates) => {
+          var deploymentsWithHealth: DeploymentWithHealth[] = []
+          
+          deployments.forEach(deployment => {
+            var deploymentWithHealth = {
+              ...deploymentHealthStates[deployment.id],
+              ...deployment
+            }
+            deploymentsWithHealth.push(deploymentWithHealth)
+          });
+
+          this.dataSource.data = deploymentsWithHealth
+          this.ready = true
+          console.log(deploymentsWithHealth)
+        },
+        error: (err) => {
+          this.errorService.handleError(DeploymentListComponent.name, "loadDeploymentHealthStates", err)
         }
-      )
-    })
+      }
+    )
+
+  }
+
+  stop(deploymentID: string) {
+    this.moduleService.stopDeployment(deploymentID, false).subscribe(
+      {
+        next: (jobID) => {
+          // Stop results in a job which needs to be polled 
+          var message = "Deployment is stopping"
+          var self = this
+          this.utilsService.checkJobStatus(jobID, message, function() {
+            self.loadDeployments()
+          })
+        },
+        error: (err) => {
+          this.errorService.handleError(DeploymentListComponent.name, "stop", err)
+        }
+      }
+    )
   }
 
   start(deploymentID: string) {
@@ -105,6 +126,14 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         }
       }
     )
+  }
+
+  toggleState(event: MatSlideToggleChange, deploymentID: string) {
+    if(event.checked) {
+      this.start(deploymentID)
+    } else {
+      this.stop(deploymentID)
+    }
   }
 
   delete(deploymentID: string) {

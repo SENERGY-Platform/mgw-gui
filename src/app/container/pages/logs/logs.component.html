@@ -1,6 +1,6 @@
 <div class="layout-margin">
   <div id="settings">
-    <mat-slide-toggle (change)="autoRefreshToggleChanged($event)">Auto Refresh</mat-slide-toggle>
+    <mat-slide-toggle [ngModel]="autoRefreshEnabled" (change)="autoRefreshToggleChanged($event)">Auto Refresh</mat-slide-toggle>
 
     <mat-form-field>
       <mat-label>Lines</mat-label>
@@ -8,6 +8,9 @@
     </mat-form-field>
   </div>
 
-  <pre *ngIf="ready && !init"><code [lineNumbers]="true" [highlight]="logs">
+  <div id="logs">
+    <pre *ngIf="ready && !init"><code [lineNumbers]="true" [highlight]="logs">
     </code></pre>
+  </div>
+
 </div>

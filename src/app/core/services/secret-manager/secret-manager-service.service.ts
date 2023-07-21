@@ -15,8 +15,8 @@ export class SecretManagerServiceService {
     return <Observable<Secret[]>>this.http.get(this.secretManagerPath + "/secrets")
   }
 
-  getSecret(secretRequest: SecretRequest): Observable<Secret> {
-    return <Observable<Secret>>this.http.post(this.secretManagerPath + "/secret", secretRequest)
+  getSecret(secretID: string): Observable<Secret> {
+    return <Observable<Secret>>this.http.get(this.secretManagerPath + "/secrets/" + secretID)
   }
 
   createSecret(secretRequest: CreateSecret) {

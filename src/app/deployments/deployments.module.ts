@@ -13,7 +13,6 @@ import {RouterModule, Routes} from '@angular/router';
 import { ModulesComponent } from './pages/add/modules.component';
 import { DeploymentTemplate } from './components/single-deployment/deployment-template';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import { ChangeDependenciesDialog } from './components/change-dependencies-dialog/change-dependencies-dialog';
 import {MatTableModule} from '@angular/material/table';
 import { CoreModule } from 'src/app/core/core.module';
 import { MatSortModule } from '@angular/material/sort';
@@ -22,6 +21,7 @@ import { ShowModuleComponentComponent } from './pages/edit/show-module-component
 import { JobLoaderModalComponent } from '../core/components/job-loader-modal/job-loader-modal.component';
 import { InfoComponent } from './pages/info/info.component';
 import {MatCardModule} from '@angular/material/card'; 
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 const routes: Routes = [
   {
     path: 'deployments', 
@@ -39,7 +39,6 @@ const routes: Routes = [
     DeploymentListComponent,
     ModulesComponent,
     DeploymentTemplate,
-    ChangeDependenciesDialog,
     DeploymentComponentComponent,
     ShowModuleComponentComponent,
     JobLoaderModalComponent,
@@ -49,6 +48,7 @@ const routes: Routes = [
   imports: [
     MatInputModule,
     MatCheckboxModule,
+    MatSlideToggleModule,
     CoreModule,
     MatCardModule,
     MatTableModule,
