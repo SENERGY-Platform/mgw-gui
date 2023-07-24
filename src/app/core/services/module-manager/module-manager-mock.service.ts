@@ -375,7 +375,7 @@ export class ModuleManagerMockService {
          'indirect': true, 
          'created': new Date(), 
          'updated': new Date(),
-         'secrets': {"cert": "cert", "login": "login"},
+         'secrets': {"cert": {"id": "cert", "variants": []}, "login": {"id": "login", "variants": []}},
          'host_resources': {"zigbee": "value", "bluetooth": "b2"},
          'configs': {
             "c1": {"is_slice": false, "value": "value", "data_type": "string"}, 

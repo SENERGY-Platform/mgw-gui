@@ -1,75 +1,79 @@
-<div class="form-margin">
-  <mat-form-field appearance="fill">
-    <mat-label>Deployment Name</mat-label>
-    <input matInput [readonly]="true" [value]="deployment.name">
-  </mat-form-field>
+<spinner class="global-centered-spinner" [show]="!ready"></spinner>
 
-  <mat-form-field appearance="fill">
-    <mat-label>Deployment ID</mat-label>
-    <input matInput [readonly]="true" [value]="deployment.id">
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Module ID</mat-label>
-    <input matInput [readonly]="true" [value]="deployment.module_id">
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Created</mat-label>
-    <input matInput [readonly]="true" [value]="deployment.created | date: 'short'">
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Updated</mat-label>
-    <input matInput [readonly]="true" [value]="deployment.updated | date: 'short'">
-  </mat-form-field>
-
-  <mat-checkbox [disabled]="true" [ngModel]="deployment.enabled">Enabled</mat-checkbox>
-
-  <mat-checkbox [disabled]="true" [ngModel]="deployment.indirect">Indirect</mat-checkbox>
-
-  <h2 *ngIf="deployment['host_resources']">Host Resources</h2>
-  <div *ngFor="let hostResourceItem of deployment['host_resources'] | keyvalue;"
-    class="form-field-container">
+<div *ngIf="ready">  
+  <div class="form-margin">
     <mat-form-field appearance="fill">
-      <mat-label>{{hostResourceItem.key}}</mat-label>
-      <input [readonly]="true" matInput [value]="hostResourceItem.value">
+      <mat-label>Deployment Name</mat-label>
+      <input matInput [readonly]="true" [value]="deployment.name">
     </mat-form-field>
-  </div>
 
-  <H2 *ngIf="deployment['secrets']">Secrets</H2>
-  <div *ngFor="let secretItem of deployment['secrets'] | keyvalue" class="form-field-container">
-    <!-- Create new Secret -->
-    <div class="secret-container">
-      <!-- Select from available secrets -->
+    <mat-form-field appearance="fill">
+      <mat-label>Deployment ID</mat-label>
+      <input matInput [readonly]="true" [value]="deployment.id">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Module ID</mat-label>
+      <input matInput [readonly]="true" [value]="deployment.module_id">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Created</mat-label>
+      <input matInput [readonly]="true" [value]="deployment.created | date: 'short'">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Updated</mat-label>
+      <input matInput [readonly]="true" [value]="deployment.updated | date: 'short'">
+    </mat-form-field>
+
+    <mat-checkbox [disabled]="true" [ngModel]="deployment.enabled">Enabled</mat-checkbox>
+
+    <mat-checkbox [disabled]="true" [ngModel]="deployment.indirect">Indirect</mat-checkbox>
+
+    <h2 *ngIf="objectKeys(deployment['host_resources']).length > 0">Host Resources</h2>
+    <div *ngFor="let hostResourceItem of deployment['host_resources'] | keyvalue;" class="form-field-container">
       <mat-form-field appearance="fill">
-        <mat-label>{{secretItem.key}}</mat-label>
-        <input matInput [readonly]="true" [value]="secretItem.value.id">
+        <mat-label>{{hostResourceItem.key}}</mat-label>
+        <input [readonly]="true" matInput [value]="hostResourceIDToName[hostResourceItem.value]">
       </mat-form-field>
     </div>
 
-  </div>
+    <H2 *ngIf="objectKeys(deployment['secrets']).length > 0">Secrets</H2>
+    <div *ngFor="let secretItem of deployment['secrets'] | keyvalue" class="form-field-container">
+      <!-- Create new Secret -->
+      <div class="secret-container">
+        <!-- Select from available secrets -->
+        <mat-form-field appearance="fill">
+          <mat-label>{{secretItem.key}}</mat-label>
+          <input matInput [readonly]="true" [value]="secretIDToName[secretItem.value.id]">
+        </mat-form-field>
+      </div>
 
-  <h2 *ngIf="deployment['configs']">Configs</h2>
-  <div *ngFor="let configItem of deployment['configs'] | keyvalue;" class="form-field-container">
-    <!-- Single Value Config -->
-    <span *ngIf="!configItem.value.is_slice">
-      <mat-form-field appearance="fill">
+    </div>
+
+    <h2 *ngIf="objectKeys(deployment['configs']).length > 0">Configs</h2>
+    <div *ngFor="let configItem of deployment['configs'] | keyvalue;" class="form-field-container">
+      <!-- Single Value Config -->
+      <span *ngIf="!configItem.value.is_slice">
+        <mat-form-field appearance="fill">
+          <mat-label>{{configItem.key}}</mat-label>
+          <input matInput [readonly]="true" [value]="configItem.value.value">
+        </mat-form-field>
+      </span>
+
+      <!-- Multi Value Config -->
+      <span *ngIf="configItem.value.is_slice">
         <mat-label>{{configItem.key}}</mat-label>
-        <input matInput [readonly]="true" [value]="configItem.value.value">
-      </mat-form-field>
-    </span>
+        <mat-chip-grid #chipGrid>
+          <mat-chip-row *ngFor="let value of configItem.value.value" [editable]="false">
+            {{value}}
+          </mat-chip-row>
+        </mat-chip-grid>
+        <input placeholder="New value..." [matChipInputFor]="chipGrid" />
+      </span>
 
-    <!-- Multi Value Config -->
-    <span *ngIf="configItem.value.is_slice">
-      <mat-label>{{configItem.key}}</mat-label>
-      <mat-chip-grid #chipGrid>
-        <mat-chip-row *ngFor="let value of configItem.value.value" [editable]="false">
-          {{value}}
-        </mat-chip-row>
-      </mat-chip-grid>
-      <input placeholder="New value..." [matChipInputFor]="chipGrid" />
-    </span>
-
+    </div>
   </div>
+
 </div>

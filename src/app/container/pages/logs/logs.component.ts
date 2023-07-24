@@ -30,6 +30,7 @@ export class LogsComponent implements OnDestroy {
       this.containerID = params['id']
       this.getLogs();
       this.init = false
+      this.startAutoRefresh()
     })
   }
 
@@ -52,11 +53,15 @@ export class LogsComponent implements OnDestroy {
     clearTimeout(this.interval)
   }
 
+  startAutoRefresh() {
+    this.interval = setInterval(() => { 
+      this.getLogs(); 
+    }, 5000);
+  }
+
   autoRefreshToggleChanged(event: MatSlideToggleChange) {
     if(event.checked) {
-      this.interval = setInterval(() => { 
-        this.getLogs(); 
-      }, 5000);
+      this.startAutoRefresh()
     } else {
       clearTimeout(this.interval)
     }

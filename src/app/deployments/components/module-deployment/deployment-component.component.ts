@@ -75,18 +75,30 @@ export class DeploymentComponentComponent implements OnInit {
       obs.push(this.loadDeploymentUpdateTemplate())
     } 
 
-    forkJoin(obs).subscribe((_) => {
-      this.setup(this.deploymentTemplate)
+    forkJoin(obs).subscribe((results) => {
+      if(results.every(v => v === true)) {
+        this.setup(this.deploymentTemplate)
+        this.ready = true
+      }
     })
   }
 
   loadDeploymentUpdateTemplate(): Observable<any> {
     return new Observable(obs => {
-      this.moduleService.loadDeploymentUpdateTemplate(this.deploymentID).subscribe((template: any) => {
-        this.deploymentTemplate = template
-        obs.next(true)
-        obs.complete()
-      })
+      this.moduleService.loadDeploymentUpdateTemplate(this.deploymentID).subscribe(
+        {
+          next: (template: any) => {
+            this.deploymentTemplate = template
+            obs.next(true)
+            obs.complete()
+          },
+          error: (err) => {
+            this.errorService.handleError(DeploymentComponentComponent.name, "loadDeploymentUpdateTemplate", err)
+            obs.next(false)
+            obs.complete()
+          }
+        }
+      )
     })
   }
 
@@ -101,6 +113,8 @@ export class DeploymentComponentComponent implements OnInit {
           },
           error: (err) => {
             this.errorService.handleError(DeploymentComponentComponent.name, "loadModuleUpdateTemplate", err)
+            obs.next(false)
+            obs.complete()
           }
         }
       )
@@ -118,6 +132,8 @@ export class DeploymentComponentComponent implements OnInit {
           },
           error: (err) => {
             this.errorService.handleError(DeploymentComponentComponent.name, "loadDeploymentTemplate", err)
+            obs.next(false)
+            obs.complete()
           }
         }
       )
@@ -205,20 +221,27 @@ export class DeploymentComponentComponent implements OnInit {
 
   loadAvailableSecrets(): Observable<any> {
     return new Observable(obs => {
-      this.secretSercice.getSecrets().subscribe((secrets: Secret[]) => {
-        if(secrets) {
-          secrets.forEach((secret: any) => {
-            var secretType = secret.type
-            if(!(secretType in this.secretOptions)) {
-              this.secretOptions[secret.type] = []
-            }
-            
-            this.secretOptions[secret.type].push(secret)
-          });
-          this.secretOptionsBinding = this.secretOptions
+      this.secretSercice.getSecrets().subscribe({
+        next: (secrets: Secret[]) => {
+          if(secrets) {
+            secrets.forEach((secret: any) => {
+              var secretType = secret.type
+              if(!(secretType in this.secretOptions)) {
+                this.secretOptions[secret.type] = []
+              }
+              
+              this.secretOptions[secret.type].push(secret)
+            });
+            this.secretOptionsBinding = this.secretOptions
+          }
+          obs.next(true)
+          obs.complete()
+        },
+        error: (err) => {
+          this.errorService.handleError(DeploymentComponentComponent.name, "loadAvailableSecrets", err)
+          obs.next(false)
+          obs.complete()
         }
-        obs.next(true)
-        obs.complete()
       })
     })
   }
@@ -234,6 +257,8 @@ export class DeploymentComponentComponent implements OnInit {
           },
           error: (err) => {
             this.errorService.handleError(DeploymentComponentComponent.name, "loadAvailableHostResources", err)
+            obs.next(false)
+            obs.complete()
           }
         }
       )
