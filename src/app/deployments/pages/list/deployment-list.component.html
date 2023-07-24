@@ -27,8 +27,9 @@
                 <ng-container matColumnDef="status">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Status</th>
                     <td mat-cell *matCellDef="let deployment">
-                        <div class="circle stopped" *ngIf="deployment.status == 'unhealthy'"></div>
-                        <div class="circle running" *ngIf="deployment.status == 'healthy'"></div>
+                        <div class="circle red" *ngIf="deployment.status == 'unhealthy'"></div>
+                        <div class="circle green" *ngIf="deployment.status == 'healthy'"></div>
+                        <div class="circle grey" *ngIf="!deployment.status"></div>
                     </td>
                 </ng-container>
 
@@ -43,7 +44,7 @@
                     <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Enabled</th>
                     <td mat-cell *matCellDef="let deployment">
                         <mat-slide-toggle
-                            color="accent"
+                            color="primary"
                             [checked]="deployment.enabled"
                             (change)="toggleState($event, deployment.id)"
                             >

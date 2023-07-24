@@ -65,12 +65,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 /* State Circles red/green */
-.running {
+.green {
     background: #008700;
 }
 
-.stopped {
+.red {
     background: #db0000;
+}
+
+.grey {
+    background: grey;
 }
 
 .circle {

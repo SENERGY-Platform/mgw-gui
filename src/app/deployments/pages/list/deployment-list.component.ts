@@ -73,11 +73,14 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.moduleService.getDeploymentsHealth().subscribe(
       {
         next: (deploymentHealthStates) => {
+          console.log(deploymentHealthStates)
           var deploymentsWithHealth: DeploymentWithHealth[] = []
           
           deployments.forEach(deployment => {
+            var deploymentHealth = deploymentHealthStates[deployment.id]
+
             var deploymentWithHealth = {
-              ...deploymentHealthStates[deployment.id],
+              ...deploymentHealth,
               ...deployment
             }
             deploymentsWithHealth.push(deploymentWithHealth)
@@ -85,7 +88,6 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
 
           this.dataSource.data = deploymentsWithHealth
           this.ready = true
-          console.log(deploymentsWithHealth)
         },
         error: (err) => {
           this.errorService.handleError(DeploymentListComponent.name, "loadDeploymentHealthStates", err)
