@@ -44,7 +44,7 @@
       <!-- Select from available secrets -->
       <mat-form-field appearance="fill">
         <mat-label>{{secretItem.key}}</mat-label>
-        <input matInput [readonly]="true" [value]="secretItem.value">
+        <input matInput [readonly]="true" [value]="secretItem.value.id">
       </mat-form-field>
     </div>
 

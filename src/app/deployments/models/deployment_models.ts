@@ -11,10 +11,21 @@ export interface DeploymentRequest {
 }
 
 // Deployment Details
-export interface DeploymentConfig {
+export interface DeploymentConfigInfo {
     value: any;
     data_type: any;
     is_slice: boolean;
+}
+
+interface DeploymentVariantInfo {
+    as_mount: boolean;
+    as_env: boolean;
+    item?: string;
+}
+
+interface DeploymentSecretInfo {
+    id: string;
+    variants: DeploymentVariantInfo[];
 }
 
 export interface Deployment {
@@ -26,8 +37,8 @@ export interface Deployment {
     created: Date;
     updated: Date;
     host_resources: Record<string, string>;
-    configs: Record<string, DeploymentConfig>;
-    secrets: Record<string, string>;
+    configs: Record<string, DeploymentConfigInfo>;
+    secrets: Record<string, DeploymentSecretInfo>;
     required_dep: string[];
     dep_requiring: string[];
 }

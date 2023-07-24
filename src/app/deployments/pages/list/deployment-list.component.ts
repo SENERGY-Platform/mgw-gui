@@ -20,7 +20,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['status', 'name', 'created', 'enabled', 'info', 'edit', 'delete', 'show']
+  displayColumns = ['name', 'created', 'status', 'enabled', 'info', 'edit', 'delete', 'show']
   
   constructor(
     public dialog: MatDialog, 
