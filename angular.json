@@ -100,9 +100,12 @@
             },
             "development": {
               "browserTarget": "mgw-gui:build:development"
+            },
+            "development_mock": {
+              "browserTarget": "mgw-gui:build:development_mock"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development_mock"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

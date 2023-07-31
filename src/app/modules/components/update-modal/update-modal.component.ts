@@ -1,19 +1,18 @@
-import { Component, Inject } from '@angular/core';
-import { Form, FormBuilder } from '@angular/forms';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { throwMatDuplicatedDrawerError } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { UtilService } from 'src/app/core/services/util/util.service';
-import { ModuleUpdate, ModuleUpdates } from '../../models/module_models';
+import { ModuleUpdate } from '../../models/module_models';
 
 @Component({
   selector: 'app-update-modal',
   templateUrl: './update-modal.component.html',
   styleUrls: ['./update-modal.component.css']
 })
-export class UpdateModalComponent {
+export class UpdateModalComponent implements OnInit {
   availableModuleUpdate: ModuleUpdate
   selectedVersionsPerModule!: Record<string, string>
   form: any = this.fb.group({}) 
@@ -31,9 +30,12 @@ export class UpdateModalComponent {
   ) {
     this.availableModuleUpdate = data.availableModuleUpdate
     this.moduleID = data.moduleID 
+  }
 
+  ngOnInit(): void {
+    var versions = this.availableModuleUpdate.versions.sort().reverse()
     this.form = this.fb.group({
-        "version": this.fb.control([this.availableModuleUpdate.versions])
+      "version": this.fb.control([versions])
     })
   }
 

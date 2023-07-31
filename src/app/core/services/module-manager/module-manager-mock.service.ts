@@ -1,13 +1,11 @@
-import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { AddModule, Module, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdates } from '../../../modules/models/module_models';
 import { Deployment, DeploymentHealth, DeploymentHealths, DeploymentRequest, DeploymentTemplate } from 'src/app/deployments/models/deployment_models';
 import { ErrorService } from '../util/error.service';
 import { Job } from 'src/app/jobs/models/job.model';
 import { delay } from "rxjs/operators";
-import { Instance, Instances } from 'src/app/container/models/container';
 
 
 const TEMPLATE = {
@@ -334,7 +332,10 @@ export class ModuleManagerMockService {
   public loadDeployments(): Observable<Deployment[]> {
      var deployments = [
       {
-         "module_id": "modID", 
+         "module": {
+            "id": "modID",
+            "version": ""
+         }, 
          "name": "Deployment1", 
          "enabled": true, 
          "id": "id", 
@@ -345,12 +346,19 @@ export class ModuleManagerMockService {
          'host_resources': {},
          'configs': {},
          'dep_requiring': [],
-         'required_dep': []
+         'required_dep': [],
+         'instance': {
+            "id": "id",
+            "created": new Date(),
+            "containers": []
+         }
       }, 
       {
          "id": "id", 
-         "module_id": 
-         "id", 
+         "module": {
+            "id": "modID",
+            "version": ""
+         }, 
          'indirect': true, 
          'created': new Date(), 
          'updated': new Date(), 
@@ -360,7 +368,12 @@ export class ModuleManagerMockService {
          'host_resources': {},
          'configs': {},
          'dep_requiring': [],
-         'required_dep': []
+         'required_dep': [],
+         'instance': {
+            "id": "id",
+            "created": new Date(),
+            "containers": []
+         }
       }]
       return of(deployments).pipe(delay(1000));
   }  
@@ -368,7 +381,10 @@ export class ModuleManagerMockService {
   public loadDeployment(deploymentID: string): Observable<Deployment> {   
    return new Observable((subscriber) => {
       var template = {
-         "module_id": "modID", 
+         "module": {
+            "id": "modID",
+            "version": ""
+         }, 
          "name": "Deployment1", 
          "enabled": true, 
          "id": "id", 
@@ -385,7 +401,12 @@ export class ModuleManagerMockService {
             "c5": {"is_slice": false, "value": 2, "data_type": "number"},
          },
          'dep_requiring': [],
-         'required_dep': []
+         'required_dep': [],
+         "instance": {
+            "id": "id",
+            "created": new Date(),
+            "containers": []
+         }
       }
       subscriber.next(template)
       subscriber.complete()

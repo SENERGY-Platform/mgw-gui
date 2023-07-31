@@ -72,7 +72,7 @@ export class DeploymentComponentComponent implements OnInit {
     } else if(this.mode == "edit") {
       obs.push(this.loadDeploymentUpdateTemplate())
     } else if(this.mode == "update") {
-      obs.push(this.loadDeploymentUpdateTemplate())
+      obs.push(this.loadModuleUpdateTemplate())
     } 
 
     forkJoin(obs).subscribe((results) => {
