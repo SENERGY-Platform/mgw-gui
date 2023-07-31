@@ -72,6 +72,7 @@ export class DeploymentComponentComponent implements OnInit {
     } else if(this.mode == "edit") {
       obs.push(this.loadDeploymentUpdateTemplate())
     } else if(this.mode == "update") {
+      this.moduleID = decodeURIComponent(this.moduleID)
       obs.push(this.loadModuleUpdateTemplate())
     } 
 
@@ -289,6 +290,47 @@ export class DeploymentComponentComponent implements OnInit {
 
   }
 
+  deploy(deploymentRequest: DeploymentRequest) {
+    this.moduleService.deployModule(deploymentRequest).subscribe({
+      next: () => {
+          this.router.navigate(["/deployments"])
+      },
+      error: (err) => {
+        this.errorService.handleError(DeploymentComponentComponent.name, "deploy", err)
+      }
+    })
+  }
+
+  updateDeployment(deploymentRequest: DeploymentRequest) {
+    this.moduleService.updateDeployment(this.deploymentID, deploymentRequest).subscribe({
+      next: (jobID) => {
+        var message = "Deployment update is running"
+        var self = this
+        this.utilsService.checkJobStatus(jobID, message, function() {
+          self.router.navigate(["/deployments"])
+        })
+      },
+      error: (err) => {
+        this.errorService.handleError(DeploymentComponentComponent.name, "updateDeployment", err)
+      }
+    })
+  }
+
+  updateModule(deploymentRequest: DeploymentRequest) {
+    this.moduleService.updateModule(this.moduleID, deploymentRequest).subscribe({
+      next: (jobID) => {
+        var message = "Module update is running"
+        var self = this
+        this.utilsService.checkJobStatus(jobID, message, function() {
+          self.router.navigate(["/modules"])
+        })
+      },
+      error: (err) => {
+        this.errorService.handleError(DeploymentComponentComponent.name, "updateModule", err)
+      }
+    })  
+  }
+
   submit() {
     this.form.markAllAsTouched()
     if(this.form.valid) {
@@ -298,27 +340,11 @@ export class DeploymentComponentComponent implements OnInit {
       this.filterNullValuesInForm(deploymentRequest)
 
       if(this.mode == "new") {
-        this.moduleService.deployModule(deploymentRequest).subscribe({
-          next: () => {
-              this.router.navigate(["/deployments"])
-          },
-          error: (err) => {
-            this.errorService.handleError(DeploymentComponentComponent.name, "submit", err)
-          }
-        })
+        this.deploy(deploymentRequest)
       } else if(this.mode == "edit") {
-        this.moduleService.updateDeployment(this.deploymentID, deploymentRequest).subscribe({
-          next: (jobID) => {
-            var message = "Deployment update is running"
-            var self = this
-            this.utilsService.checkJobStatus(jobID, message, function() {
-              self.router.navigate(["/deployments"])
-            })
-          },
-          error: (err) => {
-            this.errorService.handleError(DeploymentComponentComponent.name, "submit", err)
-          }
-        })
+        this.updateDeployment(deploymentRequest)
+      } else if(this.mode == "update") {
+        this.updateModule(deploymentRequest)
       }
       
     }
@@ -381,5 +407,18 @@ export class DeploymentComponentComponent implements OnInit {
       }
       this.setupFormControl(form.get("configs"), config['id'], config['required'], defaultValue, config['is_list'])
     })
+  }
+
+  cancelModuleUpdate() {
+    this.moduleService.cancelModuleUpdate(this.moduleID).subscribe(
+      {
+        next: (_) => {
+          this.router.navigate(["/modules"])
+        },
+        error: (err) => {
+          this.errorService.handleError(DeploymentComponentComponent.name, "submit", err)
+        }
+      }
+    )
   }
 }

@@ -23,7 +23,7 @@
 
   <div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
     <div class="table-container table-container-with-button">
-      <table mat-table [dataSource]="dataSource" matSort matSortActive="status" matSortDirection="desc">
+      <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc">
         <ng-container matColumnDef="name">
           <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
           <td mat-cell *matCellDef="let module">
@@ -50,9 +50,21 @@
         <ng-container matColumnDef="update">
           <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Update</th>
           <td mat-cell *matCellDef="let module">
-            <button mat-icon-button color="primary" (click)="showAvailableUpdates(module.id)" matTooltip="Update" *ngIf="!!availableModuleUpdates[module.id]">
-              <mat-icon>arrow_upward</mat-icon>
-            </button>
+            <span *ngIf="!!availableModuleUpdates[module.id]">
+              <!-- When pending update exists, only the pending module shall be allowed to be updated -->
+              <button mat-icon-button color="primary" (click)="showAvailableUpdates(module.id)" matTooltip="Update" *ngIf="availableModuleUpdates[module.id].pending || !pendingUpdateExists">
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+
+              <button mat-icon-button color="primary" disabled matTooltip="Pending update must be finished" *ngIf="!availableModuleUpdates[module.id].pending && pendingUpdateExists">
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+            </span>
+
+            <span *ngIf="!availableModuleUpdates[module.id]">
+              
+            </span>
+          
           </td>
         </ng-container>
 

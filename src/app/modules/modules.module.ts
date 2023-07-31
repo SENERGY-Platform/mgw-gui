@@ -20,12 +20,13 @@ import { UpdateModalComponent } from './components/update-modal/update-modal.com
 import { MatCardModule } from '@angular/material/card';
 import { UpdateComponent } from './pages/update/update.component';
 import { DeploymentsModule } from '../deployments/deployments.module';
+import {MatTooltipModule} from '@angular/material/tooltip'; 
 
 const routes: Routes = [
   {path: 'modules', children: [
     {path: 'add', component: AddComponent},
     {path: '', component: ListComponent},
-    {path: 'show/:id', component: InfoComponent},
+    {path: 'info/:id', component: InfoComponent},
     {path: 'update/:id', component: UpdateComponent}
 
   ]},
@@ -44,6 +45,7 @@ const routes: Routes = [
     MatCheckboxModule,
     CoreModule,
     DeploymentsModule,
+    MatTooltipModule,
     MatCardModule,
     MatTableModule,
     CommonModule,

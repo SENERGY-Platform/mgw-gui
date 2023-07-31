@@ -306,7 +306,7 @@ export class ModuleManagerMockService {
          "versions":["v2.0.15"],"checked": new Date(),"pending":false
       },
       "github.com/SENERGY-Platform/mgw-test-module-b/mgw-module": {
-         "versions":["v0.1.2","v0.1.3","v0.1.4"],"checked": new Date(),"pending":false
+         "versions":["v0.1.2","v0.1.3","v0.1.4"],"checked": new Date(),"pending":true
       }
    }
   return of(moduleUpdates).pipe(delay(1000));    
@@ -321,12 +321,16 @@ export class ModuleManagerMockService {
    return of(moduleUpdates).pipe(delay(1000));   
  }
 
- checkIfModuleUpdateCanBeDone(moduleID: string, payload: ModuleUpdatePrepare): Observable<string> {
+ prepareModuleUpdate(moduleID: string, payload: ModuleUpdatePrepare): Observable<string> {
    return of("job_ID").pipe(delay(1000));    
  }
 
  getModuleUpdateTemplate(moduleID: string): Observable<DeploymentTemplate> {
    return of(TEMPLATE).pipe(delay(500))
+}
+
+cancelModuleUpdate(moduleID: string): Observable<string> {
+   return of("done").pipe(delay(1000));    
 }
 
   public loadDeployments(): Observable<Deployment[]> {

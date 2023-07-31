@@ -46,6 +46,7 @@ export class ModuleManagerService {
     return this.http.get(url)
   }
 
+  // Module Update
   checkForUpdates(): Observable<string> {
     var url = this.moduleManagerPath + "/updates" 
     return <Observable<string>>this.http.post(url, undefined, undefined, "text")
@@ -61,7 +62,7 @@ export class ModuleManagerService {
     return <Observable<ModuleUpdate>>this.http.get(url)
   }
 
-  checkIfModuleUpdateCanBeDone(moduleID: string, payload: ModuleUpdatePrepare): Observable<string> {
+  prepareModuleUpdate(moduleID: string, payload: ModuleUpdatePrepare): Observable<string> {
     var url = this.moduleManagerPath + "/updates/" + this.doubleEncode(moduleID) + '/prepare' 
     return <Observable<string>>this.http.patch(url, payload, undefined, "text")
   }
@@ -69,6 +70,16 @@ export class ModuleManagerService {
   getModuleUpdateTemplate(moduleID: string): Observable<ModuleUpdateTemplate> {
     var url = this.moduleManagerPath + "/updates/" + this.doubleEncode(moduleID) + '/upt-template' 
     return <Observable<ModuleUpdateTemplate>>this.http.get(url)
+  }
+
+  cancelModuleUpdate(moduleID: string): Observable<string> {
+    var url = this.moduleManagerPath + "/updates/" + this.doubleEncode(moduleID) + '/cancel' 
+    return <Observable<string>>this.http.patch(url, undefined, undefined, "text")
+  }
+
+  updateModule(moduleID: string, deploymentRequest: DeploymentRequest): Observable<string>  {
+    var url = this.moduleManagerPath + "/updates/" + this.doubleEncode(moduleID) 
+    return <Observable<string>>this.http.patch(url, deploymentRequest, undefined, "text")
   }
 
   // Deployments

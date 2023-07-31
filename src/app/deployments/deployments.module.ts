@@ -29,7 +29,7 @@ const routes: Routes = [
       {path: 'add/:id', component: ModulesComponent},
       {path: '', component: DeploymentListComponent},
       {path: 'edit/:id', component: ShowModuleComponentComponent},
-      {path: 'show/:id', component: InfoComponent}
+      {path: 'info/:id', component: InfoComponent}
     ]
   }
 ];

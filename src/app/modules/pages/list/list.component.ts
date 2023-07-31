@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -16,7 +16,7 @@ import { UpdateModalComponent } from '../../components/update-modal/update-modal
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css']
 })
-export class ListComponent {
+export class ListComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<Module>();
   ready: Boolean = false;
   init: Boolean = true;
@@ -24,6 +24,8 @@ export class ListComponent {
   displayColumns = ['name', 'version', 'info', 'deploy', 'delete', 'update']
   moduleIDsReadyForUpdate: Record<string, string[]> = {}
   availableModuleUpdates: ModuleUpdates = {} 
+  pendingUpdateExists: boolean = false
+  interval: any
   
   constructor(
     public dialog: MatDialog, 
@@ -38,6 +40,14 @@ export class ListComponent {
   ngOnInit(): void {
       this.loadModules();
       this.init = false;
+      this.getModuleUpdates();
+      this.interval = setInterval(() => { 
+        this.getModuleUpdates(false); 
+      }, 5000);
+  }
+
+  ngOnDestroy(): void {
+      clearTimeout(this.interval)
   }
 
   checkForUpdates() {
@@ -47,16 +57,7 @@ export class ListComponent {
           var message = "Check for module updates"
           var self = this
           this.utilService.checkJobStatus(jobID, message, function() {
-            self.moduleService.getAvailableUpdates().subscribe(
-              {
-                next: (availableModuleUpdates: ModuleUpdates) => {
-                  self.availableModuleUpdates = availableModuleUpdates
-                }, 
-                error: (err) => {
-                  self.errorService.handleError(ListComponent.name, "checkForUpdates", err)
-                }
-              }
-            )
+            self.getModuleUpdates()
           })
         }, 
         error: (err) => {
@@ -64,6 +65,28 @@ export class ListComponent {
         }
       }
     )
+  }
+
+  getModuleUpdates(showErrorMessage: boolean=true) {
+    this.moduleService.getAvailableUpdates().subscribe({
+      next: (updates) => {
+        // response can be null
+        if(!!updates) {
+          this.availableModuleUpdates = updates
+        
+          Object.values(updates).forEach(update => {
+            if(update.pending) {
+              this.pendingUpdateExists = true
+            }
+          })
+        }
+      }, 
+      error: (err) => {
+        if(showErrorMessage) {
+          this.errorService.handleError(ListComponent.name, "getModuleUpdates", err)
+        }
+      }
+    })
   }
 
   showAvailableUpdates(moduleID: string) {
@@ -114,7 +137,7 @@ export class ListComponent {
   }
 
   showModuleInfo(moduleID: string) {
-    var path = "/modules/show/" + encodeURIComponent(moduleID)
+    var path = "/modules/info/" + encodeURIComponent(moduleID)
     this.router.navigateByUrl(path)
   }
 }

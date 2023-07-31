@@ -15,9 +15,9 @@ import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
-    path: 'instances', 
+    path: 'deployments', 
     children: [
-      {path: ':id', component: ListComponent},
+      {path: 'show/:id', component: ListComponent},
       {path: 'containers/:id/logs', component: LogsComponent},
     ]
   }

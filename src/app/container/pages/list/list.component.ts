@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Inject, OnDestroy, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
@@ -85,7 +86,20 @@ export class ListComponent implements OnDestroy {
           this.ready = true
         },
         error: (err) => {
-          this.errorService.handleError(ListComponent.name, "loadContainerHealth", err)
+          if(err instanceof HttpErrorResponse && err.status == 400) {
+            containers.forEach(container => {
+              var containerWithHealth: ContainerWithHealth = {
+                ...container,
+                ...{"state": "N/A"}
+              }
+              containersWithHealth.push(containerWithHealth)            
+            });
+            
+            this.dataSource.data = containersWithHealth
+          } else {
+            this.errorService.handleError(ListComponent.name, "loadContainerHealth", err)
+          }
+
           this.ready = true
         }
       }
@@ -94,7 +108,7 @@ export class ListComponent implements OnDestroy {
   }
 
   showLogs(containerID: string) {
-    this.router.navigate(["/instances/containers/" + containerID + "/logs"])
+    this.router.navigate(["/deployments/containers/" + containerID + "/logs"])
   }
 
 }

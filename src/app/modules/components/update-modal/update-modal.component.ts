@@ -39,41 +39,41 @@ export class UpdateModalComponent implements OnInit {
     })
   }
 
-  checkCompatibility() {
+  update() {
     var compatibilityRequestBody = this.form.value 
     
     // Check if update is compatible to all installed modules    
-    this.moduleService.checkIfModuleUpdateCanBeDone(this.moduleID, compatibilityRequestBody).subscribe(
+    this.moduleService.prepareModuleUpdate(this.moduleID, compatibilityRequestBody).subscribe(
         {
         next: (jobID) => {
-          var message = "Check if update is possible"
+          var message = "Prepare update"
           var self = this
           this.utilService.checkJobStatus(jobID, message, function() {
             self.moduleService.getAvailableModuleUpdates(self.moduleID).subscribe(
               {
                 next: (moduleUpdate) => {
+                  // Update is compatible and can be installed
                   if(moduleUpdate.pending) {
-                    // Update is compatible and can be installed
-                    self.moduleIsReadyToBeInstalled = true
+                    self.router.navigate(['/modules/update/' + encodeURIComponent(self.moduleID)])
+                  } else {
+                    self.router.navigate(['/modules'])
                   }
+                  self.dialogRef.close()
+
                 }, 
                 error: (err) => {
-                  self.errorService.handleError(UpdateModalComponent.name, "checkCompatibility", err)
+                  self.errorService.handleError(UpdateModalComponent.name, "update", err)
                 }
               }
             )
           })
         }, 
         error: (err) => {
-          this.errorService.handleError(UpdateModalComponent.name, "checkCompatibility", err)
+          this.errorService.handleError(UpdateModalComponent.name, "update", err)
         }
     })
   }
 
-  startUpdate() {
-    this.router.navigate(['/modules/update/' + encodeURIComponent(this.moduleID)])
-    this.dialogRef.close()
-  }
 
   cancel() {
     this.dialogRef.close()

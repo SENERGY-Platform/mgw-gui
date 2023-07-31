@@ -156,6 +156,6 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   showInstances(deploymentID: string) {
-    this.router.navigate(["/instances/" + deploymentID])
+    this.router.navigate(["/deployments/show/" + deploymentID])
   }
 }

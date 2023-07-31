@@ -11,8 +11,6 @@
       </mat-form-field>
     </div>
   </form>
-  <button mat-raised-button color="primary" (click)="checkCompatibility()" *ngIf="!moduleIsReadyToBeInstalled">Check
-    for Compatibility</button>
-  <button mat-raised-button color="primary" (click)="startUpdate()" *ngIf="moduleIsReadyToBeInstalled">Update</button>
+  <button mat-raised-button color="primary" (click)="update()">Update</button>
   <button mat-raised-button color="primary" (click)="cancel()">Cancel</button>
 </div>
