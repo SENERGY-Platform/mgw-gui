@@ -1,4 +1,5 @@
-import { ContainerHealth } from "src/app/container/models/container";
+import { identifierName } from "@angular/compiler";
+import { ContainerHealth, Instance } from "src/app/container/models/container";
 
 // Create a new Deployment
 export interface DeploymentRequest {
@@ -28,9 +29,13 @@ interface DeploymentSecretInfo {
     variants: DeploymentVariantInfo[];
 }
 
+interface Module {
+    id: string;
+    version: string;
+}
 export interface Deployment {
     id: string;
-    module_id: string; 
+    module: Module; 
     name: string;
     enabled: boolean;
     indirect: boolean;
@@ -41,6 +46,7 @@ export interface Deployment {
     secrets: Record<string, DeploymentSecretInfo>;
     required_dep: string[];
     dep_requiring: string[];
+    instance: Instance;
 }
 
 // Deployment Template -> Info for loading the form

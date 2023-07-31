@@ -1,12 +1,10 @@
-import { HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { AddModule, Module, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdates } from '../../../modules/models/module_models';
 import { Deployment, DeploymentHealth, DeploymentHealths, DeploymentRequest, DeploymentTemplate, ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
-import { ErrorService } from '../util/error.service';
 import { Job } from 'src/app/jobs/models/job.model';
-import { Instance, Instances } from 'src/app/container/models/container';
 
 @Injectable({
   providedIn: 'root'
@@ -135,17 +133,6 @@ export class ModuleManagerService {
   getJobs(): Observable<Job[]> {
     var url = this.moduleManagerPath + "/jobs"
      return <Observable<Job[]>>this.http.get(url)
-  }
-
-  // Instances/Containers 
-  getDeploymentInstances(deploymentID: string): Observable<Instance> {
-    var url = this.moduleManagerPath + "/instances" + deploymentID
-     return <Observable<Instance>>this.http.get(url)
-  }
-
-  getAllInstances(): Observable<Instances> {
-    var url = this.moduleManagerPath + "/instances"
-     return <Observable<Instances>>this.http.get(url)
   }
 
   // Health

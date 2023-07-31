@@ -7,7 +7,7 @@ import { ModuleManagerService } from 'src/app/core/services/module-manager/modul
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { DeploymentHealth } from 'src/app/deployments/models/deployment_models';
-import { ContainerHealth } from '../../models/container';
+import { Container, ContainerHealth, ContainerWithHealth } from '../../models/container';
 
 @Component({
   selector: 'app-list',
@@ -15,7 +15,7 @@ import { ContainerHealth } from '../../models/container';
   styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnDestroy {
-  dataSource = new MatTableDataSource<ContainerHealth>();
+  dataSource = new MatTableDataSource<ContainerWithHealth>();
   ready: Boolean = false;
   init: Boolean = true;
   interval: any
@@ -46,11 +46,12 @@ export class ListComponent implements OnDestroy {
   }
 
   loadInstances(deploymentID: string): void {
-    this.moduleService.getDeploymentHealth(deploymentID).subscribe(
+    // Get containers from deployment info, then merge with container healths
+    this.moduleService.loadDeployment(deploymentID).subscribe(
       {
-        next: (deploymentHealth) => {
-          this.dataSource.data = deploymentHealth.containers
-          this.ready = true
+        next: (deployment) => {
+          var containers = deployment.instance.containers
+          this.loadContainerHealth(containers, deploymentID)
         }, 
         error: (err) => {
           this.errorService.handleError(ListComponent.name, "loadInstances", err)
@@ -58,6 +59,38 @@ export class ListComponent implements OnDestroy {
         }
       }
     )
+  }
+
+  loadContainerHealth(containers: Container[], deploymentID: string) {
+    var containersWithHealth: ContainerWithHealth[] = []
+
+    this.moduleService.getDeploymentHealth(deploymentID).subscribe(
+      {
+        next: (deploymentHealth) => {
+          var containerIDToStatus: Record<string, string> = {}
+          deploymentHealth.containers.forEach(container => {
+            var containerID = container.id
+            containerIDToStatus[containerID] = container.state
+          });
+
+          containers.forEach(container => {
+            var containerWithHealth: ContainerWithHealth = {
+              ...container,
+              ...{"state": containerIDToStatus[container.id]}
+            }
+            containersWithHealth.push(containerWithHealth)            
+          });
+          
+          this.dataSource.data = containersWithHealth
+          this.ready = true
+        },
+        error: (err) => {
+          this.errorService.handleError(ListComponent.name, "loadContainerHealth", err)
+          this.ready = true
+        }
+      }
+    )
+   
   }
 
   showLogs(containerID: string) {

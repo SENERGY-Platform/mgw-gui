@@ -446,36 +446,6 @@ export class ModuleManagerMockService {
       })
    }
 
-   // Instances/Containers 
-   getDeploymentInstances(deploymentID: string): Observable<Instance> {
-      var instance = {
-         "id": "sdsd",
-         "created": new Date(),
-         "containers": [{
-            "id": "sdsd",
-            "ref": "ref",
-            "order": 1
-         }]
-      }
-      return of(instance).pipe(delay(1000));
-
-   }
-
-   getAllInstances(): Observable<Instances> {
-      var instances = {
-         "ssdsd": {
-         "id": "sdsd",
-         "created": new Date(),
-         "containers": [{
-            "id": "sdsd",
-            "ref": "ref",
-            "order": 1
-         }]
-         }
-      }
-      return of(instances).pipe(delay(1000));
-   }
-
    // Health
    getDeploymentsHealth(): Observable<DeploymentHealths> {
      var health = {
