@@ -19,8 +19,8 @@ export class DeploymentTemplate implements OnInit {
 
     form: FormGroup = new FormGroup("")
     @Input() deploymentTemplateData: any
-    @Input() secretOptions: any
-    @Input() hostResourcesOptions: any
+    @Input() secretOptions: any = []
+    @Input() hostResourcesOptions: any = []
     @Input() mode: string = "show"
     @Input() dependencyFormIDToModuleID!: Record<string, string>
     module!: Module
