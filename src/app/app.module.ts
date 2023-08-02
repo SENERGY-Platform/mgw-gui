@@ -15,6 +15,7 @@ import { JobsModule } from './jobs/jobs.module';
 import { SecretsModule } from './secrets/secrets.module';
 import { ContainerModule } from './container/container.module';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+import { CoreModule } from './core/core.module';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,7 @@ import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
     JobsModule,
     ContainerModule,
     ModulesModule,
-    MatSidenavModule,
+    CoreModule,
     SecretsModule,
     HttpClientModule
   ],

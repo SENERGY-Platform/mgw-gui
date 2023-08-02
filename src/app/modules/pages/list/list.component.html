@@ -71,7 +71,7 @@
         <ng-container matColumnDef="deploy">
           <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Deploy</th>
           <td mat-cell *matCellDef="let module">
-            <button mat-icon-button color="primary" (click)="deployModule(module.id)" matTooltip="Delete">
+            <button mat-icon-button color="primary" (click)="deployModule(module.id)" matTooltip="Deploy">
               <mat-icon>start</mat-icon>
             </button>
           </td>

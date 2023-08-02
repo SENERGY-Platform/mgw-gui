@@ -16,7 +16,7 @@ import { EditComponent } from './pages/edit/edit.component';
 import { FormComponent } from './components/form/form.component'; 
 
 const routes: Routes = [
-  {path: 'secrets', children: [
+  {path: 'settings/secrets', children: [
     {path: '', component: ListComponent},
     {path: 'add', component: AddComponent},
     {path: 'edit/:id', component: EditComponent}

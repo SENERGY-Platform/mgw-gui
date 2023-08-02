@@ -93,6 +93,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.errorService.handleError(DeploymentListComponent.name, "loadDeploymentHealthStates", err)
+          this.ready = true
         }
       }
     )

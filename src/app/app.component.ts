@@ -8,21 +8,4 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'MGW';
 
-  sections = [{
-    "name": "Deployments",
-    "icon": "home",
-    "link": "/deployments"
-  }, {
-    "name": "Modules",
-    "icon": "settings",
-    "link": "/modules"
-  }, {
-    "name": "Jobs",
-    "icon": "work",
-    "link": "/jobs"
-  }, {
-    "name": "Secrets",
-    "icon": "key",
-    "link": "/secrets"
-  }]
 }

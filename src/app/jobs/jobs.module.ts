@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
 const routes: Routes = [
-  {path: 'jobs' , component: ListComponent, children: [
+  {path: 'settings/jobs' , component: ListComponent, children: [
     {path: '', component: ListComponent},
   ]},
 ];
