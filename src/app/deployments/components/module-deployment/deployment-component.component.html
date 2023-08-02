@@ -17,7 +17,7 @@
           <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding"
             [secretOptions]="secretOptionsBinding" [moduleID]="formModuleID"
             [dependencyFormIDToModuleID]="dependencyFormIDToModuleID" [IsDependency]="true"
-            [hostResourcesOptions]="hostResourcesOptions" [pending_version]="pending_versions[formModuleID]">
+            [hostResourcesOptions]="hostResourcesOptions" [pending_version]="pending_versions[dependencyFormIDToModuleID[formModuleID]]">
           </deployment-template>
         </div>
 

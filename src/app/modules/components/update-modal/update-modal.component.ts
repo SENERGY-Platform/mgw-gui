@@ -54,7 +54,7 @@ export class UpdateModalComponent implements OnInit {
                 next: (moduleUpdate) => {
                   // Update is compatible and can be installed
                   if(moduleUpdate.pending) {
-                    self.router.navigate(['/modules/update/' + encodeURIComponent(self.moduleID)], {state: {"pending_versions": moduleUpdate.pending_version}})
+                    self.router.navigate(['/modules/update/' + encodeURIComponent(self.moduleID)], {state: {"pending_versions": moduleUpdate.pending_versions}})
                   } else {
                     self.router.navigate(['/modules'])
                   }

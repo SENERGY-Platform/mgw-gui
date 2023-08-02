@@ -61,6 +61,8 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         next: (deployments) => {
           if(!!deployments) {
             this.loadDeploymentHealthStates(deployments)
+          } else {
+            this.dataSource.data = []
           }
           this.ready = true
         }, 

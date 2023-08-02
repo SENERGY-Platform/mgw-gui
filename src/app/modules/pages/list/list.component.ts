@@ -90,7 +90,7 @@ export class ListComponent implements OnInit, OnDestroy {
   startUpdate(moduleID: string) {
     var moduleUpdate = this.availableModuleUpdates[moduleID]
     if(moduleUpdate.pending) {
-      this.router.navigate(['/modules/update/' + encodeURIComponent(moduleID)], {state: {"pending_versions": moduleUpdate.pending_version}})
+      this.router.navigate(['/modules/update/' + encodeURIComponent(moduleID)], {state: {"pending_versions": moduleUpdate.pending_versions}})
     } else {
       var dialogRef = this.dialog.open(UpdateModalComponent, {
         data: {

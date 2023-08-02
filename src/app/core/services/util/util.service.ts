@@ -58,4 +58,8 @@ export class UtilService {
       callback()
     });
   }
+
+  objectIsEmpty(obj: any) {
+    return Object.keys(obj).length === 0;
+  }
 }

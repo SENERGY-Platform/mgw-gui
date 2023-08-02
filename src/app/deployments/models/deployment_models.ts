@@ -1,13 +1,9 @@
-import { identifierName } from "@angular/compiler";
 import { ContainerHealth, Instance } from "src/app/container/models/container";
+import { BaseRequest } from "src/app/core/models/base";
 
 // Create a new Deployment
-export interface DeploymentRequest {
+export interface DeploymentRequest extends BaseRequest {
     name: string;
-    host_resources: Record<string, string>;
-    configs: Record<string, any>;
-    secrets: Record<string, string>;
-    module_id: string;
     dependencies: Record<string, DeploymentRequest>;
 }
 

@@ -2,7 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api/api.service';
-import { AddModule, Module, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdates } from '../../../modules/models/module_models';
+import { AddModule, Module, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdateRequest, ModuleUpdates } from '../../../modules/models/module_models';
 import { Deployment, DeploymentHealth, DeploymentHealths, DeploymentRequest, DeploymentTemplate, ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
 import { Job } from 'src/app/jobs/models/job.model';
 
@@ -77,7 +77,7 @@ export class ModuleManagerService {
     return <Observable<string>>this.http.patch(url, undefined, undefined, "text")
   }
 
-  updateModule(moduleID: string, deploymentRequest: DeploymentRequest): Observable<string>  {
+  updateModule(moduleID: string, deploymentRequest: ModuleUpdateRequest): Observable<string>  {
     var url = this.moduleManagerPath + "/updates/" + this.doubleEncode(moduleID) 
     return <Observable<string>>this.http.patch(url, deploymentRequest, undefined, "text")
   }

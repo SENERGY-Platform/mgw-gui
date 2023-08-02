@@ -22,7 +22,7 @@ export class DeploymentComponentComponent implements OnInit {
   @Input() mode: string = "new"
   @Input() moduleID!: string
   @Input() deploymentID!: string
-  @Input() pending_versions!: Record<string, string>
+  @Input() pending_versions: Record<string, string> = {}
 
   deploymentTemplate!: DeploymentTemplate | DeploymentUpdateTemplate | ModuleUpdateTemplate
   formStr: any = ''
@@ -89,7 +89,7 @@ export class DeploymentComponentComponent implements OnInit {
     return new Observable(obs => {
       this.moduleService.loadDeploymentUpdateTemplate(this.deploymentID).subscribe(
         {
-          next: (template: any) => {
+          next: (template: DeploymentTemplate) => {
             this.deploymentTemplate = template
             obs.next(true)
             obs.complete()
@@ -108,7 +108,7 @@ export class DeploymentComponentComponent implements OnInit {
     return new Observable(obs => {
       this.moduleService.getModuleUpdateTemplate(this.moduleID).subscribe(
         {
-          next: (template: any) => {
+          next: (template: ModuleUpdateTemplate) => {
             this.deploymentTemplate = template
             obs.next(true)
             obs.complete()
@@ -127,7 +127,7 @@ export class DeploymentComponentComponent implements OnInit {
     return new Observable(obs => {
       this.moduleService.loadDeploymentTemplate(this.moduleID).subscribe(
         {
-          next: (template: any) => {
+          next: (template: DeploymentTemplate) => {
             this.deploymentTemplate = template
             obs.next(true)
             obs.complete()
@@ -197,10 +197,20 @@ export class DeploymentComponentComponent implements OnInit {
     this.setupHostResources(form, inputTemplate, module_id)
   }
 
-  public setupDependencies(inputTemplate: any) {
+  public setupDependencies(inputTemplate: DeploymentTemplate | ModuleUpdateTemplate) {
     if(inputTemplate['dependencies']) {
       for (const [moduleIDOfDep, inputTemplateOfDep] of Object.entries(inputTemplate['dependencies'])) {
-        // NO points as form control identifiers! -> use an alternative ID for module IDs
+        //skip dependencies that do not need to be configured
+        if(
+            (
+              this.utilsService.objectIsEmpty(inputTemplateOfDep.configs) &&
+              this.utilsService.objectIsEmpty(inputTemplateOfDep.secrets) && 
+              this.utilsService.objectIsEmpty(inputTemplateOfDep.host_resources)) && this.mode == "update"   
+        ) {
+          continue
+        }
+
+        // NO dots are allowed as form control identifiers! -> use an alternative ID for module IDs
         var encodedModuleIDOfDep: string = self.crypto.randomUUID()
         this.dependencyFormIDToModuleID[encodedModuleIDOfDep] = moduleIDOfDep
 

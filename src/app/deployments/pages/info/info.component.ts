@@ -88,9 +88,12 @@ export class InfoComponent {
   loadSecrets(): Observable<boolean> {
     return this.secretSercice.getSecrets().pipe(
       map(secrets => {
-        secrets.forEach(secret => {
-          this.secretIDToName[secret.id] = secret.name
-        })
+        if(!!secrets) {
+          secrets.forEach(secret => {
+            this.secretIDToName[secret.id] = secret.name
+          })
+        }
+      
         return true
       }),
       catchError((err, caught) => {

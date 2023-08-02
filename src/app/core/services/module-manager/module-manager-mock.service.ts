@@ -303,12 +303,12 @@ export class ModuleManagerMockService {
   var moduleUpdates: ModuleUpdates = 
    {
       "github.com/SENERGY-Platform/mgw-test-module-a": {
-         "versions":["v2.0.15"],"checked": new Date(),"pending":false, "pending_version": {
+         "versions":["v2.0.15"],"checked": new Date(),"pending":false, "pending_versions": {
             "github.com/SENERGY-Platform/mgw-test-module-a": "v0.2"
          }
       },
       "github.com/SENERGY-Platform/mgw-test-module-b/mgw-module": {
-         "versions":["v0.1.2","v0.1.3","v0.1.4"],"checked": new Date(),"pending":false, "pending_version": {
+         "versions":["v0.1.2","v0.1.3","v0.1.4"],"checked": new Date(),"pending":false, "pending_versions": {
             "github.com/SENERGY-Platform/mgw-test-module-b/mgw-module": "v0.2"
          }
       }
@@ -321,7 +321,7 @@ export class ModuleManagerMockService {
          "versions": ["v1", "v2"],
          "checked": new Date(),
          "pending": true, // ready to be updated
-         "pending_version": {
+         "pending_versions": {
             "github.com/SENERGY-Platform/mgw-test-module-a": "v0.2",
             "github.com/SENERGY-Platform/mgw-test-module-b/mgw-module": "v0.3"
          }

@@ -1,3 +1,5 @@
+import { BaseRequest } from "src/app/core/models/base";
+
 export interface Module {
     id: string;
     name: string;
@@ -20,7 +22,7 @@ export interface AddModule {
 
 export interface ModuleUpdate {
     pending: boolean;
-    pending_version: Record<string, string>;
+    pending_versions: Record<string, string>;
     checked: Date;
     versions: string[];
 }
@@ -31,5 +33,10 @@ export interface ModuleUpdates {
 
 export interface ModuleUpdatePrepare {
     version: string
+}
+
+export interface ModuleUpdateRequest extends BaseRequest {
+    dependencies: Record<string, BaseRequest> | null;
+
 }
 

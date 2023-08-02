@@ -6,7 +6,7 @@
       <div id="module-info-text" *ngIf="(mode == 'new' || mode == 'update') && module">
         <h1>{{ module.name }}</h1>
         <p>Module ID: {{ module.id }}</p>
-        <p>New Version: {{ pending_version }}</p>
+        <p *ngIf="mode == 'update'">Version: {{ pending_version }}</p>
       </div>
 
       <div id="module-info-text" *ngIf="mode == 'edit' && deployment">
