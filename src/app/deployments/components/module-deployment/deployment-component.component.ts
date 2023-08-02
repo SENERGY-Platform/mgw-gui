@@ -22,7 +22,7 @@ export class DeploymentComponentComponent implements OnInit {
   @Input() mode: string = "new"
   @Input() moduleID!: string
   @Input() deploymentID!: string
-  @Input() pending_version!: string
+  @Input() pending_versions!: Record<string, string>
 
   deploymentTemplate!: DeploymentTemplate | DeploymentUpdateTemplate | ModuleUpdateTemplate
   formStr: any = ''

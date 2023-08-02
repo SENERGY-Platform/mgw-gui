@@ -242,7 +242,7 @@ export class ModuleManagerMockService {
   public loadModule(_: Module): Observable<Module> {
    return new Observable(obs => {
       obs.next({
-         "id": "id",
+         "id": "github.com/SENERGY-Platform/mgw-test-module-a",
          "name": "module 1",
          "description": "bla",
          "version": "v.1.0",
@@ -303,10 +303,14 @@ export class ModuleManagerMockService {
   var moduleUpdates: ModuleUpdates = 
    {
       "github.com/SENERGY-Platform/mgw-test-module-a": {
-         "versions":["v2.0.15"],"checked": new Date(),"pending":false, "pending_version": "v0.2"
+         "versions":["v2.0.15"],"checked": new Date(),"pending":false, "pending_version": {
+            "github.com/SENERGY-Platform/mgw-test-module-a": "v0.2"
+         }
       },
       "github.com/SENERGY-Platform/mgw-test-module-b/mgw-module": {
-         "versions":["v0.1.2","v0.1.3","v0.1.4"],"checked": new Date(),"pending":false, "pending_version": "v0.2"
+         "versions":["v0.1.2","v0.1.3","v0.1.4"],"checked": new Date(),"pending":false, "pending_version": {
+            "github.com/SENERGY-Platform/mgw-test-module-b/mgw-module": "v0.2"
+         }
       }
    }
   return of(moduleUpdates).pipe(delay(1000));    
@@ -316,8 +320,11 @@ export class ModuleManagerMockService {
    var moduleUpdates: ModuleUpdate = {
          "versions": ["v1", "v2"],
          "checked": new Date(),
-         "pending": false, // ready to be updated
-         "pending_version": "v0.2"
+         "pending": true, // ready to be updated
+         "pending_version": {
+            "github.com/SENERGY-Platform/mgw-test-module-a": "v0.2",
+            "github.com/SENERGY-Platform/mgw-test-module-b/mgw-module": "v0.3"
+         }
       }
    return of(moduleUpdates).pipe(delay(1000));   
  }
@@ -338,7 +345,7 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
      var deployments = [
       {
          "module": {
-            "id": "modID",
+            "id": "github.com/SENERGY-Platform/mgw-test-module-a",
             "version": ""
          }, 
          "name": "Deployment1", 
@@ -361,7 +368,7 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
       {
          "id": "id", 
          "module": {
-            "id": "modID",
+            "id": "github.com/SENERGY-Platform/mgw-test-module-a",
             "version": ""
          }, 
          'indirect': true, 
@@ -387,7 +394,7 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
    return new Observable((subscriber) => {
       var template = {
          "module": {
-            "id": "modID",
+            "id": "github.com/SENERGY-Platform/mgw-test-module-a",
             "version": ""
          }, 
          "name": "Deployment1", 

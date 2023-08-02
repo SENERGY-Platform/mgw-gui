@@ -6,7 +6,8 @@
       <div class="deployment-container">
         <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding"
           [moduleID]="moduleID" [IsDependency]="false" [secretOptions]="secretOptionsBinding"
-          [deploymentID]="deploymentID" [hostResourcesOptions]="hostResourcesOptions" [pending_version]="pending_version">
+          [deploymentID]="deploymentID" [hostResourcesOptions]="hostResourcesOptions"
+          [pending_version]="pending_versions[moduleID]">
         </deployment-template>
 
       </div>
@@ -16,7 +17,7 @@
           <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding"
             [secretOptions]="secretOptionsBinding" [moduleID]="formModuleID"
             [dependencyFormIDToModuleID]="dependencyFormIDToModuleID" [IsDependency]="true"
-            [hostResourcesOptions]="hostResourcesOptions">
+            [hostResourcesOptions]="hostResourcesOptions" [pending_version]="pending_versions[formModuleID]">
           </deployment-template>
         </div>
 

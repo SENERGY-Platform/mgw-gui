@@ -20,7 +20,7 @@ export interface AddModule {
 
 export interface ModuleUpdate {
     pending: boolean;
-    pending_version: string;
+    pending_version: Record<string, string>;
     checked: Date;
     versions: string[];
 }
