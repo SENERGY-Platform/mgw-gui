@@ -1,4 +1,4 @@
-name: Build, Test & Upload - production configuration
+name: Build, Test & Upload - ARM & Production Configuration
 
 on:
   push:
