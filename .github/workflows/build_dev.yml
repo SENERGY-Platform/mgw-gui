@@ -1,4 +1,4 @@
-name: Build, Test & Upload
+name: Build, Test & Upload - development configuration
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
           file: ./build/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          target: serve
+          target: serve_dev
           build-args: |
             VERSION=${{ github.ref_name }}
           tags: |
