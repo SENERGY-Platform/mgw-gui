@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -54,7 +54,7 @@ export class UpdateModalComponent implements OnInit {
                 next: (moduleUpdate) => {
                   // Update is compatible and can be installed
                   if(moduleUpdate.pending) {
-                    self.router.navigate(['/modules/update/' + encodeURIComponent(self.moduleID)])
+                    self.router.navigate(['/modules/update/' + encodeURIComponent(self.moduleID), moduleUpdate.pending_version])
                   } else {
                     self.router.navigate(['/modules'])
                   }

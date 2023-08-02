@@ -12,7 +12,8 @@ import { ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_mode
 })
 export class UpdateComponent implements OnInit {
   ready: boolean = false
-  moduleID!: string
+  moduleID!: string 
+  pending_version!: string 
 
   constructor(
     private route: ActivatedRoute,
@@ -22,9 +23,8 @@ export class UpdateComponent implements OnInit {
 
   ngOnInit() {
     // Override mode to show/edit depending on URL
-    this.route.url.subscribe(url => {
-      this.moduleID = url[1].path
-      this.ready = true
-    })
+    this.pending_version = this.route.snapshot.paramMap.get("pending_version") || ""
+    this.moduleID = this.route.snapshot.paramMap.get("id") || ""
+    this.ready = true
   }
 }

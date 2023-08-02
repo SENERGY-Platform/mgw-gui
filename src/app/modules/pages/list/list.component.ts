@@ -4,9 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { Module, ModuleUpdates } from '../../models/module_models';
-import { SelectionModel } from '@angular/cdk/collections';
 import { ErrorService } from 'src/app/core/services/util/error.service';
-import { HttpUrlEncodingCodec } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { UpdateModalComponent } from '../../components/update-modal/update-modal.component';
@@ -89,8 +87,18 @@ export class ListComponent implements OnInit, OnDestroy {
     })
   }
 
-  showAvailableUpdates(moduleID: string) {
-    var dialogRef = this.dialog.open(UpdateModalComponent, {data: {availableModuleUpdate: this.availableModuleUpdates[moduleID], moduleID: moduleID}});
+  startUpdate(moduleID: string) {
+    var moduleUpdate = this.availableModuleUpdates[moduleID]
+    if(moduleUpdate.pending) {
+      this.router.navigate(['/modules/update/' + encodeURIComponent(moduleID), {pending_version: moduleUpdate.pending_version}])
+    } else {
+      var dialogRef = this.dialog.open(UpdateModalComponent, {
+        data: {
+          availableModuleUpdate: moduleUpdate, 
+          moduleID: moduleID
+        }
+      });
+    }
   }
 
   ngAfterViewInit(): void {
@@ -106,7 +114,7 @@ export class ListComponent implements OnInit, OnDestroy {
     this.moduleService.loadModules().subscribe(
       {
         next: (modules) => {
-          this.dataSource.data = modules
+          this.dataSource.data = modules || []
           this.ready = true
         }, 
         error: (err) => {

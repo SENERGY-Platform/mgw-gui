@@ -1,27 +1,32 @@
 <div>
   <spinner class="global-centered-spinner" [show]="!ready"></spinner>
 
-  <form [formGroup]="form" (ngSubmit)="submit()" *ngIf="ready">
-    <div class="deployment-container">
-      <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding" [moduleID]="moduleID"
-        [IsDependency]="false" [secretOptions]="secretOptionsBinding" [deploymentID]="deploymentID" [hostResourcesOptions]="hostResourcesOptions">
-      </deployment-template>
-
-    </div>
-
-    <div *ngIf="dependencies_module_ids.length > 0">
-      <div class="deployment-container" *ngFor="let formModuleID of dependencies_module_ids">
+  <div *ngIf="ready">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="deployment-container">
         <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding"
-          [secretOptions]="secretOptionsBinding" [moduleID]="formModuleID"
-          [dependencyFormIDToModuleID]="dependencyFormIDToModuleID" [IsDependency]="true" [hostResourcesOptions]="hostResourcesOptions">
+          [moduleID]="moduleID" [IsDependency]="false" [secretOptions]="secretOptionsBinding"
+          [deploymentID]="deploymentID" [hostResourcesOptions]="hostResourcesOptions" [pending_version]="pending_version">
         </deployment-template>
+
       </div>
 
-    </div>
+      <div *ngIf="dependencies_module_ids.length > 0">
+        <div class="deployment-container" *ngFor="let formModuleID of dependencies_module_ids">
+          <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding"
+            [secretOptions]="secretOptionsBinding" [moduleID]="formModuleID"
+            [dependencyFormIDToModuleID]="dependencyFormIDToModuleID" [IsDependency]="true"
+            [hostResourcesOptions]="hostResourcesOptions">
+          </deployment-template>
+        </div>
 
-    <button *ngIf="mode == 'new'" mat-raised-button color="primary" type="submit">Deploy</button>
-    <button *ngIf="mode == 'edit'" mat-raised-button color="primary" type="submit">Update Deployment</button>
-    <button *ngIf="mode == 'update'" mat-raised-button color="primary" type="submit">Update Module</button>
-  </form>
-  <button *ngIf="mode == 'update'" mat-raised-button color="primary" (click)="cancelModuleUpdate()">Cancel</button>
+      </div>
+
+      <button *ngIf="mode == 'new'" mat-raised-button color="primary" type="submit">Deploy</button>
+      <button *ngIf="mode == 'edit'" mat-raised-button color="primary" type="submit">Update Deployment</button>
+      <button *ngIf="mode == 'update'" mat-raised-button color="primary" type="submit">Update Module</button>
+    </form>
+    <button *ngIf="mode == 'update'" mat-raised-button color="primary" (click)="cancelModuleUpdate()">Cancel</button>
+  </div>
+
 </div>

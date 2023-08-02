@@ -22,13 +22,14 @@ export class DeploymentComponentComponent implements OnInit {
   @Input() mode: string = "new"
   @Input() moduleID!: string
   @Input() deploymentID!: string
+  @Input() pending_version!: string
 
   deploymentTemplate!: DeploymentTemplate | DeploymentUpdateTemplate | ModuleUpdateTemplate
   formStr: any = ''
   ready: boolean = false
 
   secretOptions: any = {}
-  secretOptionsBinding: any 
+  secretOptionsBinding: any = {}
 
   hostResourcesOptions: any = {}
 

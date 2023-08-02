@@ -20,7 +20,7 @@ import { UpdateModalComponent } from './components/update-modal/update-modal.com
 import { MatCardModule } from '@angular/material/card';
 import { UpdateComponent } from './pages/update/update.component';
 import { DeploymentsModule } from '../deployments/deployments.module';
-import {MatTooltipModule} from '@angular/material/tooltip'; 
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 const routes: Routes = [
   {path: 'modules', children: [

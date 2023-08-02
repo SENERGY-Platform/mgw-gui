@@ -16,11 +16,12 @@ export class DeploymentTemplate implements OnInit {
     @Input() moduleID: string = ""
     @Input() deploymentID: string = ""
     @Input() IsDependency: boolean = false 
+    @Input() pending_version!: string
 
     form: FormGroup = new FormGroup("")
     @Input() deploymentTemplateData: any
-    @Input() secretOptions: any = []
-    @Input() hostResourcesOptions: any = []
+    @Input() secretOptions: any = {}
+    @Input() hostResourcesOptions: any = {}
     @Input() mode: string = "show"
     @Input() dependencyFormIDToModuleID!: Record<string, string>
     module!: Module
