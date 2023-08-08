@@ -211,7 +211,7 @@ export class DeploymentComponentComponent implements OnInit {
         }
 
         // NO dots are allowed as form control identifiers! -> use an alternative ID for module IDs
-        var encodedModuleIDOfDep: string = self.crypto.randomUUID()
+        var encodedModuleIDOfDep: string = btoa(moduleIDOfDep)
         this.dependencyFormIDToModuleID[encodedModuleIDOfDep] = moduleIDOfDep
 
         this.dependencies_module_ids.push(encodedModuleIDOfDep);
@@ -219,6 +219,7 @@ export class DeploymentComponentComponent implements OnInit {
 
         // first add empty FormGroup, then add single controls, new Formgroup(this.inputForm) does not work
         (<FormGroup>this.form.get("dependencies")).addControl(encodedModuleIDOfDep, new FormGroup({}));
+        console.log(this.form.controls.dependencies)
         var dependenciesFormGroup = (<FormGroup>this.form.controls.dependencies)
         var dependencyFormGroup = (<FormGroup>dependenciesFormGroup.get(encodedModuleIDOfDep))
 

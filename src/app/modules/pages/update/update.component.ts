@@ -4,6 +4,7 @@ import { ModuleManagerService } from 'src/app/core/services/module-manager/modul
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
+import { ModuleUpdateRequest } from '../../models/module_models';
 
 @Component({
   selector: 'app-update',
@@ -51,13 +52,15 @@ export class UpdateComponent implements OnInit {
   }
 
   updateModule() {
-    this.moduleService.updateModule(this.moduleID, {
+    var emptyModuleUpdate: ModuleUpdateRequest = {
       "configs": null,
       "host_resources": null,
       "secrets": null,
       "module_id": this.moduleID,
       'dependencies': null
-    }).subscribe({
+    }
+
+    this.moduleService.updateModule(this.moduleID, emptyModuleUpdate).subscribe({
       next: (jobID) => {
         var message = "Module update is running"
         var self = this
