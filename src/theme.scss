@@ -3,20 +3,20 @@
 @include mat.core();
 
 $primary-palette: (
-    50 : #8b97dc,
-    100 : #8b97dc,
-    200 : #8b97dc,
+    50 : #e8eaf8,
+    100 : #c5caed,
+    200 : #9ea7e1,
     300 : #8b97dc,
-    400 : #8b97dc,
-    500 : #8b97dc,
-    600 : #8b97dc,
-    700 : #8b97dc,
-    800 : #8b97dc,
-    900 : #8b97dc,
-    A100 : #8b97dc,
-    A200 : #8b97dc,
-    A400 : #8b97dc,
-    A700 : #8b97dc,
+    400 : #596acc,
+    500 : #3b4fc0,
+    600 : #3547b6,
+    700 : #2c3daa,
+    800 : #24339d,
+    900 : #152088,
+    A100 : #7785d5,
+    A200 : #7785d5,
+    A400 : #7785d5,
+    A700 : #7785d5,
     contrast: (
         50 : #000000,
         100 : #000000,
@@ -34,7 +34,7 @@ $primary-palette: (
         A700 : #000000,
     )
 );
-$primary: mat.define-palette($primary-palette);
+$primary: mat.define-palette($primary-palette, 300);
 
 $my-theme: mat.define-light-theme((
  color: (
@@ -46,5 +46,6 @@ $my-theme: mat.define-light-theme((
 ));
 
 @include mat.core-theme($my-theme);
+@include mat.all-component-themes($my-theme);
 
 
