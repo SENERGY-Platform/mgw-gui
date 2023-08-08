@@ -55,6 +55,7 @@ export class UtilService {
     var dialogRef = this.dialog.open(JobLoaderModalComponent, {data: {jobID: jobID, message: message}});
     
     dialogRef?.afterClosed().subscribe(jobIsCompleted => {
+      console.log("job done")
       callback()
     });
   }

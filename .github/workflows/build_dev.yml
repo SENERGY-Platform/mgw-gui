@@ -31,4 +31,5 @@ jobs:
           build-args: |
             VERSION=${{ github.ref_name }}
           tags: |
+            ghcr.io/senergy-platform/mgw-gui:dev-latest
             ghcr.io/senergy-platform/mgw-gui:dev-${{ github.ref_name }}

@@ -59,8 +59,6 @@ export class UpdateModalComponent implements OnInit {
                   } else {
                     self.router.navigate(['/modules'])
                   }
-                  self.dialogRef.close()
-
                 }, 
                 error: (err) => {
                   self.errorService.handleError(UpdateModalComponent.name, "update", err)
@@ -99,7 +97,6 @@ export class UpdateModalComponent implements OnInit {
   }
 
   closeDialog() {
-    console.log("close")
     this.dialogRef.close()
   }
 
@@ -117,6 +114,7 @@ export class UpdateModalComponent implements OnInit {
         var message = "Module update is running"
         var self = this
         this.utilService.checkJobStatus(jobID, message, function() {
+          console.log("close")
           self.closeDialog()
         })
       },
