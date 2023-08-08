@@ -98,6 +98,10 @@ export class ListComponent implements OnInit, OnDestroy {
           moduleID: moduleID
         }
       });
+
+      dialogRef?.afterClosed().subscribe(_ => {
+        this.loadModules()
+      })
     }
   }
 

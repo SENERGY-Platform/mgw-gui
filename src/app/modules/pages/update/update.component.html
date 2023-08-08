@@ -1,4 +1,3 @@
 <div class="form-margin">
-    <spinner class="global-centered-spinner" [show]="!ready"></spinner>
-    <deployment *ngIf="ready" mode="update" [moduleID]="moduleID" [pending_versions]="pending_versions"></deployment>
+    <deployment mode="update" [moduleID]="moduleID" [pending_versions]="pending_versions"></deployment>
 </div>

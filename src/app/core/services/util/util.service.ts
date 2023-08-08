@@ -59,7 +59,7 @@ export class UtilService {
     });
   }
 
-  objectIsEmpty(obj: any) {
-    return Object.keys(obj).length === 0;
+  objectIsEmptyOrNull(obj: any) {
+    return obj === null || obj === undefined || Object.keys(obj).length === 0;
   }
 }

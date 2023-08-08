@@ -203,9 +203,9 @@ export class DeploymentComponentComponent implements OnInit {
         //skip dependencies that do not need to be configured
         if(
             (
-              this.utilsService.objectIsEmpty(inputTemplateOfDep.configs) &&
-              this.utilsService.objectIsEmpty(inputTemplateOfDep.secrets) && 
-              this.utilsService.objectIsEmpty(inputTemplateOfDep.host_resources)) && this.mode == "update"   
+              this.utilsService.objectIsEmptyOrNull(inputTemplateOfDep.configs) &&
+              this.utilsService.objectIsEmptyOrNull(inputTemplateOfDep.secrets) && 
+              this.utilsService.objectIsEmptyOrNull(inputTemplateOfDep.host_resources)) && this.mode == "update"   
         ) {
           continue
         }
