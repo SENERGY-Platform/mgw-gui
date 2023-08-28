@@ -57,11 +57,12 @@ export class UpdateModalComponent implements OnInit {
                   if(moduleUpdate.pending) {
                     self.update(moduleUpdate.pending_versions)
                   } else {
-                    self.router.navigate(['/modules'])
+                    self.closeDialog()
                   }
                 }, 
                 error: (err) => {
                   self.errorService.handleError(UpdateModalComponent.name, "update", err)
+                  self.closeDialog()
                 }
               }
             )
@@ -69,11 +70,13 @@ export class UpdateModalComponent implements OnInit {
         }, 
         error: (err) => {
           this.errorService.handleError(UpdateModalComponent.name, "update", err)
+          this.closeDialog()
         }
     })
   }
 
   update(pendingVersions: Record<string, string>) {
+    // Check if there is a need to update values in the formular
     this.moduleService.getModuleUpdateTemplate(this.moduleID).subscribe(
       {
         next: (template: ModuleUpdateTemplate) => {
@@ -86,11 +89,12 @@ export class UpdateModalComponent implements OnInit {
             this.updateModuleWithoutConfiguration()
           } else {
             this.router.navigate(['/modules/update/' + encodeURIComponent(this.moduleID)], {state: {"pending_versions": pendingVersions}})
+            this.closeDialog()
           }
         },
         error: (err) => {
           this.errorService.handleError(UpdateModalComponent.name, "ngOnInit", err)
-          this.router.navigate(['/modules'])
+          this.closeDialog()
         }
       }
     )
@@ -114,12 +118,12 @@ export class UpdateModalComponent implements OnInit {
         var message = "Module update is running"
         var self = this
         this.utilService.checkJobStatus(jobID, message, function() {
-          console.log("close")
           self.closeDialog()
         })
       },
       error: (err) => {
         this.errorService.handleError(UpdateModalComponent.name, "updateModule", err)
+        this.closeDialog()
       }
     }) 
   }

@@ -5,7 +5,7 @@ export interface Module {
     name: string;
     description: string;
     tags: string[];
-    licence: string;
+    license: string;
     author: string;
     version: string;
     type: string;
