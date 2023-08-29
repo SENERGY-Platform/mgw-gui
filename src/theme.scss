@@ -7,7 +7,7 @@ $primary-palette: (
     100 : #c5caed,
     200 : #9ea7e1,
     300 : #8b97dc,
-    400 : #596acc,
+    400 : #6774bb,
     500 : #3b4fc0,
     600 : #3547b6,
     700 : #2c3daa,
@@ -22,7 +22,7 @@ $primary-palette: (
         100 : #000000,
         200 : #000000,
         300 : #000000,
-        400 : #000000,
+        400 : #ffffff,
         500 : #ffffff,
         600 : #ffffff,
         700 : #ffffff,
@@ -34,7 +34,7 @@ $primary-palette: (
         A700 : #000000,
     )
 );
-$primary: mat.define-palette($primary-palette, 300);
+$primary: mat.define-palette($primary-palette, 400);
 
 $my-theme: mat.define-light-theme((
  color: (
