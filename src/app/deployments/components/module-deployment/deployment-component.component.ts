@@ -369,7 +369,11 @@ export class DeploymentComponentComponent implements OnInit {
       emptyValue = []
     } 
     
-    form.addControl(id, new FormControl(defaultValue || emptyValue))
+    if(defaultValue == undefined || defaultValue == null) {
+      defaultValue = emptyValue
+    }
+
+    form.addControl(id, new FormControl(defaultValue))
 
     var validators: ValidatorFn[] = []
     // Required

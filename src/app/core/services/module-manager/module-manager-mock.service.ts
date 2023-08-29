@@ -120,9 +120,9 @@ const TEMPLATE = {
        "description":"Select alternative option.",
        "required":false,
        "group":"cfg",
-       "default":1,
+       "default":0,
        "options":[
-          1,
+          0,
           2,
           3
        ],
@@ -261,7 +261,7 @@ export class ModuleManagerMockService {
   public loadDeploymentTemplate(module_id: string): Observable<DeploymentTemplate>  {
    return of(TEMPLATE).pipe(delay(1000));    
   }
-
+  
   public loadModules(): Observable<Module[]> {
      var modules = [
       {
