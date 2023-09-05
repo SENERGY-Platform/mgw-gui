@@ -8,6 +8,7 @@ import { Deployment, DeploymentWithHealth } from '../../models/deployment_models
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Router } from '@angular/router';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { throwMatDuplicatedDrawerError } from '@angular/material/sidenav';
 
 @Component({
   selector: 'deployment-list',
@@ -20,7 +21,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['name', 'created', 'status', 'enabled', 'info', 'edit', 'delete', 'show']
+  displayColumns = ['name', 'created', 'status', 'enabled', 'restart', 'info', 'edit', 'delete', 'show']
   
   constructor(
     public dialog: MatDialog, 
@@ -33,14 +34,23 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
       this.loadDeployments();
-      this.interval = setInterval(() => { 
-        this.loadDeployments(); 
-      }, 5000);
+      this.startPeriodicRefresh()
       this.init = false
   }
 
   ngOnDestroy(): void {
-      clearTimeout(this.interval)
+    this.stopPeriodicRefresh()
+  }
+
+  startPeriodicRefresh() {
+    this.stopPeriodicRefresh()
+    this.interval = setInterval(() => { 
+      this.loadDeployments(); 
+    }, 5000);
+  }
+
+  stopPeriodicRefresh() {
+    clearTimeout(this.interval)
   }
 
   ngAfterViewInit(): void {
@@ -63,8 +73,8 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
             this.loadDeploymentHealthStates(deployments)
           } else {
             this.dataSource.data = []
+            this.ready = true
           }
-          this.ready = true
         }, 
         error: (err) => {
           this.errorService.handleError(DeploymentListComponent.name, "loadDeployments", err)
@@ -111,6 +121,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           var self = this
           this.utilsService.checkJobStatus(jobID, message, function() {
             self.loadDeployments()
+            self.startPeriodicRefresh()
           })
         },
         error: (err) => {
@@ -126,10 +137,31 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
       {
         next: (_) => {
           this.loadDeployments()
+          this.startPeriodicRefresh()
         },
         error: (err) => {
           this.errorService.handleError(DeploymentListComponent.name, "start", err)
           this.ready = true
+        }
+      }
+    )
+  }
+
+  restart(deploymentID: string) {
+    this.stopPeriodicRefresh()
+    this.moduleService.restartDeployment(deploymentID).subscribe(
+      {
+        next: (jobID) => {
+          // Stop results in a job which needs to be polled 
+          var message = "Deployment is restarting"
+          var self = this
+          this.utilsService.checkJobStatus(jobID, message, function() {
+            self.loadDeployments()
+            self.startPeriodicRefresh()
+          })
+        },
+        error: (err) => {
+          this.errorService.handleError(DeploymentListComponent.name, "restart", err)
         }
       }
     )

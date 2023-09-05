@@ -438,6 +438,10 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
       })
    }
 
+   restartDeployment(deploymentID: string): Observable<any> {
+      return of({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
+   }
+
    public stopDeployment(deploymentID: string, changeDependencies: boolean): Observable<Job> {
       return new Observable(obs => {
             obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})

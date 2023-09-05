@@ -1,6 +1,6 @@
 <div class="layout-margin">
   <div class="form-container">
-    <form [formGroup]="form" (ngSubmit)="addModule()">
+    <form [formGroup]="form">
       <mat-form-field appearance="fill">
         <mat-label>URL to Modfile</mat-label>
         <input matInput formControlName="id">
@@ -11,7 +11,8 @@
         <input matInput formControlName="version">
       </mat-form-field>
     
-      <button mat-raised-button color="primary" type="submit">Add</button>
+      <button mat-raised-button color="primary" type="addModule()">Add</button>
+      <button mat-raised-button color="primary" type="cancel()">Cancel</button>
     </form>
   </div>
 </div>

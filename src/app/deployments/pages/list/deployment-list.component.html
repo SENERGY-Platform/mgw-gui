@@ -14,93 +14,101 @@
   ~ limitations under the License.
   -->
 
-  <div class="layout-margin">
-    <span class="search-button-container">
-    </span>
+<div class="layout-margin">
+  <span class="search-button-container">
+  </span>
 
-    <div *ngIf="dataSource.data.length === 0 && ready">No deployments found.</div>
-    <spinner class="global-centered-spinner" [show]="!ready"></spinner>
+  <div *ngIf="dataSource.data.length === 0 && ready">No deployments found.</div>
+  <spinner class="global-centered-spinner" [show]="!ready"></spinner>
 
-    <div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
-        <div class="table-container table-container-with-button">
-            <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc">
-                <ng-container matColumnDef="status">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Health</th>
-                    <td mat-cell *matCellDef="let deployment">
-                        <div class="circle red" *ngIf="deployment.status == 'unhealthy'"></div>
-                        <div class="circle green" *ngIf="deployment.status == 'healthy'"></div>
-                        <div class="circle grey" *ngIf="!deployment.status"></div>
-                    </td>
-                </ng-container>
+  <div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
+    <div class="table-container table-container-with-button">
+      <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc">
+        <ng-container matColumnDef="status">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Health</th>
+          <td mat-cell *matCellDef="let deployment">
+            <div class="circle red" *ngIf="deployment.status == 'unhealthy'"></div>
+            <div class="circle green" *ngIf="deployment.status == 'healthy'"></div>
+            <div class="circle grey" *ngIf="!deployment.status"></div>
+          </td>
+        </ng-container>
 
-                <ng-container matColumnDef="name">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
-                    <td mat-cell *matCellDef="let deployment">
-                        {{deployment.name}}
-                    </td>
-                </ng-container>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let deployment">
+            {{deployment.name}}
+          </td>
+        </ng-container>
 
-                <ng-container matColumnDef="enabled">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Enabled</th>
-                    <td mat-cell *matCellDef="let deployment">
-                        <mat-slide-toggle
-                            color="primary"
-                            [checked]="deployment.enabled"
-                            (change)="toggleState($event, deployment.id)"
-                            >
-                        </mat-slide-toggle>
-                    </td>
-                </ng-container>
+        <ng-container matColumnDef="enabled">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Enabled</th>
+          <td mat-cell *matCellDef="let deployment">
+            <mat-slide-toggle color="primary" [checked]="deployment.enabled"
+              (change)="toggleState($event, deployment.id)">
+            </mat-slide-toggle>
+          </td>
+        </ng-container>
 
-                <ng-container matColumnDef="created">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef>Created</th>
-                    <td mat-cell *matCellDef="let deployment">
-                        <span *ngIf="utilsService.dateIsToday(deployment.created)">{{ deployment.created |  date:'HH:mm'}}</span>
-                        <span *ngIf="!utilsService.dateIsToday(deployment.created)">{{ deployment.created |  date:'dd.MM.yyyy - HH:mm'}}</span>    
-                    </td>
-                </ng-container>
+        <ng-container matColumnDef="restart">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Restart</th>
+          <td mat-cell *matCellDef="let deployment">
+            <button mat-icon-button color="primary" matTooltip="Restart" (click)="restart(deployment.id)">
+              <mat-icon>restart_alt</mat-icon>
+            </button>
+          </td>
+        </ng-container>
 
-                <ng-container matColumnDef="info">
-                    <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Info</th>
-                    <td mat-cell *matCellDef="let deployment">
-                        <button mat-icon-button color="primary" [routerLink] = "'/deployments/info/' + deployment.id"
-                            matTooltip="Info">
-                            <mat-icon>info</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
+        <ng-container matColumnDef="created">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef>Created</th>
+          <td mat-cell *matCellDef="let deployment">
+            <span *ngIf="utilsService.dateIsToday(deployment.created)">{{ deployment.created |  date:'HH:mm'}}</span>
+            <span
+              *ngIf="!utilsService.dateIsToday(deployment.created)">{{ deployment.created |  date:'dd.MM.yyyy - HH:mm'}}</span>
+          </td>
+        </ng-container>
 
-                <ng-container matColumnDef="edit">
-                    <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Edit</th>
-                    <td mat-cell *matCellDef="let deployment">
-                        <button mat-icon-button color="primary" [routerLink] = "'/deployments/edit/' + deployment.id" matTooltip="Edit">
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
+        <ng-container matColumnDef="info">
+          <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Info</th>
+          <td mat-cell *matCellDef="let deployment">
+            <button mat-icon-button color="primary" [routerLink]="'/deployments/info/' + deployment.id"
+              matTooltip="Info">
+              <mat-icon>info</mat-icon>
+            </button>
+          </td>
+        </ng-container>
 
-                <ng-container matColumnDef="delete">
-                    <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Delete</th>
-                    <td mat-cell *matCellDef="let deployment">
-                        <button mat-icon-button color="primary" (click)="delete(deployment.id)" matTooltip="Delete" [disabled]="deployment.enabled">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
+        <ng-container matColumnDef="edit">
+          <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Edit</th>
+          <td mat-cell *matCellDef="let deployment">
+            <button mat-icon-button color="primary" [routerLink]="'/deployments/edit/' + deployment.id"
+              matTooltip="Edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </td>
+        </ng-container>
 
-                <ng-container matColumnDef="show">
-                    <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Show</th>
-                    <td mat-cell *matCellDef="let deployment">
-                        <button mat-icon-button color="primary" (click)="showInstances(deployment.id)" matTooltip="Show Instances">
-                            <mat-icon>input</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Delete</th>
+          <td mat-cell *matCellDef="let deployment">
+            <button mat-icon-button color="primary" (click)="delete(deployment.id)" matTooltip="Delete"
+              [disabled]="deployment.enabled">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
-                <tr mat-row *matRowDef="let m; columns: displayColumns;"></tr>
-            </table>
-        </div>
+        <ng-container matColumnDef="show">
+          <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Show</th>
+          <td mat-cell *matCellDef="let deployment">
+            <button mat-icon-button color="primary" (click)="showInstances(deployment.id)" matTooltip="Show Instances">
+              <mat-icon>input</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let m; columns: displayColumns;"></tr>
+      </table>
     </div>
+  </div>
 </div>
-
