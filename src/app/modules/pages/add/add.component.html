@@ -11,8 +11,8 @@
         <input matInput formControlName="version">
       </mat-form-field>
     
-      <button mat-raised-button color="primary" type="addModule()">Add</button>
-      <button mat-raised-button color="primary" type="cancel()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="addModule()">Add</button>
+      <button mat-raised-button color="primary" (click)="cancel()">Cancel</button>
     </form>
   </div>
 </div>
