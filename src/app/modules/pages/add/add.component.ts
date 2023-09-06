@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Router, TitleStrategy } from '@angular/router';
 import { catchError } from 'rxjs';
 import { JobLoaderModalComponent } from 'src/app/core/components/job-loader-modal/job-loader-modal.component';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
@@ -36,9 +36,17 @@ export class AddComponent {
         var message = "Module installation is running"
         var self = this
         this.utilsService.checkJobStatus(jobID, message, function() {
-          self.router.navigate(["/modules"])
+          self.navigateToModules()
         })
       })
     }
+  }
+
+  cancel() {
+    this.navigateToModules()
+  }
+
+  navigateToModules() {
+    this.router.navigate(["/modules"])
   }
 }
