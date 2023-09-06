@@ -129,9 +129,9 @@ export class ModuleManagerService {
     return this.http.patch(url)
   }
 
-  restartDeployment(deploymentID: string): Observable<any> {
+  restartDeployment(deploymentID: string): Observable<string> {
     var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/restart' 
-    return this.http.patch(url)
+    return  <Observable<string>>this.http.patch(url, null, undefined, 'text')
   }
 
   // Jobs
