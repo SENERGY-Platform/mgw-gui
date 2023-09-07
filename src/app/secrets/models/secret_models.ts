@@ -19,7 +19,9 @@ export interface SecretType {
 export enum SecretTypes {
     Certificate = 'certificate',
     BasicAuth = 'basic-auth',
-    APIKey = 'api-key'
+    APIKey = 'api-key',
+    ClientID = 'client-id',
+    PrivateKey = 'private-key'
 }
 
 export interface SecretRequest {
