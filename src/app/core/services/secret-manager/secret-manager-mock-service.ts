@@ -29,7 +29,11 @@ export class SecretManagerMockService {
   }
 
   getSecretTypes(): Observable<SecretType[]>  {
-    var types = [{"name": "Certificate", "id": SecretTypes.Certificate }, {"name": "API Key", "id": SecretTypes.APIKey}, {"name": "Credentials", "id": SecretTypes.BasicAuth}]
+    var types = [
+      {"name": "Certificate", "id": SecretTypes.Certificate }, 
+      {"name": "API Key", "id": SecretTypes.APIKey}, 
+      {"name": "Credentials", "id": SecretTypes.BasicAuth}
+    ]
     return of(types).pipe(delay(1000))
   }
 
