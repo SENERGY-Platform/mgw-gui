@@ -15,10 +15,9 @@ import { ModuleUpdate, ModuleUpdateRequest } from '../../models/module_models';
 })
 export class UpdateModalComponent implements OnInit {
   availableModuleUpdate: ModuleUpdate
-  selectedVersionsPerModule!: Record<string, string>
   form: any = this.fb.group({}) 
-  moduleIsReadyToBeInstalled: boolean = false
   moduleID!: string
+  selectedVersion!: string
 
   constructor(
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
@@ -34,9 +33,18 @@ export class UpdateModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.setupForm()
+  }
+
+  setupForm() {
     var versions = this.availableModuleUpdate.versions.sort().reverse()
+
+    if(versions.length == 1) {
+      this.selectedVersion = versions[0]
+    }
+
     this.form = this.fb.group({
-      "version": this.fb.control([versions])
+      "version": this.fb.control(this.selectedVersion)
     })
   }
 

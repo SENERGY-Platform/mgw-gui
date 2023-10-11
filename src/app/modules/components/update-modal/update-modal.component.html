@@ -3,7 +3,7 @@
     <div>
       <mat-form-field appearance="fill">
         <mat-label>Available Versions</mat-label>
-        <mat-select formControlName="version">
+        <mat-select formControlName="version" [(ngModel)]="selectedVersion">
           <mat-option *ngFor="let version of availableModuleUpdate.versions" [value]="version">
             {{version}}
           </mat-option>
