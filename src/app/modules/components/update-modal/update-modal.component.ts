@@ -39,9 +39,7 @@ export class UpdateModalComponent implements OnInit {
   setupForm() {
     var versions = this.availableModuleUpdate.versions.sort().reverse()
 
-    if(versions.length == 1) {
-      this.selectedVersion = versions[0]
-    }
+    this.selectedVersion = versions[0]
 
     this.form = this.fb.group({
       "version": this.fb.control(this.selectedVersion)
