@@ -4,7 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
-import { Deployment, DeploymentWithHealth } from '../../models/deployment_models';
+import { Deployment, DeploymentHealth, DeploymentWithHealth } from '../../models/deployment_models';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Router } from '@angular/router';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
@@ -105,6 +105,20 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.errorService.handleError(DeploymentListComponent.name, "loadDeploymentHealthStates", err)
+          var deploymentsWithHealth: DeploymentWithHealth[] = []
+          
+          deployments.forEach(deployment => {
+            var deploymentHealth: DeploymentHealth = {"status": "unknown", containers: []}
+
+            var deploymentWithHealth = {
+              ...deploymentHealth,
+              ...deployment
+            }
+            deploymentsWithHealth.push(deploymentWithHealth)
+          });
+
+          this.dataSource.data = deploymentsWithHealth
+
           this.ready = true
         }
       }
