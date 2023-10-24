@@ -33,7 +33,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-      this.loadDeployments();
+      this.loadDeployments(false);
       this.startPeriodicRefresh()
       this.init = false
   }
@@ -45,7 +45,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   startPeriodicRefresh() {
     this.stopPeriodicRefresh()
     this.interval = setInterval(() => { 
-      this.loadDeployments(); 
+      this.loadDeployments(true); 
     }, 5000);
   }
 
@@ -65,26 +65,28 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.dataSource.sort = this.sort;
   }
 
-  loadDeployments(): void {
+  loadDeployments(background: boolean): void {
     this.moduleService.loadDeployments().subscribe(
       {
         next: (deployments) => {
           if(!!deployments) {
-            this.loadDeploymentHealthStates(deployments)
+            this.loadDeploymentHealthStates(deployments, background)
           } else {
             this.dataSource.data = []
             this.ready = true
           }
         }, 
         error: (err) => {
-          this.errorService.handleError(DeploymentListComponent.name, "loadDeployments", err)
+          if(!background) {
+            this.errorService.handleError(DeploymentListComponent.name, "loadDeployments", err)
+          }
           this.ready = true
         }
       }
     )
   }
 
-  loadDeploymentHealthStates(deployments: Deployment[]) {
+  loadDeploymentHealthStates(deployments: Deployment[], background: boolean) {
     this.moduleService.getDeploymentsHealth().subscribe(
       {
         next: (deploymentHealthStates) => {
@@ -104,7 +106,10 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           this.ready = true
         },
         error: (err) => {
-          this.errorService.handleError(DeploymentListComponent.name, "loadDeploymentHealthStates", err)
+          if(!background) {
+            this.errorService.handleError(DeploymentListComponent.name, "loadDeploymentHealthStates", err)
+          }
+
           var deploymentsWithHealth: DeploymentWithHealth[] = []
           
           deployments.forEach(deployment => {
@@ -118,7 +123,6 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           });
 
           this.dataSource.data = deploymentsWithHealth
-
           this.ready = true
         }
       }
@@ -134,7 +138,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           var message = "Deployment is stopping"
           var self = this
           this.utilsService.checkJobStatus(jobID, message, function() {
-            self.loadDeployments()
+            self.loadDeployments(false)
             self.startPeriodicRefresh()
           })
         },
@@ -150,7 +154,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.moduleService.startDeployment(deploymentID).subscribe(
       {
         next: (_) => {
-          this.loadDeployments()
+          this.loadDeployments(false)
           this.startPeriodicRefresh()
         },
         error: (err) => {
@@ -170,7 +174,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           var message = "Deployment is restarting"
           var self = this
           this.utilsService.checkJobStatus(jobID, message, function() {
-            self.loadDeployments()
+            self.loadDeployments(false)
             self.startPeriodicRefresh()
           })
         },
@@ -194,7 +198,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.moduleService.deleteDeployment(deploymentID).subscribe(
       {
         next: (_) => {
-          this.loadDeployments()
+          this.loadDeployments(false)
         },
         error:(err) => {
           this.errorService.handleError(DeploymentListComponent.name, "delete", err)
