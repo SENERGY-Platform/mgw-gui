@@ -90,8 +90,8 @@
         <ng-container matColumnDef="delete">
           <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Delete</th>
           <td mat-cell *matCellDef="let deployment">
-            <button mat-icon-button color="primary" (click)="delete(deployment.id)" matTooltip="Delete"
-              [disabled]="deployment.enabled">
+            <button mat-icon-button color="primary" (click)="delete(deployment.id)" matTooltip="Delete">
+              <!--[disabled]="deployment.enabled"-->
               <mat-icon>delete</mat-icon>
             </button>
           </td>

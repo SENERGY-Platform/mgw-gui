@@ -487,7 +487,7 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
    getDeploymentsHealth(): Observable<DeploymentHealths> {
      var health = {
         "id": {
-           "status": "healthy",
+           "status": "unknown",
            "containers": [{
               "id": "id2",
               "ref": "Ref",
@@ -500,7 +500,7 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
 
    getDeploymentHealth(deploymentID: string): Observable<DeploymentHealth> {
       var health = {
-            "status": "healthy",
+            "status": "unknown",
             "containers": [{
                "id": "id2",
                "ref": "Ref",
