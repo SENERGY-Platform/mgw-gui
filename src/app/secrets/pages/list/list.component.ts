@@ -3,7 +3,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { SecretManagerServiceService } from 'src/app/core/services/secret-manager/secret-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
-import { Secret, SecretTypesDisplayNames, SecretTypeDisplayDictionary} from '../../models/secret_models';
+import { Secret, SecretTypesDisplayNames, SecretTypes} from '../../models/secret_models';
 
 @Component({
   selector: 'app-list',
@@ -15,7 +15,7 @@ export class ListComponent {
   ready: Boolean = false;
   init: Boolean = true;
   interval: any
-  secretTypesDisplayNames: SecretTypeDisplayDictionary<any, string> = SecretTypesDisplayNames; // any type because elements in matCellDef are not typed
+  secretTypesDisplayNames:  Record<any, string> = SecretTypesDisplayNames; // any type because elements in matCellDef are not typed
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['name', 'type', 'edit', 'delete']
 

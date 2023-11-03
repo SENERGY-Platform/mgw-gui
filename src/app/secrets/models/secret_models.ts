@@ -24,10 +24,8 @@ export enum SecretTypes {
     PrivateKey = 'private-key'
 }
 
-export type SecretTypeDisplayDictionary<T extends string | symbol | number, U> = {
-    [K in T]: U;
-};
-export var SecretTypesDisplayNames: SecretTypeDisplayDictionary<SecretTypes, string> = {
+
+export var SecretTypesDisplayNames: { [key in SecretTypes]: string} = {
     [SecretTypes.Certificate]: "Certificate",
     [SecretTypes.BasicAuth]: "Credentials",
     [SecretTypes.APIKey]: "API Key",
