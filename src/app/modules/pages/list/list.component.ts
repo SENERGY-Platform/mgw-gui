@@ -8,6 +8,7 @@ import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Router } from '@angular/router';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { UpdateModalComponent } from '../../components/update-modal/update-modal.component';
+import { catchError, Observable, of, map } from 'rxjs';
 
 @Component({
   selector: 'app-list',
@@ -22,7 +23,6 @@ export class ListComponent implements OnInit, OnDestroy {
   displayColumns = ['name', 'version', 'info', 'deploy', 'delete', 'update']
   moduleIDsReadyForUpdate: Record<string, string[]> = {}
   availableModuleUpdates: ModuleUpdates = {} 
-  pendingUpdateExists: boolean = false
   interval: any
   
   constructor(
@@ -49,20 +49,34 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   checkForUpdates() {
-    this.moduleService.checkForUpdates().subscribe(
+    this.ready = false
+    this.stopPendingUpdates().subscribe(
       {
-        next: (jobID) => {
-          var message = "Check for module updates"
-          var self = this
-          this.utilService.checkJobStatus(jobID, message, function() {
-            self.getModuleUpdates()
-          })
-        }, 
-        error: (err) => {
+        "next": (_) => {
+          this.ready = true 
+
+          this.moduleService.checkForUpdates().subscribe(
+            {
+              next: (jobID) => {
+                var message = "Check for module updates"
+                var self = this
+                this.utilService.checkJobStatus(jobID, message, function() {
+                  self.getModuleUpdates()
+                })
+              }, 
+              error: (err) => {
+                this.errorService.handleError(ListComponent.name, "checkForUpdates", err)
+              }
+            }
+          )
+        },
+        "error": (err) => {
+          this.ready = true
           this.errorService.handleError(ListComponent.name, "checkForUpdates", err)
         }
       }
     )
+    
   }
 
   getModuleUpdates(showErrorMessage: boolean=true) {
@@ -72,11 +86,7 @@ export class ListComponent implements OnInit, OnDestroy {
         if(!!updates) {
           this.availableModuleUpdates = updates
         
-          Object.values(updates).forEach(update => {
-            if(update.pending) {
-              this.pendingUpdateExists = true
-            }
-          })
+          
         }
       }, 
       error: (err) => {
@@ -87,23 +97,50 @@ export class ListComponent implements OnInit, OnDestroy {
     })
   }
 
-  startUpdate(moduleID: string) {
-    var moduleUpdate = this.availableModuleUpdates[moduleID]
-    if(moduleUpdate.pending) {
-      this.router.navigate(['/modules/update/' + encodeURIComponent(moduleID)], {state: {"pending_versions": moduleUpdate.pending_versions}})
-    } else {
-      var dialogRef = this.dialog.open(UpdateModalComponent, {
-        data: {
-          availableModuleUpdate: moduleUpdate, 
-          moduleID: moduleID
-        }
-      });
-
-      dialogRef?.afterClosed().subscribe(_ => {
-        console.log("load modules")
-        this.loadModules()
-      })
+  stopPendingUpdates(): Observable<boolean> {
+    for (const [moduleID, update] of Object.entries(this.availableModuleUpdates)) {
+      if(update.pending) {
+        return this.moduleService.cancelModuleUpdate(moduleID).pipe(
+          map(result => true),
+          catchError((err) => {
+            throw err
+          })
+        )
+      }
     }
+
+    return of(true)
+  }
+
+  startUpdate(moduleID: string) {
+    this.ready = false
+    // otherwise an update is not possible
+    this.stopPendingUpdates().subscribe({
+      next: (_) => {
+        this.ready = true
+        var moduleUpdate = this.availableModuleUpdates[moduleID]
+        if(moduleUpdate.pending) {
+          this.router.navigate(['/modules/update/' + encodeURIComponent(moduleID)], {state: {"pending_versions": moduleUpdate.pending_versions}})
+        } else {
+          var dialogRef = this.dialog.open(UpdateModalComponent, {
+            data: {
+              availableModuleUpdate: moduleUpdate, 
+              moduleID: moduleID
+            }
+          });
+    
+          dialogRef?.afterClosed().subscribe(_ => {
+            this.loadModules()
+          })
+        }
+      },
+      error: (err) => {
+        this.ready = true
+        this.errorService.handleError(ListComponent.name, "stopPendingUpdates", err)
+      }
+    })
+
+
   }
 
   ngAfterViewInit(): void {

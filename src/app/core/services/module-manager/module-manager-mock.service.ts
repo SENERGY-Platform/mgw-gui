@@ -303,7 +303,7 @@ export class ModuleManagerMockService {
   var moduleUpdates: ModuleUpdates = 
    {
       "github.com/SENERGY-Platform/mgw-test-module-a": {
-         "versions":["v2.0.15"],"checked": new Date(),"pending":false, "pending_versions": {
+         "versions":["v2.0.15"],"checked": new Date(),"pending":true, "pending_versions": {
             "github.com/SENERGY-Platform/mgw-test-module-a": "v0.2"
          }
       },

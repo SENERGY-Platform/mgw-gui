@@ -52,11 +52,7 @@
           <td mat-cell *matCellDef="let module">
             <span *ngIf="!!availableModuleUpdates[module.id]">
               <!-- When pending update exists, only the pending module shall be allowed to be updated -->
-              <button mat-icon-button color="primary" (click)="startUpdate(module.id)" matTooltip="Update" *ngIf="availableModuleUpdates[module.id].pending || !pendingUpdateExists">
-                <mat-icon>arrow_upward</mat-icon>
-              </button>
-
-              <button mat-icon-button color="primary" disabled matTooltip="Pending update must be finished" *ngIf="!availableModuleUpdates[module.id].pending && pendingUpdateExists">
+              <button mat-icon-button color="primary" (click)="startUpdate(module.id)" matTooltip="Update">
                 <mat-icon>arrow_upward</mat-icon>
               </button>
             </span>
