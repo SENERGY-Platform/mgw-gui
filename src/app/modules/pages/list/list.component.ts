@@ -119,20 +119,17 @@ export class ListComponent implements OnInit, OnDestroy {
       next: (_) => {
         this.ready = true
         var moduleUpdate = this.availableModuleUpdates[moduleID]
-        if(moduleUpdate.pending) {
-          this.router.navigate(['/modules/update/' + encodeURIComponent(moduleID)], {state: {"pending_versions": moduleUpdate.pending_versions}})
-        } else {
-          var dialogRef = this.dialog.open(UpdateModalComponent, {
+       
+        var dialogRef = this.dialog.open(UpdateModalComponent, {
             data: {
               availableModuleUpdate: moduleUpdate, 
               moduleID: moduleID
             }
-          });
+        });
     
-          dialogRef?.afterClosed().subscribe(_ => {
+        dialogRef?.afterClosed().subscribe(_ => {
             this.loadModules()
-          })
-        }
+        })
       },
       error: (err) => {
         this.ready = true
