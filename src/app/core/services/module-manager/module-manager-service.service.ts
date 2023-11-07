@@ -145,14 +145,22 @@ export class ModuleManagerService {
     return <Observable<any>>this.http.post(url, deploymentIDs, queryParams, 'text');
    }
 
-  startDeployment(deploymentID: string): Observable<any> {
+  startDeployment(deploymentID: string, dependencies: boolean): Observable<any> {
     var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/start' 
-    return this.http.patch(url)
+    let queryParams = new HttpParams()
+    if(dependencies) {
+      queryParams = queryParams.set("dependencies", "true")
+    }
+    return this.http.patch(url, null, queryParams)
   }
 
-  startDeployments(deploymentIDs: string[]): Observable<any> {
+  startDeployments(deploymentIDs: string[], dependencies: boolean): Observable<any> {
     var url = this.moduleManagerPath + "/deployments-batch/start" 
-    return this.http.post(url, deploymentIDs, undefined)
+    let queryParams = new HttpParams()
+    if(dependencies) {
+      queryParams = queryParams.set("dependencies", "true")
+    }
+    return this.http.post(url, deploymentIDs, queryParams)
   }
 
   restartDeployment(deploymentID: string): Observable<string> {

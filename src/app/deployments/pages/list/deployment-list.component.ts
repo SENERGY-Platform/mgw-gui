@@ -47,7 +47,12 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.stopPeriodicRefresh()
     this.interval = setInterval(() => { 
       this.loadDeployments(true); 
+      console.log(this.selection)
     }, 5000);
+  }
+
+  markRowsAsSelected() {
+
   }
 
   stopPeriodicRefresh() {
@@ -189,7 +194,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.ready = false
     this.stopPeriodicRefresh()
 
-    this.moduleService.startDeployment(deploymentID).subscribe(
+    this.moduleService.startDeployment(deploymentID, true).subscribe(
       {
         next: (_) => {
           this.loadDeployments(false)
@@ -213,7 +218,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
       ids.push(deployment.id);
     });
             
-    this.moduleService.startDeployments(ids).pipe(
+    this.moduleService.startDeployments(ids, true).pipe(
       map(_ => {
         this.loadDeployments(false)
         this.startPeriodicRefresh()
