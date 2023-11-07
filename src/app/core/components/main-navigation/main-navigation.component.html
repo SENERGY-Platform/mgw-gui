@@ -2,13 +2,13 @@
   <mat-sidenav opened="true" mode="side" id="sidenav">
     <ul class="side-menu">
       <li *ngFor="let section of sections">
-        <button mat-button type=button routerLink="{{section.state}}" routerLinkActive="background-color-sidenav"
+        <button type=button routerLink="{{section.state}}" routerLinkActive="background-color-sidenav"
           *ngIf="section.type === 'link'">
           <mat-icon>{{section.icon}}</mat-icon>
           {{section.name | uppercase}}
         </button>
 
-        <button mat-button *ngIf="section.type === 'toggle'" (click)="toggleSection(section)"
+        <button *ngIf="section.type === 'toggle'" (click)="toggleSection(section)"
           [ngClass]="{'background-color-sidenav': isSectionOpen(section)}">
           <span class="toggle-button">
             <mat-icon>{{section.icon}}</mat-icon>
@@ -22,7 +22,7 @@
 
         <ul [ngClass]="{'toggled': isSectionOpen(section)}" class="toggle-list">
           <li *ngFor="let page of section.pages">
-            <button mat-button routerLink="{{page.state}}" routerLinkActive="background-color-sidenav" class="toggle-list-button">
+            <button routerLink="{{page.state}}" routerLinkActive="background-color-sidenav" class="toggle-list-button">
               <mat-icon>
                 {{page.icon}}</mat-icon>
               {{page.name}}

@@ -104,9 +104,22 @@ export class ModuleManagerService {
     return <Observable<string>>this.http.patch(url, update, undefined, "text");
   }
 
-  deleteDeployment(deploymentID: string): Observable<any> {
+  deleteDeployment(deploymentID: string, forceConfirmed: boolean): Observable<any> {
     var url = this.moduleManagerPath + "/deployments/" + deploymentID 
-    return <Observable<any>>this.http.delete(url);
+    let queryParams = new HttpParams()
+    if(forceConfirmed) {
+      queryParams = queryParams.set("force", "true")
+    }
+    return <Observable<any>>this.http.delete(url, undefined, queryParams);
+   }
+
+  deleteDeployments(deploymentIDs: string[], forceConfirmed: boolean): Observable<any> {
+    var url = this.moduleManagerPath + "/deployments-batch" 
+    let queryParams = new HttpParams()
+    if(forceConfirmed) {
+      queryParams = queryParams.set("force", "true")
+    }
+    return <Observable<any>>this.http.delete(url, deploymentIDs, queryParams);
    }
 
   loadDeploymentUpdateTemplate(moduleId: string): Observable<DeploymentTemplate> {
@@ -114,24 +127,42 @@ export class ModuleManagerService {
       return <Observable<DeploymentTemplate>>this.http.get(url);
   }
 
-  stopDeployment(deploymentID: string, changeDependencies: boolean): Observable<string> {
+  stopDeployment(deploymentID: string, forceConfirmed: boolean): Observable<string> {
+    var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/stop' 
     let queryParams = new HttpParams()
-    if(changeDependencies) {
-      queryParams = queryParams.set("dependencies", "true")
+    if(forceConfirmed) {
+      queryParams = queryParams.set("force", "true")
     }
-
-    var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/disable' 
     return <Observable<string>>this.http.patch(url, null, queryParams, 'text')
   }
 
+  stopDeployments(deploymentIDs: string[], forceConfirmed: boolean): Observable<any> {
+    var url = this.moduleManagerPath + "/deployments-batch/stop" 
+    let queryParams = new HttpParams()
+    if(forceConfirmed) {
+      queryParams = queryParams.set("force", "true")
+    }
+    return <Observable<any>>this.http.post(url, deploymentIDs, queryParams, 'text');
+   }
+
   startDeployment(deploymentID: string): Observable<any> {
-    var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/enable' 
+    var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/start' 
     return this.http.patch(url)
+  }
+
+  startDeployments(deploymentIDs: string[]): Observable<any> {
+    var url = this.moduleManagerPath + "/deployments-batch/start" 
+    return this.http.post(url, deploymentIDs, undefined)
   }
 
   restartDeployment(deploymentID: string): Observable<string> {
     var url = this.moduleManagerPath + "/deployments/" + deploymentID + '/restart' 
     return  <Observable<string>>this.http.patch(url, null, undefined, 'text')
+  }
+
+  restartDeployments(deploymentIDs: string[]): Observable<string> {
+    var url = this.moduleManagerPath + "/deployments-batch/restart" 
+    return  <Observable<string>>this.http.post(url, deploymentIDs, undefined, 'text')
   }
 
   // Jobs

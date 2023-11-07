@@ -22,6 +22,7 @@ import { JobLoaderModalComponent } from '../core/components/job-loader-modal/job
 import { InfoComponent } from './pages/info/info.component';
 import {MatCardModule} from '@angular/material/card'; 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
 const routes: Routes = [
   {
     path: 'deployments', 
@@ -62,6 +63,7 @@ const routes: Routes = [
     MatFormFieldModule,
     MatChipsModule,
     MatSelectModule,
+    MatTooltipModule,
     FormsModule,
     ReactiveFormsModule
   ],

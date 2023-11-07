@@ -7,11 +7,14 @@ import { MainNavigationComponent } from './components/main-navigation/main-navig
 import { RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
     SpinnerComponent,
-    MainNavigationComponent
+    MainNavigationComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     CommonModule,
@@ -20,6 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatProgressSpinnerModule,
     MatSidenavModule,
     MatIconModule,
+    MatButtonModule,
   ],
   exports: [
     SpinnerComponent,

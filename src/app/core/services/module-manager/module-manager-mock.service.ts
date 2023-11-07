@@ -438,11 +438,27 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
       })
    }
 
+   public startDeployments(deploymentIDs: string): Observable<Job> {
+      return new Observable(obs => {
+            obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
+         })
+      }
+
    restartDeployment(deploymentID: string): Observable<any> {
       return of({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
    }
 
-   public stopDeployment(deploymentID: string, changeDependencies: boolean): Observable<Job> {
+   restartDeployments(deploymentIDs: string): Observable<any> {
+      return of({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
+   }
+
+   public stopDeployment(deploymentID: string, force: boolean): Observable<Job> {
+      return new Observable(obs => {
+            obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
+         })
+   }
+
+   public stopDeployments(deploymentIDs: string, force: boolean): Observable<Job> {
       return new Observable(obs => {
             obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
          })
@@ -477,11 +493,18 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
       })
    }
 
-   deleteDeployment(deploymentID: string): Observable<any> {
+   deleteDeployment(deploymentID: string, force: boolean): Observable<any> {
       return new Observable(obs => {
          obs.next(true)
       })
    }
+
+   deleteDeployments(deploymentIDs: string, force: boolean): Observable<any> {
+      return new Observable(obs => {
+         obs.next(true)
+      })
+   }
+
 
    // Health
    getDeploymentsHealth(): Observable<DeploymentHealths> {

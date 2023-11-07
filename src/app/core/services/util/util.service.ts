@@ -19,7 +19,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { JobLoaderModalComponent } from '../../components/job-loader-modal/job-loader-modal.component';
 
 
@@ -62,5 +63,11 @@ export class UtilService {
 
   objectIsEmptyOrNull(obj: any) {
     return obj === null || obj === undefined || Object.keys(obj).length === 0;
+  }
+
+  askForConfirmation(message: string): Observable<boolean> {
+    var dialogRef = this.dialog.open(ConfirmDialogComponent, {data: {message: message}});
+    
+    return dialogRef?.afterClosed()
   }
 }
