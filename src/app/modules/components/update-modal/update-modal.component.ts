@@ -2,6 +2,7 @@ import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { catchError, concatMap, of, throwError } from 'rxjs';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { UtilService } from 'src/app/core/services/util/util.service';
@@ -50,35 +51,33 @@ export class UpdateModalComponent implements OnInit {
     var compatibilityRequestBody = this.form.value 
     
     // Check if update is compatible to all installed modules    
-    this.moduleService.prepareModuleUpdate(this.moduleID, compatibilityRequestBody).subscribe(
-        {
-        next: (jobID) => {
+    this.moduleService.prepareModuleUpdate(this.moduleID, compatibilityRequestBody).pipe(
+        concatMap(jobID => {
           var message = "Prepare update"
-          var self = this
-          this.utilService.checkJobStatus(jobID, message, function() {
-            self.moduleService.getAvailableModuleUpdates(self.moduleID).subscribe(
-              {
-                next: (moduleUpdate) => {
-                  // Update is compatible and can be installed
-                  if(moduleUpdate.pending) {
-                    self.update(moduleUpdate.pending_versions)
-                  } else {
-                    self.closeDialog()
-                  }
-                }, 
-                error: (err) => {
-                  self.errorService.handleError(UpdateModalComponent.name, "update", err)
-                  self.closeDialog()
-                }
-              }
-            )
-          })
-        }, 
-        error: (err) => {
+          return this.utilService.checkJobStatus(jobID, message)
+        }),
+        concatMap(result => {
+          if(!result.success) {
+              return throwError(() => new Error(result.error))
+          }
+
+          return this.moduleService.getAvailableModuleUpdates(this.moduleID)
+        }),
+        concatMap(moduleUpdate => {
+          // Update is compatible and can be installed
+          if(moduleUpdate.pending) {
+            this.update(moduleUpdate.pending_versions)
+          } else {
+            this.closeDialog()
+          }
+          return of()
+        }), 
+        catchError(err => {
           this.errorService.handleError(UpdateModalComponent.name, "update", err)
           this.closeDialog()
-        }
-    })
+          return of()
+        })  
+    ).subscribe()
   }
 
   update(pendingVersions: Record<string, string>) {
@@ -122,9 +121,11 @@ export class UpdateModalComponent implements OnInit {
     this.moduleService.updateModule(this.moduleID, emptyModuleUpdate).subscribe({
       next: (jobID) => {
         var message = "Module update is running"
-        var self = this
-        this.utilService.checkJobStatus(jobID, message, function() {
-          self.closeDialog()
+        this.utilService.checkJobStatus(jobID, message).subscribe(result => {
+          this.closeDialog()
+          if(!result.success) {
+            throwError(() => new Error(result.error))
+          }
         })
       },
       error: (err) => {

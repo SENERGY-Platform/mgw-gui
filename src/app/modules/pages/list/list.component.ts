@@ -8,7 +8,7 @@ import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Router } from '@angular/router';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { UpdateModalComponent } from '../../components/update-modal/update-modal.component';
-import { catchError, Observable, of, map } from 'rxjs';
+import { catchError, Observable, of, map, concatMap, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-list',
@@ -38,9 +38,9 @@ export class ListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
       this.loadModules();
       this.init = false;
-      this.getModuleUpdates();
+      this.checkForUpdates(true);
       this.interval = setInterval(() => { 
-        this.getModuleUpdates(false); 
+        this.checkForUpdates(true); 
       }, 5000);
   }
 
@@ -48,53 +48,41 @@ export class ListComponent implements OnInit, OnDestroy {
       clearTimeout(this.interval)
   }
 
-  checkForUpdates() {
-    this.ready = false
-    this.stopPendingUpdates().subscribe(
-      {
-        "next": (_) => {
-          this.ready = true 
+  checkForUpdates(background: boolean) {
+    if(!background) {
+      this.ready = false
+    }
 
-          this.moduleService.checkForUpdates().subscribe(
-            {
-              next: (jobID) => {
-                var message = "Check for module updates"
-                var self = this
-                this.utilService.checkJobStatus(jobID, message, function() {
-                  self.getModuleUpdates()
-                })
-              }, 
-              error: (err) => {
-                this.errorService.handleError(ListComponent.name, "checkForUpdates", err)
-              }
-            }
-          )
-        },
-        "error": (err) => {
-          this.ready = true
-          this.errorService.handleError(ListComponent.name, "checkForUpdates", err)
+    this.stopPendingUpdates().pipe(
+      concatMap(_ => {
+        return this.moduleService.checkForUpdates()
+      }),
+      concatMap(jobID => {
+        var message = "Check for module updates"
+        return this.utilService.checkJobStatus(jobID, message)
+      }),
+      concatMap(jobResult => {
+        if(!jobResult.success) {
+          throwError(() => new Error(jobResult.error))
         }
-      }
-    )
-    
-  }
-
-  getModuleUpdates(showErrorMessage: boolean=true) {
-    this.moduleService.getAvailableUpdates().subscribe({
-      next: (updates) => {
+        return this.moduleService.getAvailableUpdates()
+      }),
+      concatMap(updates => {
         // response can be null
         if(!!updates) {
           this.availableModuleUpdates = updates
-        
-          
         }
-      }, 
-      error: (err) => {
-        if(showErrorMessage) {
-          this.errorService.handleError(ListComponent.name, "getModuleUpdates", err)
+        return of()
+      }),
+      catchError(err => {
+        if(!background) {
+          this.errorService.handleError(ListComponent.name, "checkForUpdates", err)
         }
-      }
-    })
+        this.ready = true 
+        return of()
+      })
+    ).subscribe()
+    
   }
 
   stopPendingUpdates(): Observable<boolean> {

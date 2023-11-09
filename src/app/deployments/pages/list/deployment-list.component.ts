@@ -8,7 +8,7 @@ import { Deployment, DeploymentHealth, DeploymentWithHealth } from '../../models
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-import { catchError, map, of} from 'rxjs';
+import { catchError, concatMap, map, Observable, of, throwError} from 'rxjs';
 
 @Component({
   selector: 'deployment-list',
@@ -22,7 +22,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['select', 'name', 'created', 'updated', 'status', 'start', 'stop', 'restart', 'info', 'edit', 'delete', 'show']
-  selection = new SelectionModel<Deployment>(true, []);
+  selection = new SelectionModel<string>(true, []);
 
   constructor(
     public dialog: MatDialog, 
@@ -46,13 +46,8 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   startPeriodicRefresh() {
     this.stopPeriodicRefresh()
     this.interval = setInterval(() => { 
-      this.loadDeployments(true); 
-      console.log(this.selection)
+      this.loadDeployments(true);
     }, 5000);
-  }
-
-  markRowsAsSelected() {
-
   }
 
   stopPeriodicRefresh() {
@@ -137,87 +132,83 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   stop(deploymentID: string) {
-    this.ready = false;
-    this.stopPeriodicRefresh()
-
-    this.utilsService.askForConfirmation("Do you want to force stop?").subscribe(forceConfirmed => {
-      this.moduleService.stopDeployment(deploymentID, forceConfirmed).subscribe(
-        {
-          next: (jobID) => {
-            // Stop results in a job which needs to be polled 
-            var message = "Deployment is stopping"
-            var self = this
-            this.utilsService.checkJobStatus(jobID, message, function() {
-              self.loadDeployments(false)
-              self.startPeriodicRefresh()
-            })
-          },
-          error: (err) => {
-            this.errorService.handleError(DeploymentListComponent.name, "stop", err)
-            this.ready = true
-          }
-        }
-      )
-    })
+    this._stop([deploymentID])
   }
 
   stopMultiple() {
+    const ids: string[] = [];
+    this.selection.selected.forEach((deployment_id: string) => {
+      ids.push(deployment_id);
+    });
+
+    this._stop(ids)
+  }
+
+  _stop(ids: string[]) {
     this.ready = false;
     this.stopPeriodicRefresh()
 
-    const ids: string[] = [];
-
-    this.utilsService.askForConfirmation("Do you want to force stop?").subscribe(forceConfirmed => {
-      this.selection.selected.forEach((deployment: Deployment) => {
-        ids.push(deployment.id);
-      });
-              
-      this.moduleService.stopDeployments(ids, forceConfirmed).pipe(
-        map(jobID => {
-          var message = "Deployments are stopping"
-          var self = this
-          this.utilsService.checkJobStatus(jobID, message, function() {
-            self.loadDeployments(false)
-            self.startPeriodicRefresh()
-          })
-        }),
-        catchError(err => {
-          this.errorService.handleError(DeploymentListComponent.name, "stopDeployments", err)
+    this.sendStop(ids, false).pipe(
+      catchError((err, _1) => {
+        // stopping did not succeed because deployment is required 
+        return this.utilsService.askForConfirmation("Do you want to force stop?")
+      }),
+      concatMap((forceConfirmed: any) => {
+        if(!forceConfirmed) {
           this.ready = true
+          this.startPeriodicRefresh()
           return of()
-        })
-      ).subscribe()
-    })
+        }
+        
+        return this.sendStop(ids, true)
+      }),
+      catchError(err => {
+        this.errorService.handleError(DeploymentListComponent.name, "stopMultiple", err)
+        return of()
+      })
+    ).subscribe()
   }
 
-  start(deploymentID: string) {
-    this.ready = false
-    this.stopPeriodicRefresh()
-
-    this.moduleService.startDeployment(deploymentID, true).subscribe(
-      {
-        next: (_) => {
+  sendStop(ids: string[], forceConfirmed: boolean) {
+    return this.moduleService.stopDeployments(ids, forceConfirmed).pipe(
+      concatMap(jobID => {
+        var message = "Deployments are stopping"
+        return this.utilsService.checkJobStatus(jobID, message)
+      }),
+      concatMap(result => {
+          if(!result.success && !forceConfirmed) {
+            return throwError(() => new Error(result.error))
+          }
           this.loadDeployments(false)
           this.startPeriodicRefresh()
-        },
-        error: (err) => {
-          this.errorService.handleError(DeploymentListComponent.name, "start", err)
-          this.ready = true
-        }
-      }
+          return of()
+      }),
+      catchError(err => {
+        this.errorService.handleError(DeploymentListComponent.name, "stopDeployments", err)
+        this.ready = true
+        return of()
+      })
     )
   }
 
+  start(deploymentID: string) {
+    this._start([deploymentID])
+  }
+
   startMultiple() {
+    const ids: string[] = [];
+
+    this.selection.selected.forEach((deployment_id: string) => {
+      ids.push(deployment_id);
+    });
+            
+    this._start(ids)
+  }
+
+  _start(ids: string[]) {
     this.ready = false;
     this.stopPeriodicRefresh()
 
-    const ids: string[] = [];
-
-    this.selection.selected.forEach((deployment: Deployment) => {
-      ids.push(deployment.id);
-    });
-            
     this.moduleService.startDeployments(ids, true).pipe(
       map(_ => {
         this.loadDeployments(false)
@@ -232,44 +223,35 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   restart(deploymentID: string) {
-    this.stopPeriodicRefresh()
-    this.moduleService.restartDeployment(deploymentID).subscribe(
-      {
-        next: (jobID) => {
-          // Stop results in a job which needs to be polled 
-          var message = "Deployment is restarting"
-          var self = this
-          this.utilsService.checkJobStatus(jobID, message, function() {
-            self.loadDeployments(false)
-            self.startPeriodicRefresh()
-          })
-        },
-        error: (err) => {
-          this.errorService.handleError(DeploymentListComponent.name, "restart", err)
-          this.ready = true
-        }
-      }
-    )
+    this._restart([deploymentID])
   }
 
   restartMultiple() {
+    const ids: string[] = [];
+
+    this.selection.selected.forEach((deployment_id: string) => {
+      ids.push(deployment_id);
+    });
+            
+    this._restart(ids)
+  }
+
+  _restart(ids: string[]) {
     this.ready = false;
     this.stopPeriodicRefresh()
 
-    const ids: string[] = [];
-
-    this.selection.selected.forEach((deployment: Deployment) => {
-      ids.push(deployment.id);
-    });
-            
     this.moduleService.restartDeployments(ids).pipe(
-      map(jobID => {
+      concatMap(jobID => {
         var message = "Deployments are restarting"
-        var self = this
-        this.utilsService.checkJobStatus(jobID, message, function() {
-          self.loadDeployments(false)
-          self.startPeriodicRefresh()
-        })
+        return this.utilsService.checkJobStatus(jobID, message)
+      }),
+      concatMap(result => {
+          this.loadDeployments(false)
+          this.startPeriodicRefresh()
+          if(!result.success) {
+            return throwError(() => new Error(result.error))
+          }
+          return of()
       }),
       catchError(err => {
         this.errorService.handleError(DeploymentListComponent.name, "restartMultiple", err)
@@ -280,48 +262,59 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   delete(deploymentID: string) {
-    this.ready = false
-    this.stopPeriodicRefresh()
-
-    this.utilsService.askForConfirmation("Do you want to force delete?").subscribe(forceConfirmed => {
-      this.moduleService.deleteDeployment(deploymentID, forceConfirmed).subscribe(
-        {
-          next: (_) => {
-            this.loadDeployments(false)
-            this.startPeriodicRefresh()
-          },
-          error:(err) => {
-            this.errorService.handleError(DeploymentListComponent.name, "delete", err)
-            this.ready = true
-          }
-        }
-      )
-    })
+    this._delete([deploymentID])
   }
 
   deleteMultiple() {
+    const ids: string[] = [];
+    this._delete(ids)
+  }
+
+  _delete(ids: string[]) {
     this.ready = false;
     this.stopPeriodicRefresh()
 
-    const ids: string[] = [];
+    this.sendDelete(ids, false).pipe(
+      catchError((err, _1) => {
+        // stopping did not succeed because deployment is required 
+        return this.utilsService.askForConfirmation("Do you want to force delete?")
+      }),
+      concatMap((forceConfirmed: any) => {
+        if(!forceConfirmed) {
+          this.ready = true
+          this.startPeriodicRefresh()
+          return of()
+        }
+        
+        return this.sendDelete(ids, true)
+      }),
+      catchError(err => {
+        this.errorService.handleError(DeploymentListComponent.name, "_delete", err)
+        return of()
+      })
+    ).subscribe()
+  }
 
-    this.utilsService.askForConfirmation("Do you want to force delete?").subscribe(forceConfirmed => {
-      this.selection.selected.forEach((deployment: Deployment) => {
-        ids.push(deployment.id);
-      });
-              
-      this.moduleService.deleteDeployments(ids, forceConfirmed).pipe(
-        map(_ => {
+  sendDelete(ids: string[], forceConfirmed: boolean) {
+    return this.moduleService.deleteDeployments(ids, forceConfirmed).pipe(
+      concatMap(jobID => {
+        var message = "Delete deployments"
+        return this.utilsService.checkJobStatus(jobID, message)
+      }),
+      concatMap(result => {
+          if(!result.success && !forceConfirmed) {
+            return throwError(() => new Error(result.error))
+          }
           this.loadDeployments(false)
           this.startPeriodicRefresh()
-        }),
-        catchError(err => {
-          this.errorService.handleError(DeploymentListComponent.name, "deleteMultiple", err)
-          this.ready = true
           return of()
-        })
-      ).subscribe()
-    })
+      }),
+      catchError(err => {
+        this.errorService.handleError(DeploymentListComponent.name, "sendDelete", err)
+        this.ready = true
+        return of()
+      })
+    )
   }
 
   showInstances(deploymentID: string) {
@@ -336,11 +329,12 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   masterToggle() {
-      if (this.isAllSelected()) {
-          this.selectionClear();
-      } else {
-          this.dataSource.connect().value.forEach((row) => this.selection.select(row));
-      }
+    if(this.isAllSelected()) {
+      this.selectionClear();
+    } else {
+      this.selectionClear();
+      this.dataSource.connect().value.forEach((row) => this.selection.select(row.id));
+    }
   }
 
   selectionClear(): void {

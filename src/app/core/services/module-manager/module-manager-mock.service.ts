@@ -366,7 +366,7 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
          }
       }, 
       {
-         "id": "id", 
+         "id": "id2", 
          "module": {
             "id": "github.com/SENERGY-Platform/mgw-test-module-a",
             "version": ""

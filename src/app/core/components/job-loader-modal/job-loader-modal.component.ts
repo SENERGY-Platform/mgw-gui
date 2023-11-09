@@ -26,14 +26,14 @@ export class JobLoaderModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // TODO better interal + obsersable
     this.interval = setInterval(() => { 
       this.moduleService.getJobStatus(this.jobID).subscribe(jobResponse => {
         if(jobResponse.completed && !jobResponse.error) {
-          this.jobIsCompleted = true
-          this.close()
+          this.close(true, undefined)
         } else if (jobResponse.error) {
           this.errorService.handleError(JobLoaderModalComponent.name, "ngOnInit", new Error(jobResponse.error))
-          this.close(jobResponse.error)
+          this.close(false, jobResponse.error)
         }
       }); 
     }, 1000);
@@ -43,18 +43,21 @@ export class JobLoaderModalComponent implements OnInit {
     this.moduleService.stopJob(this.jobID).subscribe(
       {
         next: (result) => {
-          this.close()
+          this.close(true)
         },
         error: (err) => {
           this.errorService.handleError(JobLoaderModalComponent.name, "cancel", err)
-          this.close()
+          this.close(false, err)
         }
       }
     )
   }
 
-  close(errorMessage: string | undefined = undefined) {
+  close(success: boolean, errorMessage: string | undefined = undefined) {
     clearInterval(this.interval)
-    this.dialogRef.close(errorMessage)
+    this.dialogRef.close({
+      "success": success,
+      "error": errorMessage
+    })
   }
 }

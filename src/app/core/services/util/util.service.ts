@@ -19,7 +19,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, throwError } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { JobLoaderModalComponent } from '../../components/job-loader-modal/job-loader-modal.component';
 
@@ -45,20 +45,16 @@ export class UtilService {
     }
 
 
-  checkJobStatus(jobID: string, message: string, callback: any) {
+  checkJobStatus(jobID: string, message: string): Observable<any> {
     /* 
       Shows a Modal with a loading circle.
       When the job completed successfully, the modal will close
-      When the job returned an error, it will be shown in the snackbar
-      Callback will be called in both cases.
+      When the job returned an error, the modal will close with the error message
     */ 
 
     var dialogRef = this.dialog.open(JobLoaderModalComponent, {data: {jobID: jobID, message: message}});
     
-    dialogRef?.afterClosed().subscribe(jobIsCompleted => {
-      console.log("job done")
-      callback()
-    });
+    return dialogRef?.afterClosed()
   }
 
   objectIsEmptyOrNull(obj: any) {

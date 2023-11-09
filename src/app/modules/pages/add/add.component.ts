@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, TitleStrategy } from '@angular/router';
-import { catchError } from 'rxjs';
+import { catchError, throwError, map } from 'rxjs';
 import { JobLoaderModalComponent } from 'src/app/core/components/job-loader-modal/job-loader-modal.component';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
@@ -25,20 +25,26 @@ export class AddComponent {
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
     private router: Router,
     public dialog: MatDialog, 
-    private utilsService: UtilService
+    private utilsService: UtilService,
+    private errorService: ErrorService,
   ) {}
 
   addModule() {
     this.form.markAllAsTouched()
     if(this.form.valid) {
       var module: AddModule = JSON.parse(JSON.stringify(this.form.value))
-      this.moduleService.addModule(module).subscribe(jobID => {
-        var message = "Module installation is running"
-        var self = this
-        this.utilsService.checkJobStatus(jobID, message, function() {
-          self.navigateToModules()
-        })
-      })
+      this.moduleService.addModule(module).pipe(
+        map(jobID => {
+          var message = "Module installation is running"
+          this.utilsService.checkJobStatus(jobID, message).subscribe(result => {
+            this.navigateToModules()
+            if(!result.success) {
+                throwError(() => new Error(result.error))
+              }
+          })
+        }),
+        catchError(err => this.errorService.handleError(AddComponent.name, "addModule", err))
+      ).subscribe()
     }
   }
 

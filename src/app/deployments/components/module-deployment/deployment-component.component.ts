@@ -10,7 +10,7 @@ import { ModuleManagerService } from '../../../core/services/module-manager/modu
 import { SecretManagerServiceService } from '../../../core/services/secret-manager/secret-manager-service.service';
 import { DeploymentRequest, DeploymentTemplate, DeploymentUpdateTemplate, ModuleUpdateTemplate } from '../../models/deployment_models';
 import { HostManagerService } from 'src/app/core/services/host-manager/host-manager.service';
-import { forkJoin, Observable } from 'rxjs';
+import { catchError, concatMap, forkJoin, map, Observable, of, throwError } from 'rxjs';
 
 @Component({
   selector: 'deployment',
@@ -314,33 +314,45 @@ export class DeploymentComponentComponent implements OnInit {
   }
 
   updateDeployment(deploymentRequest: DeploymentRequest) {
-    this.moduleService.updateDeployment(this.deploymentID, deploymentRequest).subscribe({
-      next: (jobID) => {
+    this.moduleService.updateDeployment(this.deploymentID, deploymentRequest).pipe(
+      concatMap(jobID => {
         var message = "Deployment update is running"
-        var self = this
-        this.utilsService.checkJobStatus(jobID, message, function() {
-          self.router.navigate(["/deployments"])
-        })
-      },
-      error: (err) => {
+        return this.utilsService.checkJobStatus(jobID, message)
+      }),
+      concatMap(result => {
+        if(result.success) {
+            this.router.navigate(["/deployments"])
+            return of()
+        } else {
+            return throwError(() => new Error(result.error))
+        } 
+      }),
+      catchError(err => {
         this.errorService.handleError(DeploymentComponentComponent.name, "updateDeployment", err)
-      }
-    })
+        return of()
+      })
+    ).subscribe()
   }
 
   updateModule(deploymentRequest: DeploymentRequest) {
-    this.moduleService.updateModule(this.moduleID, deploymentRequest).subscribe({
-      next: (jobID) => {
+    this.moduleService.updateModule(this.moduleID, deploymentRequest).pipe(
+      concatMap(jobID => {
         var message = "Module update is running"
-        var self = this
-        this.utilsService.checkJobStatus(jobID, message, function() {
-          self.router.navigate(["/modules"])
-        })
-      },
-      error: (err) => {
+        return this.utilsService.checkJobStatus(jobID, message)
+      }),
+      concatMap(result => {
+          if(result.success) {
+            this.router.navigate(["/modules"])
+            return of()
+          } else {
+            return throwError(() => new Error(result.error))
+          }
+      }),
+      catchError(err => {
         this.errorService.handleError(DeploymentComponentComponent.name, "updateModule", err)
-      }
-    })  
+        return of()
+      })
+    ).subscribe()
   }
 
   submit() {
