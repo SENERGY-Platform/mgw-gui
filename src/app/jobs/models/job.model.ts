@@ -1,7 +1,12 @@
+interface jobError {
+    message: string;
+    code: number;
+}
+
 export interface Job {
     id: string;
     completed: Date;
-    error: string | null;
+    error: jobError | null;
     started: Date;
     canceled: Date;
     created: Date;
