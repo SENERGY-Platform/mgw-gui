@@ -151,11 +151,6 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           this.loadDeployments(false)
           this.startPeriodicRefresh()
           return of()
-      }),
-      catchError(err => {
-        this.errorService.handleError(DeploymentListComponent.name, "stopDeployments", err)
-        this.ready = true
-        return of()
       })
     )
   }
@@ -178,7 +173,14 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.ready = false;
     this.stopPeriodicRefresh()
 
-    this.moduleService.startDeployments(ids, true).pipe(
+    var obs
+    if(ids.length == 1) {
+      obs = this.moduleService.startDeployment(ids[0], true)
+    } else {
+      obs = this.moduleService.startDeployments(ids, true)
+    }
+
+    obs.pipe(
       map(_ => {
         this.loadDeployments(false)
         this.startPeriodicRefresh()
@@ -271,7 +273,13 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   sendDelete(ids: string[], forceConfirmed: boolean) {
-    return this.moduleService.deleteDeployments(ids, forceConfirmed).pipe(
+    var obs 
+    if (ids.length == 1) {
+      obs = this.moduleService.deleteDeployment(ids[0], forceConfirmed)
+    } else {
+      obs = this.moduleService.deleteDeployments(ids, forceConfirmed)
+    }
+    return obs.pipe(
       concatMap(jobID => {
         var message = "Delete deployments"
         return this.utilsService.checkJobStatus(jobID, message)
@@ -283,11 +291,6 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           this.loadDeployments(false)
           this.startPeriodicRefresh()
           return of()
-      }),
-      catchError(err => {
-        this.errorService.handleError(DeploymentListComponent.name, "sendDelete", err)
-        this.ready = true
-        return of()
       })
     )
   }
