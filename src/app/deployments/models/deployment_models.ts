@@ -34,7 +34,6 @@ export interface Deployment {
     module: Module; 
     name: string;
     enabled: boolean;
-    indirect: boolean;
     created: Date;
     updated: Date;
     host_resources: Record<string, string>;
