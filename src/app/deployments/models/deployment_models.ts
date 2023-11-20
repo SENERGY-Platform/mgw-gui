@@ -1,4 +1,4 @@
-import { ContainerHealth, Instance } from "src/app/container/models/container";
+import { Container } from "src/app/container/models/container";
 import { BaseRequest } from "src/app/core/models/base";
 
 // Create a new Deployment
@@ -41,7 +41,12 @@ export interface Deployment {
     secrets: Record<string, DeploymentSecretInfo>;
     required_dep: string[];
     dep_requiring: string[];
-    instance: Instance;
+    containers: null | Record<string, Container>;
+    state: null | string;
+}
+
+export interface DeploymentResponse {
+    [deployment_id: string]: Deployment;
 }
 
 // Deployment Template -> Info for loading the form
@@ -96,15 +101,3 @@ export interface DeploymentUpdateTemplate extends DeploymentTemplateBase {
 
 export interface ModuleUpdateTemplate extends DeploymentTemplate {}
 
-// Health
-export interface DeploymentHealth {
-    status: string;
-    containers: ContainerHealth[]
-}
-
-export interface DeploymentHealths {
-    [deployment_id: string]: DeploymentHealth
-}
-
-// Deployment Info + Health
-export interface DeploymentWithHealth extends Deployment, DeploymentHealth {}

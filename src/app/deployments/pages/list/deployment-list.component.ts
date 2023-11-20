@@ -4,7 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
-import { Deployment, DeploymentHealth, DeploymentWithHealth } from '../../models/deployment_models';
+import { Deployment } from '../../models/deployment_models';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -67,15 +67,21 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   loadDeployments(background: boolean): void {
-    this.moduleService.loadDeployments().subscribe(
+    this.moduleService.loadDeployments(false).subscribe(
       {
         next: (deployments) => {
-          if(!!deployments) {
-            this.loadDeploymentHealthStates(deployments, background)
-          } else {
+          if(!deployments) {
             this.dataSource.data = []
             this.ready = true
+          } else {
+            var deploymentsList: Deployment[] = []
+            for (const [_, deployment] of Object.entries(deployments)) {
+              deploymentsList.push(deployment)
+            }
+            this.dataSource.data = deploymentsList
           }
+          this.ready = true
+
         }, 
         error: (err) => {
           if(!background) {
@@ -85,50 +91,6 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         }
       }
     )
-  }
-
-  loadDeploymentHealthStates(deployments: Deployment[], background: boolean) {
-    this.moduleService.getDeploymentsHealth().subscribe(
-      {
-        next: (deploymentHealthStates) => {
-          var deploymentsWithHealth: DeploymentWithHealth[] = []
-          
-          deployments.forEach(deployment => {
-            var deploymentHealth = deploymentHealthStates[deployment.id]
-
-            var deploymentWithHealth = {
-              ...deploymentHealth,
-              ...deployment
-            }
-            deploymentsWithHealth.push(deploymentWithHealth)
-          });
-
-          this.dataSource.data = deploymentsWithHealth
-          this.ready = true
-        },
-        error: (err) => {
-          if(!background) {
-            this.errorService.handleError(DeploymentListComponent.name, "loadDeploymentHealthStates", err)
-          }
-
-          var deploymentsWithHealth: DeploymentWithHealth[] = []
-          
-          deployments.forEach(deployment => {
-            var deploymentHealth: DeploymentHealth = {"status": "unknown", containers: []}
-
-            var deploymentWithHealth = {
-              ...deploymentHealth,
-              ...deployment
-            }
-            deploymentsWithHealth.push(deploymentWithHealth)
-          });
-
-          this.dataSource.data = deploymentsWithHealth
-          this.ready = true
-        }
-      }
-    )
-
   }
 
   stop(deploymentID: string) {

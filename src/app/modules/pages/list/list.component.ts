@@ -8,7 +8,7 @@ import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Router } from '@angular/router';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { UpdateModalComponent } from '../../components/update-modal/update-modal.component';
-import { catchError, Observable, of, map, concatMap, throwError } from 'rxjs';
+import { catchError, Observable, of, map, concatMap, throwError, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-list',
@@ -36,11 +36,23 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-      this.loadModules();
+      var moduleObs = this.loadModules();
+      var updateObs = this.checkForCurrentlyAvailableUpdates();
+      forkJoin([moduleObs, updateObs]).subscribe({
+        next: (b) => {
+          console.log(b)
+          this.ready = true
+        },
+        error: (err) => {
+          this.errorService.handleError(ListComponent.name, "ngOnInit", err)
+          this.ready = true
+        }
+      })
+
       this.init = false;
-      this.checkForUpdates(true);
+
       this.interval = setInterval(() => { 
-        this.checkForUpdates(true); 
+        this.checkForCurrentlyAvailableUpdates().subscribe(); 
       }, 5000);
   }
 
@@ -48,11 +60,20 @@ export class ListComponent implements OnInit, OnDestroy {
       clearTimeout(this.interval)
   }
 
-  checkForUpdates(background: boolean) {
-    if(!background) {
-      this.ready = false
-    }
+  checkForCurrentlyAvailableUpdates(): Observable<boolean> {
+    // Only get currently available updates, this does not trigger the backend to check for actual new versions in the repos
+    return this.moduleService.getAvailableUpdates().pipe(
+      map(updates => {
+        if(!!updates) {
+          this.availableModuleUpdates = updates
+        }
+        return true
+      })
+    )
+  }
 
+
+  checkForUpdates() {
     this.stopPendingUpdates().pipe(
       concatMap(_ => {
         return this.moduleService.checkForUpdates()
@@ -75,9 +96,7 @@ export class ListComponent implements OnInit, OnDestroy {
         return of()
       }),
       catchError(err => {
-        if(!background) {
-          this.errorService.handleError(ListComponent.name, "checkForUpdates", err)
-        }
+        this.errorService.handleError(ListComponent.name, "checkForUpdates", err)
         this.ready = true 
         return of()
       })
@@ -137,18 +156,20 @@ export class ListComponent implements OnInit, OnDestroy {
     this.dataSource.sort = this.sort;
   }
 
-  loadModules() {
-    this.moduleService.loadModules().subscribe(
-      {
-        next: (modules) => {
-          this.dataSource.data = modules || []
-          this.ready = true
-        }, 
-        error: (err) => {
-          this.errorService.handleError(ListComponent.name, "loadModules", err)
-          this.ready = true
-        }
-      }
+  loadModules(): Observable<boolean> {
+    return this.moduleService.loadModules().pipe(
+        map((modules) => {
+          if(!modules) {
+            this.dataSource.data = []
+          } else {
+            var moduleList: Module[] = []
+            for (const [_, module] of Object.entries(modules)) {
+              moduleList.push(module)
+            }
+            this.dataSource.data = moduleList
+          }
+          return true
+        })
     )
   }
 

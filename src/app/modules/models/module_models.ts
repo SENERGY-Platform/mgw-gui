@@ -14,6 +14,10 @@ export interface Module {
     updated: Date;
 }
 
+export interface ModuleResponse {
+    [module_id: string]: Module;
+}
+
 export interface AddModule {
     id?: string;
     version?: string;

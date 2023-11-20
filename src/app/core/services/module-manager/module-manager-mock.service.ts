@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { AddModule, Module, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdates } from '../../../modules/models/module_models';
-import { Deployment, DeploymentHealth, DeploymentHealths, DeploymentRequest, DeploymentTemplate } from 'src/app/deployments/models/deployment_models';
+import { Deployment, DeploymentRequest, DeploymentTemplate } from 'src/app/deployments/models/deployment_models';
 import { ErrorService } from '../util/error.service';
 import { Job } from 'src/app/jobs/models/job.model';
 import { delay } from "rxjs/operators";
@@ -251,7 +251,6 @@ export class ModuleManagerMockService {
          "license": "license",
          "tags": ["tag1", "tag2", "tag3"],
          "type": "type",
-         "indirect": false,
          "added": new Date(),
          "updated": new Date()
       })
@@ -341,7 +340,7 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
    return of("done").pipe(delay(1000));    
 }
 
-  public loadDeployments(): Observable<Deployment[]> {
+  public loadDeployments(withContainerInfo: boolean): Observable<Deployment[]> {
      var deployments = [
       {
          "module": {
@@ -351,7 +350,6 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
          "name": "Deployment1", 
          "enabled": true, 
          "id": "id", 
-         'indirect': true, 
          'created': new Date(), 
          'updated': new Date(),
          'secrets': {},
@@ -359,11 +357,8 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
          'configs': {},
          'dep_requiring': [],
          'required_dep': [],
-         'instance': {
-            "id": "id",
-            "created": new Date(),
-            "containers": []
-         }
+         'state': null,
+         'containers': null,
       }, 
       {
          "id": "id2", 
@@ -371,7 +366,6 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
             "id": "github.com/SENERGY-Platform/mgw-test-module-a",
             "version": ""
          }, 
-         'indirect': true, 
          'created': new Date(), 
          'updated': new Date(), 
          "name": "Deployment2", 
@@ -381,16 +375,13 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
          'configs': {},
          'dep_requiring': [],
          'required_dep': [],
-         'instance': {
-            "id": "id",
-            "created": new Date(),
-            "containers": []
-         }
+         'state': null,
+         'containers': null,
       }]
       return of(deployments).pipe(delay(1000));
   }  
 
-  public loadDeployment(deploymentID: string): Observable<Deployment> {   
+  public loadDeployment(deploymentID: string, withContainerInfo: boolean): Observable<Deployment> {   
    return new Observable((subscriber) => {
       var template = {
          "module": {
@@ -400,7 +391,6 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
          "name": "Deployment1", 
          "enabled": true, 
          "id": "id", 
-         'indirect': true, 
          'created': new Date(), 
          'updated': new Date(),
          'secrets': {"cert": {"id": "cert", "variants": []}, "login": {"id": "login", "variants": []}},
@@ -414,11 +404,8 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
          },
          'dep_requiring': [],
          'required_dep': [],
-         "instance": {
-            "id": "id",
-            "created": new Date(),
-            "containers": []
-         }
+         'state': null,
+         'containers': null,
       }
       subscriber.next(template)
       subscriber.complete()
@@ -503,33 +490,5 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
       return new Observable(obs => {
          obs.next(true)
       })
-   }
-
-
-   // Health
-   getDeploymentsHealth(): Observable<DeploymentHealths> {
-     var health = {
-        "id": {
-           "status": "unknown",
-           "containers": [{
-              "id": "id2",
-              "ref": "Ref",
-              "state": "running"
-           }]
-        }
-     }
-     return of(health).pipe(delay(500))
-   }
-
-   getDeploymentHealth(deploymentID: string): Observable<DeploymentHealth> {
-      var health = {
-            "status": "unknown",
-            "containers": [{
-               "id": "id2",
-               "ref": "Ref",
-               "state": "running"
-            }]
-      }
-      return of(health).pipe(delay(500))
    }
 }

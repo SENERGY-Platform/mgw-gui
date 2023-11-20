@@ -2,8 +2,8 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api/api.service';
-import { AddModule, Module, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdateRequest, ModuleUpdates } from '../../../modules/models/module_models';
-import { Deployment, DeploymentHealth, DeploymentHealths, DeploymentRequest, DeploymentTemplate, ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
+import { AddModule, Module, ModuleResponse, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdateRequest, ModuleUpdates } from '../../../modules/models/module_models';
+import { Deployment, DeploymentRequest, DeploymentResponse, DeploymentTemplate, ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
 import { Job } from 'src/app/jobs/models/job.model';
 
 @Injectable({
@@ -26,9 +26,9 @@ export class ModuleManagerService {
     return <Observable<DeploymentTemplate>>this.http.get(url)
   }
 
-  loadModules(): Observable<Module[]> {
+  loadModules(): Observable<ModuleResponse> {
     var url = this.moduleManagerPath + "/modules" 
-    return <Observable<Module[]>>this.http.get(url)
+    return <Observable<ModuleResponse>>this.http.get(url)
   } 
 
   addModule(module: AddModule): Observable<string> {
@@ -89,14 +89,22 @@ export class ModuleManagerService {
     return <Observable<string>>this.http.post(path, deploymentRequest, undefined, 'text');
   }  
 
-  loadDeployments(): Observable<Deployment[]> {
-    var url = this.moduleManagerPath + "/deployments" 
-    return <Observable<Deployment[]>>this.http.get<Deployment[]>(url);
+  loadDeployments(withContainerInfo: boolean): Observable<DeploymentResponse> {
+    var url = this.moduleManagerPath + "/deployments"
+    let queryParams = new HttpParams()
+    if(withContainerInfo) {
+      queryParams = queryParams.set("container_info", "true")
+    }
+    return <Observable<DeploymentResponse>>this.http.get<Deployment[]>(url, queryParams);
   }  
 
-  loadDeployment(deploymentID: string): Observable<Deployment> {
-   var url = this.moduleManagerPath + "/deployments/" + deploymentID 
-   return <Observable<Deployment>>this.http.get(url);
+  loadDeployment(deploymentID: string, withContainerInfo: boolean): Observable<Deployment> {
+    var url = this.moduleManagerPath + "/deployments/" + deploymentID 
+    let queryParams = new HttpParams()
+    if(withContainerInfo) {
+      queryParams = queryParams.set("container_info", "true")
+    }
+    return <Observable<Deployment>>this.http.get(url, queryParams);
   }
 
   updateDeployment(deploymentID: string, update: any): Observable<string> {
@@ -189,16 +197,5 @@ export class ModuleManagerService {
   getJobs(): Observable<Job[]> {
     var url = this.moduleManagerPath + "/jobs"
      return <Observable<Job[]>>this.http.get(url)
-  }
-
-  // Health
-  getDeploymentsHealth(): Observable<DeploymentHealths> {
-    var url = this.moduleManagerPath + "/health"
-    return <Observable<DeploymentHealths>>this.http.get(url)
-  }
-
-  getDeploymentHealth(deploymentID: string): Observable<DeploymentHealth> {
-    var url = this.moduleManagerPath + "/health/" + deploymentID
-    return <Observable<DeploymentHealth>>this.http.get(url)
   }
 }

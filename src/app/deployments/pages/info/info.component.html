@@ -29,8 +29,6 @@
 
     <mat-checkbox [disabled]="true" [ngModel]="deployment.enabled">Enabled</mat-checkbox>
 
-    <mat-checkbox [disabled]="true" [ngModel]="deployment.indirect">Indirect</mat-checkbox>
-
     <h2 *ngIf="objectKeys(deployment['host_resources']).length > 0">Host Resources</h2>
     <div *ngFor="let hostResourceItem of deployment['host_resources'] | keyvalue;" class="form-field-container">
       <mat-form-field appearance="fill">

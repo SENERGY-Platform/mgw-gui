@@ -69,7 +69,7 @@
                 <ng-container matColumnDef="error">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef>Error</th>
                     <td mat-cell *matCellDef="let job">
-                        {{job.error.code + ": " + job.error.message}}
+                        <p *ngIf="!!job.error">{{job.error.code + ": " + job.error.message}}</p>
                     </td>
                 </ng-container>
 

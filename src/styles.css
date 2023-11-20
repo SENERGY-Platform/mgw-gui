@@ -77,6 +77,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     background: grey;
 }
 
+.yellow {
+    background: yellow;
+}
+
 .circle {
     width: 10px;
     height: 10px;

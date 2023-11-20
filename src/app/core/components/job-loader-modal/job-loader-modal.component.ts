@@ -32,8 +32,8 @@ export class JobLoaderModalComponent implements OnInit {
         if(jobResponse.completed && !jobResponse.error) {
           this.close(true, undefined)
         } else if (jobResponse.error) {
-          this.errorService.handleError(JobLoaderModalComponent.name, "ngOnInit", new Error(jobResponse.error))
-          this.close(false, jobResponse.error)
+          this.errorService.handleError(JobLoaderModalComponent.name, "ngOnInit", new Error(jobResponse.error.message))
+          this.close(false, jobResponse.error.message)
         }
       }); 
     }, 1000);

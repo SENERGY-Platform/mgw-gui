@@ -7,8 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { UtilService } from 'src/app/core/services/util/util.service';
-import { DeploymentHealth } from 'src/app/deployments/models/deployment_models';
-import { Container, ContainerHealth, ContainerWithHealth } from '../../models/container';
+import { Container } from '../../models/container';
 
 @Component({
   selector: 'app-list',
@@ -16,12 +15,12 @@ import { Container, ContainerHealth, ContainerWithHealth } from '../../models/co
   styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnDestroy {
-  dataSource = new MatTableDataSource<ContainerWithHealth>();
+  dataSource = new MatTableDataSource<Container>();
   ready: Boolean = false;
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['id', 'ref', 'state', 'logs']
+  displayColumns = ['id', 'ref', 'status', 'alias', 'state', 'logs']
   deploymentID!: string
   
   constructor(
@@ -34,9 +33,9 @@ export class ListComponent implements OnDestroy {
   ) {
     this.route.params.subscribe(params => {
       this.deploymentID = params['id']
-      this.loadInstances(this.deploymentID);
+      this.loadContainer(this.deploymentID);
       this.interval = setInterval(() => { 
-        this.loadInstances(this.deploymentID); 
+        this.loadContainer(this.deploymentID); 
       }, 5000);
       this.init = false
     })
@@ -46,13 +45,20 @@ export class ListComponent implements OnDestroy {
       clearTimeout(this.interval)
   }
 
-  loadInstances(deploymentID: string): void {
+  loadContainer(deploymentID: string): void {
     // Get containers from deployment info, then merge with container healths
-    this.moduleService.loadDeployment(deploymentID).subscribe(
+    this.moduleService.loadDeployment(deploymentID, true).subscribe(
       {
         next: (deployment) => {
-          var containers = deployment.instance.containers
-          this.loadContainerHealth(containers, deploymentID)
+          var containers = []
+          if(!!deployment.containers) {
+            for(const [_, container] of Object.entries(deployment.containers)) {
+              containers.push(container)
+            }
+          }
+          
+          this.dataSource.data = containers
+          this.ready = true
         }, 
         error: (err) => {
           this.errorService.handleError(ListComponent.name, "loadInstances", err)
@@ -60,51 +66,6 @@ export class ListComponent implements OnDestroy {
         }
       }
     )
-  }
-
-  loadContainerHealth(containers: Container[], deploymentID: string) {
-    var containersWithHealth: ContainerWithHealth[] = []
-
-    this.moduleService.getDeploymentHealth(deploymentID).subscribe(
-      {
-        next: (deploymentHealth) => {
-          var containerIDToStatus: Record<string, string> = {}
-          deploymentHealth.containers.forEach(container => {
-            var containerID = container.id
-            containerIDToStatus[containerID] = container.state
-          });
-
-          containers.forEach(container => {
-            var containerWithHealth: ContainerWithHealth = {
-              ...container,
-              ...{"state": containerIDToStatus[container.id]}
-            }
-            containersWithHealth.push(containerWithHealth)            
-          });
-          
-          this.dataSource.data = containersWithHealth
-          this.ready = true
-        },
-        error: (err) => {
-          if(err instanceof HttpErrorResponse && err.status == 400) {
-            containers.forEach(container => {
-              var containerWithHealth: ContainerWithHealth = {
-                ...container,
-                ...{"state": "N/A"}
-              }
-              containersWithHealth.push(containerWithHealth)            
-            });
-            
-            this.dataSource.data = containersWithHealth
-          } else {
-            this.errorService.handleError(ListComponent.name, "loadContainerHealth", err)
-          }
-
-          this.ready = true
-        }
-      }
-    )
-   
   }
 
   showLogs(containerID: string) {
