@@ -113,7 +113,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.sendStop(ids, false).pipe(
       catchError((err, _1) => {
         // stopping did not succeed because deployment is required 
-        return this.utilsService.askForConfirmation("Do you want to force stop? " + err)
+        return this.utilsService.askForConfirmation(err + "\n" + "Do you want to force stop?")
       }),
       concatMap((forceConfirmed: any) => {
         if(!forceConfirmed) {
@@ -254,7 +254,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.sendDelete(ids, false).pipe(
       catchError((err, _1) => {
         // stopping did not succeed because deployment is required 
-        return this.utilsService.askForConfirmation("Do you want to force delete? " + err)
+        return this.utilsService.askForConfirmation(err + "\nDo you want to force delete?")
       }),
       concatMap((forceConfirmed: any) => {
         if(!forceConfirmed) {
