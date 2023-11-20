@@ -132,7 +132,14 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   sendStop(ids: string[], forceConfirmed: boolean) {
-    return this.moduleService.stopDeployments(ids, forceConfirmed).pipe(
+    var obs 
+    if(ids.length > 1) {
+      obs = this.moduleService.stopDeployment(ids[0], forceConfirmed)
+    } else {
+      obs = this.moduleService.stopDeployments(ids, forceConfirmed)
+    }
+    
+    return obs.pipe(
       concatMap(jobID => {
         var message = "Deployments are stopping"
         return this.utilsService.checkJobStatus(jobID, message)

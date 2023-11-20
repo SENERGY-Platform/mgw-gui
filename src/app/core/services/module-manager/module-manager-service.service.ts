@@ -151,7 +151,8 @@ export class ModuleManagerService {
     if(forceConfirmed) {
       queryParams = queryParams.set("force", "true")
     }
-    return <Observable<any>>this.http.post(url, deploymentIDs, queryParams, 'text');
+    queryParams = queryParams.set("ids", deploymentIDs.join(","))
+    return <Observable<any>>this.http.patch(url, undefined, queryParams, 'text');
    }
 
   startDeployment(deploymentID: string, dependencies: boolean): Observable<any> {
@@ -169,7 +170,8 @@ export class ModuleManagerService {
     if(dependencies) {
       queryParams = queryParams.set("dependencies", "true")
     }
-    return this.http.post(url, deploymentIDs, queryParams)
+    queryParams = queryParams.set("ids", deploymentIDs.join(","))
+    return this.http.patch(url, undefined, queryParams)
   }
 
   restartDeployment(deploymentID: string): Observable<string> {
@@ -179,7 +181,9 @@ export class ModuleManagerService {
 
   restartDeployments(deploymentIDs: string[]): Observable<string> {
     var url = this.moduleManagerPath + "/deployments-batch/restart" 
-    return  <Observable<string>>this.http.post(url, deploymentIDs, undefined, 'text')
+    let queryParams = new HttpParams()
+    queryParams = queryParams.set("ids", deploymentIDs.join(","))
+    return  <Observable<string>>this.http.post(url, undefined, queryParams, 'text')
   }
 
   // Jobs
