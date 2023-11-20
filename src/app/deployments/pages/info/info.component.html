@@ -29,7 +29,7 @@
 
     <mat-checkbox [disabled]="true" [ngModel]="deployment.enabled">Enabled</mat-checkbox>
 
-    <h2 *ngIf="objectKeys(deployment['host_resources']).length > 0">Host Resources</h2>
+    <h2 *ngIf="!!deployment['host_resources'] && objectKeys(deployment['host_resources']).length > 0">Host Resources</h2>
     <div *ngFor="let hostResourceItem of deployment['host_resources'] | keyvalue;" class="form-field-container">
       <mat-form-field appearance="fill">
         <mat-label>{{hostResourceItem.key}}</mat-label>
@@ -37,7 +37,7 @@
       </mat-form-field>
     </div>
 
-    <H2 *ngIf="objectKeys(deployment['secrets']).length > 0">Secrets</H2>
+    <H2 *ngIf="!!deployment['secrets'] && objectKeys(deployment['secrets']).length > 0">Secrets</H2>
     <div *ngFor="let secretItem of deployment['secrets'] | keyvalue" class="form-field-container">
       <!-- Create new Secret -->
       <div class="secret-container">
@@ -50,7 +50,7 @@
 
     </div>
 
-    <h2 *ngIf="objectKeys(deployment['configs']).length > 0">Configs</h2>
+    <h2 *ngIf="!!deployment['configs'] && objectKeys(deployment['configs']).length > 0">Configs</h2>
     <div *ngFor="let configItem of deployment['configs'] | keyvalue;" class="form-field-container">
       <!-- Single Value Config -->
       <span *ngIf="!configItem.value.is_slice">

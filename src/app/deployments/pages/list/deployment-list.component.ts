@@ -67,7 +67,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   loadDeployments(background: boolean): void {
-    this.moduleService.loadDeployments(false).subscribe(
+    this.moduleService.loadDeployments(true).subscribe(
       {
         next: (deployments) => {
           if(!deployments) {
@@ -133,7 +133,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
 
   sendStop(ids: string[], forceConfirmed: boolean) {
     var obs 
-    if(ids.length > 1) {
+    if(ids.length == 1) {
       obs = this.moduleService.stopDeployment(ids[0], forceConfirmed)
     } else {
       obs = this.moduleService.stopDeployments(ids, forceConfirmed)
@@ -209,7 +209,13 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.ready = false;
     this.stopPeriodicRefresh()
 
-    this.moduleService.restartDeployments(ids).pipe(
+    var obs 
+    if(ids.length == 1) {
+      obs = this.moduleService.restartDeployment(ids[0])
+    } else {
+      obs = this.moduleService.restartDeployments(ids)
+    }
+    obs.pipe(
       concatMap(jobID => {
         var message = "Deployments are restarting"
         return this.utilsService.checkJobStatus(jobID, message)
