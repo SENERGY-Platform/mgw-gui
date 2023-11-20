@@ -1,3 +1,7 @@
 button {
     margin-right: 20px;
 }
+
+span {
+    white-space: pre-line;
+}
