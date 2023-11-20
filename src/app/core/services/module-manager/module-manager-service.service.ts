@@ -119,7 +119,8 @@ export class ModuleManagerService {
     if(forceConfirmed) {
       queryParams = queryParams.set("force", "true")
     }
-    return <Observable<any>>this.http.delete(url, deploymentIDs, queryParams);
+    queryParams = queryParams.set("ids", deploymentIDs.join(","))
+    return <Observable<any>>this.http.delete(url, undefined, queryParams);
    }
 
   loadDeploymentUpdateTemplate(moduleId: string): Observable<DeploymentTemplate> {
