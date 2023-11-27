@@ -122,7 +122,7 @@ export class ModuleManagerService {
    }
 
   deleteDeployments(deploymentIDs: string[], forceConfirmed: boolean): Observable<any> {
-    var url = this.moduleManagerPath + "/deployments-batch" 
+    var url = this.moduleManagerPath + "/deployments-batch/delete" 
     let queryParams = new HttpParams()
     if(forceConfirmed) {
       queryParams = queryParams.set("force", "true")
