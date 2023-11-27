@@ -248,6 +248,9 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
 
   deleteMultiple() {
     const ids: string[] = [];
+    this.selection.selected.forEach((deployment_id: string) => {
+      ids.push(deployment_id);
+    });
     this._delete(ids)
   }
 

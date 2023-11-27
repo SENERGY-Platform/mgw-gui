@@ -183,7 +183,7 @@ export class ModuleManagerService {
     var url = this.moduleManagerPath + "/deployments-batch/restart" 
     let queryParams = new HttpParams()
     queryParams = queryParams.set("ids", deploymentIDs.join(","))
-    return  <Observable<string>>this.http.post(url, undefined, queryParams, 'text')
+    return  <Observable<string>>this.http.patch(url, undefined, queryParams, 'text')
   }
 
   // Jobs
