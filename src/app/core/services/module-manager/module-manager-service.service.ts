@@ -118,7 +118,7 @@ export class ModuleManagerService {
     if(forceConfirmed) {
       queryParams = queryParams.set("force", "true")
     }
-    return <Observable<any>>this.http.delete(url, undefined, queryParams, 'text');
+    return <Observable<any>>this.http.patch(url, undefined, queryParams, 'text');
    }
 
   deleteDeployments(deploymentIDs: string[], forceConfirmed: boolean): Observable<any> {
@@ -128,7 +128,7 @@ export class ModuleManagerService {
       queryParams = queryParams.set("force", "true")
     }
     queryParams = queryParams.set("ids", deploymentIDs.join(","))
-    return <Observable<any>>this.http.delete(url, undefined, queryParams, 'text');
+    return <Observable<any>>this.http.patch(url, undefined, queryParams, 'text');
    }
 
   loadDeploymentUpdateTemplate(moduleId: string): Observable<DeploymentTemplate> {
