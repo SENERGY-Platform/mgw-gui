@@ -123,12 +123,18 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         }
         
         return this.sendStop(ids, true)
-      }),
-      catchError(err => {
-        this.errorService.handleError(DeploymentListComponent.name, "stopMultiple", err)
-        return of()
       })
-    ).subscribe()
+    ).subscribe({
+      next: (_) => {
+        this.loadDeployments(false)
+        this.startPeriodicRefresh()
+      },
+      error: (error) => {
+        this.errorService.handleError(DeploymentListComponent.name, "stopMultiple", error)
+        this.startPeriodicRefresh()
+
+      }
+    })
   }
 
   sendStop(ids: string[], forceConfirmed: boolean) {
@@ -148,8 +154,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           if(!result.success && !forceConfirmed) {
             return throwError(() => new Error(result.error))
           }
-          this.loadDeployments(false)
-          this.startPeriodicRefresh()
+          
           return of()
       })
     )
@@ -184,17 +189,18 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
       concatMap(jobID => {
         var message = "Deployments are starting"
         return this.utilsService.checkJobStatus(jobID, message)
-      }),
-      map(_ => {
+      })
+    ).subscribe({
+      next: (_) => {
         this.loadDeployments(false)
         this.startPeriodicRefresh()
-      }),
-      catchError(err => {
-        this.errorService.handleError(DeploymentListComponent.name, "startMultiple", err)
+      },
+      error: (error) => {
+        this.errorService.handleError(DeploymentListComponent.name, "startMultiple", error)
         this.ready = true
-        return of()
-      })
-    ).subscribe()
+        this.startPeriodicRefresh()
+      }
+    })
   }
 
   restart(deploymentID: string) {
@@ -227,19 +233,22 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         return this.utilsService.checkJobStatus(jobID, message)
       }),
       concatMap(result => {
-          this.loadDeployments(false)
-          this.startPeriodicRefresh()
           if(!result.success) {
             return throwError(() => new Error(result.error))
           }
           return of()
-      }),
-      catchError(err => {
-        this.errorService.handleError(DeploymentListComponent.name, "restartMultiple", err)
-        this.ready = true
-        return of()
       })
-    ).subscribe()
+    ).subscribe({
+      next: (_) => {
+        this.loadDeployments(false)
+        this.startPeriodicRefresh()
+      },
+      error: (error) => {
+        this.errorService.handleError(DeploymentListComponent.name, "restartMultiple", error)
+        this.ready = true
+        this.startPeriodicRefresh()
+      }
+    })
   }
 
   delete(deploymentID: string) {
@@ -271,12 +280,17 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         }
         
         return this.sendDelete(ids, true)
-      }),
-      catchError(err => {
-        this.errorService.handleError(DeploymentListComponent.name, "_delete", err)
-        return of()
       })
-    ).subscribe()
+    ).subscribe({
+      next: (_) => {
+        this.loadDeployments(false)
+        this.startPeriodicRefresh()
+      },
+      error: (err) => {
+        this.errorService.handleError(DeploymentListComponent.name, "_delete", err)
+        this.startPeriodicRefresh()
+      }
+    })
   }
 
   sendDelete(ids: string[], forceConfirmed: boolean) {
@@ -295,8 +309,6 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           if(!result.success && !forceConfirmed) {
             return throwError(() => new Error(result.error))
           }
-          this.loadDeployments(false)
-          this.startPeriodicRefresh()
           return of()
       })
     )

@@ -54,6 +54,7 @@ export class UtilService {
 
     var dialogRef = this.dialog.open(JobLoaderModalComponent, {data: {jobID: jobID, message: message}});
     
+    // TODO pipe and throw error when 
     return dialogRef?.afterClosed()
   }
 

@@ -51,9 +51,13 @@ export class ListComponent implements OnInit, OnDestroy {
 
       this.init = false;
 
-      this.interval = setInterval(() => { 
-        this.checkForCurrentlyAvailableUpdates().subscribe(); 
-      }, 5000);
+      this.startPeriodicRefresh()
+  }
+
+  startPeriodicRefresh() {
+    this.interval = setInterval(() => { 
+      this.checkForCurrentlyAvailableUpdates().subscribe(); 
+    }, 5000);
   }
 
   ngOnDestroy(): void {
@@ -174,17 +178,23 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   deleteModule(moduleID: string) {
-    this.moduleService.deleteModule(moduleID).subscribe(
-      {
-        next: (_) => {
-          this.loadModules()
-        }, 
-        error: (err) => {
-          this.errorService.handleError(ListComponent.name, "deleteModule", err)
-          this.ready = true
-        }
+    this.stopPeriodicRefresh()
+
+    this.moduleService.deleteModule(moduleID).pipe(
+      concatMap((_) => {
+          return this.loadModules()
+      }),         
+    ).subscribe({
+      next: (_) => {
+        this.ready = true
+        this.startPeriodicRefresh()
+      },
+      error: (err) => {
+        this.errorService.handleError(ListComponent.name, "deleteModule", err)
+        this.ready = true
+        this.startPeriodicRefresh()
       }
-    )
+    })
   }
 
   deployModule(moduleID: string) {
@@ -195,5 +205,9 @@ export class ListComponent implements OnInit, OnDestroy {
   showModuleInfo(moduleID: string) {
     var path = "/modules/info/" + encodeURIComponent(moduleID)
     this.router.navigateByUrl(path)
+  }
+
+  stopPeriodicRefresh() {
+    clearTimeout(this.interval)
   }
 }
