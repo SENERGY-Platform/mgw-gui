@@ -129,7 +129,7 @@ export class ModuleManagerService {
     }
     queryParams = queryParams.set("ids", deploymentIDs.join(","))
     return <Observable<any>>this.http.patch(url, undefined, queryParams, 'text');
-   }
+  }
 
   loadDeploymentUpdateTemplate(moduleId: string): Observable<DeploymentTemplate> {
       var url = this.moduleManagerPath + "/deployments/" + this.doubleEncode(moduleId) + '/upt-template' 

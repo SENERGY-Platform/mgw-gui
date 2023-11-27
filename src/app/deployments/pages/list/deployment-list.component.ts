@@ -47,7 +47,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.stopPeriodicRefresh()
     this.interval = setInterval(() => { 
       this.loadDeployments(true);
-    }, 5000);
+    }, 1000);
   }
 
   stopPeriodicRefresh() {
@@ -119,7 +119,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         if(!forceConfirmed) {
           this.ready = true
           this.startPeriodicRefresh()
-          return of()
+          return of(true)
         }
         
         return this.sendStop(ids, true)
@@ -155,7 +155,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
             return throwError(() => new Error(result.error))
           }
           
-          return of()
+          return of(true)
       })
     )
   }
@@ -236,7 +236,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           if(!result.success) {
             return throwError(() => new Error(result.error))
           }
-          return of()
+          return of(true)
       })
     ).subscribe({
       next: (_) => {
@@ -276,19 +276,20 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         if(!forceConfirmed) {
           this.ready = true
           this.startPeriodicRefresh()
-          return of()
+          return of(true)
         }
-        
         return this.sendDelete(ids, true)
       })
     ).subscribe({
       next: (_) => {
         this.loadDeployments(false)
         this.startPeriodicRefresh()
+        this.ready = true
       },
       error: (err) => {
         this.errorService.handleError(DeploymentListComponent.name, "_delete", err)
         this.startPeriodicRefresh()
+        this.ready = true
       }
     })
   }
@@ -309,7 +310,9 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           if(!result.success && !forceConfirmed) {
             return throwError(() => new Error(result.error))
           }
-          return of()
+
+          // have to send some value so that the subscribe afterwards works
+          return of(true)
       })
     )
   }
