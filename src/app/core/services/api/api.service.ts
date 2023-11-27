@@ -31,37 +31,42 @@ export class ApiService {
     }
 
     public get<T>(path: string, queryParams?: HttpParams, responseType?: string): Observable<unknown> {
-        var params: any = {params: queryParams}
+        var options: any = {params: queryParams}
         if(responseType) {
-            params['responseType'] = responseType
+            options['responseType'] = responseType
         }
-        return this.httpClient.get<T>(this.baseUrl + path, params);
+        return this.httpClient.get<T>(this.baseUrl + path, options);
     }
 
     public post<T>(path: string, payload?: any, queryParams?: HttpParams, responseType?: string): Observable<unknown> {
-        var params: any = {params: queryParams}
+        var options: any = {params: queryParams}
         if(responseType) {
-            params['responseType'] = responseType
+            options['responseType'] = responseType
         }
-        return this.httpClient.post<T>(this.baseUrl + path, payload, params);
+        return this.httpClient.post<T>(this.baseUrl + path, payload, options);
     }
 
     public put(path: string, payload: any): Observable<unknown> {
         return this.httpClient.put(this.baseUrl + path, payload);
     }
 
-    public delete(path: string, payload?: any, queryParams?: HttpParams): Observable<unknown> {
-        return this.httpClient.delete(this.baseUrl + path, {
-            body: payload, 
-            params: queryParams
-        });
+    public delete(path: string, payload?: any, queryParams?: HttpParams, responseType?: string): Observable<unknown> {
+        var options: any = {
+            params: queryParams,
+            body: payload
+        }
+        if(responseType) {
+            options['responseType'] = responseType
+        }
+
+        return this.httpClient.delete(this.baseUrl + path, options);
     }
 
     public patch(path: string, payload?: any, queryParams?: HttpParams, responseType?: string): Observable<unknown> {
-        var params: any = {params: queryParams}
+        var options: any = {params: queryParams}
         if(responseType) {
-            params['responseType'] = responseType
+            options['responseType'] = responseType
         }
-        return this.httpClient.patch(this.baseUrl + path, payload, params);
+        return this.httpClient.patch(this.baseUrl + path, payload, options);
     }
 }

@@ -181,6 +181,10 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     }
 
     obs.pipe(
+      concatMap(jobID => {
+        var message = "Deployments are starting"
+        return this.utilsService.checkJobStatus(jobID, message)
+      }),
       map(_ => {
         this.loadDeployments(false)
         this.startPeriodicRefresh()
