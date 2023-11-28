@@ -47,7 +47,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.stopPeriodicRefresh()
     this.interval = setInterval(() => { 
       this.loadDeployments(true);
-    }, 1000);
+    }, 5000);
   }
 
   stopPeriodicRefresh() {
@@ -113,16 +113,17 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.sendStop(ids, false).pipe(
       catchError((err, _1) => {
         // stopping did not succeed because deployment is required 
-        return this.utilsService.askForConfirmation(err + "\n" + "Do you want to force stop?")
-      }),
-      concatMap((forceConfirmed: any) => {
-        if(!forceConfirmed) {
-          this.ready = true
-          this.startPeriodicRefresh()
-          return of(true)
-        }
-        
-        return this.sendStop(ids, true)
+        return this.utilsService.askForConfirmation(err + "\n" + "Do you want to force stop?").pipe(
+          concatMap((forceConfirmed: any) => {
+            if(!forceConfirmed) {
+              this.ready = true
+              this.startPeriodicRefresh()
+              return of(true)
+            }
+            
+            return this.sendStop(ids, true)
+          })
+        )
       })
     ).subscribe({
       next: (_) => {
@@ -270,15 +271,16 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.sendDelete(ids, false).pipe(
       catchError((err, _1) => {
         // stopping did not succeed because deployment is required 
-        return this.utilsService.askForConfirmation(err + "\nDo you want to force delete?")
-      }),
-      concatMap((forceConfirmed: any) => {
-        if(!forceConfirmed) {
-          this.ready = true
-          this.startPeriodicRefresh()
-          return of(true)
-        }
-        return this.sendDelete(ids, true)
+        return this.utilsService.askForConfirmation(err + "\nDo you want to force delete?").pipe(
+          concatMap((forceConfirmed: any) => {
+            if(!forceConfirmed) {
+              this.ready = true
+              this.startPeriodicRefresh()
+              return of(true)
+            }
+            return this.sendDelete(ids, true)
+          })
+        )
       })
     ).subscribe({
       next: (_) => {

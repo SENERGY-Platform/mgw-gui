@@ -25,7 +25,7 @@ export class ListComponent implements OnInit, AfterViewInit {
       this.loadJobs()
       this.interval = setInterval(() => { 
         this.loadJobs(); 
-      }, 5000);
+      }, 1000);
       this.init = false
   }
 
