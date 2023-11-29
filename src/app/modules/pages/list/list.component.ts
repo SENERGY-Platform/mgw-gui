@@ -181,6 +181,10 @@ export class ListComponent implements OnInit, OnDestroy {
     this.stopPeriodicRefresh()
 
     this.moduleService.deleteModule(moduleID).pipe(
+      concatMap(jobID => {
+        var message = "Delete module"
+        return this.utilService.checkJobStatus(jobID, message)
+      }),
       concatMap((_) => {
           return this.loadModules()
       }),         
