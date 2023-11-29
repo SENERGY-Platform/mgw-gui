@@ -38,7 +38,7 @@ export class ModuleManagerService {
 
   deleteModule(moduleId: string): Observable<any> {
     var url = this.moduleManagerPath + "/modules/" + this.doubleEncode(moduleId) 
-    return this.http.delete(url)
+    return this.http.delete(url, undefined, undefined, 'text')
   }
 
   loadModule(moduleId: string): Observable<any> {
