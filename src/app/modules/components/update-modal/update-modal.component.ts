@@ -8,6 +8,7 @@ import { ErrorService } from 'src/app/core/services/util/error.service';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
 import { ModuleUpdate, ModuleUpdateRequest } from '../../models/module_models';
+import * as semver from "semver";
 
 @Component({
   selector: 'app-update-modal',
@@ -38,7 +39,9 @@ export class UpdateModalComponent implements OnInit {
   }
 
   setupForm() {
-    var versions = this.availableModuleUpdate.versions.sort().reverse()
+    var versions = this.availableModuleUpdate.versions.sort((a, b) => {
+      return semver.gte(a, b) ? 1 : -1 
+    }).reverse()
 
     this.selectedVersion = versions[0]
 
