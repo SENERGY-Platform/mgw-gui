@@ -22,7 +22,7 @@
     <spinner [show]="!ready"></spinner>
 
     <div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
-        <div class="table-container table-container-with-button">
+        <div>
             <table mat-table [dataSource]="dataSource" matSort matSortActive="created" matSortDirection="desc">
                 <ng-container matColumnDef="id">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef>ID</th>
