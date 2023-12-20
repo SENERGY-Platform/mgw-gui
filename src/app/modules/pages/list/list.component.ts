@@ -126,8 +126,8 @@ export class ListComponent implements OnInit, OnDestroy {
   startUpdate(moduleID: string) {
     this.ready = false
     // otherwise an update is not possible
-    this.stopPendingUpdates().subscribe({
-      next: (_) => {
+    this.stopPendingUpdates().pipe(
+      concatMap((_) => {
         this.ready = true
         var moduleUpdate = this.availableModuleUpdates[moduleID]
        
@@ -138,17 +138,20 @@ export class ListComponent implements OnInit, OnDestroy {
             }
         });
     
-        dialogRef?.afterClosed().subscribe(_ => {
-            this.loadModules()
-        })
+        return dialogRef?.afterClosed()
+      }),
+      concatMap((_) => {
+        return this.loadModules()
+      })
+    ).subscribe({
+      next: (_) => {
+
       },
       error: (err) => {
         this.ready = true
         this.errorService.handleError(ListComponent.name, "stopPendingUpdates", err)
       }
     })
-
-
   }
 
   ngAfterViewInit(): void {
