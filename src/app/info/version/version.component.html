@@ -1,0 +1,11 @@
+<div class="form-margin" *ngIf="ready">
+  <mat-form-field appearance="fill">
+    <mat-label>UI Version</mat-label>
+    <input matInput [readonly]="true" [value]="uiVersion">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Module-Manager Version</mat-label>
+    <input matInput [readonly]="true" [value]="moduleManagerVersion">
+  </mat-form-field>
+</div>

@@ -30,10 +30,13 @@ export class ApiService {
     constructor(private httpClient: HttpClient) {
     }
 
-    public get<T>(path: string, queryParams?: HttpParams, responseType?: string): Observable<unknown> {
+    public get<T>(path: string, queryParams?: HttpParams, responseType?: string, withHeaders?: boolean): Observable<unknown> {
         var options: any = {params: queryParams}
         if(responseType) {
             options['responseType'] = responseType
+        }
+        if(withHeaders) {
+            options["observe"] = "response"
         }
         return this.httpClient.get<T>(this.baseUrl + path, options);
     }

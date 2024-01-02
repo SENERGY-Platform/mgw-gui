@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { AddModule, Module, ModuleResponse, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdateRequest, ModuleUpdates } from '../../../modules/models/module_models';
 import { Deployment, DeploymentRequest, DeploymentResponse, DeploymentTemplate, ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
@@ -200,6 +200,15 @@ export class ModuleManagerService {
 
   getJobs(): Observable<Job[]> {
     var url = this.moduleManagerPath + "/jobs"
-     return <Observable<Job[]>>this.http.get(url)
+    return <Observable<Job[]>>this.http.get(url)
+  }
+
+  getVersion(): Observable<string> {
+    var url = this.moduleManagerPath + "/health-check"
+    return this.http.get(url, undefined, undefined, true).pipe(
+      map((response: any) => {
+        return response.headers.get("X-Api-Version")
+      })
+    )
   }
 }

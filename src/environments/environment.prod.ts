@@ -8,5 +8,6 @@ export const environment = {
     moduleManagerService: ModuleManagerService,
     secretManagerService: SecretManagerServiceService,
     hostManagerService: HostManagerService,
-    containerEngineManagerService: ContainerEngineManagerService
+    containerEngineManagerService: ContainerEngineManagerService,
+    uiVersion: "UI-VERSION"
 };

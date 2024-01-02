@@ -27,7 +27,7 @@ jobs:
           file: ./build/Dockerfile
           platforms: linux/amd64
           push: true
-          target: serve
+          target: serve_prod
           build-args: |
             VERSION=${{ github.ref_name }}
           tags: |

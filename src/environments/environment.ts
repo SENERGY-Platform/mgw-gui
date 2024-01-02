@@ -9,5 +9,6 @@ export const environment = {
     moduleManagerService: ModuleManagerMockService,
     secretManagerService: SecretManagerMockService,
     hostManagerService: HostManagerMockService,
-    containerEngineManagerService: ContainerEngineManagerMockService
+    containerEngineManagerService: ContainerEngineManagerMockService,
+    uiVersion: "UI-VERSION"
 };

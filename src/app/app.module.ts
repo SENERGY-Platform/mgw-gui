@@ -16,6 +16,7 @@ import { SecretsModule } from './secrets/secrets.module';
 import { ContainerModule } from './container/container.module';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { CoreModule } from './core/core.module';
+import { InfoModule } from './info/info.module';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { CoreModule } from './core/core.module';
     ModulesModule,
     CoreModule,
     SecretsModule,
-    HttpClientModule
+    HttpClientModule,
+    InfoModule
   ],
   exports: [
   ],

@@ -20,7 +20,8 @@ export class MainNavigationComponent implements OnInit {
     new SidenavSectionModel("Settings", "toggle", "settings", "/settings", [
       new SidenavPageModel("Secrets", "link", "key", "/settings/secrets"),
       new SidenavPageModel("Jobs", "link", "work", "/settings/jobs"),
-    ])
+    ]),
+    new SidenavSectionModel("Info", "link", "info", "/info", []),
   ]
 
   constructor(   
