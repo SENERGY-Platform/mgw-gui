@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { map } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { CoreService, CoreServicesResponse } from 'src/app/mgw-core/models/services';
 import { CoreManagerService } from 'src/app/core/services/core-manager/core-manager.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
@@ -81,16 +81,6 @@ export class ListEndpointsComponent {
     )
   }
 
-  restartMultiple() {}
-
-  restart(serviceID: string) {
-    this.coreService.reloadService(serviceID).subscribe({
-      error: (err) => {
-        this.errorService.handleError(ListEndpointsComponent.name, "restart", err)
-      }
-    })
-  }
-
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const currentViewed = this.dataSource.connect().value.length;
@@ -111,10 +101,36 @@ export class ListEndpointsComponent {
   }
 
   deleteEndpoint(endpointID: string) {
-    this.coreService.deleteEndpoint(endpointID).subscribe(
-
-    )
+   this._delete([endpointID])
   }
 
-  deleteMultiple() {}
+  deleteMultiple() {
+    const ids: string[] = [];
+    this.selection.selected.forEach((deployment_id: string) => {
+      ids.push(deployment_id);
+    });
+    this._delete(ids)
+  }
+
+  _delete(ids: string[]) {
+    this.ready = false;
+    this.stopPeriodicRefresh()
+    const jobs: Observable<any>[] = []
+    ids.forEach(id => {
+      jobs.push(this.coreService.deleteEndpoint(id))
+    });
+
+    forkJoin(jobs).subscribe({
+      next: (resp) => {
+
+      },
+      error: (err) => {
+        this.errorService.handleError(ListEndpointsComponent.name, "_delete", err)
+      },
+      complete: () => {
+        this.ready = true
+        this.startPeriodicRefresh()
+      }
+    })
+  }
 }
