@@ -17,6 +17,7 @@ import { ContainerModule } from './container/container.module';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { CoreModule } from './core/core.module';
 import { InfoModule } from './info/info.module';
+import { CoreServicesModule } from './mgw-core/core-services.module';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { InfoModule } from './info/info.module';
     CoreModule,
     SecretsModule,
     HttpClientModule,
-    InfoModule
+    InfoModule,
+    CoreServicesModule
   ],
   exports: [
   ],

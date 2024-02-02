@@ -22,6 +22,11 @@ export class MainNavigationComponent implements OnInit {
       new SidenavPageModel("Jobs", "link", "work", "/settings/jobs"),
     ]),
     new SidenavSectionModel("Info", "link", "info", "/info", []),
+    new SidenavSectionModel("Core", "toggle", "info", "/core", [
+      new SidenavPageModel("Services", 'link', "info", "/core/services"),
+      new SidenavPageModel("Endpoints", 'link', "info", "/core/endpoints")
+    ]),
+
   ]
 
   constructor(   
