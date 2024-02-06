@@ -12,12 +12,14 @@ import { AddEndpointComponent } from './pages/add-endpoint/add-endpoint.componen
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { ListJobsComponent } from './pages/list-jobs/list-jobs.component';
 
 const routes: Routes = [
   {
     path: 'core', 
     children: [
       {path: 'services', component: ListCoreServicesComponent},
+      {path: 'jobs', component: ListJobsComponent},
       {path: 'endpoints', component: ListEndpointsComponent},
       {path: 'endpoints/add/:id', component: AddEndpointComponent},
 
@@ -29,7 +31,8 @@ const routes: Routes = [
   declarations: [
     ListCoreServicesComponent,
     ListEndpointsComponent,
-    AddEndpointComponent
+    AddEndpointComponent,
+    ListJobsComponent
   ],
   imports: [
     CommonModule,

@@ -21,8 +21,9 @@ export class ListEndpointsComponent {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['select', 'name', 'ref', 'host', 'port', 'type', 'int_path', 'ext_path', 'add', 'delete']
+  displayColumns = ['select', 'ref', 'url', 'add', 'delete']
   selection = new SelectionModel<string>(true, []);
+  location = location
 
   constructor(
     private coreService: CoreManagerService,

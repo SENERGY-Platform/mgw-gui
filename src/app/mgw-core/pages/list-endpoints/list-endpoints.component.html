@@ -44,13 +44,6 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="name">
-            <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
-            <td mat-cell *matCellDef="let endpoint">
-              {{endpoint.name}}
-            </td>
-          </ng-container>
-
           <ng-container matColumnDef="ref">
             <th mat-header-cell mat-sort-header *matHeaderCellDef>Deployment</th>
             <td mat-cell *matCellDef="let endpoint">
@@ -92,11 +85,20 @@
               {{endpoint.ext_path}}
             </td>
           </ng-container>
+
+          <ng-container matColumnDef="url">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef>Exposed URL</th>
+            <td mat-cell *matCellDef="let endpoint">
+              <a [href]="'/endpoints/deployments/' + endpoint.ref + '/' + endpoint.ext_path">
+                {{location.origin + '/endpoints/deployments/' + endpoint.ref + '/' + endpoint.ext_path}}
+              </a>
+            </td>
+          </ng-container>
   
           <ng-container matColumnDef="delete">
             <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Delete</th>
             <td mat-cell *matCellDef="let endpoint">
-              <button mat-icon-button color="primary" (click)="deleteEndpoint(endpoint.id)" matTooltip="Delete">
+              <button mat-icon-button color="primary" (click)="deleteEndpoint(endpoint.id)" matTooltip="Delete" [disabled]="endpoint.type == 0">
                 <mat-icon>delete</mat-icon>
               </button>
             </td>
@@ -105,7 +107,7 @@
           <ng-container matColumnDef="add">
             <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Add Alias</th>
             <td mat-cell *matCellDef="let endpoint">
-              <button mat-icon-button color="primary" [routerLink]="'/core/endpoints/add/'+endpoint.id" matTooltip="Add endpoint alias">
+              <button mat-icon-button color="primary" [routerLink]="'/core/endpoints/add/'+endpoint.id" matTooltip="Add endpoint alias" [disabled]="endpoint.type != 0">
                 <mat-icon>add</mat-icon>
               </button>
             </td>

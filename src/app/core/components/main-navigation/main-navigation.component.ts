@@ -24,6 +24,7 @@ export class MainNavigationComponent implements OnInit {
     new SidenavSectionModel("Info", "link", "info", "/info", []),
     new SidenavSectionModel("Core", "toggle", "info", "/core", [
       new SidenavPageModel("Services", 'link', "info", "/core/services"),
+      new SidenavPageModel("Jobs", 'link', "info", "/core/jobs"),
       new SidenavPageModel("Endpoints", 'link', "info", "/core/endpoints")
     ]),
 

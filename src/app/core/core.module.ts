@@ -9,12 +9,15 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
+import { ListJobTable } from './components/list-jobs/list.component';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [
     SpinnerComponent,
     MainNavigationComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    ListJobTable
   ],
   imports: [
     CommonModule,
@@ -24,10 +27,12 @@ import { MatButtonModule } from '@angular/material/button';
     MatSidenavModule,
     MatIconModule,
     MatButtonModule,
+    MatTableModule
   ],
   exports: [
     SpinnerComponent,
-    MainNavigationComponent
+    MainNavigationComponent,
+    ListJobTable
   ]
 })
 export class CoreModule { }
