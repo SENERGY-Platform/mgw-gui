@@ -36,7 +36,7 @@ export class AddComponent {
       this.moduleService.addModule(module).pipe(
         map(jobID => {
           var message = "Module installation is running"
-          this.utilsService.checkJobStatus(jobID, message).subscribe(result => {
+          this.utilsService.checkJobStatus(jobID, message, "module-manager").subscribe(result => {
             this.navigateToModules()
             if(!result.success) {
                 throwError(() => new Error(result.error))

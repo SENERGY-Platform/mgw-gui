@@ -1,13 +1,14 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { forkJoin, map, Observable } from 'rxjs';
+import { concatMap, forkJoin, map, Observable, of, throwError } from 'rxjs';
 import { CoreService, CoreServicesResponse } from 'src/app/mgw-core/models/services';
 import { CoreManagerService } from 'src/app/core/services/core-manager/core-manager.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Router } from '@angular/router';
 import { CoreEndpoint, CoreEndpointsResponse } from '../../models/endpoints';
+import { UtilService } from 'src/app/core/services/util/util.service';
 
 @Component({
   selector: 'app-list',
@@ -20,11 +21,12 @@ export class ListEndpointsComponent {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['select', 'name', 'int_path', 'ext_path', 'delete']
+  displayColumns = ['select', 'name', 'ref', 'host', 'port', 'type', 'int_path', 'ext_path', 'add', 'delete']
   selection = new SelectionModel<string>(true, []);
 
   constructor(
     private coreService: CoreManagerService,
+    private utilsService: UtilService,
     private errorService: ErrorService,
     private router: Router
   ) {}
@@ -97,11 +99,11 @@ export class ListEndpointsComponent {
   }
 
   selectionClear(): void {
-      this.selection.clear();
+    this.selection.clear();
   }
 
   deleteEndpoint(endpointID: string) {
-   this._delete([endpointID])
+    this._delete([endpointID])
   }
 
   deleteMultiple() {
@@ -117,18 +119,30 @@ export class ListEndpointsComponent {
     this.stopPeriodicRefresh()
     const jobs: Observable<any>[] = []
     ids.forEach(id => {
-      jobs.push(this.coreService.deleteEndpoint(id))
+      jobs.push(this.coreService.deleteEndpoint(id).pipe(
+        concatMap((jobID: string) => {
+          const message = 'Delete endpoint'
+          return this.utilsService.checkJobStatus(jobID, message, "core-manager")
+        }),
+        concatMap(result => {
+          if(!result.success) {
+            return throwError(() => new Error(result.error))
+          }
+          return of(true)
+        })
+      ))
     });
 
     forkJoin(jobs).subscribe({
       next: (resp) => {
-
+        this.ready = true
+        this.loadEndpoints(true)
+        this.startPeriodicRefresh()
       },
       error: (err) => {
         this.errorService.handleError(ListEndpointsComponent.name, "_delete", err)
-      },
-      complete: () => {
         this.ready = true
+        this.loadEndpoints(true)
         this.startPeriodicRefresh()
       }
     })

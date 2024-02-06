@@ -57,7 +57,7 @@ export class UpdateModalComponent implements OnInit {
     this.moduleService.prepareModuleUpdate(this.moduleID, compatibilityRequestBody).pipe(
         concatMap(jobID => {
           var message = "Prepare update"
-          return this.utilService.checkJobStatus(jobID, message)
+          return this.utilService.checkJobStatus(jobID, message, "module-manager")
         }),
         concatMap(result => {
           if(!result.success) {
@@ -124,7 +124,7 @@ export class UpdateModalComponent implements OnInit {
     this.moduleService.updateModule(this.moduleID, emptyModuleUpdate).subscribe({
       next: (jobID) => {
         var message = "Module update is running"
-        this.utilService.checkJobStatus(jobID, message).subscribe(result => {
+        this.utilService.checkJobStatus(jobID, message, "module-manager").subscribe(result => {
           this.closeDialog()
           if(!result.success) {
             throwError(() => new Error(result.error))

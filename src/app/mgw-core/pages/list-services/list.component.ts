@@ -1,12 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { map } from 'rxjs';
+import { concatMap, map, of, throwError } from 'rxjs';
 import { CoreService, CoreServicesResponse } from 'src/app/mgw-core/models/services';
 import { CoreManagerService } from 'src/app/core/services/core-manager/core-manager.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Router } from '@angular/router';
+import { UtilService } from 'src/app/core/services/util/util.service';
 
 @Component({
   selector: 'app-list',
@@ -25,7 +26,8 @@ export class ListCoreServicesComponent {
   constructor(
     private coreService: CoreManagerService,
     private errorService: ErrorService,
-    private router: Router
+    private router: Router,
+    private utilsService: UtilService
   ) {}
 
   ngOnInit(): void {
@@ -67,13 +69,12 @@ export class ListCoreServicesComponent {
           } else {
             this.dataSource.data = services
           }
+          this.ready = true
         }, 
         error: (err) => {
           if(!background) {
             this.errorService.handleError(ListCoreServicesComponent.name, "loadServices", err)
           }
-        },
-        complete: () => {
           this.ready = true
         }
       }
@@ -83,7 +84,21 @@ export class ListCoreServicesComponent {
   restartMultiple() {}
 
   restart(serviceID: string) {
-    this.coreService.reloadService(serviceID).subscribe({
+    this.coreService.reloadService(serviceID).pipe(
+      concatMap((jobId: string) => {
+        const message = 'Reload service ' + serviceID
+        return this.utilsService.checkJobStatus(jobId, message, "core-manager")
+      }),
+      concatMap(result => {
+        if(!result.success) {
+          return throwError(() => new Error(result.error))
+        }
+        return of(true)
+    })
+    ).subscribe({
+      next: (_) => {
+        
+      },
       error: (err) => {
         this.errorService.handleError(ListCoreServicesComponent.name, "restart", err)
       }

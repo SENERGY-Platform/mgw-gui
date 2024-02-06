@@ -7,6 +7,11 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CoreModule } from '../core/core.module';
 import { ListEndpointsComponent } from './pages/list-endpoints/list-endpoints.component';
+import { MatButtonModule } from '@angular/material/button';
+import { AddEndpointComponent } from './pages/add-endpoint/add-endpoint.component';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 const routes: Routes = [
   {
@@ -14,6 +19,8 @@ const routes: Routes = [
     children: [
       {path: 'services', component: ListCoreServicesComponent},
       {path: 'endpoints', component: ListEndpointsComponent},
+      {path: 'endpoints/add/:id', component: AddEndpointComponent},
+
     ]
   }
 ];
@@ -21,11 +28,17 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     ListCoreServicesComponent,
-    ListEndpointsComponent
+    ListEndpointsComponent,
+    AddEndpointComponent
   ],
   imports: [
     CommonModule,
     MatIconModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatButtonModule,
     CoreModule,
     MatCheckboxModule,
     MatTableModule,

@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { forkJoin } from 'rxjs';
+import { CoreManagerService } from 'src/app/core/services/core-manager/core-manager.service';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Job } from '../models/job.model';
@@ -20,6 +22,8 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   constructor(
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
+    @Inject("CoreManagerService") private coreService: CoreManagerService, 
+
     private errorService: ErrorService,
   ) {
       this.loadJobs()
@@ -35,9 +39,12 @@ export class ListComponent implements OnInit, AfterViewInit {
   
 
   loadJobs() {
-    this.moduleService.getJobs().subscribe({
-      next: (jobs) => {
-        this.dataSource.data = jobs
+    const obs = [this.moduleService.getJobs(), this.coreService.getJobs()]
+    forkJoin(obs).subscribe({
+      next: (obsResult) => {
+        obsResult.forEach(jobs => {
+          this.dataSource.data = this.dataSource.data.concat(jobs)
+        });
         this.ready = true
       },
       error: (err) => {

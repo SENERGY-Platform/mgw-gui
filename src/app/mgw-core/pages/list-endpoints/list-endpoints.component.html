@@ -37,10 +37,45 @@
             </td>
           </ng-container>
   
+          <ng-container matColumnDef="id">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let endpoint">
+              {{endpoint.id}}
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="name">
             <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
             <td mat-cell *matCellDef="let endpoint">
               {{endpoint.name}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ref">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef>Deployment</th>
+            <td mat-cell *matCellDef="let endpoint">
+              <a [routerLink]="'/deployments/info/'+endpoint.ref">{{endpoint.ref}}</a> 
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="host">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef>Host</th>
+            <td mat-cell *matCellDef="let endpoint">
+              {{endpoint.host}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="port">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef>Port</th>
+            <td mat-cell *matCellDef="let endpoint">
+              {{endpoint.port}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="type">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef>Type</th>
+            <td mat-cell *matCellDef="let endpoint">
+              {{endpoint.type}}
             </td>
           </ng-container>
 
@@ -67,6 +102,15 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="add">
+            <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Add Alias</th>
+            <td mat-cell *matCellDef="let endpoint">
+              <button mat-icon-button color="primary" [routerLink]="'/core/endpoints/add/'+endpoint.id" matTooltip="Add endpoint alias">
+                <mat-icon>add</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="header-all">
             <th mat-header-cell *matHeaderCellDef colspan="10">
               <div>
@@ -87,4 +131,3 @@
       </div>
     </div>
   </div>
-  

@@ -54,6 +54,10 @@ import { CoreServicesModule } from './mgw-core/core-services.module';
       'useClass': environment.hostManagerService
     },
     {
+      'provide': 'CoreManagerService',
+      'useClass': environment.coreManagerService
+    },
+    {
       'provide': 'ContainerEngineManagerService',
       'useClass': environment.containerEngineManagerService
     },

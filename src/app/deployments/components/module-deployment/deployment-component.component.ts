@@ -317,7 +317,7 @@ export class DeploymentComponentComponent implements OnInit {
     this.moduleService.updateDeployment(this.deploymentID, deploymentRequest).pipe(
       concatMap(jobID => {
         var message = "Deployment update is running"
-        return this.utilsService.checkJobStatus(jobID, message)
+        return this.utilsService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap(result => {
         if(result.success) {
@@ -338,7 +338,7 @@ export class DeploymentComponentComponent implements OnInit {
     this.moduleService.updateModule(this.moduleID, deploymentRequest).pipe(
       concatMap(jobID => {
         var message = "Module update is running"
-        return this.utilsService.checkJobStatus(jobID, message)
+        return this.utilsService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap(result => {
           if(result.success) {

@@ -84,7 +84,7 @@ export class ListComponent implements OnInit, OnDestroy {
       }),
       concatMap(jobID => {
         var message = "Check for module updates"
-        return this.utilService.checkJobStatus(jobID, message)
+        return this.utilService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap(jobResult => {
         if(!jobResult.success) {
@@ -186,7 +186,7 @@ export class ListComponent implements OnInit, OnDestroy {
     this.moduleService.deleteModule(moduleID).pipe(
       concatMap(jobID => {
         var message = "Delete module"
-        return this.utilService.checkJobStatus(jobID, message)
+        return this.utilService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap((_) => {
           return this.loadModules()

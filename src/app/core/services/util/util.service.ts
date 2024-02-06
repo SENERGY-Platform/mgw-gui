@@ -45,14 +45,14 @@ export class UtilService {
     }
 
 
-  checkJobStatus(jobID: string, message: string): Observable<any> {
+  checkJobStatus(jobID: string, message: string, service: string): Observable<any> {
     /* 
       Shows a Modal with a loading circle.
       When the job completed successfully, the modal will close
       When the job returned an error, the modal will close with the error message
     */ 
 
-    var dialogRef = this.dialog.open(JobLoaderModalComponent, {data: {jobID: jobID, message: message}});
+    var dialogRef = this.dialog.open(JobLoaderModalComponent, {data: {jobID: jobID, message: message, service: service}});
     
     // TODO pipe and throw error when 
     return dialogRef?.afterClosed()

@@ -1,8 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
+import { Job } from 'src/app/jobs/models/job.model';
+import { CoreManagerService } from '../../services/core-manager/core-manager.service';
 
 @Component({
   selector: 'app-job-loader-modal',
@@ -14,21 +17,29 @@ export class JobLoaderModalComponent implements OnInit {
   interval: any
   jobIsCompleted: boolean = false
   message!: string
+  service!: string
 
   constructor(
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
+    @Inject("CoreManagerService") private coreService: CoreManagerService,
     private errorService: ErrorService,
     public dialogRef: MatDialogRef<JobLoaderModalComponent>,
     @Inject(MAT_DIALOG_DATA) data: any
   ) {
     this.jobID = data.jobID
     this.message = data.message
+    this.service = data.service
   }
 
   ngOnInit(): void {
     // TODO better interal + obsersable
     this.interval = setInterval(() => { 
-      this.moduleService.getJobStatus(this.jobID).subscribe({
+      let obs: Observable<Job> = this.moduleService.getJobStatus(this.jobID)
+      if(this.service === "core-manager") {
+        obs = this.coreService.getJobStatus(this.jobID)
+      }
+
+      obs.subscribe({
         next: jobResponse => {
           if(jobResponse.completed && !jobResponse.error) {
             this.close(true, undefined)
