@@ -20,7 +20,7 @@ export class ListCoreServicesComponent {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['select', 'name','restart']
+  displayColumns = ['select', 'name', 'logs', 'restart']
   selection = new SelectionModel<string>(true, []);
 
   constructor(

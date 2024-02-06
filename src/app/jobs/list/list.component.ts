@@ -42,10 +42,12 @@ export class ListComponent implements OnInit, AfterViewInit {
     const obs = [this.moduleService.getJobs(), this.coreService.getJobs()]
     forkJoin(obs).subscribe({
       next: (obsResult) => {
+        let allJobs: Job[] = []
         obsResult.forEach(jobs => {
-          this.dataSource.data = this.dataSource.data.concat(jobs)
+          allJobs = allJobs.concat(jobs)
         });
         this.ready = true
+        this.dataSource.data = allJobs;
       },
       error: (err) => {
         this.errorService.handleError(ListComponent.name, "loadJobs", err)
