@@ -14,6 +14,7 @@ import { Deployment } from '../../models/deployment_models';
 })
 export class InfoComponent {
   @Input() deployment!: Deployment
+  deploymentID?: string 
   ready: boolean = false
   hostResourceIDToName: Record<string, string> = {}
   secretIDToName: Record<string, string> = {}
@@ -27,6 +28,7 @@ export class InfoComponent {
     private errorService: ErrorService
   ) {
     this.route.params.subscribe(params => {
+      this.deploymentID = params['id']
       this.loadAllInformation(params['id'])
     })
   }

@@ -11,13 +11,16 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
 import { MatButtonModule } from '@angular/material/button';
 import { ListJobTable } from './components/list-jobs/list.component';
 import { MatTableModule } from '@angular/material/table';
+import { ListEndpointsComponent } from './components/list-endpoints/list-endpoints.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
     SpinnerComponent,
     MainNavigationComponent,
     ConfirmDialogComponent,
-    ListJobTable
+    ListJobTable,
+    ListEndpointsComponent
   ],
   imports: [
     CommonModule,
@@ -27,12 +30,14 @@ import { MatTableModule } from '@angular/material/table';
     MatSidenavModule,
     MatIconModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatTableModule
   ],
   exports: [
     SpinnerComponent,
     MainNavigationComponent,
-    ListJobTable
+    ListJobTable,
+    ListEndpointsComponent
   ]
 })
 export class CoreModule { }

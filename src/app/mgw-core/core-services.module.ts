@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ListJobsComponent } from './pages/list-jobs/list-jobs.component';
+import { MatCardModule } from '@angular/material/card';
 
 const routes: Routes = [
   {
@@ -39,6 +40,7 @@ const routes: Routes = [
     MatIconModule,
     MatInputModule,
     FormsModule,
+    MatCardModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatButtonModule,

@@ -22,7 +22,7 @@
   <spinner class="global-centered-spinner" [show]="!ready"></spinner>
 
   <div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
-    <div class="table-container table-container-with-button">
+    <div class="table-container">
       <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc">
         <ng-container matColumnDef="select">
           <th mat-header-cell *matHeaderCellDef class="button-column">
