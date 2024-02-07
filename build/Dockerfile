@@ -28,6 +28,7 @@ RUN find '/usr/share/nginx/html' -name '*.js' -exec sed -i -e "s/UI-VERSION/"${V
 
 FROM serve AS serve_prod
 COPY --from=prod_builder /home/node/app/dist/mgw-gui /usr/share/nginx/html
+COPY build/conf /etc/nginx/conf.d/default.conf
 
 FROM serve as serve_dev 
 COPY build/conf /etc/nginx/conf.d/default.conf
