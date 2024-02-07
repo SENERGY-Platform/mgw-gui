@@ -17,7 +17,7 @@
 <div class="layout-margin">
   <mat-card *ngFor="let deploymentID of deploymentIDs">
     <mat-card-content>
-      <h2>Deployment ID: {{deploymentID}}</h2>
+      <h2>Deployment ID: <a [routerLink]="['/deployments/info/' + deploymentID]"></a></h2>
       <list-endpoints [deploymentID]="deploymentID"></list-endpoints>
     </mat-card-content>
   </mat-card>

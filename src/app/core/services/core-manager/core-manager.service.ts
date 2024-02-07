@@ -16,17 +16,22 @@ export class CoreManagerService {
   ) { } 
 
   getEndpoints(): Observable<CoreEndpointsResponse> {
-    var url = this.coreManagerPath + "/restricted/endpoints"
+    var url = this.coreManagerPath + "/endpoints"
     return <Observable<CoreEndpointsResponse>>this.http.get(url, undefined, undefined, false)
   }
 
   createEndpointAlias(aliasReq: CoreEndpointAliasReq): Observable<any> {
-    var url = this.coreManagerPath + "/restricted/endpoints"
+    var url = this.coreManagerPath + "/endpoints"
     return <Observable<any>>this.http.post(url, aliasReq, undefined, "text")
   }
 
   deleteEndpoint(endpointID: string): Observable<any> {
-    var url = this.coreManagerPath + "/restricted/endpoints/" + endpointID
+    var url = this.coreManagerPath + "/endpoints/" + endpointID
+    return <Observable<any>>this.http.delete(url, undefined, undefined, "text")
+  }
+
+  deleteEndpoints(endpointIDs: string[]): Observable<any> {
+    var url = this.coreManagerPath + "/endpoints-batch?ids=" + endpointIDs.join(',')
     return <Observable<any>>this.http.delete(url, undefined, undefined, "text")
   }
 

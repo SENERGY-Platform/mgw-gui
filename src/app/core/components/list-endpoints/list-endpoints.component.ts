@@ -22,7 +22,7 @@ export class ListEndpointsComponent implements OnInit {
   ready: Boolean = false;
   init: Boolean = true;
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['select', 'url', 'add']
+  displayColumns = ['url', 'add']
   displayColumnsAlias = ['select', 'url', 'delete']
   selection = new SelectionModel<string>(true, []);
   location = location
@@ -51,7 +51,6 @@ export class ListEndpointsComponent implements OnInit {
       this.loadEndpoints(true);
     }, 5000);
   }
-
 
   stopPeriodicRefresh() {
     clearTimeout(this.interval)
@@ -96,7 +95,7 @@ export class ListEndpointsComponent implements OnInit {
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const currentViewed = this.dataSource.connect().value.length;
+    const currentViewed = this.dataSourceAlias.connect().value.length;
     return numSelected === currentViewed;
   }
 
@@ -105,7 +104,7 @@ export class ListEndpointsComponent implements OnInit {
       this.selectionClear();
     } else {
       this.selectionClear();
-      this.dataSource.connect().value.forEach((row) => this.selection.select(row.id));
+      this.dataSourceAlias.connect().value.forEach((row) => this.selection.select(row.id));
     }
   }
 
@@ -114,23 +113,9 @@ export class ListEndpointsComponent implements OnInit {
   }
 
   deleteEndpoint(endpointID: string) {
-    this._delete([endpointID])
-  }
-
-  deleteMultiple() {
-    const ids: string[] = [];
-    this.selection.selected.forEach((deployment_id: string) => {
-      ids.push(deployment_id);
-    });
-    this._delete(ids)
-  }
-
-  _delete(ids: string[]) {
     this.ready = false;
     this.stopPeriodicRefresh()
-    const jobs: Observable<any>[] = []
-    ids.forEach(id => {
-      jobs.push(this.coreService.deleteEndpoint(id).pipe(
+    this.coreService.deleteEndpoint(endpointID).pipe(
         concatMap((jobID: string) => {
           const message = 'Delete endpoint'
           return this.utilsService.checkJobStatus(jobID, message, "core-manager")
@@ -141,21 +126,51 @@ export class ListEndpointsComponent implements OnInit {
           }
           return of(true)
         })
-      ))
-    });
-
-    forkJoin(jobs).subscribe({
-      next: (resp) => {
+    ).subscribe({
+      next: (_) => {
         this.ready = true
         this.loadEndpoints(true)
         this.startPeriodicRefresh()
       },
       error: (err) => {
-        this.errorService.handleError(ListEndpointsComponent.name, "_delete", err)
+        this.errorService.handleError(ListEndpointsComponent.name, "deleteEndpoint", err)
         this.ready = true
         this.loadEndpoints(true)
         this.startPeriodicRefresh()
-      }
+      }      
+    })
+  }
+
+  deleteMultiple() {
+    this.ready = false;
+    this.stopPeriodicRefresh()
+    const ids: string[] = [];
+    this.selection.selected.forEach((deployment_id: string) => {
+      ids.push(deployment_id);
+    });
+    this.coreService.deleteEndpoints(ids).pipe(
+      concatMap((jobID: string) => {
+        const message = 'Delete endpoints'
+        return this.utilsService.checkJobStatus(jobID, message, "core-manager")
+      }),
+      concatMap(result => {
+        if(!result.success) {
+          return throwError(() => new Error(result.error))
+        }
+        return of(true)
+      })
+    ).subscribe({
+      next: (_) => {
+        this.ready = true
+        this.loadEndpoints(true)
+        this.startPeriodicRefresh()
+      },
+      error: (err) => {
+        this.errorService.handleError(ListEndpointsComponent.name, "deleteMultiple", err)
+        this.ready = true
+        this.loadEndpoints(true)
+        this.startPeriodicRefresh()
+      }      
     })
   }
 }
