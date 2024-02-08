@@ -303,7 +303,19 @@ export class DeploymentComponentComponent implements OnInit {
   }
 
   deploy(deploymentRequest: DeploymentRequest) {
-    this.moduleService.deployModule(deploymentRequest).subscribe({
+    this.moduleService.deployModule(deploymentRequest).pipe(
+      concatMap(jobID => {
+        var message = "Create deployment"
+        return this.utilsService.checkJobStatus(jobID, message, "module-manager")
+      }),
+      concatMap(result => {
+        if(result.success) {
+            return of()
+        } else {
+            return throwError(() => new Error(result.error))
+        } 
+      })
+    ).subscribe({
       next: () => {
           this.router.navigate(["/deployments"])
       },
