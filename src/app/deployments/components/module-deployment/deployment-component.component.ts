@@ -309,14 +309,15 @@ export class DeploymentComponentComponent implements OnInit {
         return this.utilsService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap(result => {
+        console.log(result)
         if(result.success) {
-            return of()
+            return of(true)
         } else {
             return throwError(() => new Error(result.error))
         } 
       })
     ).subscribe({
-      next: () => {
+      next: (_) => {
           this.router.navigate(["/deployments"])
       },
       error: (err) => {
