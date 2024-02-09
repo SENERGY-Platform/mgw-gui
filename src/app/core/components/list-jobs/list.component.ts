@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { forkJoin, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { CoreManagerService } from 'src/app/core/services/core-manager/core-manager.service';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
-import { Job } from 'src/app/jobs/models/job.model';
+import { Job } from 'src/app/mgw-core/models/job.model';
 
 @Component({
   selector: 'list-job',

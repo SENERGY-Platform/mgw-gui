@@ -4,8 +4,8 @@ import { Observable, map } from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { AddModule, Module, ModuleResponse, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdateRequest, ModuleUpdates } from '../../../modules/models/module_models';
 import { Deployment, DeploymentRequest, DeploymentResponse, DeploymentTemplate, ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
-import { Job } from 'src/app/jobs/models/job.model';
 import { InfoResponse } from '../../models/info';
+import { Job } from 'src/app/mgw-core/models/job.model';
 
 @Injectable({
   providedIn: 'root'

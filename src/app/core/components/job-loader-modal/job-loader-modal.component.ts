@@ -1,10 +1,9 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
-import { Job } from 'src/app/jobs/models/job.model';
+import { Job } from 'src/app/mgw-core/models/job.model';
 import { CoreManagerService } from '../../services/core-manager/core-manager.service';
 
 @Component({

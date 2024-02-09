@@ -4,8 +4,8 @@ import { ApiService } from '../api/api.service';
 import { AddModule, Module, ModuleUpdate, ModuleUpdatePrepare, ModuleUpdates } from '../../../modules/models/module_models';
 import { Deployment, DeploymentRequest, DeploymentTemplate } from 'src/app/deployments/models/deployment_models';
 import { ErrorService } from '../util/error.service';
-import { Job } from 'src/app/jobs/models/job.model';
 import { delay } from "rxjs/operators";
+import { Job } from 'src/app/mgw-core/models/job.model';
 
 
 const TEMPLATE = {

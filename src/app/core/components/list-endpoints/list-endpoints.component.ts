@@ -3,7 +3,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { concatMap, forkJoin, map, Observable, of, throwError } from 'rxjs';
-import { CoreEndpoint, CoreEndpointsResponse } from 'src/app/mgw-core/models/endpoints';
+import { CoreEndpoint, CoreEndpointsResponse } from 'src/app/endpoints/models/endpoints';
 import { CoreManagerService } from '../../services/core-manager/core-manager.service';
 import { ErrorService } from '../../services/util/error.service';
 import { UtilService } from '../../services/util/util.service';

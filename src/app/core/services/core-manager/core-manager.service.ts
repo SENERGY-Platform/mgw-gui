@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Job } from 'src/app/jobs/models/job.model';
-import { CoreEndpoint, CoreEndpointAliasReq, CoreEndpointsResponse } from 'src/app/mgw-core/models/endpoints';
-import { CoreService, CoreServicesResponse } from 'src/app/mgw-core/models/services';
+import { CoreEndpointAliasReq, CoreEndpointsResponse } from 'src/app/endpoints/models/endpoints';
+import { Job } from 'src/app/mgw-core/models/job.model';
+import { CoreServicesResponse } from 'src/app/mgw-core/models/services';
 import { InfoResponse } from '../../models/info';
 import { ApiService } from '../api/api.service';
 

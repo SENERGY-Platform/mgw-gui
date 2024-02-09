@@ -6,24 +6,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CoreModule } from '../core/core.module';
-import { ListEndpointsComponent } from './pages/list-endpoints/list-endpoints.component';
 import { MatButtonModule } from '@angular/material/button';
-import { AddEndpointComponent } from './pages/add-endpoint/add-endpoint.component';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ListJobsComponent } from './pages/list-jobs/list-jobs.component';
 import { MatCardModule } from '@angular/material/card';
+import { ListModuleManagerJobsComponent } from './pages/list-module-manager-jobs/list.component';
+import { VersionComponent } from './pages/list-versions/version.component';
 
 const routes: Routes = [
   {
     path: 'core', 
     children: [
       {path: 'services', component: ListCoreServicesComponent},
-      {path: 'jobs', component: ListJobsComponent},
-      {path: 'endpoints', component: ListEndpointsComponent},
-      {path: 'endpoints/add/:id', component: AddEndpointComponent},
-
+      {path: 'jobs/core-manager', component: ListJobsComponent},
+      {path: 'jobs/module-manager', component: ListModuleManagerJobsComponent},
+      {path: 'info', component: VersionComponent}
     ]
   }
 ];
@@ -31,9 +30,9 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     ListCoreServicesComponent,
-    ListEndpointsComponent,
-    AddEndpointComponent,
-    ListJobsComponent
+    ListJobsComponent,
+    VersionComponent,
+    ListModuleManagerJobsComponent
   ],
   imports: [
     CommonModule,

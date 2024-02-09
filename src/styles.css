@@ -7,6 +7,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     padding: 12px 12px 12px;
 }
 
+a {
+    text-decoration: none;
+    color: #4657b7;
+}
+
 /* Container for pages with forms */
 .form-margin {
     margin: 12px 20% 0 20%
