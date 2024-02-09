@@ -23,6 +23,8 @@ import { InfoComponent } from './pages/info/info.component';
 import {MatCardModule} from '@angular/material/card'; 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ListEndpointsComponent } from './pages/list-endpoints/list-endpoints.component';
+import { AddEndpointComponent } from './pages/add-endpoint/add-endpoint.component';
 const routes: Routes = [
   {
     path: 'deployments', 
@@ -30,7 +32,10 @@ const routes: Routes = [
       {path: 'add/:id', component: ModulesComponent},
       {path: '', component: DeploymentListComponent},
       {path: 'edit/:id', component: ShowModuleComponentComponent},
-      {path: 'info/:id', component: InfoComponent}
+      {path: 'info/:id', component: InfoComponent},
+      {path: 'endpoints', component: ListEndpointsComponent},
+      {path: 'endpoints/add', component: AddEndpointComponent}
+
     ]
   }
 ];
@@ -44,7 +49,8 @@ const routes: Routes = [
     ShowModuleComponentComponent,
     JobLoaderModalComponent,
     InfoComponent,
-    
+    ListEndpointsComponent,
+    AddEndpointComponent
   ],
   imports: [
     MatInputModule,

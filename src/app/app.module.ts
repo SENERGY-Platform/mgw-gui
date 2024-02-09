@@ -15,7 +15,6 @@ import { ContainerModule } from './container/container.module';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { CoreModule } from './core/core.module';
 import { CoreServicesModule } from './mgw-core/core-services.module';
-import { EndpointsModule } from './endpoints/endpoints.module';
 
 @NgModule({
   declarations: [
@@ -33,7 +32,6 @@ import { EndpointsModule } from './endpoints/endpoints.module';
     SecretsModule,
     HttpClientModule,
     CoreServicesModule,
-    EndpointsModule
   ],
   exports: [
   ],

@@ -28,10 +28,10 @@ export class ListJobTable implements OnInit, AfterViewInit {
     private errorService: ErrorService,
   ) {
       this.loadJobs()
+      this.init = false
       this.interval = setInterval(() => { 
         this.loadJobs(); 
       }, 1000);
-      this.init = false
   }
 
   ngOnDestroy(): void {

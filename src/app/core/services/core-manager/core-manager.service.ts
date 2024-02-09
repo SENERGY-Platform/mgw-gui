@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CoreEndpointAliasReq, CoreEndpointsResponse } from 'src/app/endpoints/models/endpoints';
+import { CoreEndpointAliasReq, CoreEndpointsResponse } from 'src/app/deployments/models/endpoints';
 import { Job } from 'src/app/mgw-core/models/job.model';
 import { CoreServicesResponse } from 'src/app/mgw-core/models/services';
 import { InfoResponse } from '../../models/info';
