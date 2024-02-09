@@ -34,7 +34,7 @@ const routes: Routes = [
       {path: 'edit/:id', component: ShowModuleComponentComponent},
       {path: 'info/:id', component: InfoComponent},
       {path: 'endpoints', component: ListEndpointsComponent},
-      {path: 'endpoints/add', component: AddEndpointComponent}
+      {path: 'endpoints/add/:id', component: AddEndpointComponent}
 
     ]
   }
