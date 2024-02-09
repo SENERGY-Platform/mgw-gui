@@ -27,36 +27,36 @@ export class VersionComponent implements OnInit {
 
   ngOnInit(): void {
     this.ready = true
-    this.moduleManagerService.getVersion().subscribe({
-      next: (version) => {
-        this.moduleManagerVersion = version
+    this.moduleManagerService.getInfo().subscribe({
+      next: (info) => {
+        this.moduleManagerVersion = info.version;
       },
       error: (err) => {
         console.log(err)
       }
     })
 
-    this.secretManagerService.getVersion().subscribe({
-      next: (version) => {
-        this.secretManagerVersion = version
+    this.secretManagerService.getInfo().subscribe({
+      next: (info) => {
+        this.secretManagerVersion = info.version;
       },
       error: (err) => {
         console.log(err)
       }
     })
 
-    this.containerManager.getVersion().subscribe({
-      next: (version) => {
-        this.containerManagerVersion = version
+    this.containerManager.getInfo().subscribe({
+      next: (info) => {
+        this.containerManagerVersion = info.version;
       },
       error: (err) => {
         console.log(err)
       }
     })
 
-    this.hostManagerService.getVersion().subscribe({
-      next: (version) => {
-        this.hostManagerVersion = version
+    this.hostManagerService.getInfo().subscribe({
+      next: (info) => {
+        this.hostManagerVersion = info.version;
       },
       error: (err) => {
         console.log(err)

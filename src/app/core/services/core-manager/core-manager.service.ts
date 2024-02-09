@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { Job } from 'src/app/jobs/models/job.model';
 import { CoreEndpoint, CoreEndpointAliasReq, CoreEndpointsResponse } from 'src/app/mgw-core/models/endpoints';
 import { CoreService, CoreServicesResponse } from 'src/app/mgw-core/models/services';
+import { InfoResponse } from '../../models/info';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
@@ -58,5 +59,10 @@ export class CoreManagerService {
   getJobs(): Observable<Job[]> {
     var url = this.coreManagerPath + "/jobs"
     return <Observable<Job[]>>this.http.get(url)
+  }
+
+  getInfo(): Observable<InfoResponse> {
+    var url = this.coreManagerPath + "/info"
+    return <Observable<InfoResponse>>this.http.get(url);
   }
 }

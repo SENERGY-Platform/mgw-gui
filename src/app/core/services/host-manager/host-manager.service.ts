@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { HostResource } from 'src/app/host/models/models';
+import { InfoResponse } from '../../models/info';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
@@ -17,12 +18,8 @@ export class HostManagerService {
     return <Observable<HostResource[]>>this.http.get(this.hostManagerPath + "/host-resources")
   }
 
-  getVersion(): Observable<string> {
-    var url = this.hostManagerPath + "/host-resources"
-    return this.http.get(url, undefined, undefined, true).pipe(
-      map((response: any) => {
-        return response.headers.get("X-Api-Version")
-      })
-    )
+  getInfo(): Observable<InfoResponse> {
+    var url = this.hostManagerPath + "/info"
+    return <Observable<InfoResponse>>this.http.get(url);
   }
 }

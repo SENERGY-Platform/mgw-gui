@@ -17,15 +17,13 @@ export class MainNavigationComponent implements OnInit {
   sections: SidenavSectionModel[] = [
     new SidenavSectionModel("Deployments", "link", "play_circle_filled", "/deployments", []),
     new SidenavSectionModel("Modules", "link", "apps", "/modules", []),
-    new SidenavSectionModel("Settings", "toggle", "settings", "/settings", [
-      new SidenavPageModel("Secrets", "link", "key", "/settings/secrets"),
-      new SidenavPageModel("Jobs", "link", "work", "/settings/jobs"),
-    ]),
+    new SidenavSectionModel("Secrets", "link", "key", "/settings/secrets", []),
     new SidenavSectionModel("Info", "link", "info", "/info", []),
-    new SidenavSectionModel("Core", "toggle", "info", "/core", [
-      new SidenavPageModel("Services", 'link', "info", "/core/services"),
-      new SidenavPageModel("Jobs", 'link', "info", "/core/jobs"),
-      new SidenavPageModel("Endpoints", 'link', "info", "/core/endpoints")
+    new SidenavSectionModel("Core", "toggle", "hub", "/core", [
+      new SidenavPageModel("Services", 'link', "computer", "/core/services"),
+      new SidenavPageModel("Core-Manager Jobs", 'link', "history", "/core/jobs"),
+      new SidenavPageModel("Module-Manager Jobs", "link", "history", "/settings/jobs"),
+      new SidenavPageModel("Endpoints", 'link', "link", "/core/endpoints")
     ]),
 
   ]

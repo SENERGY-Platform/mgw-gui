@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { CreateSecret, Secret, SecretRequest, SecretType } from 'src/app/secrets/models/secret_models';
 import { ApiService } from '../../../core/services/api/api.service';
+import { InfoResponse } from '../../models/info';
 
 @Injectable({
   providedIn: 'root'
@@ -35,12 +36,8 @@ export class SecretManagerServiceService {
     return <Observable<any>>this.http.delete(this.secretManagerPath + "/secrets/" + secretID)
   }
 
-  getVersion(): Observable<string> {
-    var url = this.secretManagerPath + "/health-check"
-    return this.http.get(url, undefined, undefined, true).pipe(
-      map((response: any) => {
-        return response.headers.get("X-Api-Version")
-      })
-    )
+  getInfo(): Observable<InfoResponse> {
+    var url = this.secretManagerPath + "/info"
+    return <Observable<InfoResponse>>this.http.get(url);
   }
 }
