@@ -9,7 +9,7 @@
         </button>
 
         <button *ngIf="section.type === 'toggle'" (click)="toggleSection(section)"
-          [ngClass]="{'background-color-sidenav': isSectionOpen(section)}">
+          [ngClass]="{'background-color-sidenav': isSectionOpen(section)}" routerLink="{{section.state}}">
           <span class="toggle-button">
             <mat-icon>{{section.icon}}</mat-icon>
             <div>{{section.name | uppercase}}</div>
