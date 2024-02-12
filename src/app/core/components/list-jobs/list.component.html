@@ -15,7 +15,7 @@
   -->
 
 <div *ngIf="dataSource.data.length === 0 && ready">No jobs found.</div>
-<spinner [show]="!ready"></spinner>
+<spinner [show]="!ready && init"></spinner>
 
 <div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
   <div>

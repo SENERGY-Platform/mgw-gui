@@ -27,11 +27,6 @@ export class ListJobTable implements OnInit, AfterViewInit {
 
     private errorService: ErrorService,
   ) {
-      this.loadJobs()
-      this.init = false
-      /*this.interval = setInterval(() => { 
-        this.loadJobs(); 
-      }, 1000);*/
   }
 
   ngOnDestroy(): void {
@@ -40,6 +35,7 @@ export class ListJobTable implements OnInit, AfterViewInit {
   
 
   loadJobs() {
+    this.ready = false;
     let obs: Observable<Job[]> = of()
     if(this.source === 'module-manager') {
       obs = this.moduleService.getJobs();
@@ -60,7 +56,11 @@ export class ListJobTable implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-      
+    this.init = false
+    this.loadJobs()
+    this.interval = setInterval(() => { 
+      this.loadJobs(); 
+    }, 1000);
   }
 
   ngAfterViewInit(): void {
