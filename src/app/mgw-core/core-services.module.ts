@@ -22,7 +22,9 @@ const routes: Routes = [
       {path: 'services', component: ListCoreServicesComponent},
       {path: 'jobs/core-manager', component: ListJobsComponent},
       {path: 'jobs/module-manager', component: ListModuleManagerJobsComponent},
-      {path: 'info', component: VersionComponent}
+      {path: 'info', component: VersionComponent},
+      {path: '', redirectTo: 'info', pathMatch: 'full'}
+
     ]
   }
 ];

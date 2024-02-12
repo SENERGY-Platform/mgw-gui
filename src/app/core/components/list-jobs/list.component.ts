@@ -29,9 +29,9 @@ export class ListJobTable implements OnInit, AfterViewInit {
   ) {
       this.loadJobs()
       this.init = false
-      this.interval = setInterval(() => { 
+      /*this.interval = setInterval(() => { 
         this.loadJobs(); 
-      }, 1000);
+      }, 1000);*/
   }
 
   ngOnDestroy(): void {
