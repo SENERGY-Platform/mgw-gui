@@ -2,6 +2,6 @@ a {
     text-decoration: none;
 }
 
-mat-card-content {
+.deployment-container {
     margin-bottom: 30px;
 }
