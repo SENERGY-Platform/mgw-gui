@@ -9,7 +9,7 @@
         <ng-container matColumnDef="url">
           <th mat-header-cell mat-sort-header *matHeaderCellDef>URL</th>
           <td mat-cell *matCellDef="let endpoint">
-            <a [href]="'/endpoints/deployment/' + endpoint.ref + '/' + endpoint.ext_path">
+            <a [href]="'/endpoints/deployment/' + endpoint.ref + '/' + endpoint.ext_path" target="_blank">
               {{location.origin + '/endpoints/deployment/' + endpoint.ref + '/' + endpoint.ext_path}}
             </a>
           </td>
