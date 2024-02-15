@@ -26,7 +26,7 @@ export class ListEndpointsComponent implements OnInit {
   displayColumnsAlias = ['select', 'url', 'delete']
   selection = new SelectionModel<string>(true, []);
   location = location
-  @Input() deploymentID!: string
+  @Input() deploymentID?: string
 
   constructor(
     private coreService: CoreManagerService,
@@ -57,7 +57,7 @@ export class ListEndpointsComponent implements OnInit {
   }
 
   loadEndpoints(background: boolean): void {
-    this.coreService.getEndpoints().pipe(
+    this.coreService.getEndpoints(this.deploymentID).pipe(
       map((endpointsResponse: CoreEndpointsResponse) => {
         const services: CoreEndpoint[] = []
         for (const [key, value] of Object.entries(endpointsResponse)) {

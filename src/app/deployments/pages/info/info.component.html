@@ -74,7 +74,9 @@
     </div>
 
     <h2>Exposed Endpoints</h2>
-    <list-endpoints *ngIf="deploymentID != null" [deploymentID]="deploymentID"></list-endpoints>
+    <span *ngIf="deploymentID != null">
+      <list-endpoints [deploymentID]="deploymentID"></list-endpoints>
+    </span>
   </div>
 
 </div>

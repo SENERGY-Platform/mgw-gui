@@ -16,8 +16,11 @@ export class CoreManagerService {
     private http: ApiService,
   ) { } 
 
-  getEndpoints(): Observable<CoreEndpointsResponse> {
+  getEndpoints(deploymentId?: string): Observable<CoreEndpointsResponse> {
     var url = this.coreManagerPath + "/endpoints"
+    if(deploymentId != null) {
+      url = url + "?ref=" + deploymentId; 
+    }
     return <Observable<CoreEndpointsResponse>>this.http.get(url, undefined, undefined, false)
   }
 
