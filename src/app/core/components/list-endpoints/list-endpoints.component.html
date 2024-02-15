@@ -19,7 +19,7 @@
           <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Add Alias</th>
           <td mat-cell *matCellDef="let endpoint">
             <button mat-icon-button color="primary" [routerLink]="'/deployments/endpoints/add/'+endpoint.id"
-              matTooltip="Add endpoint alias" [disabled]="endpoint.type == 1">
+              matTooltip="Add endpoint alias" [disabled]="endpoint.type == 2">
               <mat-icon>add</mat-icon>
             </button>
           </td>
@@ -59,7 +59,7 @@
           <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Delete</th>
           <td mat-cell *matCellDef="let endpoint">
             <button mat-icon-button color="primary" (click)="deleteEndpoint(endpoint.id)" matTooltip="Delete"
-              [disabled]="endpoint.type == 2">
+              [disabled]="endpoint.type == 1">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
