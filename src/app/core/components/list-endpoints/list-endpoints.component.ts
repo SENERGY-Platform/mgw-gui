@@ -72,9 +72,9 @@ export class ListEndpointsComponent implements OnInit {
           const aliasEndpoints: CoreEndpoint[] = []
           
           endpoints.forEach(endpoint => {
-            if(endpoint.type === 1) {
+            if(endpoint.type === 2) {
               aliasEndpoints.push(endpoint)
-            } else if(endpoint.type === 0) {
+            } else if(endpoint.type === 1) {
               generatedEndpoints.push(endpoint)
             }
           });

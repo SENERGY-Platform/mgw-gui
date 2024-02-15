@@ -1,5 +1,5 @@
-<div *ngIf="dataSource.data.length === 0 && ready">No endpoints found.</div>
 <spinner class="global-centered-spinner" [show]="!ready"></spinner>
+<div *ngIf="dataSource.data.length === 0 && dataSourceAlias.data.length === 0 && ready">No endpoints found.</div>
 
 <div [hidden]="(!ready && init)">
   <div>
