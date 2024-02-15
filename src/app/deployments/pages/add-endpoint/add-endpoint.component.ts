@@ -46,10 +46,10 @@ export class AddEndpointComponent {
       })
     ).subscribe({
       next: (_) => {
-        this.router.navigate(["/core/endpoints"])
+        this.router.navigate(["/deployments/endpoints"])
       },
       error: (_) => {
-        this.router.navigate(["/core/endpoints"])
+        this.router.navigate(["/deployments/endpoints"])
       }
     })
   }
