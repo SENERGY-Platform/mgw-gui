@@ -1,3 +1,7 @@
 a {
     text-decoration: none;
 }
+
+mat-card-content {
+    margin-bottom: 30px;
+}
