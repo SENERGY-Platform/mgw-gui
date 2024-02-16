@@ -10,11 +10,10 @@ import { MatInputModule } from '@angular/material/input';
 
 const routes: Routes = [
   {
-    path: 'auth', 
-    children: [
-      {path: 'register', component: RegisterComponent},
-      {path: 'login', component: LoginComponent},
-    ]
+    path: 'register', component: RegisterComponent
+  },
+  {
+    path: 'login', component: LoginComponent
   }
 ];
 
