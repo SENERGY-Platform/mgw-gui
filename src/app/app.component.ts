@@ -7,5 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'MGW';
+  authPageIsActive = false;
 
+  constructor() {
+    this.authPageIsActive = location.pathname.startsWith("/auth")
+  }
 }

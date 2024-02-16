@@ -16,7 +16,7 @@
  *
  */
 
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 
@@ -38,19 +38,30 @@ export class ApiService {
         if(withHeaders) {
             options["observe"] = "response"
         }
+        options.withCredentials = true;
+
         return this.httpClient.get<T>(this.baseUrl + path, options);
     }
 
-    public post<T>(path: string, payload?: any, queryParams?: HttpParams, responseType?: string): Observable<unknown> {
+    public post<T>(path: string, payload?: any, queryParams?: HttpParams, responseType?: string, headers?: HttpHeaders): Observable<unknown> {
         var options: any = {params: queryParams}
         if(responseType) {
             options['responseType'] = responseType
         }
+
+        if(headers) {
+            options.headers = headers
+        }
+        options.withCredentials = true;
+
         return this.httpClient.post<T>(this.baseUrl + path, payload, options);
     }
 
     public put(path: string, payload: any): Observable<unknown> {
-        return this.httpClient.put(this.baseUrl + path, payload);
+        var options: any = {
+            withCredentials: true
+        }
+        return this.httpClient.put(this.baseUrl + path, payload, options);
     }
 
     public delete(path: string, payload?: any, queryParams?: HttpParams, responseType?: string): Observable<unknown> {
@@ -61,6 +72,7 @@ export class ApiService {
         if(responseType) {
             options['responseType'] = responseType
         }
+        options.withCredentials = true;
 
         return this.httpClient.delete(this.baseUrl + path, options);
     }
@@ -70,6 +82,8 @@ export class ApiService {
         if(responseType) {
             options['responseType'] = responseType
         }
+        options.withCredentials = true;
+
         return this.httpClient.patch(this.baseUrl + path, payload, options);
     }
 }

@@ -1,0 +1,14 @@
+#container {
+    display: flex;
+    justify-content: center;
+}
+
+#form-container {
+    position: absolute;
+    top: 30%;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+}
