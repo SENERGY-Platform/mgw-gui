@@ -1,4 +1,4 @@
-import { HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiService } from 'src/app/core/services/api/api.service'
 import { RegisterRequest } from './auth.models';
@@ -13,12 +13,12 @@ export class AuthService {
   loginPath = "/login"
   logoutPath = "/logout"
 
-  constructor(private apiService: ApiService) { 
+  constructor(private httpClient: HttpClient) { 
   }
 
   initFlow() {
     var url = this.basePath + this.loginPath + "/browser?refresh=true"
-    return this.apiService.get(url);
+    return this.httpClient.get(url);
   }
 
   login(flowID: string, username: string, password: string, csrf: string) {
@@ -31,12 +31,12 @@ export class AuthService {
     var url = this.basePath + this.loginPath + "?flow=" + flowID ;
     const headers = new HttpHeaders().set("Accept", "application/json")
     // .set("X-CSRF-Token", csrf) dont use -> or set allowed headers in kratos cors setting to this 
-    return this.apiService.post(url, payload, undefined, undefined, headers);
+    return this.httpClient.post(url, payload, {headers: headers});
   }
 
   initRegister() {
     var url = this.basePath + this.loginPath + "self-service/registration/browser"
-    return this.apiService.get(url);
+    return this.httpClient.get(url);
   }
 
   register(flowID: string, username: string, password: string, csrf: string, firstName?: string, lastName?: string) {
@@ -58,6 +58,6 @@ export class AuthService {
     var url = this.basePath + "self-service/registration?flow=" + flowID;
     const headers = new HttpHeaders().set("Accept", "application/json")
     // .set("X-CSRF-Token", csrf) dont use -> or set allowed headers in kratos cors setting to this 
-    return this.apiService.post(url, payload, undefined, undefined, headers);
+    return this.httpClient.post(url, payload, {headers: headers});
   }
 }
