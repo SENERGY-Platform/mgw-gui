@@ -10,6 +10,7 @@ export class AppComponent {
   authPageIsActive = false;
 
   constructor() {
-    this.authPageIsActive = location.pathname.startsWith("/auth")
+    const path = location.pathname;
+    this.authPageIsActive = path.startsWith("/login") || path.startsWith("/register")
   }
 }
