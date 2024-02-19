@@ -5,6 +5,8 @@ import { SecretManagerMockService } from "src/app/core/services/secret-manager/s
 import { SecretManagerServiceService } from "src/app/core/services/secret-manager/secret-manager-service.service";
 import { ModuleManagerMockService } from "../app/core/services/module-manager/module-manager-mock.service";
 
+const CORE_PREFIX = "/core";
+
 export const environment = {
     production: false,
     moduleManagerService: ModuleManagerMockService,
@@ -12,5 +14,9 @@ export const environment = {
     hostManagerService: HostManagerMockService,
     containerEngineManagerService: ContainerEngineManagerMockService,
     coreManagerService: CoreManagerService,
-    uiVersion: "UI-VERSION"
+    uiVersion: "UI-VERSION",
+    coreApiUrl: CORE_PREFIX + "/api",
+    authApiUrl: CORE_PREFIX + "/core/auth",
+    uiBaseUrl: CORE_PREFIX + "/web-ui",
+    endpointsUrl: "/endpoints"
 };

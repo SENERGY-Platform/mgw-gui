@@ -9,16 +9,17 @@ import { RegisterRequest } from './auth.models';
   providedIn: 'root'
 })
 export class AuthService {
-  basePath = "/auth"
+  basePath = "/core/auth"
   loginPath = "/login"
   logoutPath = "/logout"
+  registerPath = "/register"
 
   constructor(private httpClient: HttpClient) { 
   }
 
   initFlow() {
     var url = this.basePath + this.loginPath + "/browser?refresh=true"
-    return this.httpClient.get(url);
+    return this.httpClient.get(url, {withCredentials: true});
   }
 
   login(flowID: string, username: string, password: string, csrf: string) {
@@ -31,12 +32,12 @@ export class AuthService {
     var url = this.basePath + this.loginPath + "?flow=" + flowID ;
     const headers = new HttpHeaders().set("Accept", "application/json")
     // .set("X-CSRF-Token", csrf) dont use -> or set allowed headers in kratos cors setting to this 
-    return this.httpClient.post(url, payload, {headers: headers});
+    return this.httpClient.post(url, payload, {headers: headers, withCredentials: true});
   }
 
   initRegister() {
-    var url = this.basePath + this.loginPath + "self-service/registration/browser"
-    return this.httpClient.get(url);
+    var url = this.basePath + this.registerPath + "/browser"
+    return this.httpClient.get(url, {withCredentials: true});
   }
 
   register(flowID: string, username: string, password: string, csrf: string, firstName?: string, lastName?: string) {
@@ -55,9 +56,9 @@ export class AuthService {
       payload.traits["surname"] = lastName;
     }
 
-    var url = this.basePath + "self-service/registration?flow=" + flowID;
+    var url = this.basePath + this.registerPath + "?flow=" + flowID;
     const headers = new HttpHeaders().set("Accept", "application/json")
     // .set("X-CSRF-Token", csrf) dont use -> or set allowed headers in kratos cors setting to this 
-    return this.httpClient.post(url, payload, {headers: headers});
+    return this.httpClient.post(url, payload, {headers: headers, withCredentials: true});
   }
 }

@@ -4,6 +4,8 @@ import { HostManagerService } from "src/app/core/services/host-manager/host-mana
 import { SecretManagerServiceService } from "src/app/core/services/secret-manager/secret-manager-service.service";
 import { ModuleManagerService } from "../app/core/services/module-manager/module-manager-service.service";
 
+const CORE_PREFIX = "/core";
+
 export const environment = {
     production: true,
     moduleManagerService: ModuleManagerService,
@@ -11,5 +13,9 @@ export const environment = {
     hostManagerService: HostManagerService,
     containerEngineManagerService: ContainerEngineManagerService,
     coreManagerService: CoreManagerService,
-    uiVersion: "UI-VERSION"
+    uiVersion: "UI-VERSION",
+    coreApiUrl: CORE_PREFIX + "/api",
+    authApiUrl: CORE_PREFIX + "/core/auth",
+    uiBaseUrl: CORE_PREFIX + "/web-ui",
+    endpointsUrl: "/endpoints"
 };

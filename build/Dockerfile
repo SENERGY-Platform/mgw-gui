@@ -14,10 +14,10 @@ RUN npm install -g @angular/cli
 COPY . .
 
 FROM builder as prod_builder
-RUN ng build -c production 
+RUN ng build -c production --base-href="/core/web-ui/"
 
 FROM builder as dev_builder
-RUN ng build -c development 
+RUN ng build -c development --base-href="/core/web-ui/"
 
 FROM nginx as serve
 ARG VERSION="missing-version"

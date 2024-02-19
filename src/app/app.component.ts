@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -6,11 +7,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'MGW';
+  title = 'Gateway';
   authPageIsActive = false;
 
   constructor() {
     const path = location.pathname;
-    this.authPageIsActive = path.startsWith("/login") || path.startsWith("/register")
+    this.authPageIsActive = path.startsWith(environment.uiBaseUrl + "/login") || path.startsWith(environment.uiBaseUrl + "/register")
   }
 }
