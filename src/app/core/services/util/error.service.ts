@@ -65,3 +65,6 @@ export class ErrorService {
         return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 }
+
+// TODO log + error with specific message or return value like []  
+// ui component show human message 
