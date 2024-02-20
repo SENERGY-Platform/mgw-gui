@@ -7,8 +7,8 @@ export interface LoginRequest {
 
 interface RegisterTraits {
     username: string;
-    name?: string;
-    surname?: string;
+    first_name?: string;
+    last_name?: string;
 }
 
 export interface RegisterRequest {

@@ -14,7 +14,7 @@ export class AuthService {
   logoutPath = "/logout"
   registerPath = "/register"
 
-  constructor(private httpClient: HttpClient) { 
+  constructor(private httpClient: HttpClient) {
   }
 
   initFlow() {
@@ -31,7 +31,7 @@ export class AuthService {
     }
     var url = this.basePath + this.loginPath + "?flow=" + flowID ;
     const headers = new HttpHeaders().set("Accept", "application/json")
-    // .set("X-CSRF-Token", csrf) dont use -> or set allowed headers in kratos cors setting to this 
+    // .set("X-CSRF-Token", csrf) dont use -> or set allowed headers in kratos cors setting to this
     return this.httpClient.post(url, payload, {headers: headers, withCredentials: true});
   }
 
@@ -50,15 +50,15 @@ export class AuthService {
       'csrf_token': csrf
     }
     if(firstName) {
-      payload.traits["name"] = firstName; 
+      payload.traits["first_name"] = firstName;
     }
     if(lastName) {
-      payload.traits["surname"] = lastName;
+      payload.traits["last_name"] = lastName;
     }
 
     var url = this.basePath + this.registerPath + "?flow=" + flowID;
     const headers = new HttpHeaders().set("Accept", "application/json")
-    // .set("X-CSRF-Token", csrf) dont use -> or set allowed headers in kratos cors setting to this 
+    // .set("X-CSRF-Token", csrf) dont use -> or set allowed headers in kratos cors setting to this
     return this.httpClient.post(url, payload, {headers: headers, withCredentials: true});
   }
 }
