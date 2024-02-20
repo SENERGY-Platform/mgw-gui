@@ -17,3 +17,8 @@ export interface RegisterRequest {
     csrf_token: string;
     traits: RegisterTraits;
 }
+
+export interface InitLogoutResponse {
+    logout_token: string;
+    logout_url: string;
+}
