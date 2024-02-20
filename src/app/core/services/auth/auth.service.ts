@@ -46,14 +46,15 @@ export class AuthService {
       "password": password,
       "traits": {
         "username": username,
+        "meta": {}
       },
       'csrf_token': csrf
     }
     if(firstName) {
-      payload.traits["first_name"] = firstName;
+      payload.traits.meta["first_name"] = firstName;
     }
     if(lastName) {
-      payload.traits["last_name"] = lastName;
+      payload.traits.meta["last_name"] = lastName;
     }
 
     var url = this.basePath + this.registerPath + "?flow=" + flowID;

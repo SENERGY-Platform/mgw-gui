@@ -7,6 +7,10 @@ export interface LoginRequest {
 
 interface RegisterTraits {
     username: string;
+    meta: HumanMeta;
+}
+
+interface HumanMeta {
     first_name?: string;
     last_name?: string;
 }
