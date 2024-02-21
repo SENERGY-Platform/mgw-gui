@@ -1,6 +1,6 @@
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -16,6 +16,7 @@ import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { CoreModule } from './core/core.module';
 import { CoreServicesModule } from './mgw-core/core-services.module';
 import { AuthModule } from './auth/auth.module';
+import { AuthCheckInterceptor } from './core/services/auth/interceptor/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,9 @@ import { AuthModule } from './auth/auth.module';
   exports: [
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS, useClass: AuthCheckInterceptor, multi: true
+    },
     {
       'provide': 'ModuleManagerService',
       'useClass': environment.moduleManagerService
