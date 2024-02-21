@@ -13,6 +13,8 @@ import { ListJobTable } from './components/list-jobs/list.component';
 import { MatTableModule } from '@angular/material/table';
 import { ListEndpointsComponent } from './components/list-endpoints/list-endpoints.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { AuthCheckInterceptor } from './services/auth/interceptor/auth.interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
   declarations: [

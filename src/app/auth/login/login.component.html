@@ -5,12 +5,12 @@
         <div [formGroup]="form" class="form">
             <mat-form-field color="accent">
                 <mat-label>Username</mat-label>
-                <input matInput placeholder="USername" type="text" formControlName="username">
+                <input matInput placeholder="Username" type="text" formControlName="username">
             </mat-form-field>
          
             <mat-form-field color="accent">
                 <mat-label>Password</mat-label>
-                <input matInput placeholder="password" type="password" formControlName="password">
+                <input matInput placeholder="Password" type="password" formControlName="password">
             </mat-form-field>
          
             <button mat-raised-button color="primary" type="submit" (click)="login()" [disabled]="!form.valid">Login</button>        
