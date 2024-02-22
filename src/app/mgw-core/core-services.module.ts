@@ -14,6 +14,7 @@ import { ListJobsComponent } from './pages/list-jobs/list-jobs.component';
 import { MatCardModule } from '@angular/material/card';
 import { ListModuleManagerJobsComponent } from './pages/list-module-manager-jobs/list.component';
 import { VersionComponent } from './pages/list-versions/version.component';
+import { ListUsersComponent } from './pages/list-users/list-users.component';
 
 const routes: Routes = [
   {
@@ -34,7 +35,8 @@ const routes: Routes = [
     ListCoreServicesComponent,
     ListJobsComponent,
     VersionComponent,
-    ListModuleManagerJobsComponent
+    ListModuleManagerJobsComponent,
+    ListUsersComponent
   ],
   imports: [
     CommonModule,
