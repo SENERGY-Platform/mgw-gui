@@ -58,7 +58,7 @@ export class ModuleManagerService {
     return <Observable<ModuleUpdates>>this.http.get(url)
   }
 
-  getAvailableModuleUpdates(moduleID: string): Observable<ModuleUpdate> {
+  getAvailableModuleUpdates(moduleID: string) {
     var url = this.moduleManagerPath + "/updates/" + this.doubleEncode(moduleID) 
     return <Observable<ModuleUpdate>>this.http.get(url)
   }
@@ -70,7 +70,7 @@ export class ModuleManagerService {
 
   getModuleUpdateTemplate(moduleID: string): Observable<ModuleUpdateTemplate> {
     var url = this.moduleManagerPath + "/updates/" + this.doubleEncode(moduleID) + '/upt-template' 
-    return <Observable<ModuleUpdateTemplate>>this.http.get(url)
+    return <Observable<ModuleUpdateTemplate>>this.http.get<ModuleUpdateTemplate>(url)
   }
 
   cancelModuleUpdate(moduleID: string): Observable<string> {

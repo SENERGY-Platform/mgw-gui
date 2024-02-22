@@ -24,6 +24,7 @@ export class MainNavigationComponent implements OnInit {
       new SidenavPageModel("Services", 'link', "computer", "/core/services"),
       new SidenavPageModel("Core-Manager", 'link', "history", "/core/jobs/core-manager"),
       new SidenavPageModel("Module-Manager", "link", "history", "/core/jobs/module-manager"),
+      new SidenavPageModel("Users", "link", "person", "/core/accounts"),
     ])
   ]
 

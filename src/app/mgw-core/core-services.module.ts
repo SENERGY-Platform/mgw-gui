@@ -15,6 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ListModuleManagerJobsComponent } from './pages/list-module-manager-jobs/list.component';
 import { VersionComponent } from './pages/list-versions/version.component';
 import { ListUsersComponent } from './pages/list-users/list-users.component';
+import { RegisterComponent } from './pages/add-account/register.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,13 @@ const routes: Routes = [
       {path: 'jobs/core-manager', component: ListJobsComponent},
       {path: 'jobs/module-manager', component: ListModuleManagerJobsComponent},
       {path: 'info', component: VersionComponent},
+      {
+        path: 'accounts',
+        children: [
+          {path: 'add', component: RegisterComponent},
+          {path: '', component: ListUsersComponent}
+        ] 
+      },
       {path: '', redirectTo: 'info', pathMatch: 'full'}
 
     ]
@@ -36,7 +44,8 @@ const routes: Routes = [
     ListJobsComponent,
     VersionComponent,
     ListModuleManagerJobsComponent,
-    ListUsersComponent
+    ListUsersComponent,
+    RegisterComponent
   ],
   imports: [
     CommonModule,
