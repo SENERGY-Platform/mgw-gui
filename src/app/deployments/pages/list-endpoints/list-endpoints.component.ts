@@ -17,6 +17,7 @@ import { UtilService } from 'src/app/core/services/util/util.service';
 })
 export class ListEndpointsComponent implements OnInit {
   deploymentIDs: string[] = []
+  ready = false;
 
   constructor(
     private coreService: CoreManagerService,
@@ -46,9 +47,11 @@ export class ListEndpointsComponent implements OnInit {
               }
             });
           } 
+          this.ready = true;
         }, 
         error: (err) => {
           this.errorService.handleError(ListEndpointsComponent.name, "loadDeploymentsWithEndpoints", err)
+          this.ready = true;
         }
       }
     )

@@ -15,6 +15,7 @@
   -->
 
 <div class="layout-margin">
+  <spinner class="global-centered-spinner" [show]="!ready"></spinner>
   <div *ngIf="deploymentIDs.length === 0 && ready">No endpoints found.</div>
 
   <mat-card *ngFor="let deploymentID of deploymentIDs" class="deployment-container">
