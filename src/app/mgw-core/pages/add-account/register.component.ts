@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UserService } from 'src/app/core/services/user/user.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
-import { User, UserRequest } from '../../models/users';
+import { UserRequest } from '../../models/users';
 
 @Component({
   selector: 'app-register',
@@ -50,7 +50,7 @@ export class RegisterComponent {
     this.userService.addUser(user).subscribe({
       next: (_: any) => {
         this.waitingForRegister = false;
-        this.router.navigate(['/core/accounts'])
+        this.router.navigate(['/core/accounts/users'])
       },
       error: (err) => {
         this.waitingForRegister = false;

@@ -16,20 +16,28 @@ import { ListModuleManagerJobsComponent } from './pages/list-module-manager-jobs
 import { VersionComponent } from './pages/list-versions/version.component';
 import { ListUsersComponent } from './pages/list-users/list-users.component';
 import { RegisterComponent } from './pages/add-account/register.component';
+import { EditAccountComponent } from './pages/edit-account/edit-account.component';
+import { ListAppsComponent } from './pages/list-apps/list-apps.component';
 
 const routes: Routes = [
   {
     path: 'core', 
     children: [
       {path: 'services', component: ListCoreServicesComponent},
-      {path: 'jobs/core-manager', component: ListJobsComponent},
-      {path: 'jobs/module-manager', component: ListModuleManagerJobsComponent},
+      {path: 'jobs', children: [
+        {path: 'core-manager', component: ListJobsComponent},
+        {path: 'module-manager', component: ListModuleManagerJobsComponent},
+      ]},
       {path: 'info', component: VersionComponent},
       {
         path: 'accounts',
         children: [
           {path: 'add', component: RegisterComponent},
-          {path: '', component: ListUsersComponent}
+          {path: 'users', children: [
+            {path: '', component: ListUsersComponent},
+            {path: ':id/edit', component: EditAccountComponent}
+          ]},
+          {path: 'apps', component: ListAppsComponent}
         ] 
       },
       {path: '', redirectTo: 'info', pathMatch: 'full'}
@@ -45,7 +53,9 @@ const routes: Routes = [
     VersionComponent,
     ListModuleManagerJobsComponent,
     ListUsersComponent,
-    RegisterComponent
+    RegisterComponent,
+    EditAccountComponent,
+    ListAppsComponent
   ],
   imports: [
     CommonModule,

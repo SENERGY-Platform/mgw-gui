@@ -35,34 +35,6 @@ export class AuthService {
     return this.httpClient.post(url, payload, {headers: headers, withCredentials: true});
   }
 
-  /*initRegister() {
-    var url = this.basePath + this.registerPath + "/browser"
-    return this.httpClient.get(url, {withCredentials: true});
-  }
-
-  register(flowID: string, username: string, password: string, csrf: string, firstName?: string, lastName?: string) {
-    const payload: RegisterRequest = {
-      "method": "password",
-      "password": password,
-      "traits": {
-        "username": username,
-        "meta": {}
-      },
-      'csrf_token': csrf
-    }
-    if(firstName) {
-      payload.traits.meta["first_name"] = firstName;
-    }
-    if(lastName) {
-      payload.traits.meta["last_name"] = lastName;
-    }
-
-    var url = this.basePath + this.registerPath + "?flow=" + flowID;
-    const headers = new HttpHeaders().set("Accept", "application/json")
-    // .set("X-CSRF-Token", csrf) dont use -> or set allowed headers in kratos cors setting to this
-    return this.httpClient.post(url, payload, {headers: headers, withCredentials: true});
-  }*/
-
   initLogout() {
     var url = this.basePath + this.logoutPath + '/browser';
     const headers = new HttpHeaders().set("Accept", "application/json")

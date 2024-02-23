@@ -1,31 +1,31 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { HumanUser, HumanUsersResponse } from '../../models/users';
-import { SelectionModel } from '@angular/cdk/collections';
+import { map } from 'rxjs';
 import { UserService } from 'src/app/core/services/user/user.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
-import { map } from 'rxjs';
-import { Router } from '@angular/router';
+import { DeviceUser, DeviceUsersResponse } from '../../models/users';
+import { SelectionModel } from '@angular/cdk/collections';
+import { NotificationService } from 'src/app/core/services/util/notifications.service';
 
 @Component({
-  selector: 'app-list-users',
-  templateUrl: './list-users.component.html',
-  styleUrls: ['./list-users.component.css']
+  selector: 'app-list-apps',
+  templateUrl: './list-apps.component.html',
+  styleUrls: ['./list-apps.component.css']
 })
-export class ListUsersComponent implements OnInit {
-  dataSource = new MatTableDataSource<HumanUser>();
+export class ListAppsComponent {
+  dataSource = new MatTableDataSource<DeviceUser>();
   ready: Boolean = false;
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['select', 'username', 'first_name', 'last_name', 'delete', 'edit']
+  displayColumns = ['select', 'username', 'model', 'manufacturer', 'delete']
   selection = new SelectionModel<string>(true, []);
 
   constructor(
     private userService: UserService,
-    private errorService: ErrorService,
-    private router: Router
+    private notifierService: NotificationService,
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
@@ -33,9 +33,9 @@ export class ListUsersComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.userService.listHumanUsers().pipe(
-      map((usersResponse: HumanUsersResponse) => {
-        const users: HumanUser[] = []
+    this.userService.listDeviceUsers().pipe(
+      map((usersResponse: DeviceUsersResponse) => {
+        const users: DeviceUser[] = []
         for (const [key, value] of Object.entries(usersResponse)) {
           users.push(value)
         }
@@ -43,7 +43,7 @@ export class ListUsersComponent implements OnInit {
       })
     ).subscribe(
       {
-        next: (users: HumanUser[]) => {
+        next: (users: DeviceUser[]) => {
           if(!users) {
             this.dataSource.data = []
           } else {
@@ -52,7 +52,7 @@ export class ListUsersComponent implements OnInit {
           this.ready = true
         }, 
         error: (err) => {
-          this.errorService.handleError(ListUsersComponent.name, "loadUsers", err)
+          this.errorService.handleError(ListAppsComponent.name, "loadUsers", err)
           this.ready = true
         }
       }
@@ -84,12 +84,19 @@ export class ListUsersComponent implements OnInit {
         this.loadUsers()
       },
       error: (err) => {
-        this.errorService.handleError(ListUsersComponent.name, "deleteUser", err)
+        this.errorService.handleError(ListAppsComponent.name, "deleteUser", err)
       }
     })
   }
 
-  editUser(user: HumanUser) {
-    this.router.navigate(['/core/accounts/users/'+ user.id + "/edit"])
+  openPairing() {
+    this.userService.openPairingMode().subscribe({
+      next: (_) => {
+        this.notifierService.showError("MGW open for pairing!");
+      },
+      error: (err) => {
+        this.errorService.handleError(ListAppsComponent.name, "openPairing", err);
+      }
+    })
   }
 }

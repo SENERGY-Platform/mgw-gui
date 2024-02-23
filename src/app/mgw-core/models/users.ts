@@ -8,17 +8,28 @@ export interface DeviceUserMeta {
     manufacturer: string;
 }
 
-export interface User {
+export interface BaseUser {
     id: string;
     created: string;
     updated: string;
     type: string;
     username: string;
-    meta: HumanUserMeta | DeviceUserMeta;
 }
 
-export interface UsersResponse {
-    [userID: string]: User
+export interface HumanUser extends BaseUser {
+    meta: HumanUserMeta;
+}
+
+export interface DeviceUser extends BaseUser {
+    meta: DeviceUserMeta;
+}
+
+export interface HumanUsersResponse {
+    [userID: string]: HumanUser;
+}
+
+export interface DeviceUsersResponse {
+    [userID: string]: DeviceUser;
 }
 
 export interface UserRequest {
