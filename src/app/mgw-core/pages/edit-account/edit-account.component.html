@@ -4,11 +4,11 @@
   <div *ngIf="ready">
     <mat-form-field color="accent">
       <mat-label>Password</mat-label>
-      <input matInput placeholder="Path" type="password" formControlName="password">
+      <input matInput placeholder="Password" type="password" formControlName="password">
     </mat-form-field>
     <mat-form-field color="accent">
       <mat-label>Confirmation</mat-label>
-      <input matInput placeholder="Path" type="password" formControlName="confirmation">
+      <input matInput placeholder="Confirmation" type="password" formControlName="confirmation">
     </mat-form-field>
     <mat-error *ngIf="form.errors?.['match'] && (form.touched || form.dirty)">{{getErrorMessage()}}</mat-error>
 
