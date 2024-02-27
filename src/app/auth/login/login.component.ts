@@ -31,6 +31,10 @@ export class LoginComponent {
   }
 
   login() {
+    if(!this.form.valid) {
+      return;
+    }
+
     this.waitingForLogin = true;
     this.authService.initFlow().subscribe({
       next: (resp: any) => {

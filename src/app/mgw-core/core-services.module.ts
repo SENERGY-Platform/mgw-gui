@@ -13,7 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ListJobsComponent } from './pages/list-jobs/list-jobs.component';
 import { MatCardModule } from '@angular/material/card';
 import { ListModuleManagerJobsComponent } from './pages/list-module-manager-jobs/list.component';
-import { VersionComponent } from './pages/list-versions/version.component';
+import { DurationPipe, VersionComponent } from './pages/list-versions/version.component';
 import { ListUsersComponent } from './pages/list-users/list-users.component';
 import { RegisterComponent } from './pages/add-account/register.component';
 import { EditAccountComponent } from './pages/edit-account/edit-account.component';
@@ -55,7 +55,8 @@ const routes: Routes = [
     ListUsersComponent,
     RegisterComponent,
     EditAccountComponent,
-    ListAppsComponent
+    ListAppsComponent,
+    DurationPipe
   ],
   imports: [
     CommonModule,

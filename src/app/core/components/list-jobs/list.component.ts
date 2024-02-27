@@ -56,11 +56,21 @@ export class ListJobTable implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.setupSorting();
     this.init = false
     this.loadJobs()
     this.interval = setInterval(() => { 
       this.loadJobs(); 
     }, 1000);
+  }
+
+  setupSorting() {
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'created': return new Date(item.created);
+        default: return (item as any)[property];
+      }
+    };
   }
 
   ngAfterViewInit(): void {

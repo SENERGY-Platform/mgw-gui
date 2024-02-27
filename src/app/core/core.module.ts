@@ -13,8 +13,9 @@ import { ListJobTable } from './components/list-jobs/list.component';
 import { MatTableModule } from '@angular/material/table';
 import { ListEndpointsComponent } from './components/list-endpoints/list-endpoints.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { AuthCheckInterceptor } from './services/auth/interceptor/auth.interceptor';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatMenuModule} from '@angular/material/menu';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,10 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     MatIconModule,
     MatButtonModule,
     MatCheckboxModule,
-    MatTableModule
+    MatTableModule,
+    MatToolbarModule,
+    MatMenuModule,
+    MatSortModule
   ],
   exports: [
     SpinnerComponent,

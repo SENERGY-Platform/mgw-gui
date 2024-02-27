@@ -2,7 +2,7 @@
 
 <div id="container">
     <div id="form-container">
-        <div [formGroup]="form" class="form">
+        <div [formGroup]="form" class="form" (ngSubmit)="login()" (keydown.enter)="login()">
             <mat-form-field color="accent">
                 <mat-label>Username</mat-label>
                 <input matInput placeholder="Username" type="text" formControlName="username">

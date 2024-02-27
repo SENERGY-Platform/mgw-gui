@@ -1,16 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable, map, forkJoin, catchError, of } from 'rxjs';
 import { InfoResponse } from 'src/app/core/models/info';
 import { ContainerEngineManagerService } from 'src/app/core/services/container-engine-manager/container-engine-manager.service';
+import { CoreManagerService } from 'src/app/core/services/core-manager/core-manager.service';
 import { HostManagerService } from 'src/app/core/services/host-manager/host-manager.service';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { SecretManagerServiceService } from 'src/app/core/services/secret-manager/secret-manager-service.service';
+import { UserService } from 'src/app/core/services/user/user.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { environment } from 'src/environments/environment';
 import { ComponentInfo } from '../../models/info';
 
+@Pipe({
+  name: 'duration'
+})
+export class DurationPipe implements PipeTransform {
+  transform(nanoseconds: number): string {
+    let level = "Minutes"
+    let duration = nanoseconds/60000000000;
 
+    if(duration > 60) {
+      duration = duration/60;
+      level = "Hours"
+    }
+
+    if(duration > 24) {
+      duration = duration/24;
+      level = "Days"
+    }
+    if(duration > 30) {
+      duration = duration/30;
+      level = "Months"
+    }
+
+    return Math.round(duration).toString() + " " + level;
+  }
+}
 
 @Component({
   selector: 'app-version',
@@ -22,93 +48,29 @@ export class VersionComponent implements OnInit {
   ready: boolean = false 
   displayColumns = ["name", "version", "uptime", "memory"]
   dataSource = new MatTableDataSource<ComponentInfo>();
-  
+
   constructor(
     private moduleManagerService: ModuleManagerService,
     private secretManagerService: SecretManagerServiceService,
     private hostManagerService: HostManagerService,
     private containerManager: ContainerEngineManagerService,
-    private errorService: ErrorService
+    private coreManager: CoreManagerService,
+    private userService: UserService
   ) {}
-
-  formatTime(nanoseconds: number) {
-    return nanoseconds/60000000000
-  }
 
   formatMemory(bytes: number) {
     return bytes/1000
   }
 
   ngOnInit(): void {
-    const obs: Observable<any>[] = []
-
-    obs.push(this.moduleManagerService.getInfo().pipe(
-      map((info: InfoResponse) => {
-        this.dataSource.data.push({
-          version: info.version,
-          name: "Module-Manager",
-          memory: this.formatMemory(info.mem_stats.alloc),
-          uptime: this.formatTime(info.up_time)
-        })
-        return true;
-      }),
-      catchError((err) => {
-        this.errorService.handleError(VersionComponent.name, "ngOnInit", err);
-        return of(true)
-      })
-      )
-    )
-
-    obs.push(this.secretManagerService.getInfo().pipe(
-      map((info: InfoResponse) => {
-        this.dataSource.data.push({
-          version: info.version,
-          name: "Secret-Manager",
-          memory: this.formatMemory(info.mem_stats.alloc),
-          uptime: this.formatTime(info.up_time)
-        })
-        return true;
-      }),
-      catchError((err) => {
-        this.errorService.handleError(VersionComponent.name, "ngOnInit", err);
-        return of(true)
-      })
-      )
-    )
-
-    obs.push(this.containerManager.getInfo().pipe(
-      map((info: InfoResponse) => {
-        this.dataSource.data.push({
-          version: info.version,
-          name: "Container-Manager",
-          memory: this.formatMemory(info.mem_stats.alloc),
-          uptime: this.formatTime(info.up_time)
-        })
-        return true;
-      }),
-      catchError((err) => {
-        this.errorService.handleError(VersionComponent.name, "ngOnInit", err);
-        return of(true)
-      })
-      )
-    )
-
-    obs.push(this.hostManagerService.getInfo().pipe(
-      map((info: InfoResponse) => {
-        this.dataSource.data.push({
-          version: info.version,
-          name: "Host-Manager",
-          memory: this.formatMemory(info.mem_stats.alloc),
-          uptime: this.formatTime(info.up_time)
-        })
-        return true;
-      }),
-      catchError((err) => {
-        this.errorService.handleError(VersionComponent.name, "ngOnInit", err);
-        return of(true)
-      })
-      )
-    )
+    const obs: Observable<any>[] = [
+      this.moduleManagerService.getInfo(),
+      this.secretManagerService.getInfo(),
+      this.containerManager.getInfo(),
+      this.hostManagerService.getInfo(),
+      this.coreManager.getInfo(),
+      this.userService.getInfo()
+    ]
 
     this.dataSource.data.push({
       version: this.uiVersion,
@@ -116,7 +78,15 @@ export class VersionComponent implements OnInit {
     })
 
     forkJoin(obs).subscribe({
-      next: (_) => {
+      next: (infos: InfoResponse[]) => {
+        infos.forEach(serviceInfo => {
+          this.dataSource.data.push({
+            version: serviceInfo.version,
+            name: serviceInfo.name,
+            memory: this.formatMemory(serviceInfo.mem_stats.alloc),
+            uptime: serviceInfo.up_time
+          })
+        });
         this.dataSource.data = this.dataSource.data;
         this.ready = true;
       },

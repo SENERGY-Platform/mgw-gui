@@ -2,6 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DeviceUsersResponse, HumanUser, HumanUsersResponse, UserRequest } from 'src/app/mgw-core/models/users';
+import { InfoResponse } from '../../models/info';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
@@ -54,5 +55,10 @@ export class UserService {
 
   editUser(userID: string, user: UserRequest) {
     return this.http.patch(this.userPath+this.identitiesPath+"/"+userID, user, undefined, "text");
+  }
+
+  getInfo(): Observable<InfoResponse> {
+    var url = this.userPath + "/info"
+    return <Observable<InfoResponse>>this.http.get(url);
   }
 }

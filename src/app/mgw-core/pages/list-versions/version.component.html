@@ -39,14 +39,14 @@
         <ng-container matColumnDef="uptime">
           <th mat-header-cell *matHeaderCellDef>Uptime</th>
           <td mat-cell *matCellDef="let component">
-            <p *ngIf="component.uptime != null">{{component.uptime | number:'1.0-2'}} min</p>
+            <p *ngIf="component.uptime != null">{{component.uptime | duration }}</p>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="memory">
           <th mat-header-cell *matHeaderCellDef>Current Memory Usage</th>
           <td mat-cell *matCellDef="let component">
-            <p *ngIf="component.memory != null">{{component.memory | number:'1.0-2'}} kB</p>
+            <p *ngIf="component.memory != null">{{component.memory | number:'1.0-0'}} kB</p>
           </td>
         </ng-container>
 

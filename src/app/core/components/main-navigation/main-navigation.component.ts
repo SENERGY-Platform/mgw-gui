@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, map, mergeMap } from 'rxjs';
+import { concatMap, filter, map, mergeMap } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { AuthService } from '../../services/auth/auth.service';
+import { ErrorService } from '../../services/util/error.service';
 import { SidenavPageModel } from './models/sidenav-page.model';
 import { SidenavSectionModel } from './models/sidenav-section.model';
 
@@ -31,11 +34,28 @@ export class MainNavigationComponent implements OnInit {
 
   constructor(   
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private authService: AuthService,
+    private errorService: ErrorService
   ) {}
 
   ngOnInit() {
     this.getActiveSection();
+  }
+
+  logout() {
+    this.authService.initLogout().pipe(
+      concatMap((logoutInit) => {
+        return this.authService.logout(logoutInit.logout_token);
+      })
+    ).subscribe({
+      next: (_) => {
+        window.location.href=environment.uiBaseUrl + '/login';
+      },
+      error: (err) => {
+        this.errorService.handleError("MainNavigationComponent", "logout", err);
+      }
+    })
   }
 
   isSectionOpen(section: SidenavSectionModel): boolean {
