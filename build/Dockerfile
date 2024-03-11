@@ -24,7 +24,8 @@ ARG VERSION="missing-version"
 ENV VERSION=${VERSION}
 COPY --from=dev_builder /home/node/app/dist/mgw-gui /usr/share/nginx/html
 RUN echo ${VERSION}
-RUN find '/usr/share/nginx/html' -name '*.js' -exec sed -i -e "s/UI-VERSION/"${VERSION}"/g" {} +
+RUN touch /usr/share/nginx/html/version.txt
+RUN echo $VERSION > /usr/share/nginx/html/version.txt
 
 FROM serve AS serve_prod
 COPY --from=prod_builder /home/node/app/dist/mgw-gui /usr/share/nginx/html

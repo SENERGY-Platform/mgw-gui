@@ -5,6 +5,10 @@ server {
   root /usr/share/nginx/html;
   add_header Cache-Control no-store always;
 
+  location /version {
+    try_files $uri /version.txt;
+  }
+
   location / {
     # don't cache it
     proxy_no_cache 1;

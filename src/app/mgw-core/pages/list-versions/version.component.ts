@@ -1,7 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable, map, forkJoin, catchError, of } from 'rxjs';
 import { InfoResponse } from 'src/app/core/models/info';
+import { ApiService } from 'src/app/core/services/api/api.service';
 import { ContainerEngineManagerService } from 'src/app/core/services/container-engine-manager/container-engine-manager.service';
 import { CoreManagerService } from 'src/app/core/services/core-manager/core-manager.service';
 import { HostManagerService } from 'src/app/core/services/host-manager/host-manager.service';
@@ -55,11 +57,24 @@ export class VersionComponent implements OnInit {
     private hostManagerService: HostManagerService,
     private containerManager: ContainerEngineManagerService,
     private coreManager: CoreManagerService,
-    private userService: UserService
+    private userService: UserService,
+    private httpClient: HttpClient,
+    private errorHandler: ErrorService
   ) {}
 
   formatMemory(bytes: number) {
     return bytes/1000
+  }
+
+  getUiVersion() {
+    return this.httpClient.get("/core/web-ui/version", {withCredentials: true, responseType: "text"}).pipe(
+      map((version) => {
+        return {
+          version: version,
+          name: "core-ui"
+        }
+      })
+    )
   }
 
   ngOnInit(): void {
@@ -69,28 +84,30 @@ export class VersionComponent implements OnInit {
       this.containerManager.getInfo(),
       this.hostManagerService.getInfo(),
       this.coreManager.getInfo(),
-      this.userService.getInfo()
+      this.userService.getInfo(),
+      this.getUiVersion()
     ]
-
-    this.dataSource.data.push({
-      version: this.uiVersion,
-      name: "UI"
-    })
 
     forkJoin(obs).subscribe({
       next: (infos: InfoResponse[]) => {
         infos.forEach(serviceInfo => {
-          this.dataSource.data.push({
+          var serviceInfoTransformed: any = {
             version: serviceInfo.version,
-            name: serviceInfo.name,
-            memory: this.formatMemory(serviceInfo.mem_stats.alloc),
-            uptime: serviceInfo.up_time
-          })
+            name: serviceInfo.name
+          }
+          if(serviceInfo.mem_stats != null) {
+            serviceInfoTransformed['memory'] = this.formatMemory(serviceInfo.mem_stats.alloc)
+          }
+          if(serviceInfo.up_time != null) {
+            serviceInfoTransformed['uptime'] = serviceInfo.up_time
+          }
+          this.dataSource.data.push(serviceInfoTransformed)
         });
         this.dataSource.data = this.dataSource.data;
         this.ready = true;
       },
       error: (err) => {
+        this.errorHandler.handleError("VersionComponent", "ngOnInit", err);
         this.ready = true;
       }
     })
