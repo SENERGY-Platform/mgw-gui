@@ -99,11 +99,14 @@ export class ModuleManagerService {
     return <Observable<DeploymentResponse>>this.http.get<Deployment[]>(url, queryParams);
   }  
 
-  loadDeployment(deploymentID: string, withContainerInfo: boolean): Observable<Deployment> {
+  loadDeployment(deploymentID: string, withContainerInfo: boolean, withAssetsInfo: boolean): Observable<Deployment> {
     var url = this.moduleManagerPath + "/deployments/" + deploymentID 
     let queryParams = new HttpParams()
     if(withContainerInfo) {
       queryParams = queryParams.set("container_info", "true")
+    }
+    if(withAssetsInfo) {
+      queryParams = queryParams.set("assets", "true")
     }
     return <Observable<Deployment>>this.http.get(url, queryParams);
   }

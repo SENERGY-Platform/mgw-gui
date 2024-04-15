@@ -69,7 +69,7 @@ export class DeploymentTemplate implements OnInit {
     }
 
     loadDeploymentInfo() {
-      this.moduleService.loadDeployment(this.deploymentID, false).subscribe({
+      this.moduleService.loadDeployment(this.deploymentID, false, false).subscribe({
         next: (deployment) => {
           this.deployment = deployment
           this.ready = true

@@ -2,7 +2,7 @@
   <spinner class="global-centered-spinner" [show]="!ready"></spinner>
 
   <div *ngIf="ready">
-    <form [formGroup]="form" (ngSubmit)="submit()">
+    <form [formGroup]="form">
       <div class="deployment-container">
         <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding"
           [moduleID]="moduleID" [IsDependency]="false" [secretOptions]="secretOptionsBinding"
@@ -23,11 +23,17 @@
 
       </div>
 
-      <button *ngIf="mode == 'new'" mat-raised-button color="primary" type="submit">Deploy</button>
-      <button *ngIf="mode == 'edit'" mat-raised-button color="primary" type="submit">Update Deployment</button>
-      <button *ngIf="mode == 'update'" mat-raised-button color="primary" type="submit">Update Module</button>
+      <div>
+        <mat-checkbox [checked]="autostartEnabled">Start the deployment directly?</mat-checkbox>
+      </div>
     </form>
+
+    <button *ngIf="mode == 'new'" mat-raised-button color="primary" (click)="submit()">Deploy</button>
+    <button *ngIf="mode == 'edit'" mat-raised-button color="primary" (click)="submit()">Update Deployment</button>
+    <button *ngIf="mode == 'update'" mat-raised-button color="primary" (click)="submit()">Update Module</button>
     <button *ngIf="mode == 'update'" mat-raised-button color="primary" (click)="cancelModuleUpdate()">Cancel</button>
+    <button *ngIf="mode == 'new' || mode == 'edit'" mat-raised-button color="primary" (click)="cancel()">Cancel</button>
+
   </div>
 
 </div>

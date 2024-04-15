@@ -33,6 +33,8 @@ export class DeploymentComponentComponent implements OnInit {
 
   hostResourcesOptions: any = {}
 
+  autostartEnabled = true;
+
   inputForm = {
     "module_id": this.fb.control(this.moduleID),
     "secrets": this.fb.group({}),
@@ -309,12 +311,17 @@ export class DeploymentComponentComponent implements OnInit {
         return this.utilsService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap(result => {
-        console.log(result)
         if(result.success) {
             return of(true)
         } else {
             return throwError(() => new Error(result.error))
         } 
+      }),
+      concatMap((_: any) => {
+        if(this.autostartEnabled) {
+          return this.startDeployments()
+        }
+        return of(null);
       })
     ).subscribe({
       next: (_) => {
@@ -461,5 +468,18 @@ export class DeploymentComponentComponent implements OnInit {
         }
       }
     )
+  }
+
+  startDeployments() {
+    return this.moduleService.loadDeployments(false).pipe(
+      concatMap((deploymentResponse) => {
+        const deploymentIDs = Object.keys(deploymentResponse);
+        return this.moduleService.startDeployments(deploymentIDs, true);
+      })
+    )
+  }
+
+  cancel() {
+    this.router.navigate(["/modules"])
   }
 }

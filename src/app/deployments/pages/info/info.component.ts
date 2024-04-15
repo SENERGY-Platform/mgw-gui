@@ -47,7 +47,7 @@ export class InfoComponent {
 
   loadDeployment(deploymentID: string): Observable<boolean> {
     return new Observable(obs => {
-      this.moduleService.loadDeployment(deploymentID, false).subscribe(
+      this.moduleService.loadDeployment(deploymentID, false, true).subscribe(
         {
           next: (deployment) => {
             this.deployment = deployment

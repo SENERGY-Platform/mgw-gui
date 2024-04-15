@@ -47,7 +47,7 @@ export class ListComponent implements OnDestroy {
 
   loadContainer(deploymentID: string): void {
     // Get containers from deployment info, then merge with container healths
-    this.moduleService.loadDeployment(deploymentID, true).subscribe(
+    this.moduleService.loadDeployment(deploymentID, true, false).subscribe(
       {
         next: (deployment) => {
           var containers = []
