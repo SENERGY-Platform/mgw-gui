@@ -10,5 +10,6 @@ export interface Job {
     started: Date;
     canceled: Date;
     created: Date;
-    description: string;   
+    description: string;  
+    result: string; 
 }

@@ -294,14 +294,14 @@ export class DeploymentComponentComponent implements OnInit {
       }),
       concatMap(result => {
         if(result.success) {
-            return of(true)
+            return of(result.result)
         } else {
             return throwError(() => new Error(result.error))
         } 
       }),
-      concatMap((_: any) => {
+      concatMap((deploymentID: string) => {
         if(this.autostartEnabled) {
-          return this.startDeployments()
+          return this.startDeployment(deploymentID)
         }
         return of(null);
       })
@@ -449,14 +449,8 @@ export class DeploymentComponentComponent implements OnInit {
     )
   }
 
-  startDeployments() {
-    // result job deployment id 
-    return this.moduleService.loadDeployments(false).pipe(
-      concatMap((deploymentResponse) => {
-        const deploymentIDs = Object.keys(deploymentResponse);
-        return this.moduleService.startDeployments(deploymentIDs, true);
-      })
-    )
+  startDeployment(deploymentID: string) {
+    return this.moduleService.startDeployment(deploymentID, true);
   }
 
   cancel() {
