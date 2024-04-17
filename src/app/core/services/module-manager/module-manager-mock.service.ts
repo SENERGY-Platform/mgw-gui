@@ -61,7 +61,7 @@ const TEMPLATE = {
        "name":"Port",
        "description":"Some text value.",
        "required":true,
-       "group":"cfg",
+       "group":"G1",
        "default":null,
        "options":null,
        "opt_ext":false,
@@ -79,7 +79,7 @@ const TEMPLATE = {
        "name":"Hosts",
        "description":"List of text values.",
        "required":false,
-       "group":"cfg",
+       "group":"G1",
        "default":[
           "test"
        ],
@@ -98,7 +98,7 @@ const TEMPLATE = {
        "name":"Names",
        "description":"The alphabet with duplicates.",
        "required":true,
-       "group":"cfg",
+       "group":"G2",
        "default":null,
        "options":[
           "a",
@@ -119,7 +119,7 @@ const TEMPLATE = {
        "name":"Number of instances",
        "description":"Select alternative option.",
        "required":false,
-       "group":"cfg",
+       "group":"G1",
        "default":0,
        "options":[
           0,
@@ -137,7 +137,7 @@ const TEMPLATE = {
        "name":"Config 5",
        "description":"Select from range.",
        "required":false,
-       "group":"adv",
+       "group":"G1",
        "default":null,
        "options":null,
        "opt_ext":false,
@@ -156,13 +156,23 @@ const TEMPLATE = {
       "G1":{
          "name":"Group 1",
          "description":"G1 Desc ..",
-         "group":null
+         "group": ""
       },
       "G2":{
          "name":"Group 2",
          "description":"G2 Desc ..",
          "group":"G1"
-      }
+      },
+      "G3":{
+         "name":"Group 3",
+         "description":"G3 Desc ..",
+         "group":"G1"
+      },
+      "G4":{
+         "name":"Group 4",
+         "description":"G3 Desc ..",
+         "group":"G3"
+      } 
    },
    "dependencies":{
       "github.com/SENERGY-Platform/mgw-test-module-a":{
@@ -212,7 +222,7 @@ const TEMPLATE = {
             "G1":{
                "name":"Group 1",
                "description":"G1 Desc ..",
-               "group":null
+               "group": ""
             },
             "G2":{
                "name":"Group 2",

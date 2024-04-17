@@ -27,6 +27,9 @@ export class DeploymentComponentComponent implements OnInit {
   deploymentTemplate!: DeploymentTemplate | DeploymentUpdateTemplate | ModuleUpdateTemplate
   formStr: any = ''
   ready: boolean = false
+  deploymentTemplatePerModule: {
+    [mod_id: string]:  DeploymentTemplate | DeploymentUpdateTemplate | ModuleUpdateTemplate
+  } = {};
 
   secretOptions: any = {}
   secretOptionsBinding: any = {}
@@ -153,39 +156,16 @@ export class DeploymentComponentComponent implements OnInit {
     this.setupFormOfModule(this.form, template, this.moduleID)
     this.setupDependencies(template)
 
-    this.deploymentTemplateDataBinding = this.deploymentTemplateData
     this.ready = true;
   }
-
-  /*
-  Needed when input values are loaded async and need to be updated
-  ngOnChanges(changes: SimpleChanges): void {
-    // get changes as deployment template and IDs are loaded async
-    var attributes: string[] = ['mode', 'deploymentTemplate', 'moduleID', 'deploymentID']
-
-    type ObjectKey = keyof typeof this;
-    attributes.forEach(attribute => {
-      if (changes[attribute] && changes[attribute].currentValue) {
-        this[attribute as ObjectKey] = changes[attribute].currentValue
-      }
-    });
-
-    if(this.moduleID) {
-      this.inputForm.module_id.patchValue(this.moduleID)
-    }
-
-    if(this.deploymentTemplate) {
-      this.setup(this.deploymentTemplate)
-    }
-
-  }*/
 
   public setupDisplayData(module_id: string) {
     this.deploymentTemplateData[module_id] = {
       "module_id": module_id,
       "secrets": [],
       "configs": [],
-      "host_resources": []
+      "host_resources": [],
+      "input_groups": {}
     }
   }
 
@@ -197,7 +177,10 @@ export class DeploymentComponentComponent implements OnInit {
     this.setupConfigs(form, inputTemplate, module_id)
     this.setupSecrets(form, inputTemplate, module_id)
     this.setupHostResources(form, inputTemplate, module_id)
-  }
+    
+    this.deploymentTemplatePerModule[module_id] = inputTemplate
+
+  }  
 
   public setupDependencies(inputTemplate: DeploymentTemplate | ModuleUpdateTemplate) {
     if(inputTemplate['dependencies']) {
@@ -221,7 +204,6 @@ export class DeploymentComponentComponent implements OnInit {
 
         // first add empty FormGroup, then add single controls, new Formgroup(this.inputForm) does not work
         (<FormGroup>this.form.get("dependencies")).addControl(encodedModuleIDOfDep, new FormGroup({}));
-        console.log(this.form.controls.dependencies)
         var dependenciesFormGroup = (<FormGroup>this.form.controls.dependencies)
         var dependencyFormGroup = (<FormGroup>dependenciesFormGroup.get(encodedModuleIDOfDep))
 
@@ -419,7 +401,6 @@ export class DeploymentComponentComponent implements OnInit {
     var secrets = new Map(Object.entries(inputTemplate['secrets']))
     secrets.forEach((secret: any, secret_id: any) => {
       secret['id'] = secret_id
-      this.deploymentTemplateData[module_id]['secrets'].push(secret)
 
       if(this.mode != "new") {
         var defaultValue = secret['value']
@@ -432,7 +413,6 @@ export class DeploymentComponentComponent implements OnInit {
     var host_resources = new Map(Object.entries(inputTemplate['host_resources']))
     host_resources.forEach((host_resource: any, host_resource_id: any) => {
       host_resource['id'] = host_resource_id
-      this.deploymentTemplateData[module_id]['host_resources'].push(host_resource)
       if(this.mode != "new") {
         var defaultValue = host_resource['value']
       }
@@ -447,7 +427,6 @@ export class DeploymentComponentComponent implements OnInit {
         config.description = config.description + ' Examples: ' + config.options
       }
       config['id'] = config_id
-      this.deploymentTemplateData[module_id]['configs'].push(config)
       
       var defaultValue = config['default']
       if(this.mode != "new") {
@@ -471,6 +450,7 @@ export class DeploymentComponentComponent implements OnInit {
   }
 
   startDeployments() {
+    // result job deployment id 
     return this.moduleService.loadDeployments(false).pipe(
       concatMap((deploymentResponse) => {
         const deploymentIDs = Object.keys(deploymentResponse);

@@ -4,7 +4,7 @@
   <div *ngIf="ready">
     <form [formGroup]="form">
       <div class="deployment-container">
-        <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding"
+        <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplatePerModule[moduleID]"
           [moduleID]="moduleID" [IsDependency]="false" [secretOptions]="secretOptionsBinding"
           [deploymentID]="deploymentID" [hostResourcesOptions]="hostResourcesOptions"
           [pending_version]="pending_versions[moduleID]">
@@ -14,7 +14,7 @@
 
       <div *ngIf="dependencies_module_ids.length > 0">
         <div class="deployment-container" *ngFor="let formModuleID of dependencies_module_ids">
-          <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplateDataBinding"
+          <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplatePerModule[formModuleID]"
             [secretOptions]="secretOptionsBinding" [moduleID]="formModuleID"
             [dependencyFormIDToModuleID]="dependencyFormIDToModuleID" [IsDependency]="true"
             [hostResourcesOptions]="hostResourcesOptions" [pending_version]="pending_versions[dependencyFormIDToModuleID[formModuleID]]">

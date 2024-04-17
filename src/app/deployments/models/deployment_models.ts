@@ -53,7 +53,7 @@ export interface DeploymentResponse {
 export interface HostResourcesTemplate {
     name: string;
     description: string;
-    group: string;
+    group?: string;
     tags: string[];
     required: boolean;
     value?: any;
@@ -62,7 +62,7 @@ export interface HostResourcesTemplate {
 export interface SecretTemplate {
     name: string;
     description: string;
-    group: string;
+    group?: string;
     tags: string[];
     required: boolean;
     type: string;
@@ -73,7 +73,7 @@ export interface ConfigTemplate {
     name: string;
     description: string;
     required: boolean;
-    group: string;
+    group?: string;
     default: any;
     options: any,
     opt_ext: boolean;
@@ -90,6 +90,17 @@ export interface DeploymentTemplateBase {
     secrets: Record<string, SecretTemplate>;
     configs: Record<string, ConfigTemplate>;
     dependencies?: Record<string, DeploymentTemplateBase>;
+    input_groups: InputGroups;
+}
+
+export interface InputGroup {
+    name: string;
+    description: string;
+    group?: string;
+}
+
+export interface InputGroups {
+    [id: string]: InputGroup;
 }
 
 export interface DeploymentTemplate extends DeploymentTemplateBase {

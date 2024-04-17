@@ -5,21 +5,24 @@ import { HostManagerService } from 'src/app/core/services/host-manager/host-mana
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Module } from 'src/app/modules/models/module_models';
-import { Deployment } from '../../models/deployment_models';
+import { ConfigTemplate, Deployment, DeploymentTemplate, DeploymentUpdateTemplate, HostResourcesTemplate, InputGroups, ModuleUpdateTemplate, SecretTemplate } from '../../models/deployment_models';
+import { FormTemplate, Group } from '../../models/form';
+
+export const NO_GROUP = 'asfsdkfjdjf'
 
 @Component({
     selector: 'deployment-template',
     templateUrl: 'deployment-template.html',
     styleUrls: ['deployment-template.css']
 })
-export class DeploymentTemplate implements OnInit {
+export class DeploymentTemplate2 implements OnInit {
     @Input() moduleID: string = ""
     @Input() deploymentID: string = ""
     @Input() IsDependency: boolean = false 
     @Input() pending_version!: string
 
     form: FormGroup = new FormGroup("")
-    @Input() deploymentTemplateData: any
+    @Input() deploymentTemplateData?: DeploymentTemplate | DeploymentUpdateTemplate | ModuleUpdateTemplate
     @Input() secretOptions: any = {}
     @Input() hostResourcesOptions: any = {}
     @Input() mode: string = "show"
@@ -27,6 +30,9 @@ export class DeploymentTemplate implements OnInit {
     module!: Module
     deployment!: Deployment
     ready: boolean = false
+
+    formTemplate: FormTemplate = {};
+    groupHierarchy?: Group;
 
     constructor(
       public dialog: MatDialog, 
@@ -38,15 +44,88 @@ export class DeploymentTemplate implements OnInit {
     }
 
     ngOnInit(): void {
-      this.deploymentTemplateData = this.deploymentTemplateData[this.moduleID]
+      this.loadForm()
+      this.setupFormTemplate()
+      this.setupGroups()
 
       if(this.mode == 'new' || this.mode == 'update') {
         this.loadModuleInfo()
       } else {
         this.loadDeploymentInfo()
       }
+    }
 
-      this.loadForm()
+    setupGroup(groupID: string) {
+      if(this.formTemplate[groupID] == null) {
+        this.formTemplate[groupID] = {
+          secrets: {},
+          configs: {},
+          hostResources: {}
+        };
+      }
+    }
+
+    getDefaultTemplate() {
+      return this.formTemplate[NO_GROUP];
+    }
+
+    setupFormTemplate() {
+      // organize all secrets, configs, host resources per group
+      for(const [id, hostResource] of Object.entries(this.deploymentTemplateData?.host_resources || [])) {
+        const groupIP = hostResource.group || NO_GROUP;
+        this.setupGroup(groupIP);
+        this.formTemplate[groupIP].hostResources[id] = hostResource;
+      };
+
+      for(const [id, secret] of Object.entries(this.deploymentTemplateData?.secrets || [])) {
+        const groupIP = secret.group || NO_GROUP;
+        this.setupGroup(groupIP);
+        this.formTemplate[groupIP].secrets[id] = secret;
+      };
+
+      for(const [id, config] of Object.entries(this.deploymentTemplateData?.configs || [])) {
+        const groupIP = config.group || NO_GROUP;
+        this.setupGroup(groupIP);
+        this.formTemplate[groupIP].configs[id] = config;
+      };
+
+    }
+
+    getParentOfGroup(groups: InputGroups, groupID: string): string[] {
+      const group = groups[groupID];
+      if(group == null) {
+        return [];
+      }
+
+      if(group.group == null) {
+        return [groupID];
+      }
+      const parents = this.getParentOfGroup(groups, group.group);
+      return parents.concat([groupID]);
+    }
+
+    mergeGroupHierarchy(hierarchy: any, parents: string[]) {
+      let tmp = hierarchy;
+      parents.forEach(parent => {
+        if(tmp[parent] == null) {
+          tmp[parent] = {}
+        }
+        tmp = tmp[parent]
+      });
+    }
+
+    setupGroups() {
+      const groupHierarchy = {}
+      const groups = this.deploymentTemplateData?.input_groups || {};
+      for (const [id, group] of Object.entries(groups || {})) {
+        const parents = this.getParentOfGroup(groups, id);
+        this.mergeGroupHierarchy(groupHierarchy, parents);
+      }
+      this.groupHierarchy = groupHierarchy;
+    }
+
+    inputGroupsExists() {
+      return Object.keys(this.deploymentTemplateData?.input_groups || {}).length > 0;
     }
 
     loadModuleInfo() {
@@ -62,7 +141,7 @@ export class DeploymentTemplate implements OnInit {
           this.ready = true
         },
         error: (err) => {
-          this.errorService.handleError(DeploymentTemplate.name, "submit", err)
+          this.errorService.handleError(DeploymentTemplate2.name, "submit", err)
           this.ready = true
         } 
       })
@@ -75,77 +154,22 @@ export class DeploymentTemplate implements OnInit {
           this.ready = true
         },
         error: (err) => {
-          this.errorService.handleError(DeploymentTemplate.name, "submit", err)
+          this.errorService.handleError(DeploymentTemplate2.name, "submit", err)
           this.ready = true
         } 
       })
     }
 
-    loadForm() {
-      // Child components can access parent form group via directive
-      if(!this.IsDependency) {
-        // Main Module Deployment
-        this.form = this.rootFormGroup.control
-      } else {
-        // Dependency Module Deployment
-        this.form = this.rootFormGroup.control.get('dependencies')!.get(this.moduleID) as FormGroup;
-      }
+
+  loadForm() {
+    // Child components can access parent form group via directive
+    if(!this.IsDependency) {
+      // Main Module Deployment
+      this.form = this.rootFormGroup.control
+    } else {
+      // Dependency Module Deployment
+      this.form = this.rootFormGroup.control.get('dependencies')!.get(this.moduleID) as FormGroup;
     }
+  }
 
-    /*
-    ngOnChanges(changes: SimpleChanges): void {
-      // get changes as deployment template and IDs are loaded async
-
-      var attributes: string[] = ['secretOptions', 'deploymentTemplateData', 'moduleID', 'mode', 'IsDependency', 'deploymentID', 'dependencyFormIDToModuleID', 'hostResourcesOptions']
-      type ObjectKey = keyof typeof this;
-      attributes.forEach(attribute => {
-        if (changes[attribute] && changes[attribute].currentValue) {
-          if(attribute == "deploymentTemplateData") {
-            this.deploymentTemplateData = changes['deploymentTemplateData'].currentValue[this.moduleID]
-          } else {
-            this[attribute as ObjectKey] = changes[attribute].currentValue
-          }
-        }
-      });
-
-      if(this.mode == 'new' || this.mode == 'update') {
-        this.loadModuleInfo()
-      } else {
-        this.loadDeploymentInfo()
-      }
-
-      this.loadForm()
-    }*/
-
-    add(event: any, formGroup: string, config_id: string): void {
-        const value = (event.value || '').trim();
-        if (value) {
-          this.form?.get(formGroup)?.get(config_id)?.value.push(value);
-        }
-        this.form?.get(formGroup)?.get(config_id)?.updateValueAndValidity()
-    
-        // Clear the input value
-        event.chipInput!.clear();
-      }
-    
-      remove(option: any, formGroup: string, config_id: string): void {
-        const index = this.form?.get(formGroup)?.get(config_id)?.value.indexOf(option);
-    
-        if (index >= 0) {
-          this.form?.get(formGroup)?.get(config_id)?.value.splice(index, 1);
-        }
-      }
-
-      reloadHostRes() {
-        this.hostService.getHostResources().subscribe(
-          {
-            next: (hostResources) => {
-              this.hostResourcesOptions = hostResources
-            },
-            error: (err) => {
-              this.errorService.handleError(DeploymentTemplate.name, "reloadHostRes", err)
-            }
-          }
-        )
-      }
 }

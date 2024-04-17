@@ -11,7 +11,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { DeploymentListComponent } from './pages/list/deployment-list.component';
 import {RouterModule, Routes} from '@angular/router';
 import { ModulesComponent } from './pages/add/modules.component';
-import { DeploymentTemplate } from './components/single-deployment/deployment-template';
+import { DeploymentTemplate2 } from './components/single-deployment/deployment-template';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTableModule} from '@angular/material/table';
 import { CoreModule } from 'src/app/core/core.module';
@@ -25,6 +25,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ListEndpointsComponent } from './pages/list-endpoints/list-endpoints.component';
 import { AddEndpointComponent } from './pages/add-endpoint/add-endpoint.component';
+import { GroupComponent } from './components/group/group.component';
 const routes: Routes = [
   {
     path: 'deployments', 
@@ -44,13 +45,14 @@ const routes: Routes = [
   declarations: [
     DeploymentListComponent,
     ModulesComponent,
-    DeploymentTemplate,
+    DeploymentTemplate2,
     DeploymentComponentComponent,
     ShowModuleComponentComponent,
     JobLoaderModalComponent,
     InfoComponent,
     ListEndpointsComponent,
-    AddEndpointComponent
+    AddEndpointComponent,
+    GroupComponent
   ],
   imports: [
     MatInputModule,

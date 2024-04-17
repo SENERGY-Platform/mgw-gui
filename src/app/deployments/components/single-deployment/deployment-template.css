@@ -6,23 +6,7 @@ mat-form-field {
     width: 100%;
 }
 
-#hostResources {
-    display: flex;
-    justify-content: space-between;
-}
-
-#hostResources mat-form-field {
-    width: 80%;
-}
-
-.secret-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 30px;
-}
-
-.deployment-box {
+.card {
     padding: 30px
 }
 
@@ -32,4 +16,8 @@ mat-form-field {
 
 #module-info-text p {
     color: grey
+}
+
+.group-container {
+    margin-bottom: 30px;
 }
