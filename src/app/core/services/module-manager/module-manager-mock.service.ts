@@ -431,13 +431,13 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
 
   public startDeployment(deploymentID: string): Observable<Job> {
    return new Observable(obs => {
-         obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
+         obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date(), "result": ""})
       })
    }
 
    public startDeployments(deploymentIDs: string): Observable<Job> {
       return new Observable(obs => {
-            obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
+            obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date(), "result": ""})
          })
       }
 
@@ -451,13 +451,13 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
 
    public stopDeployment(deploymentID: string, force: boolean): Observable<Job> {
       return new Observable(obs => {
-            obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
+            obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date(), "result": ""})
          })
    }
 
    public stopDeployments(deploymentIDs: string, force: boolean): Observable<Job> {
       return new Observable(obs => {
-            obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()})
+            obs.next({"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date(), "result": ""})
          })
    }
 
@@ -474,7 +474,7 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
    }
 
    getJobs(): Observable<Job[]> {
-      var jobs = [{"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date()}]
+      var jobs = [{"id": "id", "completed": new Date(), "error": null, "created": new Date(), "canceled": new Date(), "description": "Test", "started": new Date(), "result": ""}]
       return of(jobs).pipe(delay(1000));
    }
 

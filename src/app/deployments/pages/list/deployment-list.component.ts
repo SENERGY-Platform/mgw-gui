@@ -1,10 +1,11 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
-import { Deployment } from '../../models/deployment_models';
+import { Deployment, DeploymentResponse } from '../../models/deployment_models';
+import { AuxDeploymentResponse, AuxDeployment } from '../../models/sub-deployments';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -16,13 +17,17 @@ import { catchError, concatMap, map, Observable, of, throwError} from 'rxjs';
   styleUrls: ['./deployment-list.component.css']
 })
 export class DeploymentListComponent implements OnInit, OnDestroy {
-  dataSource = new MatTableDataSource<Deployment>();
+  dataSource = new MatTableDataSource<Deployment|AuxDeployment>();
   ready: Boolean = false;
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['select', 'name', 'created', 'updated', 'status', 'start', 'stop', 'restart', 'info', 'edit', 'delete', 'show']
   selection = new SelectionModel<string>(true, []);
+
+  // Sub Deployments
+  @Input() subDeployments = false;
+  @Input() deploymentID = '';
 
   constructor(
     public dialog: MatDialog, 
@@ -34,6 +39,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+      this.setupColumns()
       this.loadDeployments(false);
       this.startPeriodicRefresh()
       this.init = false
@@ -41,6 +47,12 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopPeriodicRefresh()
+  }
+
+  setupColumns() {
+    if(this.subDeployments === false) {
+      this.displayColumns.push("sub")
+    }
   }
 
   startPeriodicRefresh() {
@@ -55,7 +67,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sortingDataAccessor = (row: Deployment, sortHeaderId: string) => {
+    this.dataSource.sortingDataAccessor = (row: Deployment|AuxDeployment, sortHeaderId: string) => {
       var value = (<any>row)[sortHeaderId];
       value = (typeof(value) === 'string') ? value.toUpperCase(): value;
       if(sortHeaderId == 'status') {
@@ -67,14 +79,18 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   loadDeployments(background: boolean): void {
-    this.moduleService.loadDeployments(true).subscribe(
+    let obs: Observable<DeploymentResponse | AuxDeploymentResponse> = this.moduleService.loadDeployments(true);
+    if(this.subDeployments === true) {
+      obs = this.moduleService.getSubDeployments(this.deploymentID);
+    };
+    obs.subscribe(
       {
         next: (deployments) => {
           if(!deployments) {
             this.dataSource.data = []
             this.ready = true
           } else {
-            var deploymentsList: Deployment[] = []
+            var deploymentsList: (Deployment | AuxDeployment) [] = []
             for (const [_, deployment] of Object.entries(deployments)) {
               deploymentsList.push(deployment)
             }
@@ -94,7 +110,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   stop(deploymentID: string) {
-    this._stop([deploymentID])
+    this.tryStop([deploymentID])
   }
 
   stopMultiple() {
@@ -103,10 +119,10 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
       ids.push(deployment_id);
     });
 
-    this._stop(ids)
+    this.tryStop(ids)
   }
 
-  _stop(ids: string[]) {
+  private tryStop(ids: string[]) {
     this.ready = false;
     this.stopPeriodicRefresh()
 
@@ -141,9 +157,17 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   sendStop(ids: string[], forceConfirmed: boolean) {
     var obs 
     if(ids.length == 1) {
-      obs = this.moduleService.stopDeployment(ids[0], forceConfirmed)
+      if(this.subDeployments === true) {
+        obs = this.moduleService.stopSubDeployment(this.deploymentID, ids[0])
+      } else {
+        obs = this.moduleService.stopDeployment(ids[0], forceConfirmed)
+      }
     } else {
-      obs = this.moduleService.stopDeployments(ids, forceConfirmed)
+      if(this.subDeployments === true) {
+        obs = this.moduleService.stopSubDeployments(this.deploymentID, ids)
+      } else {
+        obs = this.moduleService.stopDeployments(ids, forceConfirmed)
+      }
     }
     
     return obs.pipe(
@@ -162,7 +186,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   start(deploymentID: string) {
-    this._start([deploymentID])
+    this.tryStart([deploymentID])
   }
 
   startMultiple() {
@@ -172,19 +196,14 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
       ids.push(deployment_id);
     });
             
-    this._start(ids)
+    this.tryStart(ids)
   }
 
-  _start(ids: string[]) {
+  private tryStart(ids: string[]) {
     this.ready = false;
     this.stopPeriodicRefresh()
 
-    var obs
-    if(ids.length == 1) {
-      obs = this.moduleService.startDeployment(ids[0], true)
-    } else {
-      obs = this.moduleService.startDeployments(ids, true)
-    }
+    var obs = this.sendStart(ids);
 
     obs.pipe(
       concatMap(jobID => {
@@ -204,8 +223,28 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     })
   }
 
+  private sendStart(ids: string[]) {
+    var obs: Observable<string>
+    if(ids.length == 1) {
+      if(this.subDeployments === true) {
+        obs = this.moduleService.startSubDeployment(this.deploymentID, ids[0])
+
+      } else {
+        obs = this.moduleService.startDeployment(ids[0], true)
+      }
+    } else {
+      if(this.subDeployments === true) {
+        obs = this.moduleService.startSubDeployments(this.deploymentID, ids)
+
+      } else {
+        obs = this.moduleService.startDeployments(ids, true)
+      }
+    }
+    return obs;
+  }
+
   restart(deploymentID: string) {
-    this._restart([deploymentID])
+    this.tryRestart([deploymentID])
   }
 
   restartMultiple() {
@@ -215,19 +254,14 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
       ids.push(deployment_id);
     });
             
-    this._restart(ids)
+    this.tryRestart(ids)
   }
 
-  _restart(ids: string[]) {
+  private tryRestart(ids: string[]) {
     this.ready = false;
     this.stopPeriodicRefresh()
-
-    var obs 
-    if(ids.length == 1) {
-      obs = this.moduleService.restartDeployment(ids[0])
-    } else {
-      obs = this.moduleService.restartDeployments(ids)
-    }
+    var obs = this.sendRestart(ids);
+    
     obs.pipe(
       concatMap(jobID => {
         var message = "Deployments are restarting"
@@ -250,6 +284,26 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         this.startPeriodicRefresh()
       }
     })
+  }
+
+  private sendRestart(ids: string[]) {
+    var obs: Observable<string>
+    if(ids.length == 1) {
+      if(this.subDeployments === true) {
+        obs = this.moduleService.restartSubDeployment(this.deploymentID, ids[0])
+
+      } else {
+        obs = this.moduleService.restartDeployment(ids[0])
+      }
+    } else {
+      if(this.subDeployments === true) {
+        obs = this.moduleService.restartSubDeployments(this.deploymentID, ids)
+
+      } else {
+        obs = this.moduleService.restartDeployments(ids)
+      }
+    }
+    return obs;
   }
 
   delete(deploymentID: string) {
@@ -323,6 +377,9 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.router.navigate(["/deployments/show/" + deploymentID])
   }
 
+  showSubDeployments(deploymentID: string) {
+    this.router.navigate(["/deployments/sub/" + deploymentID])
+  }
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;

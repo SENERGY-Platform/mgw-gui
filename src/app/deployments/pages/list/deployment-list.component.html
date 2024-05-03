@@ -129,6 +129,15 @@
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="sub">
+          <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Sub</th>
+          <td mat-cell *matCellDef="let deployment">
+            <button mat-icon-button color="primary" (click)="showSubDeployments(deployment.id)" matTooltip="Show Sub Deployments">
+              <mat-icon>apps</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="show">
           <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Show</th>
           <td mat-cell *matCellDef="let deployment">

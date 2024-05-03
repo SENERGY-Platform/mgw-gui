@@ -6,6 +6,7 @@ import { AddModule, Module, ModuleResponse, ModuleUpdate, ModuleUpdatePrepare, M
 import { Deployment, DeploymentRequest, DeploymentResponse, DeploymentTemplate, ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
 import { InfoResponse } from '../../models/info';
 import { Job } from 'src/app/mgw-core/models/job.model';
+import { AuxDeployment, AuxDeploymentResponse } from 'src/app/deployments/models/sub-deployments';
 
 @Injectable({
   providedIn: 'root'
@@ -188,6 +189,53 @@ export class ModuleManagerService {
     let queryParams = new HttpParams()
     queryParams = queryParams.set("ids", deploymentIDs.join(","))
     return  <Observable<string>>this.http.patch(url, undefined, queryParams, 'text')
+  }
+
+  // Sub Deployments
+  getSubDeployment(deploymentID: string, subDeploymentID: string) {
+    var url = this.moduleManagerPath + "/aux-deployments/" + subDeploymentID; 
+    return <Observable<AuxDeployment>>this.http.get(url, undefined, 'text')
+  }
+
+  getSubDeployments(deploymentID: string) {
+    var url = this.moduleManagerPath + "/aux-deployments" 
+    return <Observable<AuxDeploymentResponse>>this.http.get(url, undefined, 'text')
+  }
+
+  restartSubDeployment(deploymentID: string, subDeploymentID: string) {
+    var url = this.moduleManagerPath + "/aux-deployments/restart" 
+    return <Observable<string>>this.http.patch(url, undefined, undefined, 'text')
+  }
+
+  restartSubDeployments(deploymentID: string, subDeploymentIDs: string[]) {
+    var url = this.moduleManagerPath + "/aux-deployments-batch/restart" 
+    let queryParams = new HttpParams()
+    queryParams = queryParams.set("ids", subDeploymentIDs.join(","))
+    return <Observable<string>>this.http.patch(url, queryParams, undefined, 'text')
+  }
+
+  startSubDeployment(deploymentID: string, subDeploymentID: string) {
+    var url = this.moduleManagerPath + "/aux-deployments/start" 
+    return <Observable<string>>this.http.patch(url, undefined, undefined, 'text')
+  }
+
+  startSubDeployments(deploymentID: string, subDeploymentIDs: string[]) {
+    var url = this.moduleManagerPath + "/aux-deployments-batch/start" 
+    let queryParams = new HttpParams()
+    queryParams = queryParams.set("ids", subDeploymentIDs.join(","))
+    return <Observable<string>>this.http.patch(url, queryParams, undefined, 'text')
+  }
+
+  stopSubDeployment(deploymentID: string, subDeploymentID: string) {
+    var url = this.moduleManagerPath + "/aux-deployments/stop" 
+    return <Observable<string>>this.http.patch(url, undefined, undefined, 'text')
+  }
+
+  stopSubDeployments(deploymentID: string, subDeploymentIDs: string[]) {
+    var url = this.moduleManagerPath + "/aux-deployments-batch/stop" 
+    let queryParams = new HttpParams()
+    queryParams = queryParams.set("ids", subDeploymentIDs.join(","))
+    return <Observable<string>>this.http.patch(url, queryParams, undefined, 'text')
   }
 
   // Jobs

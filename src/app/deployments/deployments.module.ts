@@ -26,6 +26,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ListEndpointsComponent } from './pages/list-endpoints/list-endpoints.component';
 import { AddEndpointComponent } from './pages/add-endpoint/add-endpoint.component';
 import { GroupComponent } from './components/group/group.component';
+import { SubDeploymentsComponent } from './pages/sub-deployments/sub-deployments.component';
 const routes: Routes = [
   {
     path: 'deployments', 
@@ -34,6 +35,7 @@ const routes: Routes = [
       {path: '', component: DeploymentListComponent},
       {path: 'edit/:id', component: ShowModuleComponentComponent},
       {path: 'info/:id', component: InfoComponent},
+      {path: 'sub/:id', component: SubDeploymentsComponent},
       {path: 'endpoints', component: ListEndpointsComponent},
       {path: 'endpoints/add/:id', component: AddEndpointComponent}
 
@@ -52,7 +54,8 @@ const routes: Routes = [
     InfoComponent,
     ListEndpointsComponent,
     AddEndpointComponent,
-    GroupComponent
+    GroupComponent,
+    SubDeploymentsComponent
   ],
   imports: [
     MatInputModule,
