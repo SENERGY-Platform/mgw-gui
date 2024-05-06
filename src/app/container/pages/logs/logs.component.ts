@@ -27,7 +27,7 @@ export class LogsComponent implements OnDestroy {
     private router: Router
   ) {
     this.route.params.subscribe(params => {
-      this.containerID = params['id']
+      this.containerID = params['containerId']
       this.getLogs();
       this.init = false
       this.startAutoRefresh()

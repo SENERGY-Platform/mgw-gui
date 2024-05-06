@@ -22,7 +22,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['select', 'name', 'created', 'updated', 'status', 'start', 'stop', 'restart', 'info', 'edit', 'delete', 'show']
+  displayColumns = ['select', 'status' ,'name', 'created', 'updated', 'start', 'stop', 'restart', 'delete', 'show']
   selection = new SelectionModel<string>(true, []);
 
   // Sub Deployments
@@ -52,7 +52,9 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   setupColumns() {
     if(this.subDeployments === false) {
       this.displayColumns.push("sub")
-    }
+      this.displayColumns.push("info")
+      this.displayColumns.push("edit")
+    } 
   }
 
   startPeriodicRefresh() {
@@ -92,7 +94,6 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           }
           this.dataSource.data = deploymentsList
           this.ready = true
-          console.log(this.dataSource.data)
         }, 
         error: (err) => {
           if(!background) {
@@ -317,7 +318,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.ready = false;
     this.stopPeriodicRefresh()
 
-    this.sendDelete(ids, false).pipe(
+    this.tryDelete(ids, false).pipe(
       catchError((err, _1) => {
         // stopping did not succeed because deployment is required 
         return this.utilsService.askForConfirmation(err + "\nDo you want to force delete?").pipe(
@@ -327,7 +328,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
               this.startPeriodicRefresh()
               return of(true)
             }
-            return this.sendDelete(ids, true)
+            return this.tryDelete(ids, true)
           })
         )
       })
@@ -345,13 +346,8 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     })
   }
 
-  sendDelete(ids: string[], forceConfirmed: boolean) {
-    var obs 
-    if (ids.length == 1) {
-      obs = this.moduleService.deleteDeployment(ids[0], forceConfirmed)
-    } else {
-      obs = this.moduleService.deleteDeployments(ids, forceConfirmed)
-    }
+  tryDelete(ids: string[], forceConfirmed: boolean) {
+    var obs = this.sendDelete(ids, forceConfirmed)
     return obs.pipe(
       concatMap(jobID => {
         var message = "Delete deployments"
@@ -368,12 +364,36 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     )
   }
 
-  showInstances(deploymentID: string) {
-    this.router.navigate(["/deployments/show/" + deploymentID])
+  private sendDelete(ids: string[], forceConfirmed: boolean) {
+    var obs: Observable<string>
+    if(ids.length == 1) {
+      if(this.subDeployments === true) {
+        obs = this.moduleService.deleteSubDeployment(this.deploymentID, ids[0], forceConfirmed)
+
+      } else {
+        obs = this.moduleService.deleteDeployment(ids[0], forceConfirmed)
+      }
+    } else {
+      if(this.subDeployments === true) {
+        obs = this.moduleService.deleteSubDeployments(this.deploymentID, ids, forceConfirmed)
+
+      } else {
+        obs = this.moduleService.deleteDeployments(ids, forceConfirmed)
+      }
+    }
+    return obs;
+  }
+
+  showInstances(deployment: Deployment | AuxDeployment) {
+    if(this.subDeployments) {
+      this.router.navigate(["/deployments/" + (deployment as AuxDeployment).dep_id + "/" + deployment.id + "/containers", {sub: this.subDeployments}])
+    } else {
+      this.router.navigate(["/deployments/" + deployment.id + "/containers", {sub: this.subDeployments}])
+    }
   }
 
   showSubDeployments(deploymentID: string) {
-    this.router.navigate(["/deployments/sub/" + deploymentID])
+    this.router.navigate(["/deployments/" + deploymentID + "/sub"])
   }
 
   isAllSelected() {

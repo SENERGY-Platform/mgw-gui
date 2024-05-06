@@ -194,7 +194,10 @@ export class ModuleManagerService {
   // Sub Deployments
   getSubDeployment(deploymentID: string, subDeploymentID: string) {
     var url = this.moduleManagerPath + "/aux-deployments/" + subDeploymentID; 
-    return <Observable<AuxDeployment>>this.http.get(url, undefined, 'text', undefined, this.getSubDeploymentHeader(deploymentID))
+    let queryParams = new HttpParams()
+    queryParams = queryParams.set("container_info", "true")
+    queryParams = queryParams.set("assets", "true")
+    return <Observable<AuxDeployment>>this.http.get(url, queryParams, 'json', undefined, this.getSubDeploymentHeader(deploymentID))
   }
 
   private getSubDeploymentHeader(deploymentID: string) {
@@ -205,11 +208,14 @@ export class ModuleManagerService {
 
   getSubDeployments(deploymentID: string) {
     var url = this.moduleManagerPath + "/aux-deployments" 
-    return <Observable<AuxDeploymentResponse>>this.http.get(url, undefined, 'json', undefined, this.getSubDeploymentHeader(deploymentID))
+    let queryParams = new HttpParams()
+    queryParams = queryParams.set("container_info", "true")
+    queryParams = queryParams.set("assets", "true")
+    return <Observable<AuxDeploymentResponse>>this.http.get(url, queryParams, 'json', undefined, this.getSubDeploymentHeader(deploymentID))
   }
 
   restartSubDeployment(deploymentID: string, subDeploymentID: string) {
-    var url = this.moduleManagerPath + "/aux-deployments/" + subDeploymentID + "/restart" 
+    var url = this.moduleManagerPath + "/aux-deployments/" + subDeploymentID + "/restart"
     return <Observable<string>>this.http.patch(url, undefined, undefined, 'text', this.getSubDeploymentHeader(deploymentID))
   }
 
@@ -242,6 +248,25 @@ export class ModuleManagerService {
     let queryParams = new HttpParams()
     queryParams = queryParams.set("ids", subDeploymentIDs.join(","))
     return <Observable<string>>this.http.patch(url, queryParams, undefined, 'text', this.getSubDeploymentHeader(deploymentID))
+  }
+
+  deleteSubDeployment(deploymentID: string, subDeploymentID: string, forceConfirmed: boolean) {
+    var url = this.moduleManagerPath + "/aux-deployments/" + subDeploymentID 
+    let queryParams = new HttpParams()
+    if(forceConfirmed) {
+      queryParams = queryParams.set("force", "true")
+    }
+    return <Observable<string>>this.http.delete(url, undefined, queryParams, 'text', this.getSubDeploymentHeader(deploymentID))
+  }
+
+  deleteSubDeployments(deploymentID: string, subDeploymentIDs: string[], forceConfirmed: boolean) {
+    var url = this.moduleManagerPath + "/aux-deployments-batch" 
+    let queryParams = new HttpParams()
+    queryParams = queryParams.set("ids", subDeploymentIDs.join(","))
+    if(forceConfirmed) {
+      queryParams = queryParams.set("force", "true")
+    }
+    return <Observable<string>>this.http.delete(url, undefined, queryParams, 'text', this.getSubDeploymentHeader(deploymentID))
   }
 
   // Jobs

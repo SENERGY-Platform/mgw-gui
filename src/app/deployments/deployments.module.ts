@@ -27,6 +27,7 @@ import { ListEndpointsComponent } from './pages/list-endpoints/list-endpoints.co
 import { AddEndpointComponent } from './pages/add-endpoint/add-endpoint.component';
 import { GroupComponent } from './components/group/group.component';
 import { SubDeploymentsComponent } from './pages/sub-deployments/sub-deployments.component';
+import { ListContainersComponent } from './pages/list-containers/list.component';
 const routes: Routes = [
   {
     path: 'deployments', 
@@ -35,10 +36,11 @@ const routes: Routes = [
       {path: '', component: DeploymentListComponent},
       {path: 'edit/:id', component: ShowModuleComponentComponent},
       {path: 'info/:id', component: InfoComponent},
-      {path: 'sub/:id', component: SubDeploymentsComponent},
+      {path: ':id/sub', component: SubDeploymentsComponent},
       {path: 'endpoints', component: ListEndpointsComponent},
-      {path: 'endpoints/add/:id', component: AddEndpointComponent}
-
+      {path: 'endpoints/add/:id', component: AddEndpointComponent},
+      {path: ':deploymentId/containers', component: ListContainersComponent},
+      {path: ':deploymentId/:subDeploymentId/containers', component: ListContainersComponent},
     ]
   }
 ];
@@ -55,7 +57,9 @@ const routes: Routes = [
     ListEndpointsComponent,
     AddEndpointComponent,
     GroupComponent,
-    SubDeploymentsComponent
+    SubDeploymentsComponent,
+    ListContainersComponent
+
   ],
   imports: [
     MatInputModule,

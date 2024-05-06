@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ListComponent } from './pages/list/list.component';
 import { CoreModule } from '../core/core.module';
 import { RouterModule, Routes } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
@@ -15,17 +14,15 @@ import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
-    path: 'deployments', 
+    path: 'containers', 
     children: [
-      {path: 'show/:id', component: ListComponent},
-      {path: 'containers/:id/logs', component: LogsComponent},
+      {path: ':containerId/logs', component: LogsComponent},
     ]
   }
 ];
 
 @NgModule({
   declarations: [
-    ListComponent,
     LogsComponent
   ],
   imports: [

@@ -67,13 +67,16 @@ export class ApiService {
         return this.httpClient.put(this.baseUrl + path, payload, options);
     }
 
-    public delete(path: string, payload?: any, queryParams?: HttpParams, responseType?: string): Observable<unknown> {
+    public delete(path: string, payload?: any, queryParams?: HttpParams, responseType?: string, headers?: HttpHeaders): Observable<unknown> {
         var options: any = {
             params: queryParams,
             body: payload
         }
         if(responseType) {
             options['responseType'] = responseType
+        }
+        if(headers) {
+            options.headers = headers;
         }
         options.withCredentials = true;
 
