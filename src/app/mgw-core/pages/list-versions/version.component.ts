@@ -25,15 +25,16 @@ export class DurationPipe implements PipeTransform {
     if(duration > 60) {
       duration = duration/60;
       level = "Hours"
-    }
-
-    if(duration > 24) {
-      duration = duration/24;
-      level = "Days"
-    }
-    if(duration > 30) {
-      duration = duration/30;
-      level = "Months"
+      
+      if(duration > 24) {
+        duration = duration/24;
+        level = "Days"
+        
+        if(duration > 30) {
+          duration = duration/30;
+          level = "Months"
+        }
+      }
     }
 
     return Math.round(duration).toString() + " " + level;

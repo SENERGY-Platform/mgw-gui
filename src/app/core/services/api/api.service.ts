@@ -30,7 +30,7 @@ export class ApiService {
     constructor(private httpClient: HttpClient) {
     }
 
-    public get<T>(path: string, queryParams?: HttpParams, responseType?: string, withHeaders?: boolean): Observable<unknown> {
+    public get<T>(path: string, queryParams?: HttpParams, responseType?: string, withHeaders?: boolean, headers?: HttpHeaders): Observable<unknown> {
         var options: any = {params: queryParams}
         if(responseType) {
             options['responseType'] = responseType
@@ -39,6 +39,9 @@ export class ApiService {
             options["observe"] = "response"
         }
         options.withCredentials = true;
+        if(headers) {
+            options.headers = headers;
+        }
 
         return this.httpClient.get<T>(this.baseUrl + path, options);
     }
@@ -77,12 +80,15 @@ export class ApiService {
         return this.httpClient.delete(this.baseUrl + path, options);
     }
 
-    public patch(path: string, payload?: any, queryParams?: HttpParams, responseType?: string): Observable<unknown> {
+    public patch(path: string, payload?: any, queryParams?: HttpParams, responseType?: string, headers?: HttpHeaders): Observable<unknown> {
         var options: any = {params: queryParams}
         if(responseType) {
             options['responseType'] = responseType
         }
         options.withCredentials = true;
+        if(headers) {
+            options.headers = headers;
+        }
 
         return this.httpClient.patch(this.baseUrl + path, payload, options);
     }

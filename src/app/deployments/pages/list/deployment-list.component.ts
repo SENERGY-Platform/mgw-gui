@@ -86,18 +86,13 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     obs.subscribe(
       {
         next: (deployments) => {
-          if(!deployments) {
-            this.dataSource.data = []
-            this.ready = true
-          } else {
-            var deploymentsList: (Deployment | AuxDeployment) [] = []
-            for (const [_, deployment] of Object.entries(deployments)) {
-              deploymentsList.push(deployment)
-            }
-            this.dataSource.data = deploymentsList
+          var deploymentsList: (Deployment | AuxDeployment) [] = []
+          for (const [_, deployment] of Object.entries(deployments)) {
+            deploymentsList.push(deployment)
           }
+          this.dataSource.data = deploymentsList
           this.ready = true
-
+          console.log(this.dataSource.data)
         }, 
         error: (err) => {
           if(!background) {

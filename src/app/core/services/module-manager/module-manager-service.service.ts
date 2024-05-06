@@ -1,4 +1,4 @@
-import { HttpParams } from '@angular/common/http';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { ApiService } from '../api/api.service';
@@ -194,48 +194,54 @@ export class ModuleManagerService {
   // Sub Deployments
   getSubDeployment(deploymentID: string, subDeploymentID: string) {
     var url = this.moduleManagerPath + "/aux-deployments/" + subDeploymentID; 
-    return <Observable<AuxDeployment>>this.http.get(url, undefined, 'text')
+    return <Observable<AuxDeployment>>this.http.get(url, undefined, 'text', undefined, this.getSubDeploymentHeader(deploymentID))
+  }
+
+  private getSubDeploymentHeader(deploymentID: string) {
+    let headers = new HttpHeaders();
+    headers = headers.set("X-MGW-DID", deploymentID)
+    return headers 
   }
 
   getSubDeployments(deploymentID: string) {
     var url = this.moduleManagerPath + "/aux-deployments" 
-    return <Observable<AuxDeploymentResponse>>this.http.get(url, undefined, 'text')
+    return <Observable<AuxDeploymentResponse>>this.http.get(url, undefined, 'json', undefined, this.getSubDeploymentHeader(deploymentID))
   }
 
   restartSubDeployment(deploymentID: string, subDeploymentID: string) {
-    var url = this.moduleManagerPath + "/aux-deployments/restart" 
-    return <Observable<string>>this.http.patch(url, undefined, undefined, 'text')
+    var url = this.moduleManagerPath + "/aux-deployments/" + subDeploymentID + "/restart" 
+    return <Observable<string>>this.http.patch(url, undefined, undefined, 'text', this.getSubDeploymentHeader(deploymentID))
   }
 
   restartSubDeployments(deploymentID: string, subDeploymentIDs: string[]) {
     var url = this.moduleManagerPath + "/aux-deployments-batch/restart" 
     let queryParams = new HttpParams()
     queryParams = queryParams.set("ids", subDeploymentIDs.join(","))
-    return <Observable<string>>this.http.patch(url, queryParams, undefined, 'text')
+    return <Observable<string>>this.http.patch(url, queryParams, undefined, 'text', this.getSubDeploymentHeader(deploymentID))
   }
 
   startSubDeployment(deploymentID: string, subDeploymentID: string) {
-    var url = this.moduleManagerPath + "/aux-deployments/start" 
-    return <Observable<string>>this.http.patch(url, undefined, undefined, 'text')
+    var url = this.moduleManagerPath + "/aux-deployments/" + subDeploymentID + "/start" 
+    return <Observable<string>>this.http.patch(url, undefined, undefined, 'text', this.getSubDeploymentHeader(deploymentID))
   }
 
   startSubDeployments(deploymentID: string, subDeploymentIDs: string[]) {
     var url = this.moduleManagerPath + "/aux-deployments-batch/start" 
     let queryParams = new HttpParams()
     queryParams = queryParams.set("ids", subDeploymentIDs.join(","))
-    return <Observable<string>>this.http.patch(url, queryParams, undefined, 'text')
+    return <Observable<string>>this.http.patch(url, queryParams, undefined, 'text', this.getSubDeploymentHeader(deploymentID))
   }
 
   stopSubDeployment(deploymentID: string, subDeploymentID: string) {
-    var url = this.moduleManagerPath + "/aux-deployments/stop" 
-    return <Observable<string>>this.http.patch(url, undefined, undefined, 'text')
+    var url = this.moduleManagerPath + "/aux-deployments/" + subDeploymentID + "/stop" 
+    return <Observable<string>>this.http.patch(url, undefined, undefined, 'text', this.getSubDeploymentHeader(deploymentID))
   }
 
   stopSubDeployments(deploymentID: string, subDeploymentIDs: string[]) {
     var url = this.moduleManagerPath + "/aux-deployments-batch/stop" 
     let queryParams = new HttpParams()
     queryParams = queryParams.set("ids", subDeploymentIDs.join(","))
-    return <Observable<string>>this.http.patch(url, queryParams, undefined, 'text')
+    return <Observable<string>>this.http.patch(url, queryParams, undefined, 'text', this.getSubDeploymentHeader(deploymentID))
   }
 
   // Jobs
