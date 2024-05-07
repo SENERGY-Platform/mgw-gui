@@ -22,73 +22,69 @@
   <spinner class="global-centered-spinner" [show]="!ready"></spinner>
 
   <div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
-    <div class="table-container">
-      <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc">
-        <ng-container matColumnDef="name">
-          <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
-          <td mat-cell *matCellDef="let module">
-            {{module.name}}
-          </td>
-        </ng-container>
+    <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let module">
+          {{module.name}}
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="version">
-          <th mat-header-cell mat-sort-header *matHeaderCellDef>Version</th>
-          <td mat-cell *matCellDef="let module">
-            {{module.version}}
-          </td>
-        </ng-container>
+      <ng-container matColumnDef="version">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Version</th>
+        <td mat-cell *matCellDef="let module">
+          {{module.version}}
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="info">
-          <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Info</th>
-          <td mat-cell *matCellDef="let module">
-            <button mat-icon-button color="primary" (click)="showModuleInfo(module.id)" matTooltip="Info">
-              <mat-icon>info</mat-icon>
+      <ng-container matColumnDef="info">
+        <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Info</th>
+        <td mat-cell *matCellDef="let module">
+          <button mat-icon-button color="primary" (click)="showModuleInfo(module.id)" matTooltip="Info">
+            <mat-icon>info</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="update">
+        <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Update</th>
+        <td mat-cell *matCellDef="let module">
+          <span *ngIf="!!availableModuleUpdates[module.id]">
+            <!-- When pending update exists, only the pending module shall be allowed to be updated -->
+            <button mat-icon-button color="primary" (click)="startUpdate(module.id)" matTooltip="Update">
+              <mat-icon>arrow_upward</mat-icon>
             </button>
-          </td>
-        </ng-container>
+          </span>
 
-        <ng-container matColumnDef="update">
-          <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Update</th>
-          <td mat-cell *matCellDef="let module">
-            <span *ngIf="!!availableModuleUpdates[module.id]">
-              <!-- When pending update exists, only the pending module shall be allowed to be updated -->
-              <button mat-icon-button color="primary" (click)="startUpdate(module.id)" matTooltip="Update">
-                <mat-icon>arrow_upward</mat-icon>
-              </button>
-            </span>
+          <span *ngIf="!availableModuleUpdates[module.id]">
 
-            <span *ngIf="!availableModuleUpdates[module.id]">
-              
-            </span>
-          
-          </td>
-        </ng-container>
+          </span>
 
-        <ng-container matColumnDef="deploy">
-          <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Deploy</th>
-          <td mat-cell *matCellDef="let module">
-            <button mat-icon-button color="primary" (click)="deployModule(module.id)" matTooltip="Deploy">
-              <mat-icon>start</mat-icon>
-            </button>
-          </td>
-        </ng-container>
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="delete">
-          <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Delete</th>
-          <td mat-cell *matCellDef="let module">
-            <button mat-icon-button color="primary" matTooltip="Delete" (click)="deleteModule(module.id)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
+      <ng-container matColumnDef="deploy">
+        <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Deploy</th>
+        <td mat-cell *matCellDef="let module">
+          <button mat-icon-button color="primary" (click)="deployModule(module.id)" matTooltip="Deploy">
+            <mat-icon>start</mat-icon>
+          </button>
+        </td>
+      </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let m; columns: displayColumns;"></tr>
-      </table>
+      <ng-container matColumnDef="delete">
+        <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Delete</th>
+        <td mat-cell *matCellDef="let module">
+          <button mat-icon-button color="primary" matTooltip="Delete" (click)="deleteModule(module.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
 
-      <button mat-raised-button color="primary" (click)="checkForUpdates()" id="update-button">Check for Updates</button>
-
-    </div>
+      <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let m; columns: displayColumns;"></tr>
+    </table>
+    <button mat-raised-button color="primary" (click)="checkForUpdates()" id="update-button">Check for Updates</button>
   </div>
 </div>
 

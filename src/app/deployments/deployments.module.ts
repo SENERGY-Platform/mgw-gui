@@ -8,7 +8,6 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatIconModule} from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
-import { DeploymentListComponent } from './pages/list/deployment-list.component';
 import {RouterModule, Routes} from '@angular/router';
 import { ModulesComponent } from './pages/add/modules.component';
 import { DeploymentTemplate2 } from './components/single-deployment/deployment-template';
@@ -26,28 +25,27 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ListEndpointsComponent } from './pages/list-endpoints/list-endpoints.component';
 import { AddEndpointComponent } from './pages/add-endpoint/add-endpoint.component';
 import { GroupComponent } from './components/group/group.component';
-import { SubDeploymentsComponent } from './pages/sub-deployments/sub-deployments.component';
 import { ListContainersComponent } from './pages/list-containers/list.component';
+import { InfoSubDeploymentComponent } from './pages/info-sub-deployment/info-sub-deployment.component';
+import { ListParentDeploymentsComponent } from './pages/list-deployments/list-deployments.component';
+import { DeploymentListComponent } from './components/list/deployment-list.component';
 const routes: Routes = [
   {
     path: 'deployments', 
     children: [
       {path: 'add/:id', component: ModulesComponent},
-      {path: '', component: DeploymentListComponent},
+      {path: '', component: ListParentDeploymentsComponent},
       {path: 'edit/:id', component: ShowModuleComponentComponent},
-      {path: 'info/:id', component: InfoComponent},
-      {path: ':id/sub', component: SubDeploymentsComponent},
+      {path: ':deploymentID/info', component: InfoComponent},
       {path: 'endpoints', component: ListEndpointsComponent},
       {path: 'endpoints/add/:id', component: AddEndpointComponent},
-      {path: ':deploymentId/containers', component: ListContainersComponent},
-      {path: ':deploymentId/:subDeploymentId/containers', component: ListContainersComponent},
+      {path: ':deploymentID/sub/:subDeploymentID/info', component: InfoSubDeploymentComponent},
     ]
   }
 ];
 
 @NgModule({
   declarations: [
-    DeploymentListComponent,
     ModulesComponent,
     DeploymentTemplate2,
     DeploymentComponentComponent,
@@ -57,9 +55,10 @@ const routes: Routes = [
     ListEndpointsComponent,
     AddEndpointComponent,
     GroupComponent,
-    SubDeploymentsComponent,
-    ListContainersComponent
-
+    ListContainersComponent,
+    InfoSubDeploymentComponent,
+    ListParentDeploymentsComponent,
+    DeploymentListComponent
   ],
   imports: [
     MatInputModule,

@@ -1,0 +1,63 @@
+<spinner class="global-centered-spinner" [show]="!ready"></spinner>
+
+<div *ngIf="ready">
+  <div class="form-margin">
+    <mat-card class="container card">
+      <h1>{{ subDeployment.name }}</h1>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Deployment ID</mat-label>
+        <input matInput [readonly]="true" [value]="subDeployment.id">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Parent Deployment ID</mat-label>
+        <input matInput [readonly]="true" [value]="subDeployment.dep_id">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Created</mat-label>
+        <input matInput [readonly]="true" [value]="subDeployment.created | date: 'short'">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Updated</mat-label>
+        <input matInput [readonly]="true" [value]="subDeployment.updated | date: 'short'">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Image</mat-label>
+        <input matInput [readonly]="true" [value]="subDeployment.image">
+      </mat-form-field>
+    </mat-card>
+
+    <mat-card class="container card" *ngIf="objectKeys(subDeployment.labels).length > 0">
+      <h2>Labels</h2>
+      <mat-form-field appearance="fill" *ngFor="let label of subDeployment.labels | keyvalue">
+        <mat-label>label.key</mat-label>
+        <input matInput [readonly]="true" [value]="label.value">
+      </mat-form-field>
+    </mat-card>
+
+    <mat-card class="container card" *ngIf="objectKeys(subDeployment.configs).length > 0">
+      <h2>Configs</h2>
+      <mat-form-field appearance="fill" *ngFor="let config of subDeployment.configs | keyvalue">
+        <mat-label>config.key</mat-label>
+        <input matInput [readonly]="true" [value]="config.value">
+      </mat-form-field>
+    </mat-card>
+
+    <mat-card class="container card" *ngIf="objectKeys(subDeployment.volumes).length > 0">
+      <h2>Volumes</h2>
+      <mat-form-field appearance="fill" *ngFor="let volume of subDeployment.volumes | keyvalue">
+        <mat-label>volume.key</mat-label>
+        <input matInput [readonly]="true" [value]="volume.value">
+      </mat-form-field>
+    </mat-card>
+
+    <mat-card class="container card" *ngIf="objectKeys(subDeployment).length > 0">
+      <h2>Container</h2>
+      <container-list [fromSubDeployment]="true" [deploymentID]="subDeployment.dep_id"
+        [subDeploymentID]="subDeployment.id"></container-list>
+    </mat-card>
+  </div>

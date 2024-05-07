@@ -18,8 +18,8 @@ export class MainNavigationComponent implements OnInit {
   mode = '';
   openSection: null | string = null;
   sections: SidenavSectionModel[] = [
-    new SidenavSectionModel("Deployments", "toggle", "play_circle_filled", "/deployments", [
-      new SidenavPageModel("Endpoints", 'link', "link", "/deployments/endpoints"),
+    new SidenavSectionModel("Deployments", "link", "play_circle_filled", "/deployments", [
+      //new SidenavPageModel("Endpoints", 'link', "link", "/deployments/endpoints"),
     ]),
     new SidenavSectionModel("Modules", "link", "apps", "/modules", []),
     new SidenavSectionModel("Secrets", "link", "key", "/settings/secrets", []),

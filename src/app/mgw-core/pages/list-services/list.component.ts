@@ -125,7 +125,7 @@ export class ListCoreServicesComponent {
   }
 
   showLogs(containerID: string) {
-    this.router.navigate(["/deployments/containers/" + containerID + "/logs"])
+    this.router.navigate(["/containers/" + containerID + "/logs"])
   }
 
 }

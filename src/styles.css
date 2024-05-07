@@ -14,7 +14,7 @@ a {
 
 /* Container for pages with forms */
 .form-margin {
-    margin: 12px 20% 0 20%
+    margin: 12px 20% 50px 20%
 }
 
 .form-margin mat-form-field {
@@ -31,22 +31,12 @@ a {
     width: 100%;
 }
 
-.table-container {
-    max-height: calc(100vh - 200px);
-    overflow: auto;
-    position: relative;
-}
-
-.table-container-with-button {
-    max-height: calc(100vh - 300px);
-}
-
-.table-container table {
-    width: 100%;
-}
-
 .button-column {
     width: 4%;
+}
+
+.card {
+    padding: 30px
 }
 
 /* Buttons */

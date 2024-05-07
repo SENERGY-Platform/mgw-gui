@@ -388,6 +388,7 @@ cancelModuleUpdate(moduleID: string): Observable<string> {
          'state': null,
          'containers': null,
       }]
+      deployments = deployments.concat(deployments).concat(deployments).concat(deployments).concat(deployments).concat(deployments).concat(deployments).concat(deployments).concat(deployments).concat(deployments).concat(deployments).concat(deployments).concat(deployments)
       return of(deployments).pipe(delay(1000));
   }  
 

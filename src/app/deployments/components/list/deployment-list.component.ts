@@ -22,11 +22,11 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['select', 'status' ,'name', 'created', 'updated', 'start', 'stop', 'restart', 'delete', 'show']
+  displayColumns: string[] = []
   selection = new SelectionModel<string>(true, []);
 
   // Sub Deployments
-  @Input() subDeployments = false;
+  @Input() isSubDeployment = false;
   @Input() deploymentID = '';
 
   constructor(
@@ -50,11 +50,17 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   setupColumns() {
-    if(this.subDeployments === false) {
-      this.displayColumns.push("sub")
-      this.displayColumns.push("info")
-      this.displayColumns.push("edit")
+    let columns = ['select']
+    if(this.isSubDeployment === false) {
+      columns.push("status_deployment")
+    } else {
+      columns.push("status_sub_deployment")
+    }
+    columns = columns.concat('name', 'start', 'stop', 'restart', 'delete', 'info')
+    if(this.isSubDeployment === false) {
+      columns.push("edit")
     } 
+    this.displayColumns = columns;
   }
 
   startPeriodicRefresh() {
@@ -82,7 +88,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
 
   loadDeployments(background: boolean): void {
     let obs: Observable<DeploymentResponse | AuxDeploymentResponse> = this.moduleService.loadDeployments(true);
-    if(this.subDeployments === true) {
+    if(this.isSubDeployment === true) {
       obs = this.moduleService.getSubDeployments(this.deploymentID);
     };
     obs.subscribe(
@@ -153,13 +159,13 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   sendStop(ids: string[], forceConfirmed: boolean) {
     var obs 
     if(ids.length == 1) {
-      if(this.subDeployments === true) {
+      if(this.isSubDeployment === true) {
         obs = this.moduleService.stopSubDeployment(this.deploymentID, ids[0])
       } else {
         obs = this.moduleService.stopDeployment(ids[0], forceConfirmed)
       }
     } else {
-      if(this.subDeployments === true) {
+      if(this.isSubDeployment === true) {
         obs = this.moduleService.stopSubDeployments(this.deploymentID, ids)
       } else {
         obs = this.moduleService.stopDeployments(ids, forceConfirmed)
@@ -222,14 +228,14 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   private sendStart(ids: string[]) {
     var obs: Observable<string>
     if(ids.length == 1) {
-      if(this.subDeployments === true) {
+      if(this.isSubDeployment === true) {
         obs = this.moduleService.startSubDeployment(this.deploymentID, ids[0])
 
       } else {
         obs = this.moduleService.startDeployment(ids[0], true)
       }
     } else {
-      if(this.subDeployments === true) {
+      if(this.isSubDeployment === true) {
         obs = this.moduleService.startSubDeployments(this.deploymentID, ids)
 
       } else {
@@ -285,14 +291,14 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   private sendRestart(ids: string[]) {
     var obs: Observable<string>
     if(ids.length == 1) {
-      if(this.subDeployments === true) {
+      if(this.isSubDeployment === true) {
         obs = this.moduleService.restartSubDeployment(this.deploymentID, ids[0])
 
       } else {
         obs = this.moduleService.restartDeployment(ids[0])
       }
     } else {
-      if(this.subDeployments === true) {
+      if(this.isSubDeployment === true) {
         obs = this.moduleService.restartSubDeployments(this.deploymentID, ids)
 
       } else {
@@ -367,14 +373,14 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   private sendDelete(ids: string[], forceConfirmed: boolean) {
     var obs: Observable<string>
     if(ids.length == 1) {
-      if(this.subDeployments === true) {
+      if(this.isSubDeployment === true) {
         obs = this.moduleService.deleteSubDeployment(this.deploymentID, ids[0], forceConfirmed)
 
       } else {
         obs = this.moduleService.deleteDeployment(ids[0], forceConfirmed)
       }
     } else {
-      if(this.subDeployments === true) {
+      if(this.isSubDeployment === true) {
         obs = this.moduleService.deleteSubDeployments(this.deploymentID, ids, forceConfirmed)
 
       } else {
@@ -382,18 +388,6 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
       }
     }
     return obs;
-  }
-
-  showInstances(deployment: Deployment | AuxDeployment) {
-    if(this.subDeployments) {
-      this.router.navigate(["/deployments/" + (deployment as AuxDeployment).dep_id + "/" + deployment.id + "/containers", {sub: this.subDeployments}])
-    } else {
-      this.router.navigate(["/deployments/" + deployment.id + "/containers", {sub: this.subDeployments}])
-    }
-  }
-
-  showSubDeployments(deploymentID: string) {
-    this.router.navigate(["/deployments/" + deploymentID + "/sub"])
   }
 
   isAllSelected() {
@@ -413,5 +407,13 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
 
   selectionClear(): void {
       this.selection.clear();
+  }
+
+  info(deployment: Deployment | AuxDeployment) {
+    if(this.isSubDeployment) {
+      this.router.navigate(["/deployments/" + (deployment as AuxDeployment).dep_id + "/sub/" + deployment.id + "/info"])
+    } else {
+      this.router.navigate(["/deployments/" + deployment.id + "/info"])
+    }
   }
 }

@@ -1,20 +1,22 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { catchError, forkJoin, map, Observable, of } from 'rxjs';
+import { Container } from 'src/app/container/models/container';
 import { HostManagerService } from 'src/app/core/services/host-manager/host-manager.service';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { SecretManagerServiceService } from 'src/app/core/services/secret-manager/secret-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Deployment } from '../../models/deployment_models';
+import { AuxDeployment } from '../../models/sub-deployments';
 
 @Component({
   selector: 'app-info',
   templateUrl: './info.component.html',
   styleUrls: ['./info.component.css']
 })
-export class InfoComponent {
+export class InfoComponent implements OnInit {
   @Input() deployment!: Deployment
-  deploymentID?: string 
+  deploymentID = "" 
   ready: boolean = false
   hostResourceIDToName: Record<string, string> = {}
   secretIDToName: Record<string, string> = {}
@@ -27,15 +29,18 @@ export class InfoComponent {
     @Inject('HostManagerService') private hostService: HostManagerService, 
     private errorService: ErrorService
   ) {
-    this.route.params.subscribe(params => {
-      this.deploymentID = params['id']
-      this.loadAllInformation(params['id'])
-    })
   }
 
-  loadAllInformation(deploymentID: string) {
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      this.deploymentID = params['deploymentID']
+      this.loadAllInformation()
+    }) 
+  }
+
+  loadAllInformation() {
     var obs = []
-    obs.push(this.loadDeployment(deploymentID))
+    obs.push(this.loadDeployment())
     obs.push(this.loadHostResources())
     obs.push(this.loadSecrets())
     forkJoin(obs).subscribe(results => {
@@ -45,9 +50,9 @@ export class InfoComponent {
     })
   }
 
-  loadDeployment(deploymentID: string): Observable<boolean> {
+  loadDeployment(): Observable<boolean> {
     return new Observable(obs => {
-      this.moduleService.loadDeployment(deploymentID, false, true).subscribe(
+      this.moduleService.loadDeployment(this.deploymentID, true, true).subscribe(
         {
           next: (deployment) => {
             this.deployment = deployment

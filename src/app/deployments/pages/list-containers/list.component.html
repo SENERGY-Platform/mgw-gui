@@ -14,68 +14,46 @@
   ~ limitations under the License.
   -->
 
-  <div class="layout-margin">
-    <span class="search-button-container">
-    </span>
+<div *ngIf="dataSource.data.length === 0 && ready">No containers found.</div>
+<spinner class="global-centered-spinner" [show]="!ready"></spinner>
 
-    <div *ngIf="dataSource.data.length === 0 && ready">No containers found.</div>
-    <spinner class="global-centered-spinner" [show]="!ready"></spinner>
+<div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
+  <table mat-table [dataSource]="dataSource" matSort matSortActive="status" matSortDirection="desc">
+    <ng-container matColumnDef="status">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Health</th>
+      <td mat-cell *matCellDef="let container">
+        <span *ngIf="!!container.info">
+          <div class="circle red" *ngIf="container.info.state != 'running'"></div>
+          <div class="circle green" *ngIf="container.info.state == 'running'"></div>
+        </span>
+        <div class="circle grey" *ngIf="!container.info"></div>
+      </td>
+    </ng-container>
 
-    <div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
-        <div class="table-container table-container-with-button">
-            <table mat-table [dataSource]="dataSource" matSort matSortActive="status" matSortDirection="desc">
-                <ng-container matColumnDef="status">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Health</th>
-                    <td mat-cell *matCellDef="let deployment">
-                        <span *ngIf="!!deployment.info">
-                            <div class="circle red" *ngIf="deployment.info.state != 'running'"></div>
-                            <div class="circle green" *ngIf="deployment.info.state == 'running'"></div>
-                        </span>
-                        <div class="circle grey" *ngIf="!deployment.info"></div>
-                    </td>
-                  </ng-container>
+    <ng-container matColumnDef="id">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>ID</th>
+      <td mat-cell *matCellDef="let container">
+        {{container.id}}
+      </td>
+    </ng-container>
 
-                <ng-container matColumnDef="id">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef>ID</th>
-                    <td mat-cell *matCellDef="let container">
-                        {{container.id}}
-                    </td>
-                </ng-container>
+    <ng-container matColumnDef="state">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>State</th>
+      <td mat-cell *matCellDef="let container">
+        <span *ngIf="!!container.info">{{container.info.state}}</span>
+      </td>
+    </ng-container>
 
-                <ng-container matColumnDef="ref">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef>Reference</th>
-                    <td mat-cell *matCellDef="let container">
-                        {{container.srv_ref}}
-                    </td>
-                </ng-container>
+    <ng-container matColumnDef="logs">
+      <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Logs</th>
+      <td mat-cell *matCellDef="let container">
+        <button mat-icon-button color="primary" (click)="showLogs(container.id)" matTooltip="Show Logs">
+          <mat-icon>description</mat-icon>
+        </button>
+      </td>
+    </ng-container>
 
-                <ng-container matColumnDef="alias">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef>Alias</th>
-                    <td mat-cell *matCellDef="let container">
-                        {{container.alias}}
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="state">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef>State</th>
-                    <td mat-cell *matCellDef="let container">
-                        <span *ngIf="!!container.info">{{container.info.state}}</span>
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="logs">
-                    <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Logs</th>
-                    <td mat-cell *matCellDef="let container">
-                        <button mat-icon-button color="primary" (click)="showLogs(container.id)" matTooltip="Show Logs">
-                            <mat-icon>description</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
-                <tr mat-row *matRowDef="let m; columns: displayColumns;"></tr>
-            </table>
-        </div>
-    </div>
+    <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let m; columns: displayColumns;"></tr>
+  </table>
 </div>
-

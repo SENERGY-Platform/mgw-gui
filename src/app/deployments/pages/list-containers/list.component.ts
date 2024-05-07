@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Inject, OnDestroy, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -11,20 +11,20 @@ import { UtilService } from 'src/app/core/services/util/util.service';
 import { Container, SubDeploymentContainer } from '../../../container/models/container';
 
 @Component({
-  selector: 'app-list',
+  selector: 'container-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css']
 })
-export class ListContainersComponent implements OnDestroy {
+export class ListContainersComponent implements OnDestroy, OnInit {
   dataSource = new MatTableDataSource<Container | SubDeploymentContainer>();
   ready: Boolean = false;
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['status', 'id', 'alias', 'state', 'logs']
-  deploymentID!: string
-  subDeploymentID = ""
-  isSubDeployment = false;
+  displayColumns = ['status', 'id', 'state', 'logs']
+  @Input() deploymentID!: string
+  @Input() subDeploymentID = ""
+  @Input() fromSubDeployment = false;
   
   constructor(
     public dialog: MatDialog, 
@@ -33,13 +33,11 @@ export class ListContainersComponent implements OnDestroy {
     private route: ActivatedRoute,
     private router: Router
   ) {
-    this.getDeploymentIDs().pipe(
-      concatMap(_ => {
-        this.isSubDeployment = this.route.snapshot.paramMap.get("sub") === 'true';
-        this.startPeriodicLoad();
-        return this.loadContainers();
-      })
-    ).subscribe({
+  }
+
+  ngOnInit(): void {
+    this.startPeriodicLoad();
+    this.loadContainers().subscribe({
       next: (_) => {
         this.ready = true
         this.init = false;
@@ -48,7 +46,7 @@ export class ListContainersComponent implements OnDestroy {
         this.ready = true
         this.init = false;
       }
-    })
+    }) 
   }
 
   startPeriodicLoad() {
@@ -57,27 +55,12 @@ export class ListContainersComponent implements OnDestroy {
     }, 5000);
   }
 
-  getDeploymentIDs() {
-    return this.route.params.pipe(
-      map(params => {
-        this.deploymentID = params['deploymentId']
-        this.subDeploymentID = params['subDeploymentId']
-      })
-    )
-  } 
-
   ngOnDestroy(): void {
       clearTimeout(this.interval)
   }
 
-  setupColums() {
-    if(this.isSubDeployment) {
-      this.displayColumns.push('ref')
-    }
-  }
-
   loadContainers() {
-    if(this.isSubDeployment) {
+    if(this.fromSubDeployment) {
       return this.loadSubDeploymentContainer()
     } else {
       return this.loadParentContainers()
