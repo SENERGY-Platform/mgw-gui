@@ -53,10 +53,12 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     let columns = ['select']
     if(this.isSubDeployment === false) {
       columns.push("status_deployment")
+      columns.push("name")
     } else {
       columns.push("status_sub_deployment")
+      columns.push("id")
     }
-    columns = columns.concat('name', 'start', 'stop', 'restart', 'delete', 'info')
+    columns = columns.concat('start', 'stop', 'restart', 'delete', 'info')
     if(this.isSubDeployment === false) {
       columns.push("edit")
     } 

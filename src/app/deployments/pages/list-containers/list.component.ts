@@ -21,7 +21,7 @@ export class ListContainersComponent implements OnDestroy, OnInit {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['status', 'id', 'state', 'logs']
+  displayColumns: string[] = []
   @Input() deploymentID!: string
   @Input() subDeploymentID = ""
   @Input() fromSubDeployment = false;
@@ -37,6 +37,7 @@ export class ListContainersComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.startPeriodicLoad();
+    this.setupColumns()
     this.loadContainers().subscribe({
       next: (_) => {
         this.ready = true
@@ -47,6 +48,16 @@ export class ListContainersComponent implements OnDestroy, OnInit {
         this.init = false;
       }
     }) 
+  }
+
+  setupColumns() {
+    const columns = ["status", "alias"]
+    if(!this.fromSubDeployment) {
+      columns.push("ref")
+    }
+    columns.push("state")
+    columns.push("logs")
+    this.displayColumns = columns;
   }
 
   startPeriodicLoad() {
@@ -88,7 +99,6 @@ export class ListContainersComponent implements OnDestroy, OnInit {
     var obs = this.moduleService.getSubDeployment(this.deploymentID, this.subDeploymentID)
     return obs.pipe(
       map((deployment) => {
-        console.log(deployment)
           this.dataSource.data = [deployment.container]
           return of(null);
       })

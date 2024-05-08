@@ -6,12 +6,12 @@
       <h1>{{ subDeployment.name }}</h1>
 
       <mat-form-field appearance="fill">
-        <mat-label>Deployment ID</mat-label>
+        <mat-label>ID</mat-label>
         <input matInput [readonly]="true" [value]="subDeployment.id">
       </mat-form-field>
 
       <mat-form-field appearance="fill">
-        <mat-label>Parent Deployment ID</mat-label>
+        <mat-label>Deployment ID</mat-label>
         <input matInput [readonly]="true" [value]="subDeployment.dep_id">
       </mat-form-field>
 
@@ -29,6 +29,13 @@
         <mat-label>Image</mat-label>
         <input matInput [readonly]="true" [value]="subDeployment.image">
       </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Reference</mat-label>
+        <input matInput [readonly]="true" [value]="subDeployment.ref">
+      </mat-form-field>
+
+      <mat-checkbox [disabled]="true" [ngModel]="subDeployment.enabled">Enabled</mat-checkbox>
     </mat-card>
 
     <mat-card class="container card" *ngIf="objectKeys(subDeployment.labels).length > 0">
@@ -40,7 +47,7 @@
     </mat-card>
 
     <mat-card class="container card" *ngIf="objectKeys(subDeployment.configs).length > 0">
-      <h2>Configs</h2>
+      <h2>Configuration</h2>
       <mat-form-field appearance="fill" *ngFor="let config of subDeployment.configs | keyvalue">
         <mat-label>config.key</mat-label>
         <input matInput [readonly]="true" [value]="config.value">
@@ -56,7 +63,7 @@
     </mat-card>
 
     <mat-card class="container card" *ngIf="objectKeys(subDeployment).length > 0">
-      <h2>Container</h2>
+      <h2>Service</h2>
       <container-list [fromSubDeployment]="true" [deploymentID]="subDeployment.dep_id"
         [subDeploymentID]="subDeployment.id"></container-list>
     </mat-card>

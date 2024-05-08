@@ -32,10 +32,17 @@
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="id">
-      <th mat-header-cell mat-sort-header *matHeaderCellDef>ID</th>
+    <ng-container matColumnDef="alias">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Alias</th>
       <td mat-cell *matCellDef="let container">
-        {{container.id}}
+        {{container.alias}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="ref">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Service Reference</th>
+      <td mat-cell *matCellDef="let container">
+        {{container.srv_ref}}
       </td>
     </ng-container>
 

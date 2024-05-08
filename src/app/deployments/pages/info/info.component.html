@@ -78,7 +78,7 @@
     </mat-card>
 
     <mat-card class="container card">
-      <h2>Exposed Endpoints</h2>
+      <h2>Endpoints</h2>
       <div>
         <list-endpoints [deploymentID]="deploymentID"></list-endpoints>
       </div>
@@ -86,13 +86,13 @@
 
     <mat-card class="container card">
       <div *ngIf="deployment.containers != null && objectKeys(deployment.containers).length > 0">
-        <h2>Container</h2>
+        <h2>Services</h2>
         <container-list [deploymentID]="deploymentID" [fromSubDeployment]="false"></container-list>
       </div>
     </mat-card>
 
     <mat-card class="container card">
-      <h2>Sub Deployments</h2>
+      <h2>Auxiliary Deployments</h2>
       <deployment-list [deploymentID]="deploymentID" [isSubDeployment]="true"></deployment-list>
     </mat-card>
   </div>
