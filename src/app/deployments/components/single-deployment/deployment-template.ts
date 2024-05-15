@@ -65,10 +65,6 @@ export class DeploymentTemplate2 implements OnInit {
       }
     }
 
-    getDefaultTemplate() {
-      return this.formTemplate[NO_GROUP];
-    }
-
     setupFormTemplate() {
       // organize all secrets, configs, host resources per group
       for(const [id, hostResource] of Object.entries(this.deploymentTemplateData?.host_resources || [])) {
@@ -88,7 +84,6 @@ export class DeploymentTemplate2 implements OnInit {
         this.setupGroup(groupIP);
         this.formTemplate[groupIP].configs[id] = config;
       };
-
     }
 
     getParentOfGroup(groups: InputGroups, groupID: string): string[] {

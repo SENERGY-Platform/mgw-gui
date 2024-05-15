@@ -31,7 +31,7 @@ export class DeploymentComponentComponent implements OnInit {
     [mod_id: string]:  DeploymentTemplate | DeploymentUpdateTemplate | ModuleUpdateTemplate
   } = {};
 
-  secretOptions: any = {}
+  secretOptions: Record<string, Secret[]> = {}
   secretOptionsBinding: any = {}
 
   hostResourcesOptions: any = {}
@@ -376,7 +376,7 @@ export class DeploymentComponentComponent implements OnInit {
     }
   }
 
-  setupFormControl(form: any, id: string, required: boolean, defaultValue: [], is_list: boolean) {
+  setupFormControl(form: any, id: string, required: boolean, defaultValue: any, is_list: boolean) {
     // no default value
     var emptyValue: any = null // null gets filtered out of the form data
     if(is_list) {
@@ -399,13 +399,11 @@ export class DeploymentComponentComponent implements OnInit {
 
   setupSecrets(form: any, inputTemplate: any, module_id: string) {
     var secrets = new Map(Object.entries(inputTemplate['secrets']))
-    secrets.forEach((secret: any, secret_id: any) => {
-      secret['id'] = secret_id
-
+    secrets.forEach((secret: any, moduleSecretId: any) => {
       if(this.mode != "new") {
-        var defaultValue = secret['value']
+        var selectedSecretID = secret['value']
       }
-      this.setupFormControl(form.get("secrets"), secret_id, secret.required, defaultValue, false)
+      this.setupFormControl(form.get("secrets"), moduleSecretId, secret.required, selectedSecretID, false)
     })
   }
 

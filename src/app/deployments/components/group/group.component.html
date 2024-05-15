@@ -93,9 +93,10 @@
             <app-group 
               [groupHierarchy]="group.value" 
               [allGroupTemplates]="allGroupTemplates" 
-              [template]="allGroupTemplates?.[group.key]" 
               [groupID]="group.key" 
               [group]="deploymentTemplateData?.input_groups?.[group.key]"
+              [secretOptions]="secretOptions"
+              [hostResourcesOptions]="hostResourcesOptions"
             ></app-group>
           </mat-card>
         </div>

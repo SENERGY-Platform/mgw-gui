@@ -12,10 +12,9 @@ import { NO_GROUP } from '../single-deployment/deployment-template';
   styleUrls: ['./group.component.css']
 })
 export class GroupComponent implements OnInit {
-  @Input() group?: InputGroup;
+  @Input() group?: InputGroup; // The active group, used to display group name, ...
   @Input() groupID?: string;
-  @Input() allGroupTemplates?: FormTemplate;
-  @Input() template?: Template; 
+  @Input() allGroupTemplates?: FormTemplate; // contains templates for all groups, as group may have child groups 
   @Input() groupHierarchy?: Group;
   @Input() moduleID: string = ""
   @Input() hostResourcesOptions: any = {}
@@ -23,6 +22,7 @@ export class GroupComponent implements OnInit {
   @Input() deploymentTemplateData?: DeploymentTemplate | DeploymentUpdateTemplate | ModuleUpdateTemplate
   
   form: FormGroup = new FormGroup("")
+  template?: Template; 
 
   constructor(
     private rootFormGroup: FormGroupDirective,
@@ -33,6 +33,11 @@ export class GroupComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadForm()
+    if(this.groupID == null) {
+      this.template = this.allGroupTemplates?.[NO_GROUP];
+    } else {
+      this.template = this.allGroupTemplates?.[this.groupID];
+    }
   }
 
   showGroupInfo() {

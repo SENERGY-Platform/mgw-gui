@@ -24,7 +24,7 @@ export interface AuxDeploymentBase {
 export interface AuxDepContainer {
     id: string;
     alias: string;
-    info: ContainerInfo;
+    info: null | ContainerInfo;
 }
 
 export interface AuxDeployment extends AuxDeploymentBase {

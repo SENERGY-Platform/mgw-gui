@@ -23,7 +23,7 @@
         <div *ngFor="let group of groupHierarchy | keyvalue">
           <mat-card class="card group-container" [formGroup]="form">
             <app-group [groupHierarchy]="group.value" [allGroupTemplates]="formTemplate"
-              [template]="formTemplate[group.key]" [groupID]="group.key"
+              [groupID]="group.key"
               [group]="deploymentTemplateData?.input_groups?.[group.key]" [moduleID]="moduleID"
               [hostResourcesOptions]="hostResourcesOptions" [secretOptions]="secretOptions"
               [deploymentTemplateData]="deploymentTemplateData"></app-group>
@@ -32,7 +32,7 @@
       </div>
 
       <div *ngIf="!inputGroupsExists()">
-        <app-group [allGroupTemplates]="formTemplate" [template]="getDefaultTemplate()" [moduleID]="moduleID"
+        <app-group [allGroupTemplates]="formTemplate" [moduleID]="moduleID"
           [hostResourcesOptions]="hostResourcesOptions" [secretOptions]="secretOptions"
           [deploymentTemplateData]="deploymentTemplateData"></app-group>
       </div>
