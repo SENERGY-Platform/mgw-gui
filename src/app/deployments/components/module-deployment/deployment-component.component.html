@@ -24,7 +24,8 @@
       </div>
 
       <div *ngIf="mode == 'new'">
-        <mat-checkbox [checked]="autostartEnabled">Start the deployment directly?</mat-checkbox>
+        <!--standalone: true needed so that ngModel does not conflict with form controls-->
+        <mat-checkbox [(ngModel)]="autostartEnabled" [ngModelOptions]="{standalone: true}">Start the deployment directly?</mat-checkbox>
       </div>
     </form>
 

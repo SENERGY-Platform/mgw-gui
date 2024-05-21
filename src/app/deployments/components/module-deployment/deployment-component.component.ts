@@ -36,7 +36,7 @@ export class DeploymentComponentComponent implements OnInit {
 
   hostResourcesOptions: any = {}
 
-  autostartEnabled = true;
+  autostartEnabled = false;
 
   inputForm = {
     "module_id": this.fb.control(this.moduleID),
