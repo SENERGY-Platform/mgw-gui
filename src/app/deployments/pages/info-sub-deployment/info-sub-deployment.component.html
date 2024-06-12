@@ -41,7 +41,7 @@
     <mat-card class="container card" *ngIf="objectKeys(subDeployment.labels).length > 0">
       <h2>Labels</h2>
       <mat-form-field appearance="fill" *ngFor="let label of subDeployment.labels | keyvalue">
-        <mat-label>label.key</mat-label>
+        <mat-label>{{label.key}}</mat-label>
         <input matInput [readonly]="true" [value]="label.value">
       </mat-form-field>
     </mat-card>
@@ -49,7 +49,7 @@
     <mat-card class="container card" *ngIf="objectKeys(subDeployment.configs).length > 0">
       <h2>Configuration</h2>
       <mat-form-field appearance="fill" *ngFor="let config of subDeployment.configs | keyvalue">
-        <mat-label>config.key</mat-label>
+        <mat-label>{{config.key}}</mat-label>
         <input matInput [readonly]="true" [value]="config.value">
       </mat-form-field>
     </mat-card>
@@ -57,7 +57,7 @@
     <mat-card class="container card" *ngIf="objectKeys(subDeployment.volumes).length > 0">
       <h2>Volumes</h2>
       <mat-form-field appearance="fill" *ngFor="let volume of subDeployment.volumes | keyvalue">
-        <mat-label>volume.key</mat-label>
+        <mat-label>{{volume.key}}</mat-label>
         <input matInput [readonly]="true" [value]="volume.value">
       </mat-form-field>
     </mat-card>
