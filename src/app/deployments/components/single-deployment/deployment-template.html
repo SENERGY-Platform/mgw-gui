@@ -19,7 +19,7 @@
         <input matInput formControlName="name">
       </mat-form-field>
 
-      <div>
+      <div *ngIf="inputGroupsExists()">
         <app-group 
           [allGroupTemplates]="formTemplate"
           [groupID]="noGroupKey"
@@ -28,9 +28,7 @@
           [hostResourcesOptions]="hostResourcesOptions" 
           [secretOptions]="secretOptions"
           [deploymentTemplateData]="deploymentTemplateData"></app-group>
-      </div>
 
-      <div *ngIf="inputGroupsExists()">
         <div *ngFor="let group of groupHierarchy | keyvalue">
           <mat-card class="card group-container" [formGroup]="form">
             <app-group [groupHierarchy]="group.value" [allGroupTemplates]="formTemplate"
