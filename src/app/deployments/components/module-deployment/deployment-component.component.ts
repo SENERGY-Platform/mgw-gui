@@ -11,6 +11,7 @@ import { SecretManagerServiceService } from '../../../core/services/secret-manag
 import { DeploymentRequest, DeploymentTemplate, DeploymentUpdateTemplate, ModuleUpdateTemplate } from '../../models/deployment_models';
 import { HostManagerService } from 'src/app/core/services/host-manager/host-manager.service';
 import { catchError, concatMap, forkJoin, map, Observable, of, throwError } from 'rxjs';
+import { NotificationService } from 'src/app/core/services/util/notifications.service';
 
 @Component({
   selector: 'deployment',
@@ -64,7 +65,8 @@ export class DeploymentComponentComponent implements OnInit {
     public dialog: MatDialog, 
     private router: Router,
     private errorService: ErrorService,
-    private utilsService: UtilService
+    private utilsService: UtilService,
+    private notifierService: NotificationService
   ) {
   }
 
@@ -287,6 +289,7 @@ export class DeploymentComponentComponent implements OnInit {
   }
 
   deploy(deploymentRequest: DeploymentRequest) {
+    console.log('create deployment')
     this.moduleService.deployModule(deploymentRequest).pipe(
       concatMap(jobID => {
         var message = "Create deployment"
@@ -294,6 +297,7 @@ export class DeploymentComponentComponent implements OnInit {
       }),
       concatMap(result => {
         if(result.success) {
+          console.log('created deployment')
             return of(result.result)
         } else {
             return throwError(() => new Error(result.error))
@@ -307,6 +311,7 @@ export class DeploymentComponentComponent implements OnInit {
       })
     ).subscribe({
       next: (_) => {
+          console.log('created/started deployment successfully')
           this.router.navigate(["/deployments"])
       },
       error: (err) => {
@@ -372,7 +377,9 @@ export class DeploymentComponentComponent implements OnInit {
       } else if(this.mode == "update") {
         this.updateModule(deploymentRequest)
       }
-      
+    } else {
+      this.notifierService.showError('Form is not filled out correctly')
+      console.log("Form invalid", this.form);
     }
   }
 
@@ -448,6 +455,7 @@ export class DeploymentComponentComponent implements OnInit {
   }
 
   startDeployment(deploymentID: string) {
+    console.log('start deployment: ' + deploymentID);
     return this.moduleService.startDeployment(deploymentID, true);
   }
 

@@ -30,6 +30,7 @@ export class DeploymentTemplate2 implements OnInit {
     module!: Module
     deployment!: Deployment
     ready: boolean = false
+    noGroupKey = NO_GROUP;
 
     formTemplate: FormTemplate = {};
     groupHierarchy?: Group;
@@ -84,6 +85,8 @@ export class DeploymentTemplate2 implements OnInit {
         this.setupGroup(groupIP);
         this.formTemplate[groupIP].configs[id] = config;
       };
+
+      console.log('Form', this.formTemplate)
     }
 
     getParentOfGroup(groups: InputGroups, groupID: string): string[] {
@@ -112,11 +115,13 @@ export class DeploymentTemplate2 implements OnInit {
     setupGroups() {
       const groupHierarchy = {}
       const groups = this.deploymentTemplateData?.input_groups || {};
+
       for (const [id, group] of Object.entries(groups || {})) {
         const parents = this.getParentOfGroup(groups, id);
         this.mergeGroupHierarchy(groupHierarchy, parents);
       }
       this.groupHierarchy = groupHierarchy;
+      console.log('Input Group Hierarchy: ', groupHierarchy);
     }
 
     inputGroupsExists() {

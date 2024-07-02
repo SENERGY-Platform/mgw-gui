@@ -29,9 +29,9 @@
       </div>
     </form>
 
-    <button *ngIf="mode == 'new'" mat-raised-button color="primary" (click)="submit()">Deploy</button>
-    <button *ngIf="mode == 'edit'" mat-raised-button color="primary" (click)="submit()">Update Deployment</button>
-    <button *ngIf="mode == 'update'" mat-raised-button color="primary" (click)="submit()">Update Module</button>
+    <button *ngIf="mode == 'new'" mat-raised-button color="primary" [disabled]='!form.valid' (click)="submit()">Deploy</button>
+    <button *ngIf="mode == 'edit'" mat-raised-button color="primary" [disabled]='!form.valid' (click)="submit()">Update Deployment</button>
+    <button *ngIf="mode == 'update'" mat-raised-button color="primary" [disabled]='!form.valid' (click)="submit()">Update Module</button>
     <button *ngIf="mode == 'update'" mat-raised-button color="primary" (click)="cancelModuleUpdate()">Cancel</button>
     <button *ngIf="mode == 'new' || mode == 'edit'" mat-raised-button color="primary" (click)="cancel()">Cancel</button>
 

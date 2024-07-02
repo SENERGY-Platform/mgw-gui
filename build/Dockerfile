@@ -1,4 +1,4 @@
-FROM node:lts AS builder
+FROM node:latest AS builder
 WORKDIR /home/node/app
 
 # Install deps

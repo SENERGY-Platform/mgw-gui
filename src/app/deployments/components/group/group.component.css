@@ -6,10 +6,6 @@
     padding: 30px
 }
 
-.form-field-container {
-    margin-bottom: 20px;
-}
-
 mat-form-field {
     width: 100%;
 }
@@ -27,5 +23,4 @@ mat-form-field {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 30px;
 }
