@@ -10,7 +10,7 @@ import { ModuleManagerService } from '../../../core/services/module-manager/modu
 import { SecretManagerServiceService } from '../../../core/services/secret-manager/secret-manager-service.service';
 import { DeploymentRequest, DeploymentTemplate, DeploymentUpdateTemplate, ModuleUpdateTemplate } from '../../models/deployment_models';
 import { HostManagerService } from 'src/app/core/services/host-manager/host-manager.service';
-import { catchError, concatMap, forkJoin, map, Observable, of, throwError } from 'rxjs';
+import { catchError, concatMap, forkJoin, last, map, Observable, of, throwError } from 'rxjs';
 import { NotificationService } from 'src/app/core/services/util/notifications.service';
 
 @Component({
@@ -433,9 +433,10 @@ export class DeploymentComponentComponent implements OnInit {
       }
       config['id'] = config_id
       
-      var defaultValue = config['default']
-      if(this.mode != "new") {
-        defaultValue = config['value']
+      let defaultValue = config['default']
+      const lastValue = config['value']
+      if(this.mode != "new" && lastValue != null) {
+        defaultValue = lastValue
       }
       this.setupFormControl(form.get("configs"), config['id'], config['required'], defaultValue, config['is_list'])
     })
