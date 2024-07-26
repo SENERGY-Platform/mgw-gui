@@ -3,9 +3,16 @@ mat-form-field {
 }
 
 .container {
-    margin-bottom: 30px;
+    margin-top: 30px;
 }
 
 h1 {
     font-weight: bold;
+}
+
+:host ::ng-deep .mat-tab-header {
+    top: 0;
+    z-index: 1000; 
+    position: sticky;
+    position: -webkit-sticky; /* macOS/iOS Safari */    
 }

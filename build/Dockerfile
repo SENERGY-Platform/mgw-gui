@@ -17,7 +17,7 @@ FROM builder as prod_builder
 RUN ng build -c production --base-href="/core/web-ui/"
 
 FROM builder as dev_builder
-RUN ng build -c development --base-href="/core/web-ui/"
+RUN ng build -c debug --base-href="/core/web-ui/"
 
 FROM nginx as serve
 ARG VERSION="missing-version"
@@ -26,6 +26,7 @@ COPY --from=dev_builder /home/node/app/dist/mgw-gui /usr/share/nginx/html
 RUN echo ${VERSION}
 RUN touch /usr/share/nginx/html/version.txt
 RUN echo $VERSION > /usr/share/nginx/html/version.txt
+
 
 FROM serve AS serve_prod
 COPY --from=prod_builder /home/node/app/dist/mgw-gui /usr/share/nginx/html

@@ -29,6 +29,8 @@ import { ListContainersComponent } from './pages/list-containers/list.component'
 import { InfoSubDeploymentComponent } from './pages/info-sub-deployment/info-sub-deployment.component';
 import { ListParentDeploymentsComponent } from './pages/list-deployments/list-deployments.component';
 import { DeploymentListComponent } from './components/list/deployment-list.component';
+import {MatTabsModule} from '@angular/material/tabs';
+
 const routes: Routes = [
   {
     path: 'deployments', 
@@ -79,6 +81,7 @@ const routes: Routes = [
     MatSelectModule,
     MatTooltipModule,
     FormsModule,
+    MatTabsModule,
     ReactiveFormsModule
   ],
   exports: [

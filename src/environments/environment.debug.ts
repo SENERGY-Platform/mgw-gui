@@ -4,10 +4,10 @@ import { HostManagerService } from "src/app/core/services/host-manager/host-mana
 import { SecretManagerServiceService } from "src/app/core/services/secret-manager/secret-manager-service.service";
 import { ModuleManagerService } from "../app/core/services/module-manager/module-manager-service.service";
 
-const CORE_PREFIX = "/core";
+const CORE_PREFIX = '/core'
 
 export const environment = {
-    production: true,
+    production: false,
     moduleManagerService: ModuleManagerService,
     secretManagerService: SecretManagerServiceService,
     hostManagerService: HostManagerService,
@@ -15,7 +15,7 @@ export const environment = {
     coreManagerService: CoreManagerService,
     uiVersion: "UI-VERSION",
     coreApiUrl: CORE_PREFIX + "/api",
-    authApiUrl: CORE_PREFIX + "/core/auth",
+    authApiUrl: CORE_PREFIX + "/auth",
     uiBaseUrl: CORE_PREFIX + "/web-ui",
     endpointsUrl: "/endpoints"
 };

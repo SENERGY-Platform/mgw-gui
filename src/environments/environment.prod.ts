@@ -15,7 +15,7 @@ export const environment = {
     coreManagerService: CoreManagerService,
     uiVersion: "UI-VERSION",
     coreApiUrl: CORE_PREFIX + "/api",
-    authApiUrl: CORE_PREFIX + "/core/auth",
+    authApiUrl: CORE_PREFIX + "/auth",
     uiBaseUrl: CORE_PREFIX + "/web-ui",
     endpointsUrl: "/endpoints"
 };

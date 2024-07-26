@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiService } from 'src/app/core/services/api/api.service'
+import { environment } from 'src/environments/environment.prod';
 import { InitLogoutResponse, RegisterRequest } from './auth.models';
 
 
@@ -9,7 +10,7 @@ import { InitLogoutResponse, RegisterRequest } from './auth.models';
   providedIn: 'root'
 })
 export class AuthService {
-  basePath = "/core/auth"
+  basePath = environment.authApiUrl
   loginPath = "/login"
   logoutPath = "/logout"
   registerPath = "/register"

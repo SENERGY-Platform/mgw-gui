@@ -21,6 +21,7 @@ export class AuthCheckInterceptor implements HttpInterceptor {
             return event;
           }),
           catchError(err => {
+            console.log("ERRR")
             if(err instanceof HttpErrorResponse) {
               if(err.status === 401) {
                 window.location.href = environment.uiBaseUrl + "/login" 
