@@ -13,6 +13,7 @@ export class LoginComponent {
   flowID: string = "";
   csrf: string = "";
   waitingForLogin = false;
+  returnTo: string = "";
 
   form = new FormGroup({
     username: new FormControl('', {nonNullable: true, validators: Validators.required}),
@@ -24,10 +25,7 @@ export class LoginComponent {
     private route: ActivatedRoute,
     private errorService: ErrorService
   ) {
-    this.route.params.subscribe(params => {
-      this.flowID = params['flow']
-    })
-   
+    this.returnTo = getReturnTo(this.route.snapshot.queryParamMap.get('return_to'), "/core/web-ui")
   }
 
   login() {
@@ -43,7 +41,7 @@ export class LoginComponent {
         this.authService.login(this.flowID, this.form.controls.username.value, this.form.controls.password.value, this.csrf).subscribe({
           next: (_) => {
             this.waitingForLogin = false;
-            window.location.href = "/";
+            window.location.href = this.returnTo;
           },
           error: (err) => {
             this.waitingForLogin = false;
@@ -57,4 +55,21 @@ export class LoginComponent {
       }
     })
   }
+}
+
+const returnToRegex = /^\/.*/;
+
+function getReturnTo(v: string | null, def: string) :string {
+  if (v !== null) {
+    try {
+      v = decodeURIComponent(v);
+      if (returnToRegex.test(v)) {
+        return v
+      }
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+  return def
 }
