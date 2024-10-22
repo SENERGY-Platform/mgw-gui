@@ -14,11 +14,12 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/mgw-gui",
+            "outputPath": {
+              "base": "dist/mgw-gui"
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -32,7 +33,8 @@
               "src/styles.css",
               "src/theme.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "browser": "src/main.ts"
           },
           "configurations": {
             "production": {
@@ -57,9 +59,7 @@
               "outputHashing": "all"
             },
             "development_mock": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true,
@@ -71,9 +71,7 @@
               ]
             },
             "debug": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true,
@@ -97,9 +95,7 @@
               ]
             },
             "local_development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true,
@@ -129,13 +125,13 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "mgw-gui:build:production"
+              "buildTarget": "mgw-gui:build:production"
             },
             "development": {
-              "browserTarget": "mgw-gui:build:development"
+              "buildTarget": "mgw-gui:build:development"
             },
             "development_mock": {
-              "browserTarget": "mgw-gui:build:development_mock"
+              "buildTarget": "mgw-gui:build:development_mock"
             }
           },
           "defaultConfiguration": "development_mock"
@@ -143,7 +139,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "mgw-gui:build"
+            "buildTarget": "mgw-gui:build"
           }
         },
         "test": {

@@ -1,6 +1,6 @@
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,69 +18,62 @@ import { CoreServicesModule } from './mgw-core/core-services.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthCheckInterceptor } from './core/services/auth/interceptor/auth.interceptor';
 
-@NgModule({
-  declarations: [
-    AppComponent 
-  ],
-  imports: [
-    BrowserModule,
-    MatIconModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    DeploymentsModule,
-    ContainerModule,
-    ModulesModule,
-    CoreModule,
-    SecretsModule,
-    HttpClientModule,
-    CoreServicesModule,
-    AuthModule
-  ],
-  exports: [
-  ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS, useClass: AuthCheckInterceptor, multi: true
-    },
-    {
-      'provide': 'ModuleManagerService',
-      'useClass': environment.moduleManagerService
-    },
-    {
-      'provide': 'SecretManagerService',
-      'useClass': environment.secretManagerService
-    },
-    {
-      'provide': 'HostManagerService',
-      'useClass': environment.hostManagerService
-    },
-    {
-      'provide': 'CoreManagerService',
-      'useClass': environment.coreManagerService
-    },
-    {
-      'provide': 'ContainerEngineManagerService',
-      'useClass': environment.containerEngineManagerService
-    },
-    {
-      'provide': LOCALE_ID, 
-      'useValue': 'de' 
-    },
-    {
-      'provide': HIGHLIGHT_OPTIONS,
-      'useValue': {
-        coreLibraryLoader: () => import('highlight.js/lib/core'),
-        lineNumbersLoader: () => import('ngx-highlightjs/line-numbers'),
-        lineNumbers: true,
-        languages: {
-          //typescript: () => import('highlight.js/lib/languages/typescript'),
+@NgModule({ declarations: [
+        AppComponent
+    ],
+    exports: [],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        MatIconModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        DeploymentsModule,
+        ContainerModule,
+        ModulesModule,
+        CoreModule,
+        SecretsModule,
+        CoreServicesModule,
+        AuthModule], providers: [
+        {
+            provide: HTTP_INTERCEPTORS, useClass: AuthCheckInterceptor, multi: true
         },
-        themePath: "assets/styles/code-themes/github-dark.css"
-      }
-    }
-  ],
-  bootstrap: [AppComponent]
-})
+        {
+            'provide': 'ModuleManagerService',
+            'useClass': environment.moduleManagerService
+        },
+        {
+            'provide': 'SecretManagerService',
+            'useClass': environment.secretManagerService
+        },
+        {
+            'provide': 'HostManagerService',
+            'useClass': environment.hostManagerService
+        },
+        {
+            'provide': 'CoreManagerService',
+            'useClass': environment.coreManagerService
+        },
+        {
+            'provide': 'ContainerEngineManagerService',
+            'useClass': environment.containerEngineManagerService
+        },
+        {
+            'provide': LOCALE_ID,
+            'useValue': 'de'
+        },
+        {
+            'provide': HIGHLIGHT_OPTIONS,
+            'useValue': {
+                coreLibraryLoader: () => import('highlight.js/lib/core'),
+                lineNumbersLoader: () => import('ngx-highlightjs/line-numbers'),
+                lineNumbers: true,
+                languages: {
+                //typescript: () => import('highlight.js/lib/languages/typescript'),
+                },
+                themePath: "assets/styles/code-themes/github-dark.css"
+            }
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule {
   constructor() {
     registerLocaleData(localeDe)
