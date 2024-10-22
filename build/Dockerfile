@@ -22,14 +22,14 @@ RUN ng build -c debug --base-href="/core/web-ui/"
 FROM nginx as serve
 ARG VERSION="missing-version"
 ENV VERSION=${VERSION}
-COPY --from=dev_builder /home/node/app/dist/mgw-gui /usr/share/nginx/html
+COPY --from=dev_builder /home/node/app/dist/mgw-gui/browser /usr/share/nginx/html
 RUN echo ${VERSION}
 RUN touch /usr/share/nginx/html/version.txt
 RUN echo $VERSION > /usr/share/nginx/html/version.txt
 
 
 FROM serve AS serve_prod
-COPY --from=prod_builder /home/node/app/dist/mgw-gui /usr/share/nginx/html
+COPY --from=prod_builder /home/node/app/dist/mgw-gui/browser /usr/share/nginx/html
 COPY build/conf /etc/nginx/conf.d/default.conf
 
 FROM serve as serve_dev 
