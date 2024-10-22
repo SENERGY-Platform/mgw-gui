@@ -1,4 +1,4 @@
-FROM node:latest AS builder
+FROM node:20-alpine AS builder
 WORKDIR /home/node/app
 
 # Install deps
@@ -19,7 +19,7 @@ RUN ng build -c production --base-href="/core/web-ui/"
 FROM builder as dev_builder
 RUN ng build -c debug --base-href="/core/web-ui/"
 
-FROM nginx as serve
+FROM nginx:1.27.2-alpine-slim as serve
 ARG VERSION="missing-version"
 ENV VERSION=${VERSION}
 COPY --from=dev_builder /home/node/app/dist/mgw-gui/browser /usr/share/nginx/html
@@ -32,5 +32,5 @@ FROM serve AS serve_prod
 COPY --from=prod_builder /home/node/app/dist/mgw-gui/browser /usr/share/nginx/html
 COPY build/conf /etc/nginx/conf.d/default.conf
 
-FROM serve as serve_dev 
+FROM serve as serve_dev
 COPY build/conf /etc/nginx/conf.d/default.conf
