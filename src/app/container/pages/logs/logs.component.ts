@@ -1,14 +1,21 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatSlideToggleChange, MatSlideToggle } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContainerEngineManagerService } from 'src/app/core/services/container-engine-manager/container-engine-manager.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { UtilService } from 'src/app/core/services/util/util.service';
+import { FormsModule } from '@angular/forms';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { NgIf } from '@angular/common';
+import { Highlight } from 'ngx-highlightjs';
 
 @Component({
-  selector: 'app-logs',
-  templateUrl: './logs.component.html',
-  styleUrls: ['./logs.component.css']
+    selector: 'app-logs',
+    templateUrl: './logs.component.html',
+    styleUrls: ['./logs.component.css'],
+    standalone: true,
+    imports: [MatSlideToggle, FormsModule, MatFormField, MatLabel, MatInput, NgIf, Highlight]
 })
 export class LogsComponent implements OnDestroy {
   containerID!: string 

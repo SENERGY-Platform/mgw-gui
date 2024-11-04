@@ -1,17 +1,23 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material/sidenav';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
+import { ActivatedRoute, NavigationEnd, Router, RouterLinkActive, RouterLink, RouterOutlet } from '@angular/router';
 import { concatMap, filter, map, mergeMap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../../services/auth/auth.service';
 import { ErrorService } from '../../services/util/error.service';
 import { SidenavPageModel } from './models/sidenav-page.model';
 import { SidenavSectionModel } from './models/sidenav-section.model';
+import { NgFor, NgIf, NgClass, UpperCasePipe } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 
 @Component({
-  selector: 'app-main-navigation',
-  templateUrl: './main-navigation.component.html',
-  styleUrls: ['./main-navigation.component.css']
+    selector: 'app-main-navigation',
+    templateUrl: './main-navigation.component.html',
+    styleUrls: ['./main-navigation.component.css'],
+    standalone: true,
+    imports: [MatSidenavContainer, MatSidenav, NgFor, NgIf, RouterLinkActive, RouterLink, MatIcon, NgClass, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, MatSidenavContent, RouterOutlet, UpperCasePipe]
 })
 export class MainNavigationComponent implements OnInit {
   @ViewChild('sidenav', { static: false }) sidenav!: MatSidenav;

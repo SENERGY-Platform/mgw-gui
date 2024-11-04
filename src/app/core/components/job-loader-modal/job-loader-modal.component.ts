@@ -5,11 +5,14 @@ import { ModuleManagerService } from 'src/app/core/services/module-manager/modul
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Job } from 'src/app/mgw-core/models/job.model';
 import { CoreManagerService } from '../../services/core-manager/core-manager.service';
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
-  selector: 'app-job-loader-modal',
-  templateUrl: './job-loader-modal.component.html',
-  styleUrls: ['./job-loader-modal.component.css']
+    selector: 'app-job-loader-modal',
+    templateUrl: './job-loader-modal.component.html',
+    styleUrls: ['./job-loader-modal.component.css'],
+    standalone: true,
+    imports: [SpinnerComponent]
 })
 export class JobLoaderModalComponent implements OnInit {
   jobID!: string

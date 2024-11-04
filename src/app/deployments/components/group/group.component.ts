@@ -1,15 +1,27 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { FormGroup, FormGroupDirective } from '@angular/forms';
+import { FormGroup, FormGroupDirective, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HostManagerService } from 'src/app/core/services/host-manager/host-manager.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Deployment, DeploymentTemplate, DeploymentUpdateTemplate, InputGroup, ModuleUpdateTemplate } from '../../models/deployment_models';
 import { FormTemplate, Group, Template } from '../../models/form';
 import { NO_GROUP } from '../single-deployment/deployment-template';
+import { NgIf, NgFor, KeyValuePipe } from '@angular/common';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatFabButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatChipGrid, MatChipRow, MatChipRemove, MatChipInput } from '@angular/material/chips';
+import { MatCard } from '@angular/material/card';
 
 @Component({
-  selector: 'app-group',
-  templateUrl: './group.component.html',
-  styleUrls: ['./group.component.css']
+    selector: 'app-group',
+    templateUrl: './group.component.html',
+    styleUrls: ['./group.component.css'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, NgIf, NgFor, MatFormField, MatLabel, MatSelect, MatOption, MatFabButton, MatTooltip, MatIcon, MatInput, MatChipGrid, MatChipRow, MatChipRemove, MatChipInput, MatCard, KeyValuePipe]
 })
 export class GroupComponent implements OnInit {
   @Input() group?: InputGroup; // The active group, used to display group name, ...

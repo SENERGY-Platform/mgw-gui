@@ -1,14 +1,24 @@
 import { Component, Inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SecretManagerServiceService } from 'src/app/core/services/secret-manager/secret-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { CreateSecret, Secret, SecretType, SecretTypes } from '../../models/secret_models';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { NgIf, NgFor } from '@angular/common';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { MatButton } from '@angular/material/button';
 
 @Component({
-  selector: 'secret-form',
-  templateUrl: './form.component.html',
-  styleUrls: ['./form.component.css']
+    selector: 'secret-form',
+    templateUrl: './form.component.html',
+    styleUrls: ['./form.component.css'],
+    standalone: true,
+    imports: [SpinnerComponent, NgIf, MatFormField, MatLabel, MatSelect, FormsModule, NgFor, MatOption, ReactiveFormsModule, MatInput, CdkTextareaAutosize, MatButton]
 })
 export class FormComponent implements OnChanges, OnInit {
   @Input() mode: string = "add" 

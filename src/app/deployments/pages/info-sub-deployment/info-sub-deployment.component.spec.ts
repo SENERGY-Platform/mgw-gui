@@ -8,8 +8,8 @@ describe('InfoSubDeploymentComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [InfoSubDeploymentComponent]
-    });
+    imports: [InfoSubDeploymentComponent]
+});
     fixture = TestBed.createComponent(InfoSubDeploymentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

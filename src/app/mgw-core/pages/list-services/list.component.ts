@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { concatMap, map, of, throwError } from 'rxjs';
 import { CoreService, CoreServicesResponse } from 'src/app/mgw-core/models/services';
 import { CoreManagerService } from 'src/app/core/services/core-manager/core-manager.service';
@@ -8,11 +8,18 @@ import { ErrorService } from 'src/app/core/services/util/error.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Router } from '@angular/router';
 import { UtilService } from 'src/app/core/services/util/util.service';
+import { NgIf } from '@angular/common';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.css']
+    selector: 'app-list',
+    templateUrl: './list.component.html',
+    styleUrls: ['./list.component.css'],
+    standalone: true,
+    imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
 })
 export class ListCoreServicesComponent {
   dataSource = new MatTableDataSource<CoreService>();

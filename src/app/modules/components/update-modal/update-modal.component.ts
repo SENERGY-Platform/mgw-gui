@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { catchError, concatMap, of, throwError } from 'rxjs';
@@ -9,11 +9,18 @@ import { UtilService } from 'src/app/core/services/util/util.service';
 import { ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
 import { ModuleUpdate, ModuleUpdateRequest } from '../../models/module_models';
 import * as semver from "semver";
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { NgFor } from '@angular/common';
+import { MatOption } from '@angular/material/core';
+import { MatButton } from '@angular/material/button';
 
 @Component({
-  selector: 'app-update-modal',
-  templateUrl: './update-modal.component.html',
-  styleUrls: ['./update-modal.component.css']
+    selector: 'app-update-modal',
+    templateUrl: './update-modal.component.html',
+    styleUrls: ['./update-modal.component.css'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatSelect, NgFor, MatOption, MatButton]
 })
 export class UpdateModalComponent implements OnInit {
   availableModuleUpdate: ModuleUpdate

@@ -8,8 +8,8 @@ describe('JobLoaderModalComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [JobLoaderModalComponent]
-    });
+    imports: [JobLoaderModalComponent]
+});
     fixture = TestBed.createComponent(JobLoaderModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

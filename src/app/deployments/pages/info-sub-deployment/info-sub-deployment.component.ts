@@ -4,11 +4,21 @@ import { ActivatedRoute } from '@angular/router';
 import { concatMap, map } from 'rxjs';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { AuxDeployment } from '../../models/sub-deployments';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { NgIf, NgFor, DatePipe, KeyValuePipe } from '@angular/common';
+import { MatCard } from '@angular/material/card';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
+import { ListContainersComponent } from '../list-containers/list.component';
 
 @Component({
-  selector: 'app-info-sub-deployment',
-  templateUrl: './info-sub-deployment.component.html',
-  styleUrls: ['./info-sub-deployment.component.css']
+    selector: 'app-info-sub-deployment',
+    templateUrl: './info-sub-deployment.component.html',
+    styleUrls: ['./info-sub-deployment.component.css'],
+    standalone: true,
+    imports: [SpinnerComponent, NgIf, MatCard, MatFormField, MatLabel, MatInput, MatCheckbox, FormsModule, NgFor, ListContainersComponent, DatePipe, KeyValuePipe]
 })
 export class InfoSubDeploymentComponent {
   deploymentID = ''

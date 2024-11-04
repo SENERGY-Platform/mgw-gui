@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { Observable, map, forkJoin, catchError, of } from 'rxjs';
 import { InfoResponse } from 'src/app/core/models/info';
 import { ApiService } from 'src/app/core/services/api/api.service';
@@ -13,9 +13,12 @@ import { UserService } from 'src/app/core/services/user/user.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { environment } from 'src/environments/environment';
 import { ComponentInfo } from '../../models/info';
+import { NgIf, DecimalPipe } from '@angular/common';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 
 @Pipe({
-  name: 'duration'
+    name: 'duration',
+    standalone: true
 })
 export class DurationPipe implements PipeTransform {
   transform(nanoseconds: number): string {
@@ -42,9 +45,11 @@ export class DurationPipe implements PipeTransform {
 }
 
 @Component({
-  selector: 'app-version',
-  templateUrl: './version.component.html',
-  styleUrls: ['./version.component.css']
+    selector: 'app-version',
+    templateUrl: './version.component.html',
+    styleUrls: ['./version.component.css'],
+    standalone: true,
+    imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, DecimalPipe, DurationPipe]
 })
 export class VersionComponent implements OnInit {
   uiVersion: string = environment.uiVersion

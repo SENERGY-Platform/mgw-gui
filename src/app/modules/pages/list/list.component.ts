@@ -1,19 +1,26 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { Module, ModuleUpdates } from '../../models/module_models';
 import { ErrorService } from 'src/app/core/services/util/error.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { UpdateModalComponent } from '../../components/update-modal/update-modal.component';
 import { catchError, Observable, of, map, concatMap, throwError, forkJoin } from 'rxjs';
+import { NgIf } from '@angular/common';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { MatIconButton, MatButton, MatFabButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.css']
+    selector: 'app-list',
+    templateUrl: './list.component.html',
+    styleUrls: ['./list.component.css'],
+    standalone: true,
+    imports: [NgIf, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, MatFabButton, RouterLink]
 })
 export class ListComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<Module>();

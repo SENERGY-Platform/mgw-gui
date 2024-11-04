@@ -8,8 +8,8 @@ describe('GroupComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [GroupComponent]
-    });
+    imports: [GroupComponent]
+});
     fixture = TestBed.createComponent(GroupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

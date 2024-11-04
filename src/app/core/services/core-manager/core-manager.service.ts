@@ -5,6 +5,7 @@ import { Job } from 'src/app/mgw-core/models/job.model';
 import { CoreServicesResponse } from 'src/app/mgw-core/models/services';
 import { InfoResponse } from '../../models/info';
 import { ApiService } from '../api/api.service';
+import {Log} from "../../../mgw-core/models/logs";
 
 @Injectable({
   providedIn: 'root'
@@ -14,12 +15,12 @@ export class CoreManagerService {
 
   constructor(
     private http: ApiService,
-  ) { } 
+  ) { }
 
   getEndpoints(deploymentId?: string): Observable<CoreEndpointsResponse> {
     var url = this.coreManagerPath + "/endpoints"
     if(deploymentId != null) {
-      url = url + "?ref=" + deploymentId; 
+      url = url + "?ref=" + deploymentId;
     }
     return <Observable<CoreEndpointsResponse>>this.http.get(url, undefined, undefined, false)
   }
@@ -67,5 +68,15 @@ export class CoreManagerService {
   getInfo(): Observable<InfoResponse> {
     var url = this.coreManagerPath + "/info"
     return <Observable<InfoResponse>>this.http.get(url);
+  }
+
+  getLogs(): Observable<Log[]> {
+    let url = this.coreManagerPath + "/logs"
+    return <Observable<Log[]>>this.http.get(url);
+  }
+
+  getLog(logID: string): Observable<Log> {
+    let url = this.coreManagerPath + "/logs/" + logID
+    return <Observable<Log>>this.http.get(url);
   }
 }

@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { CoreModule } from '../core/core.module';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -47,18 +47,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    ListCoreServicesComponent,
-    ListJobsComponent,
-    VersionComponent,
-    ListModuleManagerJobsComponent,
-    ListUsersComponent,
-    RegisterComponent,
-    EditAccountComponent,
-    ListAppsComponent,
-    DurationPipe
-  ],
-  imports: [
+    imports: [
     CommonModule,
     MatIconModule,
     MatInputModule,
@@ -67,10 +56,18 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatFormFieldModule,
     MatButtonModule,
-    CoreModule,
     MatCheckboxModule,
     MatTableModule,
     RouterModule.forChild(routes),
-  ]
+    ListCoreServicesComponent,
+    ListJobsComponent,
+    VersionComponent,
+    ListModuleManagerJobsComponent,
+    ListUsersComponent,
+    RegisterComponent,
+    EditAccountComponent,
+    ListAppsComponent,
+    DurationPipe,
+]
 })
 export class CoreServicesModule { }

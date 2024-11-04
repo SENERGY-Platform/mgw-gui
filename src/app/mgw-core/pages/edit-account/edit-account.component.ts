@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { concatMap, map, Subscription } from 'rxjs';
 import { UserService } from 'src/app/core/services/user/user.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { HumanUser, UserRequest } from '../../models/users';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { NgIf } from '@angular/common';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
 
 export function passwordMustMatch(control: AbstractControl): ValidationErrors | null {
     const confirmation = control.get("confirmation");
@@ -13,9 +18,11 @@ export function passwordMustMatch(control: AbstractControl): ValidationErrors | 
 }
 
 @Component({
-  selector: 'app-edit-account',
-  templateUrl: './edit-account.component.html',
-  styleUrls: ['./edit-account.component.css']
+    selector: 'app-edit-account',
+    templateUrl: './edit-account.component.html',
+    styleUrls: ['./edit-account.component.css'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, SpinnerComponent, NgIf, MatFormField, MatLabel, MatInput, MatError, MatButton, RouterLink]
 })
 export class EditAccountComponent {
   form = new FormGroup({

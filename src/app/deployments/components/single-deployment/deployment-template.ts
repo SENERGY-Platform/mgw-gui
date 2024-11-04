@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { FormGroup, FormGroupDirective } from '@angular/forms';
+import { FormGroup, FormGroupDirective, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { HostManagerService } from 'src/app/core/services/host-manager/host-manager.service';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
@@ -7,13 +7,20 @@ import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Module } from 'src/app/modules/models/module_models';
 import { ConfigTemplate, Deployment, DeploymentTemplate, DeploymentUpdateTemplate, HostResourcesTemplate, InputGroups, ModuleUpdateTemplate, SecretTemplate } from '../../models/deployment_models';
 import { FormTemplate, Group } from '../../models/form';
+import { MatCard } from '@angular/material/card';
+import { NgIf, NgFor, KeyValuePipe } from '@angular/common';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { GroupComponent } from '../group/group.component';
 
 export const NO_GROUP = 'asfsdkfjdjf'
 
 @Component({
     selector: 'deployment-template',
     templateUrl: 'deployment-template.html',
-    styleUrls: ['deployment-template.css']
+    styleUrls: ['deployment-template.css'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, MatCard, NgIf, MatFormField, MatLabel, MatInput, GroupComponent, NgFor, KeyValuePipe]
 })
 export class DeploymentTemplate2 implements OnInit {
     @Input() moduleID: string = ""

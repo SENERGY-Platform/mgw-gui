@@ -13,26 +13,27 @@ import localeDe from '@angular/common/locales/de';
 import { SecretsModule } from './secrets/secrets.module';
 import { ContainerModule } from './container/container.module';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
-import { CoreModule } from './core/core.module';
 import { CoreServicesModule } from './mgw-core/core-services.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthCheckInterceptor } from './core/services/auth/interceptor/auth.interceptor';
+import { MainNavigationComponent} from "./core/components/main-navigation/main-navigation.component";
 
-@NgModule({ declarations: [
+@NgModule(/* TODO(standalone-migration): clean up removed NgModule class manually. 
+{ declarations: [
         AppComponent
     ],
     exports: [],
     bootstrap: [AppComponent], imports: [BrowserModule,
-        MatIconModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        DeploymentsModule,
-        ContainerModule,
-        ModulesModule,
-        CoreModule,
-        SecretsModule,
-        CoreServicesModule,
-        AuthModule], providers: [
+    MainNavigationComponent,
+    MatIconModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    DeploymentsModule,
+    ContainerModule,
+    ModulesModule,
+    SecretsModule,
+    CoreServicesModule,
+    AuthModule], providers: [
         {
             provide: HTTP_INTERCEPTORS, useClass: AuthCheckInterceptor, multi: true
         },
@@ -73,7 +74,7 @@ import { AuthCheckInterceptor } from './core/services/auth/interceptor/auth.inte
             }
         },
         provideHttpClient(withInterceptorsFromDi())
-    ] })
+    ] } */)
 export class AppModule {
   constructor() {
     registerLocaleData(localeDe)

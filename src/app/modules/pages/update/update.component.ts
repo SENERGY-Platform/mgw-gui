@@ -5,11 +5,14 @@ import { ErrorService } from 'src/app/core/services/util/error.service';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
 import { ModuleUpdateRequest } from '../../models/module_models';
+import { DeploymentComponentComponent } from '../../../deployments/components/module-deployment/deployment-component.component';
 
 @Component({
-  selector: 'app-update',
-  templateUrl: './update.component.html',
-  styleUrls: ['./update.component.css']
+    selector: 'app-update',
+    templateUrl: './update.component.html',
+    styleUrls: ['./update.component.css'],
+    standalone: true,
+    imports: [DeploymentComponentComponent]
 })
 export class UpdateComponent  {
   moduleID!: string 

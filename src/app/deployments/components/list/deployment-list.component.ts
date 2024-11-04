@@ -1,20 +1,28 @@
 import { Component, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { UtilService } from 'src/app/core/services/util/util.service';
 import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
 import { Deployment, DeploymentResponse } from '../../models/deployment_models';
 import { AuxDeploymentResponse, AuxDeployment } from '../../models/sub-deployments';
 import { ErrorService } from 'src/app/core/services/util/error.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { catchError, concatMap, map, Observable, of, throwError} from 'rxjs';
+import { NgIf } from '@angular/common';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  selector: 'deployment-list',
-  templateUrl: './deployment-list.component.html',
-  styleUrls: ['./deployment-list.component.css']
+    selector: 'deployment-list',
+    templateUrl: './deployment-list.component.html',
+    styleUrls: ['./deployment-list.component.css'],
+    standalone: true,
+    imports: [NgIf, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatSortHeader, MatIconButton, MatTooltip, MatIcon, RouterLink, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
 })
 export class DeploymentListComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<Deployment|AuxDeployment>();

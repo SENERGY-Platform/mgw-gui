@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ListComponent } from './pages/list/list.component';
 import { RouterModule, Routes } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { CoreModule } from '../core/core.module';
+
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { AddComponent } from './pages/add/add.component';
@@ -24,13 +24,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    ListComponent,
-    AddComponent,
-    EditComponent,
-    FormComponent
-  ],
-  imports: [
+    imports: [
     CommonModule,
     MatIconModule,
     MatButtonModule,
@@ -40,9 +34,12 @@ const routes: Routes = [
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
-    CoreModule,
     MatTableModule,
-    RouterModule.forChild(routes)
-  ]
+    RouterModule.forChild(routes),
+    ListComponent,
+    AddComponent,
+    EditComponent,
+    FormComponent
+]
 })
 export class SecretsModule { }

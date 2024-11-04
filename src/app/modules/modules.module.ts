@@ -11,7 +11,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {RouterModule, Routes} from '@angular/router';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTableModule} from '@angular/material/table';
-import { CoreModule } from 'src/app/core/core.module';
+
 import { MatSortModule } from '@angular/material/sort';
 import { ListComponent } from './pages/list/list.component';
 import { AddComponent } from './pages/add/add.component';
@@ -33,17 +33,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    ListComponent,
-    AddComponent,
-    InfoComponent,
-    UpdateModalComponent,
-    UpdateComponent
-  ],
-  imports: [
+    imports: [
     MatInputModule,
     MatCheckboxModule,
-    CoreModule,
     DeploymentsModule,
     MatTooltipModule,
     MatCardModule,
@@ -59,10 +51,13 @@ const routes: Routes = [
     MatChipsModule,
     MatSelectModule,
     FormsModule,
-    ReactiveFormsModule
-  ],
-  exports: [
-    
-  ]
+    ReactiveFormsModule,
+    ListComponent,
+    AddComponent,
+    InfoComponent,
+    UpdateModalComponent,
+    UpdateComponent
+],
+    exports: []
 })
 export class ModulesModule { }

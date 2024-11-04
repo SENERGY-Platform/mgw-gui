@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CoreModule } from '../core/core.module';
+
 import { RouterModule, Routes } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,10 +22,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    LogsComponent
-  ],
-  imports: [
+    imports: [
     CommonModule,
     MatIconModule,
     MatSlideToggleModule,
@@ -36,7 +33,7 @@ const routes: Routes = [
     MatTableModule,
     HighlightModule,
     RouterModule.forChild(routes),
-    CoreModule
-  ]
+    LogsComponent
+]
 })
 export class ContainerModule { }

@@ -6,11 +6,25 @@ import { ModuleManagerService } from 'src/app/core/services/module-manager/modul
 import { SecretManagerServiceService } from 'src/app/core/services/secret-manager/secret-manager-service.service';
 import { ErrorService } from 'src/app/core/services/util/error.service';
 import { Deployment, DeploymentTemplate } from '../../models/deployment_models';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { NgIf, NgFor, DatePipe, KeyValuePipe } from '@angular/common';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatCard } from '@angular/material/card';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
+import { ListContainersComponent } from '../list-containers/list.component';
+import { ListEndpointsComponent } from '../../../core/components/list-endpoints/list-endpoints.component';
+import { MatChipGrid, MatChipRow, MatChipInput } from '@angular/material/chips';
+import { DeploymentListComponent } from '../../components/list/deployment-list.component';
 
 @Component({
-  selector: 'app-info',
-  templateUrl: './info.component.html',
-  styleUrls: ['./info.component.css']
+    selector: 'app-info',
+    templateUrl: './info.component.html',
+    styleUrls: ['./info.component.css'],
+    standalone: true,
+    imports: [SpinnerComponent, NgIf, MatTabGroup, MatTab, MatCard, MatFormField, MatLabel, MatInput, MatCheckbox, FormsModule, ListContainersComponent, ListEndpointsComponent, NgFor, MatChipGrid, MatChipRow, MatChipInput, DeploymentListComponent, DatePipe, KeyValuePipe]
 })
 export class InfoComponent implements OnInit {
   @Input() deployment!: Deployment

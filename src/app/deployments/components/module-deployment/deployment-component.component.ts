@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, NonNullableFormBuilder, ValidatorFn } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, NonNullableFormBuilder, ValidatorFn, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -12,11 +12,18 @@ import { DeploymentRequest, DeploymentTemplate, DeploymentUpdateTemplate, Module
 import { HostManagerService } from 'src/app/core/services/host-manager/host-manager.service';
 import { catchError, concatMap, forkJoin, last, map, Observable, of, throwError } from 'rxjs';
 import { NotificationService } from 'src/app/core/services/util/notifications.service';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { NgIf, NgFor } from '@angular/common';
+import { DeploymentTemplate2 } from '../single-deployment/deployment-template';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatButton } from '@angular/material/button';
 
 @Component({
-  selector: 'deployment',
-  templateUrl: './deployment-component.component.html',
-  styleUrls: ['./deployment-component.component.css']
+    selector: 'deployment',
+    templateUrl: './deployment-component.component.html',
+    styleUrls: ['./deployment-component.component.css'],
+    standalone: true,
+    imports: [SpinnerComponent, NgIf, FormsModule, ReactiveFormsModule, DeploymentTemplate2, NgFor, MatCheckbox, MatButton]
 })
 
 export class DeploymentComponentComponent implements OnInit {
