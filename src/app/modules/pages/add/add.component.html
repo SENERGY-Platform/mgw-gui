@@ -3,16 +3,16 @@
     <form [formGroup]="form">
       <mat-form-field appearance="fill">
         <mat-label>URL to Modfile</mat-label>
-        <input matInput formControlName="id">
+        <input formControlName="id" matInput>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
         <mat-label>Version</mat-label>
-        <input matInput formControlName="version">
+        <input formControlName="version" matInput>
       </mat-form-field>
-    
-      <button mat-raised-button color="primary" (click)="addModule()">Add</button>
-      <button mat-raised-button color="primary" (click)="cancel()">Cancel</button>
+
+      <button (click)="addModule()" color="primary" mat-raised-button>Add</button>
+      <button (click)="cancel()" color="primary" mat-raised-button>Cancel</button>
     </form>
   </div>
 </div>

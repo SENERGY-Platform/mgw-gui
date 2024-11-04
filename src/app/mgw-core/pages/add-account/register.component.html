@@ -1,32 +1,33 @@
 <div class="layout-margin">
 
-  <spinner class="global-centered-spinner" [show]="waitingForRegister"></spinner>
+  <spinner [show]="waitingForRegister" class="global-centered-spinner"></spinner>
 
   <div id="container">
     <div id="form-container">
       <div [formGroup]="form" class="form">
         <mat-form-field color="accent">
           <mat-label>First Name</mat-label>
-          <input matInput placeholder="" type="text" formControlName="firstName">
+          <input formControlName="firstName" matInput placeholder="" type="text">
         </mat-form-field>
 
         <mat-form-field color="accent">
           <mat-label>Last Name</mat-label>
-          <input matInput placeholder="" type="text" formControlName="lastName">
+          <input formControlName="lastName" matInput placeholder="" type="text">
         </mat-form-field>
 
         <mat-form-field color="accent">
           <mat-label>Username</mat-label>
-          <input matInput placeholder="Username" type="text" formControlName="username">
+          <input formControlName="username" matInput placeholder="Username" type="text">
         </mat-form-field>
 
         <mat-form-field color="accent">
           <mat-label>Password</mat-label>
-          <input matInput placeholder="password" type="password" formControlName="password">
+          <input formControlName="password" matInput placeholder="password" type="password">
         </mat-form-field>
 
-        <button mat-raised-button color="primary" type="submit" (click)="register()" [disabled]="!form.valid">Create
-          Account</button>
+        <button (click)="register()" [disabled]="!form.valid" color="primary" mat-raised-button type="submit">Create
+          Account
+        </button>
 
       </div>
     </div>

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ListEndpointsComponent } from './list-endpoints.component';
+import {ListEndpointsComponent} from './list-endpoints.component';
 
 describe('ListEndpointsComponent', () => {
   let component: ListEndpointsComponent;
@@ -8,8 +8,8 @@ describe('ListEndpointsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ListEndpointsComponent]
-});
+      imports: [ListEndpointsComponent]
+    });
     fixture = TestBed.createComponent(ListEndpointsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

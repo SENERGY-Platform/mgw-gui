@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { HostManagerService } from './host-manager.service';
+import {HostManagerService} from './host-manager.service';
 
 describe('HostManagerService', () => {
   let service: HostManagerService;

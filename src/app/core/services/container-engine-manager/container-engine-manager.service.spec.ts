@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { ContainerEngineManagerService } from './container-engine-manager.service';
+import {ContainerEngineManagerService} from './container-engine-manager.service';
 
 describe('ContainerEngineManagerService', () => {
   let service: ContainerEngineManagerService;

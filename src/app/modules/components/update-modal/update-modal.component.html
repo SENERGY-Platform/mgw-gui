@@ -1,16 +1,16 @@
-<div id="container" class="modal-outer">
+<div class="modal-outer" id="container">
   <form [formGroup]="form">
     <div>
       <mat-form-field appearance="fill">
         <mat-label>Available Versions</mat-label>
-        <mat-select formControlName="version" [(ngModel)]="selectedVersion">
+        <mat-select [(ngModel)]="selectedVersion" formControlName="version">
           <mat-option *ngFor="let version of availableModuleUpdate.versions" [value]="version">
-            {{version}}
+            {{ version }}
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
   </form>
-  <button mat-raised-button color="primary" (click)="prepareUpdate()">Update</button>
-  <button mat-raised-button color="primary" (click)="closeDialog()">Cancel</button>
+  <button (click)="prepareUpdate()" color="primary" mat-raised-button>Update</button>
+  <button (click)="closeDialog()" color="primary" mat-raised-button>Cancel</button>
 </div>

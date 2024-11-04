@@ -1,35 +1,35 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Router } from '@angular/router';
-import { catchError, concatMap, of, throwError } from 'rxjs';
-import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
-import { ErrorService } from 'src/app/core/services/util/error.service';
-import { UtilService } from 'src/app/core/services/util/util.service';
-import { ModuleUpdateTemplate } from 'src/app/deployments/models/deployment_models';
-import { ModuleUpdate, ModuleUpdateRequest } from '../../models/module_models';
+import {Component, Inject, OnInit} from '@angular/core';
+import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {catchError, concatMap, of, throwError} from 'rxjs';
+import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
+import {ErrorService} from 'src/app/core/services/util/error.service';
+import {UtilService} from 'src/app/core/services/util/util.service';
+import {ModuleUpdateTemplate} from 'src/app/deployments/models/deployment_models';
+import {ModuleUpdate, ModuleUpdateRequest} from '../../models/module_models';
 import * as semver from "semver";
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatSelect } from '@angular/material/select';
-import { NgFor } from '@angular/common';
-import { MatOption } from '@angular/material/core';
-import { MatButton } from '@angular/material/button';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatSelect} from '@angular/material/select';
+import {NgFor} from '@angular/common';
+import {MatOption} from '@angular/material/core';
+import {MatButton} from '@angular/material/button';
 
 @Component({
-    selector: 'app-update-modal',
-    templateUrl: './update-modal.component.html',
-    styleUrls: ['./update-modal.component.css'],
-    standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatSelect, NgFor, MatOption, MatButton]
+  selector: 'app-update-modal',
+  templateUrl: './update-modal.component.html',
+  styleUrls: ['./update-modal.component.css'],
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatSelect, NgFor, MatOption, MatButton]
 })
 export class UpdateModalComponent implements OnInit {
   availableModuleUpdate: ModuleUpdate
-  form: any = this.fb.group({}) 
+  form: any = this.fb.group({})
   moduleID!: string
   selectedVersion!: string
 
   constructor(
-    @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
+    @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
     private errorService: ErrorService,
     public dialogRef: MatDialogRef<UpdateModalComponent>,
     @Inject(MAT_DIALOG_DATA) data: any,
@@ -38,7 +38,7 @@ export class UpdateModalComponent implements OnInit {
     private router: Router,
   ) {
     this.availableModuleUpdate = data.availableModuleUpdate
-    this.moduleID = data.moduleID 
+    this.moduleID = data.moduleID
   }
 
   ngOnInit(): void {
@@ -47,7 +47,7 @@ export class UpdateModalComponent implements OnInit {
 
   setupForm() {
     var versions = this.availableModuleUpdate.versions.sort((a, b) => {
-      return semver.gte(a, b) ? 1 : -1 
+      return semver.gte(a, b) ? 1 : -1
     }).reverse()
 
     this.selectedVersion = versions[0]
@@ -58,35 +58,35 @@ export class UpdateModalComponent implements OnInit {
   }
 
   prepareUpdate() {
-    var compatibilityRequestBody = this.form.value 
-    
-    // Check if update is compatible to all installed modules    
-    this.moduleService.prepareModuleUpdate(this.moduleID, compatibilityRequestBody).pipe(
-        concatMap(jobID => {
-          var message = "Prepare update"
-          return this.utilService.checkJobStatus(jobID, message, "module-manager")
-        }),
-        concatMap(result => {
-          if(!result.success) {
-              return throwError(() => new Error(result.error))
-          }
+    var compatibilityRequestBody = this.form.value
 
-          return this.moduleService.getAvailableModuleUpdates(this.moduleID)
-        }),
-        concatMap(moduleUpdate => {
-          // Update is compatible and can be installed
-          if(moduleUpdate.pending) {
-            this.update(moduleUpdate.pending_versions)
-          } else {
-            this.closeDialog()
-          }
-          return of()
-        }), 
-        catchError(err => {
-          this.errorService.handleError(UpdateModalComponent.name, "update", err)
+    // Check if update is compatible to all installed modules
+    this.moduleService.prepareModuleUpdate(this.moduleID, compatibilityRequestBody).pipe(
+      concatMap(jobID => {
+        var message = "Prepare update"
+        return this.utilService.checkJobStatus(jobID, message, "module-manager")
+      }),
+      concatMap(result => {
+        if (!result.success) {
+          return throwError(() => new Error(result.error))
+        }
+
+        return this.moduleService.getAvailableModuleUpdates(this.moduleID)
+      }),
+      concatMap(moduleUpdate => {
+        // Update is compatible and can be installed
+        if (moduleUpdate.pending) {
+          this.update(moduleUpdate.pending_versions)
+        } else {
           this.closeDialog()
-          return of()
-        })  
+        }
+        return of()
+      }),
+      catchError(err => {
+        this.errorService.handleError(UpdateModalComponent.name, "update", err)
+        this.closeDialog()
+        return of()
+      })
     ).subscribe()
   }
 
@@ -95,9 +95,9 @@ export class UpdateModalComponent implements OnInit {
     this.moduleService.getModuleUpdateTemplate(this.moduleID).subscribe(
       {
         next: (template: ModuleUpdateTemplate) => {
-          if(
+          if (
             this.utilService.objectIsEmptyOrNull(template.configs) &&
-            this.utilService.objectIsEmptyOrNull(template.secrets) && 
+            this.utilService.objectIsEmptyOrNull(template.secrets) &&
             this.utilService.objectIsEmptyOrNull(template.host_resources)
           ) {
             // Nothing in template -> just update without showing formular
@@ -133,7 +133,7 @@ export class UpdateModalComponent implements OnInit {
         var message = "Module update is running"
         this.utilService.checkJobStatus(jobID, message, "module-manager").subscribe(result => {
           this.closeDialog()
-          if(!result.success) {
+          if (!result.success) {
             throwError(() => new Error(result.error))
           }
         })
@@ -142,6 +142,6 @@ export class UpdateModalComponent implements OnInit {
         this.errorService.handleError(UpdateModalComponent.name, "updateModule", err)
         this.closeDialog()
       }
-    }) 
+    })
   }
 }

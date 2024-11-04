@@ -1,21 +1,21 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { UserService } from 'src/app/core/services/user/user.service';
-import { ErrorService } from 'src/app/core/services/util/error.service';
-import { UserRequest } from '../../models/users';
-import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
+import {Component} from '@angular/core';
+import {FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {Router} from '@angular/router';
+import {AuthService} from 'src/app/core/services/auth/auth.service';
+import {UserService} from 'src/app/core/services/user/user.service';
+import {ErrorService} from 'src/app/core/services/util/error.service';
+import {UserRequest} from '../../models/users';
+import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatButton} from '@angular/material/button';
 
 @Component({
-    selector: 'app-register',
-    templateUrl: './register.component.html',
-    styleUrls: ['./register.component.css'],
-    standalone: true,
-    imports: [SpinnerComponent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton]
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css'],
+  standalone: true,
+  imports: [SpinnerComponent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton]
 })
 export class RegisterComponent {
   flowID: string = "";

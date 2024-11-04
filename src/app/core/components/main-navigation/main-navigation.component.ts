@@ -1,26 +1,26 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
-import { ActivatedRoute, NavigationEnd, Router, RouterLinkActive, RouterLink, RouterOutlet } from '@angular/router';
-import { concatMap, filter, map, mergeMap } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { AuthService } from '../../services/auth/auth.service';
-import { ErrorService } from '../../services/util/error.service';
-import { SidenavPageModel } from './models/sidenav-page.model';
-import { SidenavSectionModel } from './models/sidenav-section.model';
-import { NgFor, NgIf, NgClass, UpperCasePipe } from '@angular/common';
-import { MatIcon } from '@angular/material/icon';
-import { MatIconButton } from '@angular/material/button';
-import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {MatSidenav, MatSidenavContainer, MatSidenavContent} from '@angular/material/sidenav';
+import {ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import {concatMap, filter, map, mergeMap} from 'rxjs';
+import {environment} from 'src/environments/environment';
+import {AuthService} from '../../services/auth/auth.service';
+import {ErrorService} from '../../services/util/error.service';
+import {SidenavPageModel} from './models/sidenav-page.model';
+import {SidenavSectionModel} from './models/sidenav-section.model';
+import {NgClass, NgFor, NgIf, UpperCasePipe} from '@angular/common';
+import {MatIcon} from '@angular/material/icon';
+import {MatIconButton} from '@angular/material/button';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 
 @Component({
-    selector: 'app-main-navigation',
-    templateUrl: './main-navigation.component.html',
-    styleUrls: ['./main-navigation.component.css'],
-    standalone: true,
-    imports: [MatSidenavContainer, MatSidenav, NgFor, NgIf, RouterLinkActive, RouterLink, MatIcon, NgClass, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, MatSidenavContent, RouterOutlet, UpperCasePipe]
+  selector: 'app-main-navigation',
+  templateUrl: './main-navigation.component.html',
+  styleUrls: ['./main-navigation.component.css'],
+  standalone: true,
+  imports: [MatSidenavContainer, MatSidenav, NgFor, NgIf, RouterLinkActive, RouterLink, MatIcon, NgClass, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, MatSidenavContent, RouterOutlet, UpperCasePipe]
 })
 export class MainNavigationComponent implements OnInit {
-  @ViewChild('sidenav', { static: false }) sidenav!: MatSidenav;
+  @ViewChild('sidenav', {static: false}) sidenav!: MatSidenav;
   mode = '';
   openSection: null | string = null;
   sections: SidenavSectionModel[] = [
@@ -38,12 +38,13 @@ export class MainNavigationComponent implements OnInit {
     ])
   ]
 
-  constructor(   
+  constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
     private errorService: ErrorService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.getActiveSection();
@@ -56,7 +57,7 @@ export class MainNavigationComponent implements OnInit {
       })
     ).subscribe({
       next: (_) => {
-        window.location.href=environment.uiBaseUrl + '/login';
+        window.location.href = environment.uiBaseUrl + '/login';
       },
       error: (err) => {
         this.errorService.handleError("MainNavigationComponent", "logout", err);
@@ -66,23 +67,23 @@ export class MainNavigationComponent implements OnInit {
 
   isSectionOpen(section: SidenavSectionModel): boolean {
     if (this.openSection === null) {
-        return false;
+      return false;
     } else {
-        return this.openSection === section.state;
+      return this.openSection === section.state;
     }
   }
 
   toggleSection(section: SidenavSectionModel): void {
-      this.openSection = this.openSection === section.state ? null : section.state;
+    this.openSection = this.openSection === section.state ? null : section.state;
   }
 
   private getActiveSection() {
     this.router.events
-        .pipe(
-            filter((event) => event instanceof NavigationEnd),
-            map(() => this.activatedRoute.firstChild),
-            mergeMap((activatedRoute: any) => activatedRoute.url),
-        )
-        .subscribe((activeRoute: any) => (this.openSection = '/' + activeRoute[0].path));
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map(() => this.activatedRoute.firstChild),
+        mergeMap((activatedRoute: any) => activatedRoute.url),
+      )
+      .subscribe((activeRoute: any) => (this.openSection = '/' + activeRoute[0].path));
   }
 }

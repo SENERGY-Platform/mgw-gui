@@ -1,26 +1,38 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSort, MatSortHeader } from '@angular/material/sort';
-import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
-import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
-import { Module, ModuleUpdates } from '../../models/module_models';
-import { ErrorService } from 'src/app/core/services/util/error.service';
-import { Router, RouterLink } from '@angular/router';
-import { UtilService } from 'src/app/core/services/util/util.service';
-import { UpdateModalComponent } from '../../components/update-modal/update-modal.component';
-import { catchError, Observable, of, map, concatMap, throwError, forkJoin } from 'rxjs';
-import { NgIf } from '@angular/common';
-import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { MatIconButton, MatButton, MatFabButton } from '@angular/material/button';
-import { MatTooltip } from '@angular/material/tooltip';
-import { MatIcon } from '@angular/material/icon';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {MatSort, MatSortHeader} from '@angular/material/sort';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from '@angular/material/table';
+import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
+import {Module, ModuleUpdates} from '../../models/module_models';
+import {ErrorService} from 'src/app/core/services/util/error.service';
+import {Router, RouterLink} from '@angular/router';
+import {UtilService} from 'src/app/core/services/util/util.service';
+import {UpdateModalComponent} from '../../components/update-modal/update-modal.component';
+import {catchError, concatMap, forkJoin, map, Observable, of, throwError} from 'rxjs';
+import {NgIf} from '@angular/common';
+import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
+import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
-    selector: 'app-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.css'],
-    standalone: true,
-    imports: [NgIf, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, MatFabButton, RouterLink]
+  selector: 'app-list',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.css'],
+  standalone: true,
+  imports: [NgIf, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, MatFabButton, RouterLink]
 })
 export class ListComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<Module>();
@@ -29,12 +41,12 @@ export class ListComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['name', 'version', 'info', 'deploy', 'delete', 'update']
   moduleIDsReadyForUpdate: Record<string, string[]> = {}
-  availableModuleUpdates: ModuleUpdates = {} 
+  availableModuleUpdates: ModuleUpdates = {}
   interval: any
-  
+
   constructor(
-    public dialog: MatDialog, 
-    @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
+    public dialog: MatDialog,
+    @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
     private errorService: ErrorService,
     private router: Router,
     private utilService: UtilService
@@ -43,39 +55,39 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-      var moduleObs = this.loadModules();
-      var updateObs = this.checkForCurrentlyAvailableUpdates();
-      forkJoin([moduleObs, updateObs]).subscribe({
-        next: (b) => {
-          console.log(b)
-          this.ready = true
-        },
-        error: (err) => {
-          this.errorService.handleError(ListComponent.name, "ngOnInit", err)
-          this.ready = true
-        }
-      })
+    var moduleObs = this.loadModules();
+    var updateObs = this.checkForCurrentlyAvailableUpdates();
+    forkJoin([moduleObs, updateObs]).subscribe({
+      next: (b) => {
+        console.log(b)
+        this.ready = true
+      },
+      error: (err) => {
+        this.errorService.handleError(ListComponent.name, "ngOnInit", err)
+        this.ready = true
+      }
+    })
 
-      this.init = false;
+    this.init = false;
 
-      this.startPeriodicRefresh()
+    this.startPeriodicRefresh()
   }
 
   startPeriodicRefresh() {
-    this.interval = setInterval(() => { 
-      this.checkForCurrentlyAvailableUpdates().subscribe(); 
+    this.interval = setInterval(() => {
+      this.checkForCurrentlyAvailableUpdates().subscribe();
     }, 5000);
   }
 
   ngOnDestroy(): void {
-      clearTimeout(this.interval)
+    clearTimeout(this.interval)
   }
 
   checkForCurrentlyAvailableUpdates(): Observable<boolean> {
     // Only get currently available updates, this does not trigger the backend to check for actual new versions in the repos
     return this.moduleService.getAvailableUpdates().pipe(
       map(updates => {
-        if(!!updates) {
+        if (!!updates) {
           this.availableModuleUpdates = updates
         }
         return true
@@ -94,30 +106,30 @@ export class ListComponent implements OnInit, OnDestroy {
         return this.utilService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap(jobResult => {
-        if(!jobResult.success) {
+        if (!jobResult.success) {
           throwError(() => new Error(jobResult.error))
         }
         return this.moduleService.getAvailableUpdates()
       }),
       concatMap(updates => {
         // response can be null
-        if(!!updates) {
+        if (!!updates) {
           this.availableModuleUpdates = updates
         }
         return of()
       }),
       catchError(err => {
         this.errorService.handleError(ListComponent.name, "checkForUpdates", err)
-        this.ready = true 
+        this.ready = true
         return of()
       })
     ).subscribe()
-    
+
   }
 
   stopPendingUpdates(): Observable<boolean> {
     for (const [moduleID, update] of Object.entries(this.availableModuleUpdates)) {
-      if(update.pending) {
+      if (update.pending) {
         return this.moduleService.cancelModuleUpdate(moduleID).pipe(
           map(result => true),
           catchError((err) => {
@@ -137,14 +149,14 @@ export class ListComponent implements OnInit, OnDestroy {
       concatMap((_) => {
         this.ready = true
         var moduleUpdate = this.availableModuleUpdates[moduleID]
-       
+
         var dialogRef = this.dialog.open(UpdateModalComponent, {
-            data: {
-              availableModuleUpdate: moduleUpdate, 
-              moduleID: moduleID
-            }
+          data: {
+            availableModuleUpdate: moduleUpdate,
+            moduleID: moduleID
+          }
         });
-    
+
         return dialogRef?.afterClosed()
       }),
       concatMap((_) => {
@@ -164,7 +176,7 @@ export class ListComponent implements OnInit, OnDestroy {
   ngAfterViewInit(): void {
     this.dataSource.sortingDataAccessor = (row: Module, sortHeaderId: string) => {
       var value = (<any>row)[sortHeaderId];
-      value = (typeof(value) === 'string') ? value.toUpperCase(): value;
+      value = (typeof (value) === 'string') ? value.toUpperCase() : value;
       return value
     };
     this.dataSource.sort = this.sort;
@@ -172,18 +184,18 @@ export class ListComponent implements OnInit, OnDestroy {
 
   loadModules(): Observable<boolean> {
     return this.moduleService.loadModules().pipe(
-        map((modules) => {
-          if(!modules) {
-            this.dataSource.data = []
-          } else {
-            var moduleList: Module[] = []
-            for (const [_, module] of Object.entries(modules)) {
-              moduleList.push(module)
-            }
-            this.dataSource.data = moduleList
+      map((modules) => {
+        if (!modules) {
+          this.dataSource.data = []
+        } else {
+          var moduleList: Module[] = []
+          for (const [_, module] of Object.entries(modules)) {
+            moduleList.push(module)
           }
-          return true
-        })
+          this.dataSource.data = moduleList
+        }
+        return true
+      })
     )
   }
 
@@ -196,8 +208,8 @@ export class ListComponent implements OnInit, OnDestroy {
         return this.utilService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap((_) => {
-          return this.loadModules()
-      }),         
+        return this.loadModules()
+      }),
     ).subscribe({
       next: (_) => {
         this.ready = true

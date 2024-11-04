@@ -1,24 +1,36 @@
-import { Component, ViewChild } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
-import { map } from 'rxjs';
-import { UserService } from 'src/app/core/services/user/user.service';
-import { ErrorService } from 'src/app/core/services/util/error.service';
-import { DeviceUser, DeviceUsersResponse } from '../../models/users';
-import { SelectionModel } from '@angular/cdk/collections';
-import { NotificationService } from 'src/app/core/services/util/notifications.service';
-import { NgIf } from '@angular/common';
-import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { MatIconButton, MatFabButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
+import {Component, ViewChild} from '@angular/core';
+import {MatSort} from '@angular/material/sort';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from '@angular/material/table';
+import {map} from 'rxjs';
+import {UserService} from 'src/app/core/services/user/user.service';
+import {ErrorService} from 'src/app/core/services/util/error.service';
+import {DeviceUser, DeviceUsersResponse} from '../../models/users';
+import {SelectionModel} from '@angular/cdk/collections';
+import {NotificationService} from 'src/app/core/services/util/notifications.service';
+import {NgIf} from '@angular/common';
+import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatFabButton, MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
-    selector: 'app-list-apps',
-    templateUrl: './list-apps.component.html',
-    styleUrls: ['./list-apps.component.css'],
-    standalone: true,
-    imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
+  selector: 'app-list-apps',
+  templateUrl: './list-apps.component.html',
+  styleUrls: ['./list-apps.component.css'],
+  standalone: true,
+  imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
 })
 export class ListAppsComponent {
   dataSource = new MatTableDataSource<DeviceUser>();
@@ -33,7 +45,8 @@ export class ListAppsComponent {
     private userService: UserService,
     private notifierService: NotificationService,
     private errorService: ErrorService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.loadUsers();
@@ -51,13 +64,13 @@ export class ListAppsComponent {
     ).subscribe(
       {
         next: (users: DeviceUser[]) => {
-          if(!users) {
+          if (!users) {
             this.dataSource.data = []
           } else {
             this.dataSource.data = users
           }
           this.ready = true
-        }, 
+        },
         error: (err) => {
           this.errorService.handleError(ListAppsComponent.name, "loadUsers", err)
           this.ready = true
@@ -73,7 +86,7 @@ export class ListAppsComponent {
   }
 
   masterToggle() {
-    if(this.isAllSelected()) {
+    if (this.isAllSelected()) {
       this.selectionClear();
     } else {
       this.selectionClear();
@@ -82,7 +95,7 @@ export class ListAppsComponent {
   }
 
   selectionClear(): void {
-      this.selection.clear();
+    this.selection.clear();
   }
 
   deleteUser(userID: string) {

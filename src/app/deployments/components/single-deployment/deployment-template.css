@@ -1,19 +1,19 @@
 .form-field-container {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 mat-form-field {
-    width: 100%;
+  width: 100%;
 }
 
 #module-info-text h1 {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 #module-info-text p {
-    color: grey
+  color: grey
 }
 
 .group-container {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }

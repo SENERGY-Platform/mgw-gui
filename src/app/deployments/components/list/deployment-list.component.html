@@ -15,139 +15,140 @@
   -->
 
 
-
 <div *ngIf="dataSource.data.length === 0 && ready">No deployments found.</div>
-<spinner class="global-centered-spinner" [show]="!ready"></spinner>
+<spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-<div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
-  <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc">
+<div [hidden]="(!ready && init) || dataSource.data.length === 0" class="mat-elevation-z1">
+  <table [dataSource]="dataSource" mat-table matSort matSortActive="name" matSortDirection="asc">
     <ng-container matColumnDef="select">
-      <th mat-header-cell *matHeaderCellDef class="button-column">
+      <th *matHeaderCellDef class="button-column" mat-header-cell>
         <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
-          [indeterminate]="selection.hasValue() && !isAllSelected()">
+                      [indeterminate]="selection.hasValue() && !isAllSelected()">
         </mat-checkbox>
       </th>
-      <td mat-cell *matCellDef="let row">
-        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row.id) : null"
-          [checked]="selection.isSelected(row.id)">
+      <td *matCellDef="let row" mat-cell>
+        <mat-checkbox (change)="$event ? selection.toggle(row.id) : null" (click)="$event.stopPropagation()"
+                      [checked]="selection.isSelected(row.id)">
         </mat-checkbox>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="status_deployment">
-      <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Health</th>
-      <td mat-cell *matCellDef="let deployment">
-        <div class="circle red" *ngIf="deployment.state == 'unhealthy'"></div>
-        <div class="circle green" *ngIf="deployment.state == 'healthy'"></div>
-        <div class="circle yellow" *ngIf="deployment.state == 'transitioning'"></div>
-        <div class="circle grey" *ngIf="!deployment.state"></div>
+      <th *matHeaderCellDef class="button-column" mat-header-cell mat-sort-header>Health</th>
+      <td *matCellDef="let deployment" mat-cell>
+        <div *ngIf="deployment.state == 'unhealthy'" class="circle red"></div>
+        <div *ngIf="deployment.state == 'healthy'" class="circle green"></div>
+        <div *ngIf="deployment.state == 'transitioning'" class="circle yellow"></div>
+        <div *ngIf="!deployment.state" class="circle grey"></div>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="status_sub_deployment">
-      <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Health</th>
-      <td mat-cell *matCellDef="let subdeployment">
-        <div class="circle red" *ngIf="subdeployment.container.info != null && subdeployment.container.info.state !== 'running'"></div>
-        <div class="circle green" *ngIf="subdeployment.container.info != null && subdeployment.container.info.state === 'running'"></div>
-        <div class="circle grey" *ngIf="subdeployment.container.info == null"></div>
+      <th *matHeaderCellDef class="button-column" mat-header-cell mat-sort-header>Health</th>
+      <td *matCellDef="let subdeployment" mat-cell>
+        <div *ngIf="subdeployment.container.info != null && subdeployment.container.info.state !== 'running'"
+             class="circle red"></div>
+        <div *ngIf="subdeployment.container.info != null && subdeployment.container.info.state === 'running'"
+             class="circle green"></div>
+        <div *ngIf="subdeployment.container.info == null" class="circle grey"></div>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="name">
-      <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
-      <td mat-cell *matCellDef="let deployment">
-        {{deployment.name}}
+      <th *matHeaderCellDef mat-header-cell mat-sort-header>Name</th>
+      <td *matCellDef="let deployment" mat-cell>
+        {{ deployment.name }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="id">
-      <th mat-header-cell mat-sort-header *matHeaderCellDef>ID</th>
-      <td mat-cell *matCellDef="let deployment">
-        {{deployment.id}}
+      <th *matHeaderCellDef mat-header-cell mat-sort-header>ID</th>
+      <td *matCellDef="let deployment" mat-cell>
+        {{ deployment.id }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="start">
-      <th mat-header-cell *matHeaderCellDef class="button-column">Start</th>
-      <td mat-cell *matCellDef="let deployment">
-        <button mat-icon-button color="primary" matTooltip="Start" (click)="start(deployment.id)">
+      <th *matHeaderCellDef class="button-column" mat-header-cell>Start</th>
+      <td *matCellDef="let deployment" mat-cell>
+        <button (click)="start(deployment.id)" color="primary" mat-icon-button matTooltip="Start">
           <mat-icon>start</mat-icon>
         </button>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="stop">
-      <th mat-header-cell *matHeaderCellDef class="button-column">Stop</th>
-      <td mat-cell *matCellDef="let deployment">
-        <button mat-icon-button color="primary" matTooltip="Stop" (click)="stop(deployment.id)">
+      <th *matHeaderCellDef class="button-column" mat-header-cell>Stop</th>
+      <td *matCellDef="let deployment" mat-cell>
+        <button (click)="stop(deployment.id)" color="primary" mat-icon-button matTooltip="Stop">
           <mat-icon>stop</mat-icon>
         </button>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="restart">
-      <th mat-header-cell *matHeaderCellDef class="button-column">Restart</th>
-      <td mat-cell *matCellDef="let deployment">
-        <button mat-icon-button color="primary" matTooltip="Restart" (click)="restart(deployment.id)">
+      <th *matHeaderCellDef class="button-column" mat-header-cell>Restart</th>
+      <td *matCellDef="let deployment" mat-cell>
+        <button (click)="restart(deployment.id)" color="primary" mat-icon-button matTooltip="Restart">
           <mat-icon>restart_alt</mat-icon>
         </button>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="info">
-      <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Info</th>
-      <td mat-cell *matCellDef="let deployment">
-        <button mat-icon-button color="primary" (click)="info(deployment)" matTooltip="Info">
+      <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Info</th>
+      <td *matCellDef="let deployment" mat-cell>
+        <button (click)="info(deployment)" color="primary" mat-icon-button matTooltip="Info">
           <mat-icon>info</mat-icon>
         </button>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="edit">
-      <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Edit</th>
-      <td mat-cell *matCellDef="let deployment">
-        <button mat-icon-button color="primary" [routerLink]="'/deployments/edit/' + deployment.id" matTooltip="Edit">
+      <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Edit</th>
+      <td *matCellDef="let deployment" mat-cell>
+        <button [routerLink]="'/deployments/edit/' + deployment.id" color="primary" mat-icon-button matTooltip="Edit">
           <mat-icon>edit</mat-icon>
         </button>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="delete">
-      <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Delete</th>
-      <td mat-cell *matCellDef="let deployment">
-        <button mat-icon-button color="primary" (click)="delete(deployment.id)" matTooltip="Delete">
+      <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Delete</th>
+      <td *matCellDef="let deployment" mat-cell>
+        <button (click)="delete(deployment.id)" color="primary" mat-icon-button matTooltip="Delete">
           <mat-icon>delete</mat-icon>
         </button>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="header-all">
-      <th mat-header-cell *matHeaderCellDef colspan="10">
+      <th *matHeaderCellDef colspan="10" mat-header-cell>
         <div>
-          <span>You have selected {{selection.selected.length}} deployments</span>
-          <button matTooltip="Delete" mat-icon-button color="accent" (click)="deleteMultiple()">
+          <span>You have selected {{ selection.selected.length }} deployments</span>
+          <button (click)="deleteMultiple()" color="accent" mat-icon-button matTooltip="Delete">
             <mat-icon>delete</mat-icon>
           </button>
 
-          <button matTooltip="Start" mat-icon-button color="accent" (click)="startMultiple()">
+          <button (click)="startMultiple()" color="accent" mat-icon-button matTooltip="Start">
             <mat-icon>start</mat-icon>
           </button>
 
-          <button matTooltip="Stop" mat-icon-button color="accent" (click)="stopMultiple()">
+          <button (click)="stopMultiple()" color="accent" mat-icon-button matTooltip="Stop">
             <mat-icon>stop</mat-icon>
           </button>
 
-          <button matTooltip="Restart" mat-icon-button color="accent" (click)="restartMultiple()">
+          <button (click)="restartMultiple()" color="accent" mat-icon-button matTooltip="Restart">
             <mat-icon>restart_alt</mat-icon>
           </button>
         </div>
       </th>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="['header-all']" [hidden]="selection.selected.length === 0">
+    <tr *matHeaderRowDef="['header-all']" [hidden]="selection.selected.length === 0" mat-header-row>
     </tr>
 
-    <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
-    <tr mat-row *matRowDef="let m; columns: displayColumns;"></tr>
+    <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+    <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
   </table>
 </div>

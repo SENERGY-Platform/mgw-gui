@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { JobLoaderModalComponent } from './job-loader-modal.component';
+import {JobLoaderModalComponent} from './job-loader-modal.component';
 
 describe('JobLoaderModalComponent', () => {
   let component: JobLoaderModalComponent;
@@ -8,8 +8,8 @@ describe('JobLoaderModalComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [JobLoaderModalComponent]
-});
+      imports: [JobLoaderModalComponent]
+    });
     fixture = TestBed.createComponent(JobLoaderModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

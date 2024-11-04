@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ListUsersComponent } from './list-users.component';
+import {ListUsersComponent} from './list-users.component';
 
 describe('ListUsersComponent', () => {
   let component: ListUsersComponent;
@@ -8,8 +8,8 @@ describe('ListUsersComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ListUsersComponent]
-});
+      imports: [ListUsersComponent]
+    });
     fixture = TestBed.createComponent(ListUsersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

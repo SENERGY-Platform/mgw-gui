@@ -2,48 +2,48 @@
 
   <mat-card class="card">
 
-    <div class="form-container" *ngIf="ready">
-      <div id="module-info-text" *ngIf="(mode == 'new' || mode == 'update') && module">
+    <div *ngIf="ready" class="form-container">
+      <div *ngIf="(mode == 'new' || mode == 'update') && module" id="module-info-text">
         <h1>{{ module.name }}</h1>
         <p>Module ID: {{ module.id }}</p>
         <p *ngIf="mode == 'update'">Version: {{ pending_version }}</p>
       </div>
 
-      <div id="module-info-text" *ngIf="mode == 'edit' && deployment">
+      <div *ngIf="mode == 'edit' && deployment" id="module-info-text">
         <h1>{{ deployment.name }}</h1>
         <p>{{ deployment.id }}</p>
       </div>
 
-      <mat-form-field appearance="fill" *ngIf="mode != 'update'">
+      <mat-form-field *ngIf="mode != 'update'" appearance="fill">
         <mat-label>Deployment Name</mat-label>
-        <input matInput formControlName="name">
+        <input formControlName="name" matInput>
       </mat-form-field>
 
       <div *ngIf="inputGroupsExists()">
-        <app-group 
+        <app-group
           [allGroupTemplates]="formTemplate"
+          [deploymentTemplateData]="deploymentTemplateData"
           [groupID]="noGroupKey"
-          [group]="deploymentTemplateData?.input_groups?.[noGroupKey]" 
+          [group]="deploymentTemplateData?.input_groups?.[noGroupKey]"
+          [hostResourcesOptions]="hostResourcesOptions"
           [moduleID]="moduleID"
-          [hostResourcesOptions]="hostResourcesOptions" 
-          [secretOptions]="secretOptions"
-          [deploymentTemplateData]="deploymentTemplateData"></app-group>
+          [secretOptions]="secretOptions"></app-group>
 
         <div *ngFor="let group of groupHierarchy | keyvalue">
-          <mat-card class="card group-container" [formGroup]="form">
-            <app-group [groupHierarchy]="group.value" [allGroupTemplates]="formTemplate"
-              [groupID]="group.key"
-              [group]="deploymentTemplateData?.input_groups?.[group.key]" [moduleID]="moduleID"
-              [hostResourcesOptions]="hostResourcesOptions" [secretOptions]="secretOptions"
-              [deploymentTemplateData]="deploymentTemplateData"></app-group>
+          <mat-card [formGroup]="form" class="card group-container">
+            <app-group [allGroupTemplates]="formTemplate" [deploymentTemplateData]="deploymentTemplateData"
+                       [groupHierarchy]="group.value"
+                       [groupID]="group.key" [group]="deploymentTemplateData?.input_groups?.[group.key]"
+                       [hostResourcesOptions]="hostResourcesOptions" [moduleID]="moduleID"
+                       [secretOptions]="secretOptions"></app-group>
           </mat-card>
         </div>
       </div>
 
       <div *ngIf="!inputGroupsExists()">
-        <app-group [allGroupTemplates]="formTemplate" [moduleID]="moduleID"
-          [hostResourcesOptions]="hostResourcesOptions" [secretOptions]="secretOptions"
-          [deploymentTemplateData]="deploymentTemplateData"></app-group>
+        <app-group [allGroupTemplates]="formTemplate" [deploymentTemplateData]="deploymentTemplateData"
+                   [hostResourcesOptions]="hostResourcesOptions" [moduleID]="moduleID"
+                   [secretOptions]="secretOptions"></app-group>
       </div>
 
     </div>

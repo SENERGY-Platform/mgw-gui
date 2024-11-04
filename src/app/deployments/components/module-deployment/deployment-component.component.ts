@@ -1,29 +1,42 @@
-import { Component, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, NonNullableFormBuilder, ValidatorFn, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
-import { ErrorService } from 'src/app/core/services/util/error.service';
-import { UtilService } from 'src/app/core/services/util/util.service';
-import { Secret } from '../../../secrets/models/secret_models';
-import { ModuleManagerService } from '../../../core/services/module-manager/module-manager-service.service';
-import { SecretManagerServiceService } from '../../../core/services/secret-manager/secret-manager-service.service';
-import { DeploymentRequest, DeploymentTemplate, DeploymentUpdateTemplate, ModuleUpdateTemplate } from '../../models/deployment_models';
-import { HostManagerService } from 'src/app/core/services/host-manager/host-manager.service';
-import { catchError, concatMap, forkJoin, last, map, Observable, of, throwError } from 'rxjs';
-import { NotificationService } from 'src/app/core/services/util/notifications.service';
-import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { NgIf, NgFor } from '@angular/common';
-import { DeploymentTemplate2 } from '../single-deployment/deployment-template';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { MatButton } from '@angular/material/button';
+import {Component, Inject, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  ValidatorFn,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
+import {Validators} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {ErrorService} from 'src/app/core/services/util/error.service';
+import {UtilService} from 'src/app/core/services/util/util.service';
+import {Secret} from '../../../secrets/models/secret_models';
+import {ModuleManagerService} from '../../../core/services/module-manager/module-manager-service.service';
+import {SecretManagerServiceService} from '../../../core/services/secret-manager/secret-manager-service.service';
+import {
+  DeploymentRequest,
+  DeploymentTemplate,
+  DeploymentUpdateTemplate,
+  ModuleUpdateTemplate
+} from '../../models/deployment_models';
+import {HostManagerService} from 'src/app/core/services/host-manager/host-manager.service';
+import {catchError, concatMap, forkJoin, last, map, Observable, of, throwError} from 'rxjs';
+import {NotificationService} from 'src/app/core/services/util/notifications.service';
+import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
+import {NgIf, NgFor} from '@angular/common';
+import {DeploymentTemplate2} from '../single-deployment/deployment-template';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatButton} from '@angular/material/button';
 
 @Component({
-    selector: 'deployment',
-    templateUrl: './deployment-component.component.html',
-    styleUrls: ['./deployment-component.component.css'],
-    standalone: true,
-    imports: [SpinnerComponent, NgIf, FormsModule, ReactiveFormsModule, DeploymentTemplate2, NgFor, MatCheckbox, MatButton]
+  selector: 'deployment',
+  templateUrl: './deployment-component.component.html',
+  styleUrls: ['./deployment-component.component.css'],
+  standalone: true,
+  imports: [SpinnerComponent, NgIf, FormsModule, ReactiveFormsModule, DeploymentTemplate2, NgFor, MatCheckbox, MatButton]
 })
 
 export class DeploymentComponentComponent implements OnInit {
@@ -36,7 +49,7 @@ export class DeploymentComponentComponent implements OnInit {
   formStr: any = ''
   ready: boolean = false
   deploymentTemplatePerModule: {
-    [mod_id: string]:  DeploymentTemplate | DeploymentUpdateTemplate | ModuleUpdateTemplate
+    [mod_id: string]: DeploymentTemplate | DeploymentUpdateTemplate | ModuleUpdateTemplate
   } = {};
 
   secretOptions: Record<string, Secret[]> = {}
@@ -65,11 +78,11 @@ export class DeploymentComponentComponent implements OnInit {
   dependencyFormIDToModuleID: any = {}
 
   constructor(
-    private fb: FormBuilder, 
-    @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
-    @Inject('SecretManagerService') private secretSercice: SecretManagerServiceService, 
-    @Inject('HostManagerService') private hostService: HostManagerService, 
-    public dialog: MatDialog, 
+    private fb: FormBuilder,
+    @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
+    @Inject('SecretManagerService') private secretSercice: SecretManagerServiceService,
+    @Inject('HostManagerService') private hostService: HostManagerService,
+    public dialog: MatDialog,
     private router: Router,
     private errorService: ErrorService,
     private utilsService: UtilService,
@@ -81,18 +94,18 @@ export class DeploymentComponentComponent implements OnInit {
     var obs = []
     obs.push(this.loadAvailableSecrets())
     obs.push(this.loadAvailableHostResources())
-    
-    if(this.mode == "new") {
+
+    if (this.mode == "new") {
       obs.push(this.loadDeploymentTemplate())
-    } else if(this.mode == "edit") {
+    } else if (this.mode == "edit") {
       obs.push(this.loadDeploymentUpdateTemplate())
-    } else if(this.mode == "update") {
+    } else if (this.mode == "update") {
       this.moduleID = decodeURIComponent(this.moduleID)
       obs.push(this.loadModuleUpdateTemplate())
-    } 
+    }
 
     forkJoin(obs).subscribe((results) => {
-      if(results.every(v => v === true)) {
+      if (results.every(v => v === true)) {
         this.setup(this.deploymentTemplate)
         this.ready = true
       }
@@ -157,7 +170,7 @@ export class DeploymentComponentComponent implements OnInit {
   }
 
   setup(template: any) {
-    if(this.moduleID) {
+    if (this.moduleID) {
       this.inputForm.module_id.patchValue(this.moduleID)
     }
 
@@ -179,27 +192,27 @@ export class DeploymentComponentComponent implements OnInit {
   }
 
   public setupFormOfModule(form: any, inputTemplate: any, module_id: string) {
-    if(this.mode != 'new') {
+    if (this.mode != 'new') {
       form.controls.name.patchValue(inputTemplate.name)
     }
 
     this.setupConfigs(form, inputTemplate, module_id)
     this.setupSecrets(form, inputTemplate, module_id)
     this.setupHostResources(form, inputTemplate, module_id)
-    
+
     this.deploymentTemplatePerModule[module_id] = inputTemplate
 
-  }  
+  }
 
   public setupDependencies(inputTemplate: DeploymentTemplate | ModuleUpdateTemplate) {
-    if(inputTemplate['dependencies']) {
+    if (inputTemplate['dependencies']) {
       for (const [moduleIDOfDep, inputTemplateOfDep] of Object.entries(inputTemplate['dependencies'])) {
         //skip dependencies that do not need to be configured
-        if(
-            (
-              this.utilsService.objectIsEmptyOrNull(inputTemplateOfDep.configs) &&
-              this.utilsService.objectIsEmptyOrNull(inputTemplateOfDep.secrets) && 
-              this.utilsService.objectIsEmptyOrNull(inputTemplateOfDep.host_resources)) && this.mode == "update"   
+        if (
+          (
+            this.utilsService.objectIsEmptyOrNull(inputTemplateOfDep.configs) &&
+            this.utilsService.objectIsEmptyOrNull(inputTemplateOfDep.secrets) &&
+            this.utilsService.objectIsEmptyOrNull(inputTemplateOfDep.host_resources)) && this.mode == "update"
         ) {
           continue
         }
@@ -229,13 +242,13 @@ export class DeploymentComponentComponent implements OnInit {
     return new Observable(obs => {
       this.secretSercice.getSecrets().subscribe({
         next: (secrets: Secret[]) => {
-          if(secrets) {
+          if (secrets) {
             secrets.forEach((secret: any) => {
               var secretType = secret.type
-              if(!(secretType in this.secretOptions)) {
+              if (!(secretType in this.secretOptions)) {
                 this.secretOptions[secret.type] = []
               }
-              
+
               this.secretOptions[secret.type].push(secret)
             });
             this.secretOptionsBinding = this.secretOptions
@@ -303,23 +316,23 @@ export class DeploymentComponentComponent implements OnInit {
         return this.utilsService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap(result => {
-        if(result.success) {
+        if (result.success) {
           console.log('created deployment')
-            return of(result.result)
+          return of(result.result)
         } else {
-            return throwError(() => new Error(result.error))
-        } 
+          return throwError(() => new Error(result.error))
+        }
       }),
       concatMap((deploymentID: string) => {
-        if(this.autostartEnabled) {
+        if (this.autostartEnabled) {
           return this.startDeployment(deploymentID)
         }
         return of(null);
       })
     ).subscribe({
       next: (_) => {
-          console.log('created/started deployment successfully')
-          this.router.navigate(["/deployments"])
+        console.log('created/started deployment successfully')
+        this.router.navigate(["/deployments"])
       },
       error: (err) => {
         this.errorService.handleError(DeploymentComponentComponent.name, "deploy", err)
@@ -334,12 +347,12 @@ export class DeploymentComponentComponent implements OnInit {
         return this.utilsService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap(result => {
-        if(result.success) {
-            this.router.navigate(["/deployments"])
-            return of()
+        if (result.success) {
+          this.router.navigate(["/deployments"])
+          return of()
         } else {
-            return throwError(() => new Error(result.error))
-        } 
+          return throwError(() => new Error(result.error))
+        }
       }),
       catchError(err => {
         this.errorService.handleError(DeploymentComponentComponent.name, "updateDeployment", err)
@@ -355,12 +368,12 @@ export class DeploymentComponentComponent implements OnInit {
         return this.utilsService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap(result => {
-          if(result.success) {
-            this.router.navigate(["/modules"])
-            return of()
-          } else {
-            return throwError(() => new Error(result.error))
-          }
+        if (result.success) {
+          this.router.navigate(["/modules"])
+          return of()
+        } else {
+          return throwError(() => new Error(result.error))
+        }
       }),
       catchError(err => {
         this.errorService.handleError(DeploymentComponentComponent.name, "updateModule", err)
@@ -371,17 +384,17 @@ export class DeploymentComponentComponent implements OnInit {
 
   submit() {
     this.form.markAllAsTouched()
-    if(this.form.valid) {
+    if (this.form.valid) {
       var deploymentRequest: DeploymentRequest = JSON.parse(JSON.stringify(this.form.value))
 
       this.replaceDependencyID(deploymentRequest)
       this.filterNullValuesInForm(deploymentRequest)
 
-      if(this.mode == "new") {
+      if (this.mode == "new") {
         this.deploy(deploymentRequest)
-      } else if(this.mode == "edit") {
+      } else if (this.mode == "edit") {
         this.updateDeployment(deploymentRequest)
-      } else if(this.mode == "update") {
+      } else if (this.mode == "update") {
         this.updateModule(deploymentRequest)
       }
     } else {
@@ -393,11 +406,11 @@ export class DeploymentComponentComponent implements OnInit {
   setupFormControl(form: any, id: string, required: boolean, defaultValue: any, is_list: boolean) {
     // no default value
     var emptyValue: any = null // null gets filtered out of the form data
-    if(is_list) {
+    if (is_list) {
       emptyValue = []
-    } 
-    
-    if(defaultValue == undefined || defaultValue == null) {
+    }
+
+    if (defaultValue == undefined || defaultValue == null) {
       defaultValue = emptyValue
     }
 
@@ -405,7 +418,7 @@ export class DeploymentComponentComponent implements OnInit {
 
     var validators: ValidatorFn[] = []
     // Required
-    if(required) {
+    if (required) {
       validators = [Validators.required]
     }
     form.get(id)?.setValidators(validators)
@@ -414,7 +427,7 @@ export class DeploymentComponentComponent implements OnInit {
   setupSecrets(form: any, inputTemplate: any, module_id: string) {
     var secrets = new Map(Object.entries(inputTemplate['secrets']))
     secrets.forEach((secret: any, moduleSecretId: any) => {
-      if(this.mode != "new") {
+      if (this.mode != "new") {
         var selectedSecretID = secret['value']
       }
       this.setupFormControl(form.get("secrets"), moduleSecretId, secret.required, selectedSecretID, false)
@@ -425,7 +438,7 @@ export class DeploymentComponentComponent implements OnInit {
     var host_resources = new Map(Object.entries(inputTemplate['host_resources']))
     host_resources.forEach((host_resource: any, host_resource_id: any) => {
       host_resource['id'] = host_resource_id
-      if(this.mode != "new") {
+      if (this.mode != "new") {
         var defaultValue = host_resource['value']
       }
       this.setupFormControl(form.get("host_resources"), host_resource_id, host_resource.required, defaultValue, false)
@@ -434,15 +447,15 @@ export class DeploymentComponentComponent implements OnInit {
 
   setupConfigs(form: any, inputTemplate: any, module_id: string) {
     var configs = new Map(Object.entries(inputTemplate['configs']))
-    configs.forEach((config: any, config_id: any) => {      
-      if(config.is_list && config.options) {
+    configs.forEach((config: any, config_id: any) => {
+      if (config.is_list && config.options) {
         config.description = config.description + ' Examples: ' + config.options
       }
       config['id'] = config_id
-      
+
       let defaultValue = config['default']
       const lastValue = config['value']
-      if(this.mode != "new" && lastValue != null) {
+      if (this.mode != "new" && lastValue != null) {
         defaultValue = lastValue
       }
       this.setupFormControl(form.get("configs"), config['id'], config['required'], defaultValue, config['is_list'])

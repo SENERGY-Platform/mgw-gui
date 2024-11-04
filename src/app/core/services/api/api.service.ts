@@ -16,84 +16,84 @@
  *
  */
 
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import { environment } from 'src/environments/environment';
+import {environment} from 'src/environments/environment';
 
 
 @Injectable({
-    providedIn: 'root'
-  })
+  providedIn: 'root'
+})
 export class ApiService {
-    public baseUrl: string = environment.coreApiUrl; // '/core/api'
+  public baseUrl: string = environment.coreApiUrl; // '/core/api'
 
-    constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient) {
+  }
+
+  public get<T>(path: string, queryParams?: HttpParams, responseType?: string, withHeaders?: boolean, headers?: HttpHeaders): Observable<unknown> {
+    var options: any = {params: queryParams}
+    if (responseType) {
+      options['responseType'] = responseType
+    }
+    if (withHeaders) {
+      options["observe"] = "response"
+    }
+    options.withCredentials = true;
+    if (headers) {
+      options.headers = headers;
     }
 
-    public get<T>(path: string, queryParams?: HttpParams, responseType?: string, withHeaders?: boolean, headers?: HttpHeaders): Observable<unknown> {
-        var options: any = {params: queryParams}
-        if(responseType) {
-            options['responseType'] = responseType
-        }
-        if(withHeaders) {
-            options["observe"] = "response"
-        }
-        options.withCredentials = true;
-        if(headers) {
-            options.headers = headers;
-        }
+    return this.httpClient.get<T>(this.baseUrl + path, options);
+  }
 
-        return this.httpClient.get<T>(this.baseUrl + path, options);
+  public post<T>(path: string, payload?: any, queryParams?: HttpParams, responseType?: string, headers?: HttpHeaders): Observable<unknown> {
+    var options: any = {params: queryParams}
+    if (responseType) {
+      options['responseType'] = responseType
     }
 
-    public post<T>(path: string, payload?: any, queryParams?: HttpParams, responseType?: string, headers?: HttpHeaders): Observable<unknown> {
-        var options: any = {params: queryParams}
-        if(responseType) {
-            options['responseType'] = responseType
-        }
+    if (headers) {
+      options.headers = headers
+    }
+    options.withCredentials = true;
 
-        if(headers) {
-            options.headers = headers
-        }
-        options.withCredentials = true;
+    return this.httpClient.post<T>(this.baseUrl + path, payload, options);
+  }
 
-        return this.httpClient.post<T>(this.baseUrl + path, payload, options);
+  public put(path: string, payload: any): Observable<unknown> {
+    var options: any = {
+      withCredentials: true
+    }
+    return this.httpClient.put(this.baseUrl + path, payload, options);
+  }
+
+  public delete(path: string, payload?: any, queryParams?: HttpParams, responseType?: string, headers?: HttpHeaders): Observable<unknown> {
+    var options: any = {
+      params: queryParams,
+      body: payload
+    }
+    if (responseType) {
+      options['responseType'] = responseType
+    }
+    if (headers) {
+      options.headers = headers;
+    }
+    options.withCredentials = true;
+
+    return this.httpClient.delete(this.baseUrl + path, options);
+  }
+
+  public patch(path: string, payload?: any, queryParams?: HttpParams, responseType?: string, headers?: HttpHeaders): Observable<unknown> {
+    var options: any = {params: queryParams}
+    if (responseType) {
+      options['responseType'] = responseType
+    }
+    options.withCredentials = true;
+    if (headers) {
+      options.headers = headers;
     }
 
-    public put(path: string, payload: any): Observable<unknown> {
-        var options: any = {
-            withCredentials: true
-        }
-        return this.httpClient.put(this.baseUrl + path, payload, options);
-    }
-
-    public delete(path: string, payload?: any, queryParams?: HttpParams, responseType?: string, headers?: HttpHeaders): Observable<unknown> {
-        var options: any = {
-            params: queryParams,
-            body: payload
-        }
-        if(responseType) {
-            options['responseType'] = responseType
-        }
-        if(headers) {
-            options.headers = headers;
-        }
-        options.withCredentials = true;
-
-        return this.httpClient.delete(this.baseUrl + path, options);
-    }
-
-    public patch(path: string, payload?: any, queryParams?: HttpParams, responseType?: string, headers?: HttpHeaders): Observable<unknown> {
-        var options: any = {params: queryParams}
-        if(responseType) {
-            options['responseType'] = responseType
-        }
-        options.withCredentials = true;
-        if(headers) {
-            options.headers = headers;
-        }
-
-        return this.httpClient.patch(this.baseUrl + path, payload, options);
-    }
+    return this.httpClient.patch(this.baseUrl + path, payload, options);
+  }
 }

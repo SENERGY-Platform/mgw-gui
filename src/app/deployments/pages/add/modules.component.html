@@ -1,4 +1,4 @@
 <div class="form-margin">
-    <spinner class="global-centered-spinner" [show]="!ready"></spinner>
-    <deployment *ngIf="ready" mode="new" [moduleID]="moduleID"></deployment>
+  <spinner [show]="!ready" class="global-centered-spinner"></spinner>
+  <deployment *ngIf="ready" [moduleID]="moduleID" mode="new"></deployment>
 </div>

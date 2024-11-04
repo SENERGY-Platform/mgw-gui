@@ -19,55 +19,55 @@
   </span>
 
   <div *ngIf="dataSource.data.length === 0 && ready">No core services found.</div>
-  <spinner class="global-centered-spinner" [show]="!ready"></spinner>
+  <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-  <div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
-    <table mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc">
+  <div [hidden]="(!ready && init) || dataSource.data.length === 0" class="mat-elevation-z1">
+    <table [dataSource]="dataSource" mat-table matSort matSortActive="name" matSortDirection="asc">
       <ng-container matColumnDef="select">
-        <th mat-header-cell *matHeaderCellDef class="button-column">
+        <th *matHeaderCellDef class="button-column" mat-header-cell>
           <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
-            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
         </th>
-        <td mat-cell *matCellDef="let row">
-          <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row.name) : null"
-            [checked]="selection.isSelected(row.name)">
+        <td *matCellDef="let row" mat-cell>
+          <mat-checkbox (change)="$event ? selection.toggle(row.name) : null" (click)="$event.stopPropagation()"
+                        [checked]="selection.isSelected(row.name)">
           </mat-checkbox>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Health</th>
-        <td mat-cell *matCellDef="let service">
+        <th *matHeaderCellDef class="button-column" mat-header-cell mat-sort-header>Health</th>
+        <td *matCellDef="let service" mat-cell>
           <span *ngIf="service.container.state">
-            <div class="circle red" *ngIf="service.container.state != 'running'"></div>
-            <div class="circle green" *ngIf="service.container.state == 'running'"></div>
+            <div *ngIf="service.container.state != 'running'" class="circle red"></div>
+            <div *ngIf="service.container.state == 'running'" class="circle green"></div>
           </span>
-          <div class="circle grey" *ngIf="!service.container.state"></div>
+          <div *ngIf="!service.container.state" class="circle grey"></div>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="name">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let service">
-          {{service.name}}
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>Name</th>
+        <td *matCellDef="let service" mat-cell>
+          {{ service.name }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="restart">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Restart</th>
-        <td mat-cell *matCellDef="let service">
-          <button mat-icon-button color="primary" matTooltip="Restart" (click)="restart(service.name)">
+        <th *matHeaderCellDef class="button-column" mat-header-cell mat-sort-header>Restart</th>
+        <td *matCellDef="let service" mat-cell>
+          <button (click)="restart(service.name)" color="primary" mat-icon-button matTooltip="Restart">
             <mat-icon>restart_alt</mat-icon>
           </button>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="header-all">
-        <th mat-header-cell *matHeaderCellDef colspan="10">
+        <th *matHeaderCellDef colspan="10" mat-header-cell>
           <div>
-            <span>You have selected {{selection.selected.length}} services</span>
-            <button matTooltip="Restart" mat-icon-button color="accent" (click)="restartMultiple()">
+            <span>You have selected {{ selection.selected.length }} services</span>
+            <button (click)="restartMultiple()" color="accent" mat-icon-button matTooltip="Restart">
               <mat-icon>restart_alt</mat-icon>
             </button>
           </div>
@@ -75,19 +75,19 @@
       </ng-container>
 
       <ng-container matColumnDef="logs">
-        <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Logs</th>
-        <td mat-cell *matCellDef="let service">
-          <button mat-icon-button color="primary" (click)="showLogs(service.container.id)" matTooltip="Show Logs">
+        <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Logs</th>
+        <td *matCellDef="let service" mat-cell>
+          <button (click)="showLogs(service.container.id)" color="primary" mat-icon-button matTooltip="Show Logs">
             <mat-icon>description</mat-icon>
           </button>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="['header-all']" [hidden]="selection.selected.length === 0">
+      <tr *matHeaderRowDef="['header-all']" [hidden]="selection.selected.length === 0" mat-header-row>
       </tr>
 
-      <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let m; columns: displayColumns;"></tr>
+      <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+      <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
     </table>
   </div>
 </div>

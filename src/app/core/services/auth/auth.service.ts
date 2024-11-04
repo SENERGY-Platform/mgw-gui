@@ -1,9 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { ApiService } from 'src/app/core/services/api/api.service'
-import { environment } from 'src/environments/environment.prod';
-import { InitLogoutResponse, RegisterRequest } from './auth.models';
-
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {environment} from 'src/environments/environment.prod';
+import {InitLogoutResponse} from './auth.models';
 
 
 @Injectable({
@@ -30,7 +28,7 @@ export class AuthService {
       "password": password,
       'csrf_token': csrf
     }
-    var url = this.basePath + this.loginPath + "?flow=" + flowID ;
+    var url = this.basePath + this.loginPath + "?flow=" + flowID;
     const headers = new HttpHeaders().set("Accept", "application/json")
     // .set("X-CSRF-Token", csrf) dont use -> or set allowed headers in kratos cors setting to this
     return this.httpClient.post(url, payload, {headers: headers, withCredentials: true});

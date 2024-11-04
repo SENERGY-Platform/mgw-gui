@@ -1,25 +1,37 @@
-import { Component, ViewChild } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
-import { concatMap, map, of, throwError } from 'rxjs';
-import { CoreService, CoreServicesResponse } from 'src/app/mgw-core/models/services';
-import { CoreManagerService } from 'src/app/core/services/core-manager/core-manager.service';
-import { ErrorService } from 'src/app/core/services/util/error.service';
-import { SelectionModel } from '@angular/cdk/collections';
-import { Router } from '@angular/router';
-import { UtilService } from 'src/app/core/services/util/util.service';
-import { NgIf } from '@angular/common';
-import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
+import {Component, ViewChild} from '@angular/core';
+import {MatSort} from '@angular/material/sort';
+import {
+  MatTableDataSource,
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow
+} from '@angular/material/table';
+import {concatMap, map, of, throwError} from 'rxjs';
+import {CoreService, CoreServicesResponse} from 'src/app/mgw-core/models/services';
+import {CoreManagerService} from 'src/app/core/services/core-manager/core-manager.service';
+import {ErrorService} from 'src/app/core/services/util/error.service';
+import {SelectionModel} from '@angular/cdk/collections';
+import {Router} from '@angular/router';
+import {UtilService} from 'src/app/core/services/util/util.service';
+import {NgIf} from '@angular/common';
+import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
-    selector: 'app-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.css'],
-    standalone: true,
-    imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
+  selector: 'app-list',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.css'],
+  standalone: true,
+  imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
 })
 export class ListCoreServicesComponent {
   dataSource = new MatTableDataSource<CoreService>();
@@ -35,7 +47,8 @@ export class ListCoreServicesComponent {
     private errorService: ErrorService,
     private router: Router,
     private utilsService: UtilService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.loadServices(false);
@@ -49,7 +62,7 @@ export class ListCoreServicesComponent {
 
   startPeriodicRefresh() {
     this.stopPeriodicRefresh()
-    this.interval = setInterval(() => { 
+    this.interval = setInterval(() => {
       this.loadServices(true);
     }, 5000);
   }
@@ -71,15 +84,15 @@ export class ListCoreServicesComponent {
     ).subscribe(
       {
         next: (services: CoreService[]) => {
-          if(!services) {
+          if (!services) {
             this.dataSource.data = []
           } else {
             this.dataSource.data = services
           }
           this.ready = true
-        }, 
+        },
         error: (err) => {
-          if(!background) {
+          if (!background) {
             this.errorService.handleError(ListCoreServicesComponent.name, "loadServices", err)
           }
           this.ready = true
@@ -88,7 +101,8 @@ export class ListCoreServicesComponent {
     )
   }
 
-  restartMultiple() {}
+  restartMultiple() {
+  }
 
   restart(serviceID: string) {
     this.coreService.reloadService(serviceID).pipe(
@@ -97,14 +111,14 @@ export class ListCoreServicesComponent {
         return this.utilsService.checkJobStatus(jobId, message, "core-manager")
       }),
       concatMap(result => {
-        if(!result.success) {
+        if (!result.success) {
           return throwError(() => new Error(result.error))
         }
         return of(true)
-    })
+      })
     ).subscribe({
       next: (_) => {
-        
+
       },
       error: (err) => {
         this.errorService.handleError(ListCoreServicesComponent.name, "restart", err)
@@ -119,7 +133,7 @@ export class ListCoreServicesComponent {
   }
 
   masterToggle() {
-    if(this.isAllSelected()) {
+    if (this.isAllSelected()) {
       this.selectionClear();
     } else {
       this.selectionClear();
@@ -128,7 +142,7 @@ export class ListCoreServicesComponent {
   }
 
   selectionClear(): void {
-      this.selection.clear();
+    this.selection.clear();
   }
 
   showLogs(containerID: string) {

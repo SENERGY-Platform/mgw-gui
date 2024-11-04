@@ -1,16 +1,16 @@
 form {
-    width: 40%;
+  width: 40%;
 }
 
 .form-container {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 mat-form-field {
-    width: 100%;
+  width: 100%;
 }
 
 button {
-    margin-right: 10px;
+  margin-right: 10px;
 }

@@ -1,4 +1,4 @@
-<spinner class="global-centered-spinner" [show]="!ready"></spinner>
+<spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
 <div *ngIf="ready">
   <div class="form-margin">
@@ -7,64 +7,64 @@
 
       <mat-form-field appearance="fill">
         <mat-label>ID</mat-label>
-        <input matInput [readonly]="true" [value]="subDeployment.id">
+        <input [readonly]="true" [value]="subDeployment.id" matInput>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
         <mat-label>Deployment ID</mat-label>
-        <input matInput [readonly]="true" [value]="subDeployment.dep_id">
+        <input [readonly]="true" [value]="subDeployment.dep_id" matInput>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
         <mat-label>Created</mat-label>
-        <input matInput [readonly]="true" [value]="subDeployment.created | date: 'short'">
+        <input [readonly]="true" [value]="subDeployment.created | date: 'short'" matInput>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
         <mat-label>Updated</mat-label>
-        <input matInput [readonly]="true" [value]="subDeployment.updated | date: 'short'">
+        <input [readonly]="true" [value]="subDeployment.updated | date: 'short'" matInput>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
         <mat-label>Image</mat-label>
-        <input matInput [readonly]="true" [value]="subDeployment.image">
+        <input [readonly]="true" [value]="subDeployment.image" matInput>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
         <mat-label>Reference</mat-label>
-        <input matInput [readonly]="true" [value]="subDeployment.ref">
+        <input [readonly]="true" [value]="subDeployment.ref" matInput>
       </mat-form-field>
 
       <mat-checkbox [disabled]="true" [ngModel]="subDeployment.enabled">Enabled</mat-checkbox>
     </mat-card>
 
-    <mat-card class="container card" *ngIf="objectKeys(subDeployment.labels).length > 0">
+    <mat-card *ngIf="objectKeys(subDeployment.labels).length > 0" class="container card">
       <h2>Labels</h2>
-      <mat-form-field appearance="fill" *ngFor="let label of subDeployment.labels | keyvalue">
-        <mat-label>{{label.key}}</mat-label>
-        <input matInput [readonly]="true" [value]="label.value">
+      <mat-form-field *ngFor="let label of subDeployment.labels | keyvalue" appearance="fill">
+        <mat-label>{{ label.key }}</mat-label>
+        <input [readonly]="true" [value]="label.value" matInput>
       </mat-form-field>
     </mat-card>
 
-    <mat-card class="container card" *ngIf="objectKeys(subDeployment.configs).length > 0">
+    <mat-card *ngIf="objectKeys(subDeployment.configs).length > 0" class="container card">
       <h2>Configuration</h2>
-      <mat-form-field appearance="fill" *ngFor="let config of subDeployment.configs | keyvalue">
-        <mat-label>{{config.key}}</mat-label>
-        <input matInput [readonly]="true" [value]="config.value">
+      <mat-form-field *ngFor="let config of subDeployment.configs | keyvalue" appearance="fill">
+        <mat-label>{{ config.key }}</mat-label>
+        <input [readonly]="true" [value]="config.value" matInput>
       </mat-form-field>
     </mat-card>
 
-    <mat-card class="container card" *ngIf="objectKeys(subDeployment.volumes).length > 0">
+    <mat-card *ngIf="objectKeys(subDeployment.volumes).length > 0" class="container card">
       <h2>Volumes</h2>
-      <mat-form-field appearance="fill" *ngFor="let volume of subDeployment.volumes | keyvalue">
-        <mat-label>{{volume.key}}</mat-label>
-        <input matInput [readonly]="true" [value]="volume.value">
+      <mat-form-field *ngFor="let volume of subDeployment.volumes | keyvalue" appearance="fill">
+        <mat-label>{{ volume.key }}</mat-label>
+        <input [readonly]="true" [value]="volume.value" matInput>
       </mat-form-field>
     </mat-card>
 
-    <mat-card class="container card" *ngIf="objectKeys(subDeployment).length > 0">
+    <mat-card *ngIf="objectKeys(subDeployment).length > 0" class="container card">
       <h2>Service</h2>
-      <container-list [fromSubDeployment]="true" [deploymentID]="subDeployment.dep_id"
-        [subDeploymentID]="subDeployment.id"></container-list>
+      <container-list [deploymentID]="subDeployment.dep_id" [fromSubDeployment]="true"
+                      [subDeploymentID]="subDeployment.id"></container-list>
     </mat-card>
   </div>

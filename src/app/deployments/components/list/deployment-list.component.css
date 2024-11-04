@@ -1,15 +1,15 @@
 
 .status {
-    text-align: center;
-    padding: 10px 20px;
-    margin-right: 20px;
-    border-radius: 20px;
-    color: white;
+  text-align: center;
+  padding: 10px 20px;
+  margin-right: 20px;
+  border-radius: 20px;
+  color: white;
 }
 
 spinner {
-    position: fixed;
-    top: 50%;
-    left: 50%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
 }
 

@@ -1,31 +1,43 @@
-import { Component, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSort, MatSortHeader } from '@angular/material/sort';
-import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
-import { UtilService } from 'src/app/core/services/util/util.service';
-import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
-import { Deployment, DeploymentResponse } from '../../models/deployment_models';
-import { AuxDeploymentResponse, AuxDeployment } from '../../models/sub-deployments';
-import { ErrorService } from 'src/app/core/services/util/error.service';
-import { Router, RouterLink } from '@angular/router';
-import { SelectionModel } from '@angular/cdk/collections';
-import { catchError, concatMap, map, Observable, of, throwError} from 'rxjs';
-import { NgIf } from '@angular/common';
-import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { MatIconButton } from '@angular/material/button';
-import { MatTooltip } from '@angular/material/tooltip';
-import { MatIcon } from '@angular/material/icon';
+import {Component, Inject, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {MatSort, MatSortHeader} from '@angular/material/sort';
+import {
+  MatTableDataSource,
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow
+} from '@angular/material/table';
+import {UtilService} from 'src/app/core/services/util/util.service';
+import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
+import {Deployment, DeploymentResponse} from '../../models/deployment_models';
+import {AuxDeploymentResponse, AuxDeployment} from '../../models/sub-deployments';
+import {ErrorService} from 'src/app/core/services/util/error.service';
+import {Router, RouterLink} from '@angular/router';
+import {SelectionModel} from '@angular/cdk/collections';
+import {catchError, concatMap, map, Observable, of, throwError} from 'rxjs';
+import {NgIf} from '@angular/common';
+import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
-    selector: 'deployment-list',
-    templateUrl: './deployment-list.component.html',
-    styleUrls: ['./deployment-list.component.css'],
-    standalone: true,
-    imports: [NgIf, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatSortHeader, MatIconButton, MatTooltip, MatIcon, RouterLink, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
+  selector: 'deployment-list',
+  templateUrl: './deployment-list.component.html',
+  styleUrls: ['./deployment-list.component.css'],
+  standalone: true,
+  imports: [NgIf, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatSortHeader, MatIconButton, MatTooltip, MatIcon, RouterLink, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
 })
 export class DeploymentListComponent implements OnInit, OnDestroy {
-  dataSource = new MatTableDataSource<Deployment|AuxDeployment>();
+  dataSource = new MatTableDataSource<Deployment | AuxDeployment>();
   ready: Boolean = false;
   init: Boolean = true;
   interval: any
@@ -38,8 +50,8 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   @Input() deploymentID = '';
 
   constructor(
-    public dialog: MatDialog, 
-    @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
+    public dialog: MatDialog,
+    @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
     public utilsService: UtilService,
     private errorService: ErrorService,
     private router: Router
@@ -47,10 +59,10 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-      this.setupColumns()
-      this.loadDeployments(false);
-      this.startPeriodicRefresh()
-      this.init = false
+    this.setupColumns()
+    this.loadDeployments(false);
+    this.startPeriodicRefresh()
+    this.init = false
   }
 
   ngOnDestroy(): void {
@@ -59,7 +71,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
 
   setupColumns() {
     let columns = ['select']
-    if(this.isSubDeployment === false) {
+    if (this.isSubDeployment === false) {
       columns.push("status_deployment")
       columns.push("name")
     } else {
@@ -67,15 +79,15 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
       columns.push("id")
     }
     columns = columns.concat('start', 'stop', 'restart', 'delete', 'info')
-    if(this.isSubDeployment === false) {
+    if (this.isSubDeployment === false) {
       columns.push("edit")
-    } 
+    }
     this.displayColumns = columns;
   }
 
   startPeriodicRefresh() {
     this.stopPeriodicRefresh()
-    this.interval = setInterval(() => { 
+    this.interval = setInterval(() => {
       this.loadDeployments(true);
     }, 5000);
   }
@@ -85,10 +97,10 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sortingDataAccessor = (row: Deployment|AuxDeployment, sortHeaderId: string) => {
+    this.dataSource.sortingDataAccessor = (row: Deployment | AuxDeployment, sortHeaderId: string) => {
       var value = (<any>row)[sortHeaderId];
-      value = (typeof(value) === 'string') ? value.toUpperCase(): value;
-      if(sortHeaderId == 'status') {
+      value = (typeof (value) === 'string') ? value.toUpperCase() : value;
+      if (sortHeaderId == 'status') {
         value = row.enabled ? 0 : 1
       }
       return value
@@ -98,9 +110,10 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
 
   loadDeployments(background: boolean): void {
     let obs: Observable<DeploymentResponse | AuxDeploymentResponse> = this.moduleService.loadDeployments(true);
-    if(this.isSubDeployment === true) {
+    if (this.isSubDeployment === true) {
       obs = this.moduleService.getSubDeployments(this.deploymentID);
-    };
+    }
+    ;
     obs.subscribe(
       {
         next: (deployments) => {
@@ -110,9 +123,9 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
           }
           this.dataSource.data = deploymentsList
           this.ready = true
-        }, 
+        },
         error: (err) => {
-          if(!background) {
+          if (!background) {
             this.errorService.handleError(DeploymentListComponent.name, "loadDeployments", err)
           }
           this.ready = true
@@ -140,15 +153,15 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
 
     this.sendStop(ids, false).pipe(
       catchError((err, _1) => {
-        // stopping did not succeed because deployment is required 
+        // stopping did not succeed because deployment is required
         return this.utilsService.askForConfirmation(err + "\n" + "Do you want to force stop?").pipe(
           concatMap((forceConfirmed: any) => {
-            if(!forceConfirmed) {
+            if (!forceConfirmed) {
               this.ready = true
               this.startPeriodicRefresh()
               return of(true)
             }
-            
+
             return this.sendStop(ids, true)
           })
         )
@@ -167,32 +180,32 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   sendStop(ids: string[], forceConfirmed: boolean) {
-    var obs 
-    if(ids.length == 1) {
-      if(this.isSubDeployment === true) {
+    var obs
+    if (ids.length == 1) {
+      if (this.isSubDeployment === true) {
         obs = this.moduleService.stopSubDeployment(this.deploymentID, ids[0])
       } else {
         obs = this.moduleService.stopDeployment(ids[0], forceConfirmed)
       }
     } else {
-      if(this.isSubDeployment === true) {
+      if (this.isSubDeployment === true) {
         obs = this.moduleService.stopSubDeployments(this.deploymentID, ids)
       } else {
         obs = this.moduleService.stopDeployments(ids, forceConfirmed)
       }
     }
-    
+
     return obs.pipe(
       concatMap(jobID => {
         var message = "Deployments are stopping"
         return this.utilsService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap(result => {
-          if(!result.success && !forceConfirmed) {
-            return throwError(() => new Error(result.error))
-          }
-          
-          return of(true)
+        if (!result.success && !forceConfirmed) {
+          return throwError(() => new Error(result.error))
+        }
+
+        return of(true)
       })
     )
   }
@@ -207,7 +220,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.selection.selected.forEach((deployment_id: string) => {
       ids.push(deployment_id);
     });
-            
+
     this.tryStart(ids)
   }
 
@@ -237,15 +250,15 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
 
   private sendStart(ids: string[]) {
     var obs: Observable<string>
-    if(ids.length == 1) {
-      if(this.isSubDeployment === true) {
+    if (ids.length == 1) {
+      if (this.isSubDeployment === true) {
         obs = this.moduleService.startSubDeployment(this.deploymentID, ids[0])
 
       } else {
         obs = this.moduleService.startDeployment(ids[0], true)
       }
     } else {
-      if(this.isSubDeployment === true) {
+      if (this.isSubDeployment === true) {
         obs = this.moduleService.startSubDeployments(this.deploymentID, ids)
 
       } else {
@@ -265,7 +278,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.selection.selected.forEach((deployment_id: string) => {
       ids.push(deployment_id);
     });
-            
+
     this.tryRestart(ids)
   }
 
@@ -273,17 +286,17 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
     this.ready = false;
     this.stopPeriodicRefresh()
     var obs = this.sendRestart(ids);
-    
+
     obs.pipe(
       concatMap(jobID => {
         var message = "Deployments are restarting"
         return this.utilsService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap(result => {
-          if(!result.success) {
-            return throwError(() => new Error(result.error))
-          }
-          return of(true)
+        if (!result.success) {
+          return throwError(() => new Error(result.error))
+        }
+        return of(true)
       })
     ).subscribe({
       next: (_) => {
@@ -300,15 +313,15 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
 
   private sendRestart(ids: string[]) {
     var obs: Observable<string>
-    if(ids.length == 1) {
-      if(this.isSubDeployment === true) {
+    if (ids.length == 1) {
+      if (this.isSubDeployment === true) {
         obs = this.moduleService.restartSubDeployment(this.deploymentID, ids[0])
 
       } else {
         obs = this.moduleService.restartDeployment(ids[0])
       }
     } else {
-      if(this.isSubDeployment === true) {
+      if (this.isSubDeployment === true) {
         obs = this.moduleService.restartSubDeployments(this.deploymentID, ids)
 
       } else {
@@ -336,10 +349,10 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
 
     this.tryDelete(ids, false).pipe(
       catchError((err, _1) => {
-        // stopping did not succeed because deployment is required 
+        // stopping did not succeed because deployment is required
         return this.utilsService.askForConfirmation(err + "\nDo you want to force delete?").pipe(
           concatMap((forceConfirmed: any) => {
-            if(!forceConfirmed) {
+            if (!forceConfirmed) {
               this.ready = true
               this.startPeriodicRefresh()
               return of(true)
@@ -370,27 +383,27 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
         return this.utilsService.checkJobStatus(jobID, message, "module-manager")
       }),
       concatMap(result => {
-          if(!result.success && !forceConfirmed) {
-            return throwError(() => new Error(result.error))
-          }
+        if (!result.success && !forceConfirmed) {
+          return throwError(() => new Error(result.error))
+        }
 
-          // have to send some value so that the subscribe afterwards works
-          return of(true)
+        // have to send some value so that the subscribe afterwards works
+        return of(true)
       })
     )
   }
 
   private sendDelete(ids: string[], forceConfirmed: boolean) {
     var obs: Observable<string>
-    if(ids.length == 1) {
-      if(this.isSubDeployment === true) {
+    if (ids.length == 1) {
+      if (this.isSubDeployment === true) {
         obs = this.moduleService.deleteSubDeployment(this.deploymentID, ids[0], forceConfirmed)
 
       } else {
         obs = this.moduleService.deleteDeployment(ids[0], forceConfirmed)
       }
     } else {
-      if(this.isSubDeployment === true) {
+      if (this.isSubDeployment === true) {
         obs = this.moduleService.deleteSubDeployments(this.deploymentID, ids, forceConfirmed)
 
       } else {
@@ -407,7 +420,7 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   masterToggle() {
-    if(this.isAllSelected()) {
+    if (this.isAllSelected()) {
       this.selectionClear();
     } else {
       this.selectionClear();
@@ -416,11 +429,11 @@ export class DeploymentListComponent implements OnInit, OnDestroy {
   }
 
   selectionClear(): void {
-      this.selection.clear();
+    this.selection.clear();
   }
 
   info(deployment: Deployment | AuxDeployment) {
-    if(this.isSubDeployment) {
+    if (this.isSubDeployment) {
       this.router.navigate(["/deployments/" + (deployment as AuxDeployment).dep_id + "/sub/" + deployment.id + "/info"])
     } else {
       this.router.navigate(["/deployments/" + deployment.id + "/info"])

@@ -1,4 +1,4 @@
-import { ConfigTemplate, HostResourcesTemplate, SecretTemplate } from "./deployment_models"
+import {ConfigTemplate, HostResourcesTemplate, SecretTemplate} from "./deployment_models"
 
 export interface Template {
   secrets: {
@@ -11,10 +11,11 @@ export interface Template {
     [id: string]: HostResourcesTemplate
   }
 }
+
 export interface FormTemplate {
-    [group_id: string]: Template;
-  }
-  
-  export interface Group {
-    [id: string]: Group;
-  }
+  [group_id: string]: Template;
+}
+
+export interface Group {
+  [id: string]: Group;
+}

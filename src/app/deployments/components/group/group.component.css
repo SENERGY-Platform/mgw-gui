@@ -1,26 +1,26 @@
 .group-container {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .card {
-    padding: 30px
+  padding: 30px
 }
 
 mat-form-field {
-    width: 100%;
+  width: 100%;
 }
 
 #hostResources {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 #hostResources mat-form-field {
-    width: 80%;
+  width: 80%;
 }
 
 .secret-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

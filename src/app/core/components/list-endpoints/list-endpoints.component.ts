@@ -1,25 +1,37 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { MatSort, MatSortHeader } from '@angular/material/sort';
-import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
-import { Router, RouterLink } from '@angular/router';
-import { concatMap, forkJoin, map, Observable, of, throwError } from 'rxjs';
-import { CoreManagerService } from '../../services/core-manager/core-manager.service';
-import { ErrorService } from '../../services/util/error.service';
-import { UtilService } from '../../services/util/util.service';
-import { SelectionModel } from '@angular/cdk/collections';
-import { CoreEndpoint, CoreEndpointsResponse } from 'src/app/deployments/models/endpoints';
-import { SpinnerComponent } from '../spinner/spinner.component';
-import { NgIf } from '@angular/common';
-import { MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatCheckbox } from '@angular/material/checkbox';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {MatSort, MatSortHeader} from '@angular/material/sort';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from '@angular/material/table';
+import {Router, RouterLink} from '@angular/router';
+import {concatMap, map, of, throwError} from 'rxjs';
+import {CoreManagerService} from '../../services/core-manager/core-manager.service';
+import {ErrorService} from '../../services/util/error.service';
+import {UtilService} from '../../services/util/util.service';
+import {SelectionModel} from '@angular/cdk/collections';
+import {CoreEndpoint, CoreEndpointsResponse} from 'src/app/deployments/models/endpoints';
+import {SpinnerComponent} from '../spinner/spinner.component';
+import {NgIf} from '@angular/common';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatCheckbox} from '@angular/material/checkbox';
 
 @Component({
-    selector: 'list-endpoints',
-    templateUrl: './list-endpoints.component.html',
-    styleUrls: ['./list-endpoints.component.css'],
-    standalone: true,
-    imports: [SpinnerComponent, NgIf, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, RouterLink, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatCheckbox]
+  selector: 'list-endpoints',
+  templateUrl: './list-endpoints.component.html',
+  styleUrls: ['./list-endpoints.component.css'],
+  standalone: true,
+  imports: [SpinnerComponent, NgIf, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, RouterLink, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatCheckbox]
 })
 export class ListEndpointsComponent implements OnInit {
   dataSource = new MatTableDataSource<CoreEndpoint>();
@@ -40,7 +52,8 @@ export class ListEndpointsComponent implements OnInit {
     private utilsService: UtilService,
     private errorService: ErrorService,
     private router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.loadEndpoints(false);
@@ -54,7 +67,7 @@ export class ListEndpointsComponent implements OnInit {
 
   startPeriodicRefresh() {
     this.stopPeriodicRefresh()
-    this.interval = setInterval(() => { 
+    this.interval = setInterval(() => {
       this.loadEndpoints(true);
     }, 5000);
   }
@@ -77,11 +90,11 @@ export class ListEndpointsComponent implements OnInit {
         next: (endpoints: CoreEndpoint[]) => {
           const generatedEndpoints: CoreEndpoint[] = []
           const aliasEndpoints: CoreEndpoint[] = []
-          
+
           endpoints.forEach(endpoint => {
-            if(endpoint.type === 2) {
+            if (endpoint.type === 2) {
               aliasEndpoints.push(endpoint)
-            } else if(endpoint.type === 1) {
+            } else if (endpoint.type === 1) {
               generatedEndpoints.push(endpoint)
             }
           });
@@ -89,9 +102,9 @@ export class ListEndpointsComponent implements OnInit {
           this.dataSource.data = generatedEndpoints;
           this.dataSourceAlias.data = aliasEndpoints;
           this.ready = true
-        }, 
+        },
         error: (err) => {
-          if(!background) {
+          if (!background) {
             this.errorService.handleError(ListEndpointsComponent.name, "loadServices", err)
           }
           this.ready = true
@@ -107,7 +120,7 @@ export class ListEndpointsComponent implements OnInit {
   }
 
   masterToggle() {
-    if(this.isAllSelected()) {
+    if (this.isAllSelected()) {
       this.selectionClear();
     } else {
       this.selectionClear();
@@ -123,16 +136,16 @@ export class ListEndpointsComponent implements OnInit {
     this.ready = false;
     this.stopPeriodicRefresh()
     this.coreService.deleteEndpoint(endpointID).pipe(
-        concatMap((jobID: string) => {
-          const message = 'Delete endpoint'
-          return this.utilsService.checkJobStatus(jobID, message, "core-manager")
-        }),
-        concatMap(result => {
-          if(!result.success) {
-            return throwError(() => new Error(result.error))
-          }
-          return of(true)
-        })
+      concatMap((jobID: string) => {
+        const message = 'Delete endpoint'
+        return this.utilsService.checkJobStatus(jobID, message, "core-manager")
+      }),
+      concatMap(result => {
+        if (!result.success) {
+          return throwError(() => new Error(result.error))
+        }
+        return of(true)
+      })
     ).subscribe({
       next: (_) => {
         this.ready = true
@@ -144,7 +157,7 @@ export class ListEndpointsComponent implements OnInit {
         this.ready = true
         this.loadEndpoints(true)
         this.startPeriodicRefresh()
-      }      
+      }
     })
   }
 
@@ -161,7 +174,7 @@ export class ListEndpointsComponent implements OnInit {
         return this.utilsService.checkJobStatus(jobID, message, "core-manager")
       }),
       concatMap(result => {
-        if(!result.success) {
+        if (!result.success) {
           return throwError(() => new Error(result.error))
         }
         return of(true)
@@ -177,7 +190,7 @@ export class ListEndpointsComponent implements OnInit {
         this.ready = true
         this.loadEndpoints(true)
         this.startPeriodicRefresh()
-      }      
+      }
     })
   }
 }

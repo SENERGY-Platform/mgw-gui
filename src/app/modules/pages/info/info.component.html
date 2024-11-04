@@ -1,58 +1,58 @@
 <spinner [show]="!ready"></spinner>
 
-<div class="form-margin" *ngIf="ready">
+<div *ngIf="ready" class="form-margin">
   <mat-form-field appearance="fill">
     <mat-label>Module Name</mat-label>
-    <input matInput [readonly]="true" [value]="module.name">
+    <input [readonly]="true" [value]="module.name" matInput>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <mat-label>Module ID</mat-label>
-    <input matInput [readonly]="true" [value]="module.id">
+    <input [readonly]="true" [value]="module.id" matInput>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <mat-label>Author</mat-label>
-    <input matInput [readonly]="true" [value]="module.author">
+    <input [readonly]="true" [value]="module.author" matInput>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <mat-label>Version</mat-label>
-    <input matInput [readonly]="true" [value]="module.version">
+    <input [readonly]="true" [value]="module.version" matInput>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <mat-label>Type</mat-label>
-    <input matInput [readonly]="true" [value]="module.type">
+    <input [readonly]="true" [value]="module.type" matInput>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <mat-label>Deployment Type</mat-label>
-    <input matInput [readonly]="true" [value]="module.deployment_type">
+    <input [readonly]="true" [value]="module.deployment_type" matInput>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <mat-label>License</mat-label>
-    <input matInput [readonly]="true" [value]="module.license">
+    <input [readonly]="true" [value]="module.license" matInput>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <mat-label>Description</mat-label>
-    <input matInput [readonly]="true" [value]="module.description">
+    <input [readonly]="true" [value]="module.description" matInput>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <mat-label>Added</mat-label>
-    <input matInput [readonly]="true" [value]="module.added | date: 'short'">
+    <input [readonly]="true" [value]="module.added | date: 'short'" matInput>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <mat-label>Updated</mat-label>
-    <input matInput [readonly]="true" [value]="module.updated | date: 'short'">
+    <input [readonly]="true" [value]="module.updated | date: 'short'" matInput>
   </mat-form-field>
 
   <mat-chip-listbox aria-label="Tags">
-    <mat-chip *ngFor="let tag of module.tags">{{tag}}</mat-chip>
+    <mat-chip *ngFor="let tag of module.tags">{{ tag }}</mat-chip>
   </mat-chip-listbox>
 
 </div>

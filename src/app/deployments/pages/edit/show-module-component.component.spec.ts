@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ShowModuleComponentComponent } from './show-module-component.component';
+import {ShowModuleComponentComponent} from './show-module-component.component';
 
 describe('ShowModuleComponentComponent', () => {
   let component: ShowModuleComponentComponent;
@@ -8,8 +8,8 @@ describe('ShowModuleComponentComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ShowModuleComponentComponent]
-});
+      imports: [ShowModuleComponentComponent]
+    });
     fixture = TestBed.createComponent(ShowModuleComponentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

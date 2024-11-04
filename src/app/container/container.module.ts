@@ -1,20 +1,20 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
-import { RouterModule, Routes } from '@angular/router';
-import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { LogsComponent } from './pages/logs/logs.component';
-import { HighlightModule } from 'ngx-highlightjs';
+import {RouterModule, Routes} from '@angular/router';
+import {MatTableModule} from '@angular/material/table';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {LogsComponent} from './pages/logs/logs.component';
+import {HighlightModule} from 'ngx-highlightjs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {FormsModule} from '@angular/forms';
 
 const routes: Routes = [
   {
-    path: 'containers', 
+    path: 'containers',
     children: [
       {path: ':containerId/logs', component: LogsComponent},
     ]
@@ -22,7 +22,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [
+  imports: [
     CommonModule,
     MatIconModule,
     MatSlideToggleModule,
@@ -34,6 +34,7 @@ const routes: Routes = [
     HighlightModule,
     RouterModule.forChild(routes),
     LogsComponent
-]
+  ]
 })
-export class ContainerModule { }
+export class ContainerModule {
+}

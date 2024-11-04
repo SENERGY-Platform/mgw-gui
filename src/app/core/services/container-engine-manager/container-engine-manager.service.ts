@@ -1,8 +1,8 @@
-import { HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
-import { InfoResponse } from '../../models/info';
-import { ApiService } from '../api/api.service';
+import {HttpParams} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {InfoResponse} from '../../models/info';
+import {ApiService} from '../api/api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,8 @@ import { ApiService } from '../api/api.service';
 export class ContainerEngineManagerService {
   ceWrapperPath = "/ce-wrapper"
 
-  constructor(private http: ApiService) {}
+  constructor(private http: ApiService) {
+  }
 
   getContainerLogs(containerID: string, max_lines: number): Observable<string> {
     var url = this.ceWrapperPath + "/logs/" + containerID

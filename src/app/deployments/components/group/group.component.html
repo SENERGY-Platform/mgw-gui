@@ -1,104 +1,104 @@
 <div [formGroup]="form">
   <div *ngIf="showGroupInfo()">
-    <h1>{{group?.name}}</h1>
-    <p>{{group?.description}}</p>
-  </div>  
+    <h1>{{ group?.name }}</h1>
+    <p>{{ group?.description }}</p>
+  </div>
 
-    <div *ngIf="template != null && template != null"> <!--Some groups dont have any secret, configs, ... attached -->
-      <div *ngIf="getNumberOfMapElements(template.hostResources) > 0">
-        <div *ngFor="let host_resource of template.hostResources | keyvalue" formGroupName="host_resources"
-          class="form-field-container" id="hostResources">
-          <mat-form-field appearance="fill" [hintLabel]="host_resource.value.description">
-            <mat-label>{{host_resource.value.name}}</mat-label>
-            <mat-select [formControlName]="host_resource.key">
-              <mat-option *ngFor="let hostResourceOption of hostResourcesOptions" [value]="hostResourceOption.id">
-                {{hostResourceOption.name}}
+  <div *ngIf="template != null && template != null"> <!--Some groups dont have any secret, configs, ... attached -->
+    <div *ngIf="getNumberOfMapElements(template.hostResources) > 0">
+      <div *ngFor="let host_resource of template.hostResources | keyvalue" class="form-field-container"
+           formGroupName="host_resources" id="hostResources">
+        <mat-form-field [hintLabel]="host_resource.value.description" appearance="fill">
+          <mat-label>{{ host_resource.value.name }}</mat-label>
+          <mat-select [formControlName]="host_resource.key">
+            <mat-option *ngFor="let hostResourceOption of hostResourcesOptions" [value]="hostResourceOption.id">
+              {{ hostResourceOption.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button (click)="reloadHostRes()" class="fab" color="primary" mat-fab matTooltip="Reload Host Resources">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="getNumberOfMapElements(template.secrets) > 0">
+      <div *ngFor="let secret of template.secrets | keyvalue" class="form-field-container"
+           formGroupName="secrets">
+        <!-- Create new Secret -->
+        <div class="secret-container">
+          <!-- Select from available secrets -->
+          <mat-form-field [hintLabel]="secret.value.description" appearance="fill">
+            <mat-label>{{ secret.value.name }}</mat-label>
+            <mat-select [formControlName]="secret.key">
+              <mat-option *ngFor="let secretOption of secretOptions[secret.value.type]" [value]="secretOption.id">
+                {{ secretOption.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
-
-          <button mat-fab color="primary" class="fab" matTooltip="Reload Host Resources" (click)="reloadHostRes()">
-            <mat-icon>refresh</mat-icon>
-          </button>
         </div>
       </div>
+    </div>
 
-      <div *ngIf="getNumberOfMapElements(template.secrets) > 0">
-        <div *ngFor="let secret of template.secrets | keyvalue" formGroupName="secrets"
-          class="form-field-container">
-          <!-- Create new Secret -->
-          <div class="secret-container">
-            <!-- Select from available secrets -->
-            <mat-form-field appearance="fill" [hintLabel]="secret.value.description">
-              <mat-label>{{secret.value.name}}</mat-label>
-              <mat-select [formControlName]="secret.key">
-                <mat-option *ngFor="let secretOption of secretOptions[secret.value.type]" [value]="secretOption.id">
-                  {{secretOption.name}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="getNumberOfMapElements(template.configs) > 0">
-        <div *ngFor="let config of template.configs | keyvalue" formGroupName="configs"
-          class="form-field-container">
-          <mat-form-field appearance="fill" [hintLabel]="config.value.description">
-            <mat-label>{{config.value.name}}</mat-label>
-            <!-- Single Value Config -->
-            <span *ngIf="!config.value.is_list">
+    <div *ngIf="getNumberOfMapElements(template.configs) > 0">
+      <div *ngFor="let config of template.configs | keyvalue" class="form-field-container"
+           formGroupName="configs">
+        <mat-form-field [hintLabel]="config.value.description" appearance="fill">
+          <mat-label>{{ config.value.name }}</mat-label>
+          <!-- Single Value Config -->
+          <span *ngIf="!config.value.is_list">
               <!-- Free -->
               <span *ngIf="!config.value.options">
                 <span *ngIf="config.value.type == 'text'">
-                  <input matInput [formControlName]="config.key">
+                  <input [formControlName]="config.key" matInput>
                 </span>
                 <span *ngIf="config.value.type == 'number'">
-                  <input matInput [formControlName]="config.key" type="number">
+                  <input [formControlName]="config.key" matInput type="number">
                 </span>
               </span>
 
-              <!-- Dropdown -->
+            <!-- Dropdown -->
               <span *ngIf="config.value.options">
                 <mat-select [formControlName]="config.key">
                   <mat-option *ngFor="let option of config.value.options" [value]="option">
-                    {{option}}
+                    {{ option }}
                   </mat-option>
                 </mat-select>
               </span>
             </span>
 
-            <!-- Multi Value Config -->
-            <span *ngIf="config.value.is_list">
+          <!-- Multi Value Config -->
+          <span *ngIf="config.value.is_list">
               <mat-chip-grid #chipGrid [formControlName]="config.key">
-                <mat-chip-row *ngFor="let option of form?.get('configs')?.get(config.key)?.value"
-                  (removed)="remove(option, 'configs', config.key)" [editable]="true">
-                  {{option}}
+                <mat-chip-row (removed)="remove(option, 'configs', config.key)"
+                              *ngFor="let option of form?.get('configs')?.get(config.key)?.value" [editable]="true">
+                  {{ option }}
                   <button matChipRemove>
                     <mat-icon>cancel</mat-icon>
                   </button>
                 </mat-chip-row>
-                <input placeholder="New value..." [matChipInputFor]="chipGrid"
-                  (matChipInputTokenEnd)="add($event, 'configs', config.key)" />
+                <input (matChipInputTokenEnd)="add($event, 'configs', config.key)" [matChipInputFor]="chipGrid"
+                       placeholder="New value..."/>
               </mat-chip-grid>
             </span>
-          </mat-form-field>
-        </div>
+        </mat-form-field>
       </div>
     </div>
+  </div>
 
-    <div>
-        <div *ngFor="let group of groupHierarchy | keyvalue">
-          <mat-card class="card group-container">
-            <app-group 
-              [groupHierarchy]="group.value" 
-              [allGroupTemplates]="allGroupTemplates" 
-              [groupID]="group.key" 
-              [group]="deploymentTemplateData?.input_groups?.[group.key]"
-              [secretOptions]="secretOptions"
-              [hostResourcesOptions]="hostResourcesOptions"
-            ></app-group>
-          </mat-card>
-        </div>
+  <div>
+    <div *ngFor="let group of groupHierarchy | keyvalue">
+      <mat-card class="card group-container">
+        <app-group
+          [allGroupTemplates]="allGroupTemplates"
+          [groupHierarchy]="group.value"
+          [groupID]="group.key"
+          [group]="deploymentTemplateData?.input_groups?.[group.key]"
+          [hostResourcesOptions]="hostResourcesOptions"
+          [secretOptions]="secretOptions"
+        ></app-group>
+      </mat-card>
     </div>
   </div>
+</div>

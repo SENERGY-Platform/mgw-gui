@@ -1,24 +1,36 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
-import { HumanUser, HumanUsersResponse } from '../../models/users';
-import { SelectionModel } from '@angular/cdk/collections';
-import { UserService } from 'src/app/core/services/user/user.service';
-import { ErrorService } from 'src/app/core/services/util/error.service';
-import { map } from 'rxjs';
-import { Router, RouterLink } from '@angular/router';
-import { NgIf } from '@angular/common';
-import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { MatIconButton, MatFabButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {MatSort} from '@angular/material/sort';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from '@angular/material/table';
+import {HumanUser, HumanUsersResponse} from '../../models/users';
+import {SelectionModel} from '@angular/cdk/collections';
+import {UserService} from 'src/app/core/services/user/user.service';
+import {ErrorService} from 'src/app/core/services/util/error.service';
+import {map} from 'rxjs';
+import {Router, RouterLink} from '@angular/router';
+import {NgIf} from '@angular/common';
+import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatFabButton, MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
-    selector: 'app-list-users',
-    templateUrl: './list-users.component.html',
-    styleUrls: ['./list-users.component.css'],
-    standalone: true,
-    imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton, RouterLink]
+  selector: 'app-list-users',
+  templateUrl: './list-users.component.html',
+  styleUrls: ['./list-users.component.css'],
+  standalone: true,
+  imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton, RouterLink]
 })
 export class ListUsersComponent implements OnInit {
   dataSource = new MatTableDataSource<HumanUser>();
@@ -33,7 +45,8 @@ export class ListUsersComponent implements OnInit {
     private userService: UserService,
     private errorService: ErrorService,
     private router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.loadUsers();
@@ -51,13 +64,13 @@ export class ListUsersComponent implements OnInit {
     ).subscribe(
       {
         next: (users: HumanUser[]) => {
-          if(!users) {
+          if (!users) {
             this.dataSource.data = []
           } else {
             this.dataSource.data = users
           }
           this.ready = true
-        }, 
+        },
         error: (err) => {
           this.errorService.handleError(ListUsersComponent.name, "loadUsers", err)
           this.ready = true
@@ -73,7 +86,7 @@ export class ListUsersComponent implements OnInit {
   }
 
   masterToggle() {
-    if(this.isAllSelected()) {
+    if (this.isAllSelected()) {
       this.selectionClear();
     } else {
       this.selectionClear();
@@ -82,7 +95,7 @@ export class ListUsersComponent implements OnInit {
   }
 
   selectionClear(): void {
-      this.selection.clear();
+    this.selection.clear();
   }
 
   deleteUser(userID: string) {
@@ -97,6 +110,6 @@ export class ListUsersComponent implements OnInit {
   }
 
   editUser(user: HumanUser) {
-    this.router.navigate(['/core/accounts/users/'+ user.id + "/edit"])
+    this.router.navigate(['/core/accounts/users/' + user.id + "/edit"])
   }
 }

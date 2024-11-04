@@ -1,7 +1,7 @@
-<div id="outer" class="modal-outer">
+<div class="modal-outer" id="outer">
   <span>{{ message }}</span>
   <div>
-    <button mat-raised-button color="primary" (click)="confirm()">Yes</button>
-    <button mat-raised-button color="primary" (click)="cancel()">No</button>
+    <button (click)="confirm()" color="primary" mat-raised-button>Yes</button>
+    <button (click)="cancel()" color="primary" mat-raised-button>No</button>
   </div>
 </div>

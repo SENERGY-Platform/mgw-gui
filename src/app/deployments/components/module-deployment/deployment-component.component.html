@@ -1,23 +1,24 @@
 <div>
-  <spinner class="global-centered-spinner" [show]="!ready"></spinner>
+  <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
   <div *ngIf="ready">
     <form [formGroup]="form">
       <div class="deployment-container">
-        <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplatePerModule[moduleID]"
-          [moduleID]="moduleID" [IsDependency]="false" [secretOptions]="secretOptionsBinding"
-          [deploymentID]="deploymentID" [hostResourcesOptions]="hostResourcesOptions"
-          [pending_version]="pending_versions[moduleID]">
+        <deployment-template [IsDependency]="false" [deploymentID]="deploymentID"
+                             [deploymentTemplateData]="deploymentTemplatePerModule[moduleID]" [hostResourcesOptions]="hostResourcesOptions" [mode]="mode"
+                             [moduleID]="moduleID" [pending_version]="pending_versions[moduleID]"
+                             [secretOptions]="secretOptionsBinding">
         </deployment-template>
 
       </div>
 
       <div *ngIf="dependencies_module_ids.length > 0">
-        <div class="deployment-container" *ngFor="let formModuleID of dependencies_module_ids">
-          <deployment-template [mode]="mode" [deploymentTemplateData]="deploymentTemplatePerModule[formModuleID]"
-            [secretOptions]="secretOptionsBinding" [moduleID]="formModuleID"
-            [dependencyFormIDToModuleID]="dependencyFormIDToModuleID" [IsDependency]="true"
-            [hostResourcesOptions]="hostResourcesOptions" [pending_version]="pending_versions[dependencyFormIDToModuleID[formModuleID]]">
+        <div *ngFor="let formModuleID of dependencies_module_ids" class="deployment-container">
+          <deployment-template [IsDependency]="true" [dependencyFormIDToModuleID]="dependencyFormIDToModuleID"
+                               [deploymentTemplateData]="deploymentTemplatePerModule[formModuleID]" [hostResourcesOptions]="hostResourcesOptions"
+                               [mode]="mode" [moduleID]="formModuleID"
+                               [pending_version]="pending_versions[dependencyFormIDToModuleID[formModuleID]]"
+                               [secretOptions]="secretOptionsBinding">
           </deployment-template>
         </div>
 
@@ -25,15 +26,22 @@
 
       <div *ngIf="mode == 'new'">
         <!--standalone: true needed so that ngModel does not conflict with form controls-->
-        <mat-checkbox [(ngModel)]="autostartEnabled" [ngModelOptions]="{standalone: true}">Start the deployment directly?</mat-checkbox>
+        <mat-checkbox [(ngModel)]="autostartEnabled" [ngModelOptions]="{standalone: true}">Start the deployment
+          directly?
+        </mat-checkbox>
       </div>
     </form>
 
-    <button *ngIf="mode == 'new'" mat-raised-button color="primary" [disabled]='!form.valid' (click)="submit()">Deploy</button>
-    <button *ngIf="mode == 'edit'" mat-raised-button color="primary" [disabled]='!form.valid' (click)="submit()">Update Deployment</button>
-    <button *ngIf="mode == 'update'" mat-raised-button color="primary" [disabled]='!form.valid' (click)="submit()">Update Module</button>
-    <button *ngIf="mode == 'update'" mat-raised-button color="primary" (click)="cancelModuleUpdate()">Cancel</button>
-    <button *ngIf="mode == 'new' || mode == 'edit'" mat-raised-button color="primary" (click)="cancel()">Cancel</button>
+    <button (click)="submit()" *ngIf="mode == 'new'" [disabled]='!form.valid' color="primary" mat-raised-button>Deploy
+    </button>
+    <button (click)="submit()" *ngIf="mode == 'edit'" [disabled]='!form.valid' color="primary" mat-raised-button>Update
+      Deployment
+    </button>
+    <button (click)="submit()" *ngIf="mode == 'update'" [disabled]='!form.valid' color="primary" mat-raised-button>
+      Update Module
+    </button>
+    <button (click)="cancelModuleUpdate()" *ngIf="mode == 'update'" color="primary" mat-raised-button>Cancel</button>
+    <button (click)="cancel()" *ngIf="mode == 'new' || mode == 'edit'" color="primary" mat-raised-button>Cancel</button>
 
   </div>
 

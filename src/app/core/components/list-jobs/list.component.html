@@ -17,70 +17,70 @@
 <div *ngIf="dataSource.data.length === 0 && ready">No jobs found.</div>
 <spinner [show]="!ready && init"></spinner>
 
-<div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
+<div [hidden]="(!ready && init) || dataSource.data.length === 0" class="mat-elevation-z1">
   <div>
-    <table mat-table [dataSource]="dataSource" matSort matSortActive="created" matSortDirection="desc">
+    <table [dataSource]="dataSource" mat-table matSort matSortActive="created" matSortDirection="desc">
       <ng-container matColumnDef="id">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>ID</th>
-        <td mat-cell *matCellDef="let job">
-          {{job.id}}
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>ID</th>
+        <td *matCellDef="let job" mat-cell>
+          {{ job.id }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="description">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>Description</th>
-        <td mat-cell *matCellDef="let job">
-          {{job.description}}
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>Description</th>
+        <td *matCellDef="let job" mat-cell>
+          {{ job.description }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="created">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>Created</th>
-        <td mat-cell *matCellDef="let job">
-          {{job.created | date: 'medium'}}
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>Created</th>
+        <td *matCellDef="let job" mat-cell>
+          {{ job.created | date: 'medium' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="started">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>Started</th>
-        <td mat-cell *matCellDef="let job">
-          {{job.started | date: 'medium'}}
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>Started</th>
+        <td *matCellDef="let job" mat-cell>
+          {{ job.started | date: 'medium' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="completed">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>Completed</th>
-        <td mat-cell *matCellDef="let job">
-          {{job.completed | date: 'medium'}}
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>Completed</th>
+        <td *matCellDef="let job" mat-cell>
+          {{ job.completed | date: 'medium' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="canceled">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>Canceled</th>
-        <td mat-cell *matCellDef="let job">
-          {{job.canceled | date: 'medium'}}
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>Canceled</th>
+        <td *matCellDef="let job" mat-cell>
+          {{ job.canceled | date: 'medium' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="error">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>Error</th>
-        <td mat-cell *matCellDef="let job">
-          <p *ngIf="!!job.error">{{job.error.code + ": " + job.error.message}}</p>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header>Error</th>
+        <td *matCellDef="let job" mat-cell>
+          <p *ngIf="!!job.error">{{ job.error.code + ": " + job.error.message }}</p>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="cancel">
-        <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Cancel</th>
-        <td mat-cell *matCellDef="let job">
-          <button mat-icon-button color="primary" (click)="cancelJob(job.id)" matTooltip="Cancel"
-            [disabled]="job.completed">
+        <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Cancel</th>
+        <td *matCellDef="let job" mat-cell>
+          <button (click)="cancelJob(job.id)" [disabled]="job.completed" color="primary" mat-icon-button
+                  matTooltip="Cancel">
             <mat-icon>stop</mat-icon>
           </button>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let m; columns: displayColumns;"></tr>
+      <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+      <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
     </table>
   </div>
 </div>

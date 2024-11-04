@@ -15,54 +15,55 @@
   -->
 
 <div *ngIf="dataSource.data.length === 0 && ready">No containers found.</div>
-<spinner class="global-centered-spinner" [show]="!ready"></spinner>
+<spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-<div class="mat-elevation-z1" [hidden]="(!ready && init) || dataSource.data.length === 0">
-  <table mat-table [dataSource]="dataSource" matSort matSortActive="status" matSortDirection="desc">
+<div [hidden]="(!ready && init) || dataSource.data.length === 0" class="mat-elevation-z1">
+  <table [dataSource]="dataSource" mat-table matSort matSortActive="status" matSortDirection="desc">
     <ng-container matColumnDef="status">
-      <th mat-header-cell mat-sort-header *matHeaderCellDef class="button-column">Health</th>
-      <td mat-cell *matCellDef="let container">
+      <th *matHeaderCellDef class="button-column" mat-header-cell mat-sort-header>Health</th>
+      <td *matCellDef="let container" mat-cell>
         <span *ngIf="!!container.info">
-          <div class="circle red" *ngIf="container.info.state != 'running' && container.info.state != 'restarting'"></div>
-          <div class="circle green" *ngIf="container.info.state == 'running'"></div>
-          <div class="circle yellow" *ngIf="container.info.state == 'restarting'"></div>
+          <div *ngIf="container.info.state != 'running' && container.info.state != 'restarting'"
+               class="circle red"></div>
+          <div *ngIf="container.info.state == 'running'" class="circle green"></div>
+          <div *ngIf="container.info.state == 'restarting'" class="circle yellow"></div>
 
         </span>
-        <div class="circle grey" *ngIf="!container.info"></div>
+        <div *ngIf="!container.info" class="circle grey"></div>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="alias">
-      <th mat-header-cell mat-sort-header *matHeaderCellDef>Alias</th>
-      <td mat-cell *matCellDef="let container">
-        {{container.alias}}
+      <th *matHeaderCellDef mat-header-cell mat-sort-header>Alias</th>
+      <td *matCellDef="let container" mat-cell>
+        {{ container.alias }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="ref">
-      <th mat-header-cell mat-sort-header *matHeaderCellDef>Service Reference</th>
-      <td mat-cell *matCellDef="let container">
-        {{container.srv_ref}}
+      <th *matHeaderCellDef mat-header-cell mat-sort-header>Service Reference</th>
+      <td *matCellDef="let container" mat-cell>
+        {{ container.srv_ref }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="state">
-      <th mat-header-cell mat-sort-header *matHeaderCellDef>State</th>
-      <td mat-cell *matCellDef="let container">
-        <span *ngIf="!!container.info">{{container.info.state}}</span>
+      <th *matHeaderCellDef mat-header-cell mat-sort-header>State</th>
+      <td *matCellDef="let container" mat-cell>
+        <span *ngIf="!!container.info">{{ container.info.state }}</span>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="logs">
-      <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Logs</th>
-      <td mat-cell *matCellDef="let container">
-        <button mat-icon-button color="primary" (click)="showLogs(container.id)" matTooltip="Show Logs">
+      <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Logs</th>
+      <td *matCellDef="let container" mat-cell>
+        <button (click)="showLogs(container.id)" color="primary" mat-icon-button matTooltip="Show Logs">
           <mat-icon>description</mat-icon>
         </button>
       </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
-    <tr mat-row *matRowDef="let m; columns: displayColumns;"></tr>
+    <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+    <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
   </table>
 </div>

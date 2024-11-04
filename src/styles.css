@@ -1,99 +1,105 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 .layout-margin {
-    padding: 12px 12px 12px;
+  padding: 12px 12px 12px;
 }
 
 a {
-    text-decoration: none;
-    color: #4657b7;
+  text-decoration: none;
+  color: #4657b7;
 }
 
 /* Container for pages with forms */
 .form-margin {
-    margin: 12px 20% 50px 20%
+  margin: 12px 20% 50px 20%
 }
 
 .form-margin mat-form-field {
-    width: 100%;
+  width: 100%;
 }
 
 .search-button-container {
-    align-items: center;
-    margin-bottom: 10px;
-    display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  display: flex;
 }
 
 .search-button-container senergy-searchbar {
-    width: 100%;
+  width: 100%;
 }
 
 .button-column {
-    width: 4%;
+  width: 4%;
 }
 
 .card {
-    padding: 30px
+  padding: 30px
 }
 
 /* Buttons */
 .fixed-bottom-right-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
 }
 
 
 /* Global centered Spinner */
 .global-centered-spinner {
-    position: fixed!important;
-    top: 50%;
-    left: 50%;
+  position: fixed !important;
+  top: 50%;
+  left: 50%;
 }
 
 /* Modals */
 .modal-outer {
-    padding: 50px 50px;
+  padding: 50px 50px;
 }
 
 /* State Circles red/green */
 .green {
-    background: #008700;
+  background: #008700;
 }
 
 .red {
-    background: #db0000;
+  background: #db0000;
 }
 
 .grey {
-    background: grey;
+  background: grey;
 }
 
 .yellow {
-    background: yellow;
+  background: yellow;
 }
 
 .circle {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
 
 /* Code and Log Highlighting */
 /* for block of numbers */
 td.hljs-ln-numbers {
-    user-select: none;
-    text-align: center;
-    border-right: 1px solid gray;
-    vertical-align: top;
-    padding-right: 8px !important;
-    padding-left: 8px !important;
-  }
-  
+  user-select: none;
+  text-align: center;
+  border-right: 1px solid gray;
+  vertical-align: top;
+  padding-right: 8px !important;
+  padding-left: 8px !important;
+}
+
 /* for block of code */
 td.hljs-ln-code {
-padding-left: 8px !important;
+  padding-left: 8px !important;
 }

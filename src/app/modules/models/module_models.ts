@@ -1,45 +1,45 @@
-import { BaseRequest } from "src/app/core/models/base";
+import {BaseRequest} from "src/app/core/models/base";
 
 export interface Module {
-    id: string;
-    name: string;
-    description: string;
-    tags: string[];
-    license: string;
-    author: string;
-    version: string;
-    type: string;
-    deployment_type: string; 
-    added: Date;
-    updated: Date;
+  id: string;
+  name: string;
+  description: string;
+  tags: string[];
+  license: string;
+  author: string;
+  version: string;
+  type: string;
+  deployment_type: string;
+  added: Date;
+  updated: Date;
 }
 
 export interface ModuleResponse {
-    [module_id: string]: Module;
+  [module_id: string]: Module;
 }
 
 export interface AddModule {
-    id?: string;
-    version?: string;
+  id?: string;
+  version?: string;
 }
 
 export interface ModuleUpdate {
-    pending: boolean;
-    pending_versions: Record<string, string>;
-    checked: Date;
-    versions: string[];
+  pending: boolean;
+  pending_versions: Record<string, string>;
+  checked: Date;
+  versions: string[];
 }
 
 export interface ModuleUpdates {
-    [module_id: string]: ModuleUpdate;
+  [module_id: string]: ModuleUpdate;
 }
 
 export interface ModuleUpdatePrepare {
-    version: string
+  version: string
 }
 
 export interface ModuleUpdateRequest extends BaseRequest {
-    dependencies: Record<string, BaseRequest> | null;
+  dependencies: Record<string, BaseRequest> | null;
 
 }
 

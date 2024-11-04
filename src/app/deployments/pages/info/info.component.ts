@@ -1,34 +1,34 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { catchError, concatMap, forkJoin, map, Observable, of } from 'rxjs';
-import { HostManagerService } from 'src/app/core/services/host-manager/host-manager.service';
-import { ModuleManagerService } from 'src/app/core/services/module-manager/module-manager-service.service';
-import { SecretManagerServiceService } from 'src/app/core/services/secret-manager/secret-manager-service.service';
-import { ErrorService } from 'src/app/core/services/util/error.service';
-import { Deployment, DeploymentTemplate } from '../../models/deployment_models';
-import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { NgIf, NgFor, DatePipe, KeyValuePipe } from '@angular/common';
-import { MatTabGroup, MatTab } from '@angular/material/tabs';
-import { MatCard } from '@angular/material/card';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { FormsModule } from '@angular/forms';
-import { ListContainersComponent } from '../list-containers/list.component';
-import { ListEndpointsComponent } from '../../../core/components/list-endpoints/list-endpoints.component';
-import { MatChipGrid, MatChipRow, MatChipInput } from '@angular/material/chips';
-import { DeploymentListComponent } from '../../components/list/deployment-list.component';
+import {Component, Inject, Input, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {catchError, concatMap, forkJoin, map, Observable, of} from 'rxjs';
+import {HostManagerService} from 'src/app/core/services/host-manager/host-manager.service';
+import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
+import {SecretManagerServiceService} from 'src/app/core/services/secret-manager/secret-manager-service.service';
+import {ErrorService} from 'src/app/core/services/util/error.service';
+import {Deployment, DeploymentTemplate} from '../../models/deployment_models';
+import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
+import {NgIf, NgFor, DatePipe, KeyValuePipe} from '@angular/common';
+import {MatTabGroup, MatTab} from '@angular/material/tabs';
+import {MatCard} from '@angular/material/card';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {FormsModule} from '@angular/forms';
+import {ListContainersComponent} from '../list-containers/list.component';
+import {ListEndpointsComponent} from '../../../core/components/list-endpoints/list-endpoints.component';
+import {MatChipGrid, MatChipRow, MatChipInput} from '@angular/material/chips';
+import {DeploymentListComponent} from '../../components/list/deployment-list.component';
 
 @Component({
-    selector: 'app-info',
-    templateUrl: './info.component.html',
-    styleUrls: ['./info.component.css'],
-    standalone: true,
-    imports: [SpinnerComponent, NgIf, MatTabGroup, MatTab, MatCard, MatFormField, MatLabel, MatInput, MatCheckbox, FormsModule, ListContainersComponent, ListEndpointsComponent, NgFor, MatChipGrid, MatChipRow, MatChipInput, DeploymentListComponent, DatePipe, KeyValuePipe]
+  selector: 'app-info',
+  templateUrl: './info.component.html',
+  styleUrls: ['./info.component.css'],
+  standalone: true,
+  imports: [SpinnerComponent, NgIf, MatTabGroup, MatTab, MatCard, MatFormField, MatLabel, MatInput, MatCheckbox, FormsModule, ListContainersComponent, ListEndpointsComponent, NgFor, MatChipGrid, MatChipRow, MatChipInput, DeploymentListComponent, DatePipe, KeyValuePipe]
 })
 export class InfoComponent implements OnInit {
   @Input() deployment!: Deployment
-  deploymentID = "" 
+  deploymentID = ""
   ready: boolean = false
   hostResourceIDToName: Record<string, string> = {}
   secretIDToName: Record<string, string> = {}
@@ -37,9 +37,9 @@ export class InfoComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    @Inject("ModuleManagerService") private moduleService: ModuleManagerService, 
-    @Inject('SecretManagerService') private secretSercice: SecretManagerServiceService, 
-    @Inject('HostManagerService') private hostService: HostManagerService, 
+    @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
+    @Inject('SecretManagerService') private secretSercice: SecretManagerServiceService,
+    @Inject('HostManagerService') private hostService: HostManagerService,
     private errorService: ErrorService
   ) {
   }
@@ -48,7 +48,7 @@ export class InfoComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.deploymentID = params['deploymentID']
       this.loadAllInformation()
-    }) 
+    })
   }
 
   loadAllInformation() {
@@ -61,7 +61,7 @@ export class InfoComponent implements OnInit {
     forkJoin(obs).pipe(
       concatMap(_ => this.loadModuleTemplate())
     ).subscribe(_ => {
-        this.ready = true
+      this.ready = true
     })
   }
 
@@ -78,35 +78,35 @@ export class InfoComponent implements OnInit {
   }
 
   loadDeployment() {
-      return this.moduleService.loadDeployment(this.deploymentID, true, true).pipe(
-        map(deployment => this.deployment = deployment),
-        catchError((err, caught) => {
-          this.errorService.handleError(InfoComponent.name, "loadDeployment", err)
-          return of(null)
-        })
-      );
+    return this.moduleService.loadDeployment(this.deploymentID, true, true).pipe(
+      map(deployment => this.deployment = deployment),
+      catchError((err, caught) => {
+        this.errorService.handleError(InfoComponent.name, "loadDeployment", err)
+        return of(null)
+      })
+    );
   }
 
   loadHostResources() {
-      return this.hostService.getHostResources().pipe(
-        map((hostResources) => {
-            if(hostResources) {
-              hostResources.forEach(hostResource => {
-                this.hostResourceIDToName[hostResource['id']] = hostResource.name
-              });
-            }
-        }),
-        catchError((err, caught) => {
-          this.errorService.handleError(InfoComponent.name, "loadHostResources", err)
-          return of(null)
-        })
-      );
+    return this.hostService.getHostResources().pipe(
+      map((hostResources) => {
+        if (hostResources) {
+          hostResources.forEach(hostResource => {
+            this.hostResourceIDToName[hostResource['id']] = hostResource.name
+          });
+        }
+      }),
+      catchError((err, caught) => {
+        this.errorService.handleError(InfoComponent.name, "loadHostResources", err)
+        return of(null)
+      })
+    );
   }
-  
+
   loadSecrets() {
     return this.secretSercice.getSecrets().pipe(
       map(secrets => {
-        if(!!secrets) {
+        if (!!secrets) {
           secrets.forEach(secret => {
             this.secretIDToName[secret.id] = secret.name
           })
@@ -122,7 +122,7 @@ export class InfoComponent implements OnInit {
   configurationKeyToName(key: string) {
     // Deployment only provides keys and not human readable names. Must be fetched from the deployment template
     const config = this.deploymentTemplate.configs[key];
-    if(config != null) {
+    if (config != null) {
       return config.name;
     }
     return '';
@@ -130,7 +130,7 @@ export class InfoComponent implements OnInit {
 
   hostResourceKeyToName(key: string) {
     const hostResource = this.deploymentTemplate.host_resources[key];
-    if(hostResource != null) {
+    if (hostResource != null) {
       return hostResource.name;
     }
     return '';
@@ -138,11 +138,11 @@ export class InfoComponent implements OnInit {
 
   secretKeyToName(key: string) {
     const secret = this.deploymentTemplate.secrets[key];
-    if(secret != null) {
+    if (secret != null) {
       return secret.name;
     }
     return '';
 
   }
- 
+
 }

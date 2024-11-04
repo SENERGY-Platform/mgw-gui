@@ -1,19 +1,19 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { ErrorService } from 'src/app/core/services/util/error.service';
-import { SpinnerComponent } from '../../core/components/spinner/spinner.component';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
+import {Component} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {AuthService} from 'src/app/core/services/auth/auth.service';
+import {ErrorService} from 'src/app/core/services/util/error.service';
+import {SpinnerComponent} from '../../core/components/spinner/spinner.component';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatButton} from '@angular/material/button';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css'],
-    standalone: true,
-    imports: [SpinnerComponent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton]
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
+  standalone: true,
+  imports: [SpinnerComponent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton]
 })
 export class LoginComponent {
   flowID: string = "";
@@ -35,7 +35,7 @@ export class LoginComponent {
   }
 
   login() {
-    if(!this.form.valid) {
+    if (!this.form.valid) {
       return;
     }
 
@@ -65,15 +65,14 @@ export class LoginComponent {
 
 const returnToRegex = /^\/.*/;
 
-function getReturnTo(v: string | null, def: string) :string {
+function getReturnTo(v: string | null, def: string): string {
   if (v !== null) {
     try {
       v = decodeURIComponent(v);
       if (returnToRegex.test(v)) {
         return v
       }
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
     }
   }

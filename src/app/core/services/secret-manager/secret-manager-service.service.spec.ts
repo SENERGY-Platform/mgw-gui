@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { SecretManagerServiceService } from './secret-manager-service.service';
+import {SecretManagerServiceService} from './secret-manager-service.service';
 
 describe('SecretManagerServiceService', () => {
   let service: SecretManagerServiceService;

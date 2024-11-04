@@ -1,20 +1,20 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav opened="true" mode="side" id="sidenav">
+  <mat-sidenav id="sidenav" mode="side" opened="true">
     <div id="sidenav-inner">
       <ul class="side-menu">
         <li *ngFor="let section of sections">
-          <button type=button routerLink="{{section.state}}" routerLinkActive="background-color-sidenav"
-            *ngIf="section.type === 'link'">
-            <mat-icon>{{section.icon}}</mat-icon>
-            {{section.name | uppercase}}
+          <button *ngIf="section.type === 'link'" routerLink="{{section.state}}" routerLinkActive="background-color-sidenav"
+                  type=button>
+            <mat-icon>{{ section.icon }}</mat-icon>
+            {{ section.name | uppercase }}
           </button>
 
-          <button *ngIf="section.type === 'toggle'" (click)="toggleSection(section)"
-            [ngClass]="{'background-color-sidenav': isSectionOpen(section)}" routerLink="{{section.state}}">
+          <button (click)="toggleSection(section)" *ngIf="section.type === 'toggle'"
+                  [ngClass]="{'background-color-sidenav': isSectionOpen(section)}" routerLink="{{section.state}}">
             <span class="toggle-button">
-              <mat-icon>{{section.icon}}</mat-icon>
-              <div>{{section.name | uppercase}}</div>
-              <mat-icon class="toggle-icon" [ngClass]="{'toggled': isSectionOpen(section)}">
+              <mat-icon>{{ section.icon }}</mat-icon>
+              <div>{{ section.name | uppercase }}</div>
+              <mat-icon [ngClass]="{'toggled': isSectionOpen(section)}" class="toggle-icon">
                 keyboard_arrow_down
               </mat-icon>
             </span>
@@ -23,22 +23,23 @@
 
           <ul [ngClass]="{'toggled': isSectionOpen(section)}" class="toggle-list">
             <li *ngFor="let page of section.pages">
-              <button routerLink="{{page.state}}" routerLinkActive="background-color-sidenav"
-                class="toggle-list-button">
+              <button class="toggle-list-button" routerLink="{{page.state}}"
+                      routerLinkActive="background-color-sidenav">
                 <mat-icon>
-                  {{page.icon}}</mat-icon>
-                {{page.name}}
+                  {{ page.icon }}
+                </mat-icon>
+                {{ page.name }}
               </button>
             </li>
           </ul>
         </li>
       </ul>
       <div>
-        <button mat-icon-button [matMenuTriggerFor]="user" color="accent">
+        <button [matMenuTriggerFor]="user" color="accent" mat-icon-button>
           <mat-icon>account_circle</mat-icon>
         </button>
         <mat-menu #user="matMenu" [overlapTrigger]="false" yPosition="above">
-          <button mat-menu-item (click)="logout()">
+          <button (click)="logout()" mat-menu-item>
             <mat-icon>power_settings_new</mat-icon>
             Logout
           </button>

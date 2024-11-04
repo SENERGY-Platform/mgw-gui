@@ -1,10 +1,10 @@
 <div [formGroup]="form" class="form-margin">
-    <mat-form-field color="accent">
-        <mat-label>Path</mat-label>
-        <input matInput placeholder="Path" type="text" formControlName="path">
-    </mat-form-field>
- 
+  <mat-form-field color="accent">
+    <mat-label>Path</mat-label>
+    <input formControlName="path" matInput placeholder="Path" type="text">
+  </mat-form-field>
 
-    <button mat-raised-button color="primary" [routerLink]="'/core/endpoints'">Cancel</button>
-    <button mat-raised-button color="primary" type="submit" (click)="add()" [disabled]="!form.valid">Add</button>
+
+  <button [routerLink]="'/core/endpoints'" color="primary" mat-raised-button>Cancel</button>
+  <button (click)="add()" [disabled]="!form.valid" color="primary" mat-raised-button type="submit">Add</button>
 </div>

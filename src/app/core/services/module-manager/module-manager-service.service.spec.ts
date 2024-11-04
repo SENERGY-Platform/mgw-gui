@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { ModuleManagerServiceService } from './module-manager-service.service';
+import {ModuleManagerServiceService} from './module-manager-service.service';
 
 describe('ModuleManagerServiceService', () => {
   let service: ModuleManagerServiceService;

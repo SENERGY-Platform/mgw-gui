@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { EditAccountComponent } from './edit-account.component';
+import {EditAccountComponent} from './edit-account.component';
 
 describe('EditAccountComponent', () => {
   let component: EditAccountComponent;
@@ -8,8 +8,8 @@ describe('EditAccountComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [EditAccountComponent]
-});
+      imports: [EditAccountComponent]
+    });
     fixture = TestBed.createComponent(EditAccountComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

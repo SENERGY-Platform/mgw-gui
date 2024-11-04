@@ -16,45 +16,51 @@
  *
  */
 
-import { HttpErrorResponse } from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable, map } from 'rxjs';
-import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
-import { JobLoaderModalComponent } from '../../components/job-loader-modal/job-loader-modal.component';
+import {MatDialog} from '@angular/material/dialog';
+import {Observable} from 'rxjs';
+import {ConfirmDialogComponent} from '../../components/confirm-dialog/confirm-dialog.component';
+import {JobLoaderModalComponent} from '../../components/job-loader-modal/job-loader-modal.component';
 
 
 @Injectable({
-    providedIn: 'root'
-  })
+  providedIn: 'root'
+})
 export class UtilService {
-    constructor(
-        public dialog: MatDialog
-    ) {}
+  constructor(
+    public dialog: MatDialog
+  ) {
+  }
 
-    dateIsToday(dateTime: string | number): Boolean {
-        var today = new Date()
-        today.setHours(0,0,0,0)
+  dateIsToday(dateTime: string | number): Boolean {
+    var today = new Date()
+    today.setHours(0, 0, 0, 0)
 
-        var date = new Date(dateTime)
-        if(typeof(dateTime) == 'number') {
-            date = new Date(dateTime)
-        } 
-        date.setHours(0,0,0,0)
-        return date.getTime() === today.getTime()
+    var date = new Date(dateTime)
+    if (typeof (dateTime) == 'number') {
+      date = new Date(dateTime)
     }
+    date.setHours(0, 0, 0, 0)
+    return date.getTime() === today.getTime()
+  }
 
 
   checkJobStatus(jobID: string, message: string, service: string): Observable<any> {
-    /* 
+    /*
       Shows a Modal with a loading circle.
       When the job completed successfully, the modal will close
       When the job returned an error, the modal will close with the error message
-    */ 
+    */
 
-    var dialogRef = this.dialog.open(JobLoaderModalComponent, {data: {jobID: jobID, message: message, service: service}});
-    
-    // TODO pipe and throw error when 
+    var dialogRef = this.dialog.open(JobLoaderModalComponent, {
+      data: {
+        jobID: jobID,
+        message: message,
+        service: service
+      }
+    });
+
+    // TODO pipe and throw error when
     return dialogRef?.afterClosed()
   }
 
@@ -64,7 +70,7 @@ export class UtilService {
 
   askForConfirmation(message: string): Observable<boolean> {
     var dialogRef = this.dialog.open(ConfirmDialogComponent, {data: {message: message}});
-    
+
     return dialogRef?.afterClosed()
   }
 }

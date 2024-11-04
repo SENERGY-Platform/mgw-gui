@@ -16,4 +16,4 @@
 
 <app-main-navigation *ngIf="!authPageIsActive"></app-main-navigation>
 
-<router-outlet *ngIf="authPageIsActive" #o="outlet"></router-outlet>
+<router-outlet #o="outlet" *ngIf="authPageIsActive"></router-outlet>

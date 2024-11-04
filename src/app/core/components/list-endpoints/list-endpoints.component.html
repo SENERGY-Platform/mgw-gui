@@ -1,86 +1,88 @@
-<spinner class="global-centered-spinner" [show]="!ready"></spinner>
+<spinner [show]="!ready" class="global-centered-spinner"></spinner>
 <div *ngIf="dataSource.data.length === 0 && dataSourceAlias.data.length === 0 && ready">No endpoints found.</div>
 
 <div [hidden]="(!ready && init)">
   <div>
     <div [hidden]="dataSource.data.length === 0" id="generated-endpoints-container">
       <h3>Generated endpoints:</h3>
-      <table class="mat-elevation-z1" mat-table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc">
+      <table [dataSource]="dataSource" class="mat-elevation-z1" mat-table matSort matSortActive="name"
+             matSortDirection="asc">
         <ng-container matColumnDef="url">
-          <th mat-header-cell mat-sort-header *matHeaderCellDef>URL</th>
-          <td mat-cell *matCellDef="let endpoint">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>URL</th>
+          <td *matCellDef="let endpoint" mat-cell>
             <a [href]="'/endpoints/deployment/' + endpoint.ref + '/' + endpoint.ext_path" target="_blank">
-              {{location.origin + '/endpoints/deployment/' + endpoint.ref + '/' + endpoint.ext_path}}
+              {{ location.origin + '/endpoints/deployment/' + endpoint.ref + '/' + endpoint.ext_path }}
             </a>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="add">
-          <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Add Alias</th>
-          <td mat-cell *matCellDef="let endpoint">
-            <button mat-icon-button color="primary" [routerLink]="'/deployments/endpoints/add/'+endpoint.id"
-              matTooltip="Add endpoint alias" [disabled]="endpoint.type == 2">
+          <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Add Alias</th>
+          <td *matCellDef="let endpoint" mat-cell>
+            <button [disabled]="endpoint.type == 2" [routerLink]="'/deployments/endpoints/add/'+endpoint.id" color="primary"
+                    mat-icon-button matTooltip="Add endpoint alias">
               <mat-icon>add</mat-icon>
             </button>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let m; columns: displayColumns;"></tr>
+        <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+        <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
       </table>
     </div>
 
     <div [hidden]="dataSourceAlias.data.length === 0">
       <h3>User endpoints:</h3>
-      <table class="mat-elevation-z1" mat-table [dataSource]="dataSourceAlias" matSort matSortActive="name" matSortDirection="asc">
+      <table [dataSource]="dataSourceAlias" class="mat-elevation-z1" mat-table matSort matSortActive="name"
+             matSortDirection="asc">
         <ng-container matColumnDef="select">
-          <th mat-header-cell *matHeaderCellDef class="button-column">
+          <th *matHeaderCellDef class="button-column" mat-header-cell>
             <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
-              [indeterminate]="selection.hasValue() && !isAllSelected()">
+                          [indeterminate]="selection.hasValue() && !isAllSelected()">
             </mat-checkbox>
           </th>
-          <td mat-cell *matCellDef="let row">
-            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row.id) : null"
-              [checked]="selection.isSelected(row.id)">
+          <td *matCellDef="let row" mat-cell>
+            <mat-checkbox (change)="$event ? selection.toggle(row.id) : null" (click)="$event.stopPropagation()"
+                          [checked]="selection.isSelected(row.id)">
             </mat-checkbox>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="url">
-          <th mat-header-cell mat-sort-header *matHeaderCellDef>URL</th>
-          <td mat-cell *matCellDef="let endpoint">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>URL</th>
+          <td *matCellDef="let endpoint" mat-cell>
             <a [href]="'/endpoints/alias/' + endpoint.ext_path" target="_blank">
-              {{location.origin + '/endpoints/alias/' + endpoint.ext_path}}
+              {{ location.origin + '/endpoints/alias/' + endpoint.ext_path }}
             </a>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="delete">
-          <th mat-header-cell *matHeaderCellDef disableClear class="button-column">Delete</th>
-          <td mat-cell *matCellDef="let endpoint">
-            <button mat-icon-button color="primary" (click)="deleteEndpoint(endpoint.id)" matTooltip="Delete"
-              [disabled]="endpoint.type == 1">
+          <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Delete</th>
+          <td *matCellDef="let endpoint" mat-cell>
+            <button (click)="deleteEndpoint(endpoint.id)" [disabled]="endpoint.type == 1" color="primary" mat-icon-button
+                    matTooltip="Delete">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="header-all">
-          <th mat-header-cell *matHeaderCellDef colspan="10">
+          <th *matHeaderCellDef colspan="10" mat-header-cell>
             <div>
-              <span>You have selected {{selection.selected.length}} endpoints</span>
-              <button matTooltip="Restart" mat-icon-button color="accent" (click)="deleteMultiple()">
+              <span>You have selected {{ selection.selected.length }} endpoints</span>
+              <button (click)="deleteMultiple()" color="accent" mat-icon-button matTooltip="Restart">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
           </th>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="['header-all']" [hidden]="selection.selected.length === 0">
+        <tr *matHeaderRowDef="['header-all']" [hidden]="selection.selected.length === 0" mat-header-row>
         </tr>
 
-        <tr mat-header-row *matHeaderRowDef="displayColumnsAlias; sticky: true"></tr>
-        <tr mat-row *matRowDef="let m; columns: displayColumnsAlias;"></tr>
+        <tr *matHeaderRowDef="displayColumnsAlias; sticky: true" mat-header-row></tr>
+        <tr *matRowDef="let m; columns: displayColumnsAlias;" mat-row></tr>
       </table>
     </div>
   </div>

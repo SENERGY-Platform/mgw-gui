@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { CoreEndpointAliasReq, CoreEndpointsResponse } from 'src/app/deployments/models/endpoints';
-import { Job } from 'src/app/mgw-core/models/job.model';
-import { CoreServicesResponse } from 'src/app/mgw-core/models/services';
-import { InfoResponse } from '../../models/info';
-import { ApiService } from '../api/api.service';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {CoreEndpointAliasReq, CoreEndpointsResponse} from 'src/app/deployments/models/endpoints';
+import {Job} from 'src/app/mgw-core/models/job.model';
+import {CoreServicesResponse} from 'src/app/mgw-core/models/services';
+import {InfoResponse} from '../../models/info';
+import {ApiService} from '../api/api.service';
 import {Log} from "../../../mgw-core/models/logs";
 
 @Injectable({
@@ -15,11 +15,12 @@ export class CoreManagerService {
 
   constructor(
     private http: ApiService,
-  ) { }
+  ) {
+  }
 
   getEndpoints(deploymentId?: string): Observable<CoreEndpointsResponse> {
     var url = this.coreManagerPath + "/endpoints"
-    if(deploymentId != null) {
+    if (deploymentId != null) {
       url = url + "?ref=" + deploymentId;
     }
     return <Observable<CoreEndpointsResponse>>this.http.get(url, undefined, undefined, false)

@@ -29,7 +29,7 @@ pre code .hljs-line-numbers {
   transition: border ease 1s;
 }
 
-#logs code{
+#logs code {
   overflow-y: scroll;
   max-height: calc(100vh - 150px);
 }

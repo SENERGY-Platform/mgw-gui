@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { DeploymentComponentComponent } from './deployment-component.component';
+import {DeploymentComponentComponent} from './deployment-component.component';
 
 describe('DeploymentComponentComponent', () => {
   let component: DeploymentComponentComponent;
@@ -8,8 +8,8 @@ describe('DeploymentComponentComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [DeploymentComponentComponent]
-});
+      imports: [DeploymentComponentComponent]
+    });
     fixture = TestBed.createComponent(DeploymentComponentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

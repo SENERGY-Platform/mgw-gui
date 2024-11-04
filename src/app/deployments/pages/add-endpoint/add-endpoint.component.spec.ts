@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { AddEndpointComponent } from './add-endpoint.component';
+import {AddEndpointComponent} from './add-endpoint.component';
 
 describe('AddEndpointComponent', () => {
   let component: AddEndpointComponent;
@@ -8,8 +8,8 @@ describe('AddEndpointComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [AddEndpointComponent]
-});
+      imports: [AddEndpointComponent]
+    });
     fixture = TestBed.createComponent(AddEndpointComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

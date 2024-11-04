@@ -3,46 +3,46 @@
 @include mat.core();
 
 $primary-palette: (
-    50 : #e8eaf8,
-    100 : #c5caed,
-    200 : #9ea7e1,
-    300 : #8b97dc,
-    400 : #6774bb,
-    500 : #3b4fc0,
-    600 : #3547b6,
-    700 : #2c3daa,
-    800 : #24339d,
-    900 : #152088,
-    A100 : #7785d5,
-    A200 : #7785d5,
-    A400 : #7785d5,
-    A700 : #7785d5,
-    contrast: (
-        50 : #000000,
-        100 : #000000,
-        200 : #000000,
-        300 : #000000,
-        400 : #ffffff,
-        500 : #ffffff,
-        600 : #ffffff,
-        700 : #ffffff,
-        800 : #ffffff,
-        900 : #ffffff,
-        A100 : #000000,
-        A200 : #000000,
-        A400 : #000000,
-        A700 : #000000,
-    )
+  50 : #e8eaf8,
+  100 : #c5caed,
+  200 : #9ea7e1,
+  300 : #8b97dc,
+  400 : #6774bb,
+  500 : #3b4fc0,
+  600 : #3547b6,
+  700 : #2c3daa,
+  800 : #24339d,
+  900 : #152088,
+  A100 : #7785d5,
+  A200 : #7785d5,
+  A400 : #7785d5,
+  A700 : #7785d5,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
 );
 $primary: mat.m2-define-palette($primary-palette, 400);
 
 $my-theme: mat.m2-define-light-theme((
- color: (
-   primary: $primary,
-   accent: $primary
- ),
- typography: mat.m2-define-typography-config(),
- density: 0,
+  color: (
+    primary: $primary,
+    accent: $primary
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0,
 ));
 
 @include mat.core-theme($my-theme);

@@ -1,4 +1,4 @@
-<spinner class="global-centered-spinner" [show]="!ready"></spinner>
+<spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
 <div *ngIf="ready">
   <div class="form-margin">
@@ -9,22 +9,22 @@
 
           <mat-form-field appearance="fill">
             <mat-label>Deployment ID</mat-label>
-            <input matInput [readonly]="true" [value]="deployment.id">
+            <input [readonly]="true" [value]="deployment.id" matInput>
           </mat-form-field>
 
           <mat-form-field appearance="fill">
             <mat-label>Module ID</mat-label>
-            <input matInput [readonly]="true" [value]="deployment.module.id">
+            <input [readonly]="true" [value]="deployment.module.id" matInput>
           </mat-form-field>
 
           <mat-form-field appearance="fill">
             <mat-label>Created</mat-label>
-            <input matInput [readonly]="true" [value]="deployment.created | date: 'short'">
+            <input [readonly]="true" [value]="deployment.created | date: 'short'" matInput>
           </mat-form-field>
 
           <mat-form-field appearance="fill">
             <mat-label>Updated</mat-label>
-            <input matInput [readonly]="true" [value]="deployment.updated | date: 'short'">
+            <input [readonly]="true" [value]="deployment.updated | date: 'short'" matInput>
           </mat-form-field>
 
           <mat-checkbox [disabled]="true" [ngModel]="deployment.enabled">Enabled</mat-checkbox>
@@ -47,53 +47,53 @@
       </mat-tab>
 
       <mat-tab label="Configuration">
-        <mat-card class="container card"
-          *ngIf="!!deployment['host_resources'] && objectKeys(deployment['host_resources']).length > 0">
+        <mat-card *ngIf="!!deployment['host_resources'] && objectKeys(deployment['host_resources']).length > 0"
+                  class="container card">
           <h2>Host Resources</h2>
           <div *ngFor="let hostResourceItem of deployment['host_resources'] | keyvalue;" class="form-field-container">
             <mat-form-field appearance="fill">
-              <mat-label>{{hostResourceKeyToName(hostResourceItem.key)}}</mat-label>
-              <input [readonly]="true" matInput [value]="hostResourceIDToName[hostResourceItem.value]">
+              <mat-label>{{ hostResourceKeyToName(hostResourceItem.key) }}</mat-label>
+              <input [readonly]="true" [value]="hostResourceIDToName[hostResourceItem.value]" matInput>
             </mat-form-field>
           </div>
         </mat-card>
 
-        <mat-card class="container card"
-          *ngIf="!!deployment['secrets'] && objectKeys(deployment['secrets']).length > 0">
+        <mat-card *ngIf="!!deployment['secrets'] && objectKeys(deployment['secrets']).length > 0"
+                  class="container card">
           <H2>Secrets</H2>
           <div *ngFor="let secretItem of deployment['secrets'] | keyvalue" class="form-field-container">
             <!-- Create new Secret -->
             <div class="secret-container">
               <!-- Select from available secrets -->
               <mat-form-field appearance="fill">
-                <mat-label>{{secretKeyToName(secretItem.key)}}</mat-label>
-                <input matInput [readonly]="true" [value]="secretIDToName[secretItem.value.id]">
+                <mat-label>{{ secretKeyToName(secretItem.key) }}</mat-label>
+                <input [readonly]="true" [value]="secretIDToName[secretItem.value.id]" matInput>
               </mat-form-field>
             </div>
           </div>
         </mat-card>
 
-        <mat-card class="container card"
-          *ngIf="!!deployment['configs'] && objectKeys(deployment['configs']).length > 0">
+        <mat-card *ngIf="!!deployment['configs'] && objectKeys(deployment['configs']).length > 0"
+                  class="container card">
           <h2>Configuration</h2>
           <div *ngFor="let configItem of deployment['configs'] | keyvalue;" class="form-field-container">
             <!-- Single Value Config -->
             <span *ngIf="!configItem.value.is_slice">
               <mat-form-field appearance="fill">
-                <mat-label>{{configurationKeyToName(configItem.key)}}</mat-label>
-                <input matInput [readonly]="true" [value]="configItem.value.value">
+                <mat-label>{{ configurationKeyToName(configItem.key) }}</mat-label>
+                <input [readonly]="true" [value]="configItem.value.value" matInput>
               </mat-form-field>
             </span>
 
             <!-- Multi Value Config -->
             <span *ngIf="configItem.value.is_slice">
-              <mat-label>{{configurationKeyToName(configItem.key)}}</mat-label>
+              <mat-label>{{ configurationKeyToName(configItem.key) }}</mat-label>
               <mat-chip-grid #chipGrid>
                 <mat-chip-row *ngFor="let value of configItem.value.value" [editable]="false">
-                  {{value}}
+                  {{ value }}
                 </mat-chip-row>
               </mat-chip-grid>
-              <input placeholder="New value..." [matChipInputFor]="chipGrid" />
+              <input [matChipInputFor]="chipGrid" placeholder="New value..."/>
             </span>
           </div>
         </mat-card>

@@ -1,20 +1,20 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { concatMap, of, throwError } from 'rxjs';
-import { CoreManagerService } from 'src/app/core/services/core-manager/core-manager.service';
-import { UtilService } from 'src/app/core/services/util/util.service';
-import { CoreEndpointAliasReq } from '../../models/endpoints';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
+import {Component} from '@angular/core';
+import {FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {concatMap, of, throwError} from 'rxjs';
+import {CoreManagerService} from 'src/app/core/services/core-manager/core-manager.service';
+import {UtilService} from 'src/app/core/services/util/util.service';
+import {CoreEndpointAliasReq} from '../../models/endpoints';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatButton} from '@angular/material/button';
 
 @Component({
-    selector: 'app-add-endpoint',
-    templateUrl: './add-endpoint.component.html',
-    styleUrls: ['./add-endpoint.component.css'],
-    standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, RouterLink]
+  selector: 'app-add-endpoint',
+  templateUrl: './add-endpoint.component.html',
+  styleUrls: ['./add-endpoint.component.css'],
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, RouterLink]
 })
 export class AddEndpointComponent {
   form = new FormGroup({
@@ -44,7 +44,7 @@ export class AddEndpointComponent {
         return this.utilsService.checkJobStatus(jobID, message, "core-manager")
       }),
       concatMap(result => {
-        if(!result.success) {
+        if (!result.success) {
           return throwError(() => new Error(result.error))
         }
         return of(true)

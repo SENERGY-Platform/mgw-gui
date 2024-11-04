@@ -1,24 +1,26 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
-import { MatSlideToggleChange, MatSlideToggle } from '@angular/material/slide-toggle';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ContainerEngineManagerService } from 'src/app/core/services/container-engine-manager/container-engine-manager.service';
-import { ErrorService } from 'src/app/core/services/util/error.service';
-import { UtilService } from 'src/app/core/services/util/util.service';
-import { FormsModule } from '@angular/forms';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { NgIf } from '@angular/common';
-import { Highlight } from 'ngx-highlightjs';
+import {Component, Inject, OnDestroy} from '@angular/core';
+import {MatSlideToggleChange, MatSlideToggle} from '@angular/material/slide-toggle';
+import {ActivatedRoute, Router} from '@angular/router';
+import {
+  ContainerEngineManagerService
+} from 'src/app/core/services/container-engine-manager/container-engine-manager.service';
+import {ErrorService} from 'src/app/core/services/util/error.service';
+import {UtilService} from 'src/app/core/services/util/util.service';
+import {FormsModule} from '@angular/forms';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {NgIf} from '@angular/common';
+import {Highlight} from 'ngx-highlightjs';
 
 @Component({
-    selector: 'app-logs',
-    templateUrl: './logs.component.html',
-    styleUrls: ['./logs.component.css'],
-    standalone: true,
-    imports: [MatSlideToggle, FormsModule, MatFormField, MatLabel, MatInput, NgIf, Highlight]
+  selector: 'app-logs',
+  templateUrl: './logs.component.html',
+  styleUrls: ['./logs.component.css'],
+  standalone: true,
+  imports: [MatSlideToggle, FormsModule, MatFormField, MatLabel, MatInput, NgIf, Highlight]
 })
 export class LogsComponent implements OnDestroy {
-  containerID!: string 
+  containerID!: string
   ready: boolean = false
   init: boolean = true
   interval: any
@@ -27,7 +29,7 @@ export class LogsComponent implements OnDestroy {
   autoRefreshEnabled = true
 
   constructor(
-    @Inject("ContainerEngineManagerService") private containerService: ContainerEngineManagerService, 
+    @Inject("ContainerEngineManagerService") private containerService: ContainerEngineManagerService,
     public utilsService: UtilService,
     private errorService: ErrorService,
     private route: ActivatedRoute,
@@ -47,7 +49,7 @@ export class LogsComponent implements OnDestroy {
         next: (logs) => {
           this.logs = logs
           this.ready = true
-        }, 
+        },
         error: (err) => {
           this.errorService.handleError(LogsComponent.name, "getLogs", err)
           this.ready = true
@@ -61,13 +63,13 @@ export class LogsComponent implements OnDestroy {
   }
 
   startAutoRefresh() {
-    this.interval = setInterval(() => { 
-      this.getLogs(); 
+    this.interval = setInterval(() => {
+      this.getLogs();
     }, 5000);
   }
 
   autoRefreshToggleChanged(event: MatSlideToggleChange) {
-    if(event.checked) {
+    if (event.checked) {
       this.startAutoRefresh()
     } else {
       clearTimeout(this.interval)

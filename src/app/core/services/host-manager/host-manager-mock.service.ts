@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { delay, Observable, of } from 'rxjs';
-import { HostResource } from 'src/app/host/models/models';
-import { ApiService } from '../api/api.service';
+import {Injectable} from '@angular/core';
+import {delay, Observable, of} from 'rxjs';
+import {HostResource} from 'src/app/host/models/models';
+import {ApiService} from '../api/api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +11,9 @@ export class HostManagerMockService {
 
   constructor(
     private http: ApiService,
-  ) { } 
-  
+  ) {
+  }
+
   getHostResources(): Observable<HostResource[]> {
     var resources = [
       {

@@ -1,20 +1,20 @@
-<spinner class="global-centered-spinner" [show]="waitingForLogin"></spinner>
+<spinner [show]="waitingForLogin" class="global-centered-spinner"></spinner>
 
 <div id="container">
-    <div id="form-container">
-        <div [formGroup]="form" class="form" (ngSubmit)="login()" (keydown.enter)="login()">
-            <mat-form-field color="accent">
-                <mat-label>Username</mat-label>
-                <input matInput placeholder="Username" type="text" formControlName="username">
-            </mat-form-field>
-         
-            <mat-form-field color="accent">
-                <mat-label>Password</mat-label>
-                <input matInput placeholder="Password" type="password" formControlName="password">
-            </mat-form-field>
-         
-            <button mat-raised-button color="primary" type="submit" (click)="login()" [disabled]="!form.valid">Login</button>        
-        </div>
+  <div id="form-container">
+    <div (keydown.enter)="login()" (ngSubmit)="login()" [formGroup]="form" class="form">
+      <mat-form-field color="accent">
+        <mat-label>Username</mat-label>
+        <input formControlName="username" matInput placeholder="Username" type="text">
+      </mat-form-field>
+
+      <mat-form-field color="accent">
+        <mat-label>Password</mat-label>
+        <input formControlName="password" matInput placeholder="Password" type="password">
+      </mat-form-field>
+
+      <button (click)="login()" [disabled]="!form.valid" color="primary" mat-raised-button type="submit">Login</button>
     </div>
+  </div>
 
 </div>

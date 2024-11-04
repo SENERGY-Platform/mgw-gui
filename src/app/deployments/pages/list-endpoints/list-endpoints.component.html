@@ -15,12 +15,12 @@
   -->
 
 <div class="layout-margin">
-  <spinner class="global-centered-spinner" [show]="!ready"></spinner>
+  <spinner [show]="!ready" class="global-centered-spinner"></spinner>
   <div *ngIf="deploymentIDs.length === 0 && ready">No endpoints found.</div>
 
   <mat-card *ngFor="let deploymentID of deploymentIDs" class="deployment-container">
     <mat-card-content>
-      <h2>Deployment ID: <a [routerLink]="['/deployments/info/' + deploymentID]">{{deploymentID}}</a></h2>
+      <h2>Deployment ID: <a [routerLink]="['/deployments/info/' + deploymentID]">{{ deploymentID }}</a></h2>
       <list-endpoints [deploymentID]="deploymentID"></list-endpoints>
     </mat-card-content>
   </mat-card>

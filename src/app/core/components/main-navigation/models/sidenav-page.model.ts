@@ -15,5 +15,6 @@
  */
 
 export class SidenavPageModel {
-    constructor(public name: string, public type: string, public icon: string, public state: string, public badge?: string) {}
+  constructor(public name: string, public type: string, public icon: string, public state: string, public badge?: string) {
+  }
 }

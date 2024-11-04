@@ -1,7 +1,7 @@
 <div class="form-margin">
-    <spinner class="global-centered-spinner" [show]="!ready"></spinner>
+  <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-    <div *ngIf="ready">
-        <deployment [mode]="mode" [deploymentID]="deploymentID"></deployment>
-    </div>
+  <div *ngIf="ready">
+    <deployment [deploymentID]="deploymentID" [mode]="mode"></deployment>
+  </div>
 </div>
