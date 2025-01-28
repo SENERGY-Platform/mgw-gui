@@ -27,7 +27,7 @@ export class CoreManagerService {
   }
 
   createEndpointAlias(aliasReq: CoreEndpointAliasReq): Observable<any> {
-    var url = this.coreManagerPath + "/endpoints"
+    var url = this.coreManagerPath + "/endpoints/" + aliasReq.parent_id + "/alias"
     return <Observable<any>>this.http.post(url, aliasReq, undefined, "text")
   }
 
