@@ -13,7 +13,6 @@ import {ModulesComponent} from './pages/add/modules.component';
 import {DeploymentTemplate2} from './components/single-deployment/deployment-template';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTableModule} from '@angular/material/table';
-
 import {MatSortModule} from '@angular/material/sort';
 import {DeploymentComponentComponent} from './components/module-deployment/deployment-component.component';
 import {ShowModuleComponentComponent} from './pages/edit/show-module-component.component';
