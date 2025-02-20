@@ -21,6 +21,8 @@ import {ErrorService} from "../../../../core/services/util/error.service";
 import {Router} from "@angular/router";
 import {UtilService} from "../../../../core/services/util/util.service";
 import {concatMap, map, of, throwError} from "rxjs";
+import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
+import {MatDivider} from "@angular/material/divider";
 
 @Component({
   selector: 'app-container-list',
@@ -39,7 +41,12 @@ import {concatMap, map, of, throwError} from "rxjs";
     MatTable,
     NgIf,
     SpinnerComponent,
-    MatHeaderCellDef
+    MatHeaderCellDef,
+    MatCard,
+    MatCardContent,
+    MatCardTitle,
+    MatCardHeader,
+    MatDivider
   ],
   templateUrl: './container-list.component.html',
   styleUrl: './container-list.component.css'

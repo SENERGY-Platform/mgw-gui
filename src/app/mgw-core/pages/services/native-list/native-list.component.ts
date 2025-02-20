@@ -22,6 +22,7 @@ import {Router} from "@angular/router";
 import {NgIf} from "@angular/common";
 import {Log} from "../../../models/logs";
 import {InfoResponse} from "../../../../core/models/info";
+import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
 
 interface ListItem {
   name: string;
@@ -46,7 +47,11 @@ interface ListItem {
     SpinnerComponent,
     MatHeaderCellDef,
     MatIcon,
-    MatIconButton
+    MatIconButton,
+    MatCard,
+    MatCardContent,
+    MatCardHeader,
+    MatCardTitle
   ],
   templateUrl: './native-list.component.html',
   styleUrl: './native-list.component.css'

@@ -2,34 +2,41 @@
   <div *ngIf="dataSource.data.length === 0 && ready">No components found.</div>
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-  <div [hidden]="!ready || dataSource.data.length === 0" class="mat-elevation-z1">
-    <table [dataSource]="dataSource" mat-table title="Native Components">
+  <div [hidden]="!ready || dataSource.data.length === 0">
+    <mat-card appearance="raised">
+      <mat-card-header>
+        <mat-card-title>Native Services</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table [dataSource]="dataSource" mat-table title="Native Components">
 
-      <ng-container matColumnDef="name">
-        <th *matHeaderCellDef class="button-column" mat-header-cell>Name</th>
-        <td *matCellDef="let component" mat-cell>
-          {{ component.name }}
-        </td>
-      </ng-container>
+          <ng-container matColumnDef="name">
+            <th *matHeaderCellDef class="button-column" mat-header-cell>Name</th>
+            <td *matCellDef="let component" mat-cell>
+              {{ component.name }}
+            </td>
+          </ng-container>
 
-      <ng-container matColumnDef="version">
-        <th *matHeaderCellDef mat-header-cell>Version</th>
-        <td *matCellDef="let component" mat-cell>
-          {{ component.version }}
-        </td>
-      </ng-container>
+          <ng-container matColumnDef="version">
+            <th *matHeaderCellDef mat-header-cell>Version</th>
+            <td *matCellDef="let component" mat-cell>
+              {{ component.version }}
+            </td>
+          </ng-container>
 
-      <ng-container matColumnDef="logs">
-        <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Log</th>
-        <td *matCellDef="let component" mat-cell>
-          <button (click)="showLog(component.logId)" color="primary" mat-icon-button matTooltip="Show Log">
-            <mat-icon>description</mat-icon>
-          </button>
-        </td>
-      </ng-container>
+          <ng-container matColumnDef="logs">
+            <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Log</th>
+            <td *matCellDef="let component" mat-cell>
+              <button (click)="showLog(component.logId)" color="primary" mat-icon-button matTooltip="Show Log">
+                <mat-icon>description</mat-icon>
+              </button>
+            </td>
+          </ng-container>
 
-      <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-      <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
-    </table>
+          <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+          <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>
