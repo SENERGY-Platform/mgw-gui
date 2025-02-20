@@ -5,7 +5,8 @@ import {Job} from 'src/app/mgw-core/models/job.model';
 import {CoreServicesResponse} from 'src/app/mgw-core/models/services';
 import {InfoResponse} from '../../models/info';
 import {ApiService} from '../api/api.service';
-// import {Log} from "../../../mgw-core/models/logs";
+import {Log} from "../../../mgw-core/models/logs";
+import {HttpParams} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -71,13 +72,15 @@ export class CoreManagerService {
     return <Observable<InfoResponse>>this.http.get(url);
   }
 
-  // getLogs(): Observable<Log[]> {
-  //   let url = this.coreManagerPath + "/logs"
-  //   return <Observable<Log[]>>this.http.get(url);
-  // }
-  //
-  // getLog(logID: string): Observable<Log> {
-  //   let url = this.coreManagerPath + "/logs/" + logID
-  //   return <Observable<Log>>this.http.get(url);
-  // }
+  getLogs(): Observable<Log[]> {
+    let url = this.coreManagerPath + "/logs"
+    return <Observable<Log[]>>this.http.get(url);
+  }
+
+  getLog(logID: string, max_lines: number): Observable<string> {
+    let url = this.coreManagerPath + "/logs/" + logID
+    let queryParams = new HttpParams()
+    queryParams = queryParams.set("max_lines", max_lines)
+    return <Observable<string>>this.http.get(url, queryParams, "text")
+  }
 }
