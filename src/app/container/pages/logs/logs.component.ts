@@ -30,10 +30,8 @@ export class LogsComponent implements OnDestroy {
 
   constructor(
     @Inject("ContainerEngineManagerService") private containerService: ContainerEngineManagerService,
-    public utilsService: UtilService,
     private errorService: ErrorService,
     private route: ActivatedRoute,
-    private router: Router
   ) {
     this.route.params.subscribe(params => {
       this.containerID = params['containerId']
