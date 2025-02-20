@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ListCoreServicesComponent} from './pages/list-services/list.component';
 import {RouterModule, Routes} from '@angular/router';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTableModule} from '@angular/material/table';
@@ -13,24 +12,30 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {ListJobsComponent} from './pages/list-jobs/list-jobs.component';
 import {MatCardModule} from '@angular/material/card';
 import {ListModuleManagerJobsComponent} from './pages/list-module-manager-jobs/list.component';
-import {DurationPipe, VersionComponent} from './pages/list-versions/version.component';
 import {ListUsersComponent} from './pages/list-users/list-users.component';
 import {RegisterComponent} from './pages/add-account/register.component';
 import {EditAccountComponent} from './pages/edit-account/edit-account.component';
 import {ListAppsComponent} from './pages/list-apps/list-apps.component';
+import {ServicesComponent} from "./pages/services/services.component";
+import {NativeLogComponent} from "./pages/services/native-log/native-log.component";
+import {LogsComponent} from "../container/pages/logs/logs.component";
 
 const routes: Routes = [
   {
     path: 'core',
     children: [
-      {path: 'services', component: ListCoreServicesComponent},
+      {path: 'services', children: [
+          {path: '', component: ServicesComponent},
+          {path: 'container-logs/:containerId', component: LogsComponent},
+          {path: 'native-logs/:log_id', component: NativeLogComponent},
+        ]
+      },
       {
         path: 'jobs', children: [
           {path: 'core-manager', component: ListJobsComponent},
           {path: 'module-manager', component: ListModuleManagerJobsComponent},
         ]
       },
-      {path: 'info', component: VersionComponent},
       {
         path: 'accounts',
         children: [
@@ -44,8 +49,7 @@ const routes: Routes = [
           {path: 'apps', component: ListAppsComponent}
         ]
       },
-      {path: '', redirectTo: 'info', pathMatch: 'full'}
-
+      {path: '', redirectTo: 'services', pathMatch: 'full'}
     ]
   }
 ];
@@ -63,15 +67,12 @@ const routes: Routes = [
     MatCheckboxModule,
     MatTableModule,
     RouterModule.forChild(routes),
-    ListCoreServicesComponent,
     ListJobsComponent,
-    VersionComponent,
     ListModuleManagerJobsComponent,
     ListUsersComponent,
     RegisterComponent,
     EditAccountComponent,
     ListAppsComponent,
-    DurationPipe,
   ]
 })
 export class CoreServicesModule {

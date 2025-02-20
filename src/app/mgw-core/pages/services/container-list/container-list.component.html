@@ -1,0 +1,55 @@
+<div class="layout-margin">
+  <div *ngIf="dataSource.data.length === 0 && ready">No containers found.</div>
+  <spinner [show]="!ready" class="global-centered-spinner"></spinner>
+
+  <div [hidden]="(!ready && init) || dataSource.data.length === 0" class="mat-elevation-z1">
+    <table [dataSource]="dataSource" mat-table title="Containers">
+
+      <ng-container matColumnDef="name">
+        <th *matHeaderCellDef class="button-column" mat-header-cell>Name</th>
+        <td *matCellDef="let service" mat-cell>
+          {{ service.name }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="version">
+        <th *matHeaderCellDef class="button-column" mat-header-cell>Version</th>
+        <td *matCellDef="let service" mat-cell>
+          {{ service.image.tag }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th *matHeaderCellDef mat-header-cell>Health</th>
+        <td *matCellDef="let service" mat-cell>
+          <span *ngIf="service.container.state">
+            <div *ngIf="service.container.state != 'running'" class="circle red"></div>
+            <div *ngIf="service.container.state == 'running'" class="circle green"></div>
+          </span>
+          <div *ngIf="!service.container.state" class="circle grey"></div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="restart">
+        <th *matHeaderCellDef class="button-column" mat-header-cell>Restart</th>
+        <td *matCellDef="let service" mat-cell>
+          <button (click)="restart(service.name)" color="primary" mat-icon-button matTooltip="Restart">
+            <mat-icon>restart_alt</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="logs">
+        <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Log</th>
+        <td *matCellDef="let service" mat-cell>
+          <button (click)="showLogs(service.container.id)" color="primary" mat-icon-button matTooltip="Show Log">
+            <mat-icon>description</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+      <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+    </table>
+  </div>
+</div>

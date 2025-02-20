@@ -1,0 +1,17 @@
+<div class="layout-margin">
+  <div id="settings">
+    <mat-slide-toggle (change)="autoRefreshToggleChanged($event)" [ngModel]="autoRefreshEnabled">Auto Refresh
+    </mat-slide-toggle>
+
+    <mat-form-field>
+      <mat-label>Lines</mat-label>
+      <input (ngModelChange)="maxLinesChanges($event)" [(ngModel)]="maxLines" matInput>
+    </mat-form-field>
+  </div>
+
+  <div id="logs">
+    <pre *ngIf="ready && !init"><code [highlight]="logs" [lineNumbers]="true">
+    </code></pre>
+  </div>
+
+</div>
