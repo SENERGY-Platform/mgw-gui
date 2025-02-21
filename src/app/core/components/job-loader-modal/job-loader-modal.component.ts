@@ -3,7 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
-import {Job} from 'src/app/mgw-core/models/job.model';
+import {Job} from 'src/app/system/models/job.model';
 import {CoreManagerService} from '../../services/core-manager/core-manager.service';
 import {SpinnerComponent} from '../spinner/spinner.component';
 

@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {concatMap, forkJoin, map, Observable, of, throwError} from 'rxjs';
-import {CoreService, CoreServicesResponse} from 'src/app/mgw-core/models/services';
+import {CoreService, CoreServicesResponse} from 'src/app/system/models/services';
 import {CoreManagerService} from 'src/app/core/services/core-manager/core-manager.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {SelectionModel} from '@angular/cdk/collections';

@@ -1,7 +1,7 @@
 import {HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {DeviceUsersResponse, HumanUser, HumanUsersResponse, UserRequest} from 'src/app/mgw-core/models/users';
+import {DeviceUsersResponse, HumanUser, HumanUsersResponse, UserRequest} from 'src/app/system/models/users';
 import {InfoResponse} from '../../models/info';
 import {ApiService} from '../api/api.service';
 

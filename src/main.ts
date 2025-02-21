@@ -16,7 +16,7 @@ import {DeploymentsModule} from './app/deployments/deployments.module';
 import {ContainerModule} from './app/container/container.module';
 import {ModulesModule} from './app/modules/modules.module';
 import {SecretsModule} from './app/secrets/secrets.module';
-import {CoreServicesModule} from './app/mgw-core/core-services.module';
+import {CoreServicesModule} from './app/system/core-services.module';
 import {AuthModule} from './app/auth/auth.module';
 import {AppComponent} from './app/app.component';
 

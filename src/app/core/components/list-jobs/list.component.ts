@@ -17,7 +17,7 @@ import {Observable, of} from 'rxjs';
 import {CoreManagerService} from 'src/app/core/services/core-manager/core-manager.service';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
-import {Job} from 'src/app/mgw-core/models/job.model';
+import {Job} from 'src/app/system/models/job.model';
 import {DatePipe, NgIf} from '@angular/common';
 import {SpinnerComponent} from '../spinner/spinner.component';
 import {MatIconButton} from '@angular/material/button';

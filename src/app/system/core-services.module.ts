@@ -19,7 +19,6 @@ import {NativeLogComponent} from "./pages/services/native-log/native-log.compone
 import {LogsComponent} from "../container/pages/logs/logs.component";
 import {JobsComponent} from "./pages/jobs/jobs.component";
 import {ConfigurationComponent} from "./pages/configuration/configuration.component";
-import {DeveloperComponent} from "./pages/developer/developer.component";
 
 const routes: Routes = [
   {
@@ -46,7 +45,6 @@ const routes: Routes = [
           {path: 'apps', component: ListAppsComponent}
         ]
       },
-      {path: 'developer', component: DeveloperComponent},
       {path: '', redirectTo: 'status', pathMatch: 'full'}
     ]
   }
@@ -71,7 +69,6 @@ const routes: Routes = [
     ListAppsComponent,
     JobsComponent,
     ConfigurationComponent,
-    DeveloperComponent,
   ]
 })
 export class CoreServicesModule {

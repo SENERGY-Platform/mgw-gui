@@ -142,7 +142,7 @@ export class FormComponent implements OnChanges, OnInit {
           {
             next: (_) => {
               this.ready = true
-              this.router.navigate(["/settings/secrets"])
+              this.router.navigate(["/secrets"])
             },
             error: (err) => {
               this.errorService.handleError(FormComponent.name, "createSecret", err)
@@ -164,7 +164,7 @@ export class FormComponent implements OnChanges, OnInit {
           {
             next: (_) => {
               this.ready = true
-              this.router.navigate(["/settings/secrets"])
+              this.router.navigate(["/secrets"])
             },
             error: (err) => {
               this.errorService.handleError(FormComponent.name, "updateSecret", err)

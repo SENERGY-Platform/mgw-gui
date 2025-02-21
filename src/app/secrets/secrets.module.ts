@@ -17,7 +17,7 @@ import {FormComponent} from './components/form/form.component';
 
 const routes: Routes = [
   {
-    path: 'settings/secrets', children: [
+    path: 'secrets', children: [
       {path: '', component: ListComponent},
       {path: 'add', component: AddComponent},
       {path: 'edit/:id', component: EditComponent}

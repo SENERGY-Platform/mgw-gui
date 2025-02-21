@@ -13,7 +13,7 @@ import localeDe from '@angular/common/locales/de';
 import {SecretsModule} from './secrets/secrets.module';
 import {ContainerModule} from './container/container.module';
 import {HIGHLIGHT_OPTIONS} from 'ngx-highlightjs';
-import {CoreServicesModule} from './mgw-core/core-services.module';
+import {CoreServicesModule} from './system/core-services.module';
 import {AuthModule} from './auth/auth.module';
 import {AuthCheckInterceptor} from './core/services/auth/interceptor/auth.interceptor';
 import {MainNavigationComponent} from "./core/components/main-navigation/main-navigation.component";

@@ -18,7 +18,7 @@ import {
   ModuleUpdateTemplate
 } from 'src/app/deployments/models/deployment_models';
 import {InfoResponse} from '../../models/info';
-import {Job} from 'src/app/mgw-core/models/job.model';
+import {Job} from 'src/app/system/models/job.model';
 import {AuxDeployment, AuxDeploymentResponse} from 'src/app/deployments/models/sub-deployments';
 
 @Injectable({

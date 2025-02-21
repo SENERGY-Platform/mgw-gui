@@ -28,15 +28,15 @@ export class MainNavigationComponent implements OnInit {
       //new SidenavPageModel("Endpoints", 'link', "link", "/deployments/endpoints"),
     ]),
     new SidenavSectionModel("Modules", "link", "extension", "/modules", []),
-    new SidenavSectionModel("Secrets", "link", "key", "/settings/secrets", []),
+    new SidenavSectionModel("Secrets", "link", "key", "/secrets", []),
     new SidenavSectionModel("System", "toggle", "dns", "/system", [
       new SidenavPageModel("Status", 'link', "monitor_heart", "/system/status"),
       new SidenavPageModel("Jobs", 'link', "work", "/system/jobs"),
-      new SidenavPageModel("Configuration", 'link', "settings", "/system/configuration"),
+      new SidenavPageModel("Configuration", 'link', "tune", "/system/configuration"),
       new SidenavPageModel("Users", "link", "people", "/system/accounts/users"),
       new SidenavPageModel("Applications", "link", "devices_other", "/system/accounts/apps"),
-      new SidenavPageModel("Developer", 'link', "code", "/system/developer"),
-    ])
+    ]),
+    new SidenavSectionModel("Developer", 'link', "code", "/developer", []),
   ]
 
   constructor(
