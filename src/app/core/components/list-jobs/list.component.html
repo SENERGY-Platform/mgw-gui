@@ -13,74 +13,81 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+<div class="layout-margin">
+  <mat-card appearance="raised">
+    <mat-card-header>
+      <mat-card-title>{{ source }} jobs</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div *ngIf="dataSource.data.length === 0 && ready">No jobs found.</div>
+      <spinner [show]="!ready && init"></spinner>
 
-<div *ngIf="dataSource.data.length === 0 && ready">No jobs found.</div>
-<spinner [show]="!ready && init"></spinner>
+      <div [hidden]="(!ready && init) || dataSource.data.length === 0">
+        <table [dataSource]="dataSource" mat-table matSort matSortActive="created" matSortDirection="desc">
+          <ng-container matColumnDef="id">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>ID</th>
+            <td *matCellDef="let job" mat-cell>
+              {{ job.id }}
+            </td>
+          </ng-container>
 
-<div [hidden]="(!ready && init) || dataSource.data.length === 0" class="mat-elevation-z1">
-  <div>
-    <table [dataSource]="dataSource" mat-table matSort matSortActive="created" matSortDirection="desc">
-      <ng-container matColumnDef="id">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>ID</th>
-        <td *matCellDef="let job" mat-cell>
-          {{ job.id }}
-        </td>
-      </ng-container>
+          <ng-container matColumnDef="description">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Description</th>
+            <td *matCellDef="let job" mat-cell>
+              {{ job.description }}
+            </td>
+          </ng-container>
 
-      <ng-container matColumnDef="description">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Description</th>
-        <td *matCellDef="let job" mat-cell>
-          {{ job.description }}
-        </td>
-      </ng-container>
+          <ng-container matColumnDef="created">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Created</th>
+            <td *matCellDef="let job" mat-cell>
+              {{ job.created | date: 'medium' }}
+            </td>
+          </ng-container>
 
-      <ng-container matColumnDef="created">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Created</th>
-        <td *matCellDef="let job" mat-cell>
-          {{ job.created | date: 'medium' }}
-        </td>
-      </ng-container>
+          <ng-container matColumnDef="started">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Started</th>
+            <td *matCellDef="let job" mat-cell>
+              {{ job.started | date: 'medium' }}
+            </td>
+          </ng-container>
 
-      <ng-container matColumnDef="started">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Started</th>
-        <td *matCellDef="let job" mat-cell>
-          {{ job.started | date: 'medium' }}
-        </td>
-      </ng-container>
+          <ng-container matColumnDef="completed">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Completed</th>
+            <td *matCellDef="let job" mat-cell>
+              {{ job.completed | date: 'medium' }}
+            </td>
+          </ng-container>
 
-      <ng-container matColumnDef="completed">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Completed</th>
-        <td *matCellDef="let job" mat-cell>
-          {{ job.completed | date: 'medium' }}
-        </td>
-      </ng-container>
+          <ng-container matColumnDef="canceled">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Canceled</th>
+            <td *matCellDef="let job" mat-cell>
+              {{ job.canceled | date: 'medium' }}
+            </td>
+          </ng-container>
 
-      <ng-container matColumnDef="canceled">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Canceled</th>
-        <td *matCellDef="let job" mat-cell>
-          {{ job.canceled | date: 'medium' }}
-        </td>
-      </ng-container>
+          <ng-container matColumnDef="error">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Error</th>
+            <td *matCellDef="let job" mat-cell>
+              <p *ngIf="!!job.error">{{ job.error.code + ": " + job.error.message }}</p>
+            </td>
+          </ng-container>
 
-      <ng-container matColumnDef="error">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Error</th>
-        <td *matCellDef="let job" mat-cell>
-          <p *ngIf="!!job.error">{{ job.error.code + ": " + job.error.message }}</p>
-        </td>
-      </ng-container>
+          <ng-container matColumnDef="cancel">
+            <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Cancel</th>
+            <td *matCellDef="let job" mat-cell>
+              <button (click)="cancelJob(job.id)" [disabled]="job.completed" color="primary" mat-icon-button
+                      matTooltip="Cancel">
+                <mat-icon>stop</mat-icon>
+              </button>
+            </td>
+          </ng-container>
 
-      <ng-container matColumnDef="cancel">
-        <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Cancel</th>
-        <td *matCellDef="let job" mat-cell>
-          <button (click)="cancelJob(job.id)" [disabled]="job.completed" color="primary" mat-icon-button
-                  matTooltip="Cancel">
-            <mat-icon>stop</mat-icon>
-          </button>
-        </td>
-      </ng-container>
+          <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+          <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+        </table>
 
-      <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-      <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
-    </table>
-  </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

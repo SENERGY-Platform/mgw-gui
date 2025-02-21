@@ -9,9 +9,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {ListJobsComponent} from './pages/list-jobs/list-jobs.component';
 import {MatCardModule} from '@angular/material/card';
-import {ListModuleManagerJobsComponent} from './pages/list-module-manager-jobs/list.component';
 import {ListUsersComponent} from './pages/list-users/list-users.component';
 import {RegisterComponent} from './pages/add-account/register.component';
 import {EditAccountComponent} from './pages/edit-account/edit-account.component';
@@ -19,6 +17,7 @@ import {ListAppsComponent} from './pages/list-apps/list-apps.component';
 import {ServicesComponent} from "./pages/services/services.component";
 import {NativeLogComponent} from "./pages/services/native-log/native-log.component";
 import {LogsComponent} from "../container/pages/logs/logs.component";
+import {JobsComponent} from "./pages/jobs/jobs.component";
 
 const routes: Routes = [
   {
@@ -30,12 +29,7 @@ const routes: Routes = [
           {path: 'native-logs/:log_id', component: NativeLogComponent},
         ]
       },
-      {
-        path: 'jobs', children: [
-          {path: 'core-manager', component: ListJobsComponent},
-          {path: 'module-manager', component: ListModuleManagerJobsComponent},
-        ]
-      },
+      {path: 'jobs', component: JobsComponent},
       {
         path: 'accounts',
         children: [
@@ -67,12 +61,11 @@ const routes: Routes = [
     MatCheckboxModule,
     MatTableModule,
     RouterModule.forChild(routes),
-    ListJobsComponent,
-    ListModuleManagerJobsComponent,
     ListUsersComponent,
     RegisterComponent,
     EditAccountComponent,
     ListAppsComponent,
+    JobsComponent,
   ]
 })
 export class CoreServicesModule {
