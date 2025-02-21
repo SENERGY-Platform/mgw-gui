@@ -138,7 +138,7 @@ export class NativeListComponent implements OnInit {
   }
 
   showLog(id: string) {
-    this.router.navigate(["core/services/native-logs/" + id])
+    this.router.navigate(["system/status/native-logs/" + id])
   }
 }
 

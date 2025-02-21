@@ -18,18 +18,21 @@ import {ServicesComponent} from "./pages/services/services.component";
 import {NativeLogComponent} from "./pages/services/native-log/native-log.component";
 import {LogsComponent} from "../container/pages/logs/logs.component";
 import {JobsComponent} from "./pages/jobs/jobs.component";
+import {ConfigurationComponent} from "./pages/configuration/configuration.component";
+import {DeveloperComponent} from "./pages/developer/developer.component";
 
 const routes: Routes = [
   {
-    path: 'core',
+    path: 'system',
     children: [
-      {path: 'services', children: [
+      {path: 'status', children: [
           {path: '', component: ServicesComponent},
           {path: 'container-logs/:containerId', component: LogsComponent},
           {path: 'native-logs/:log_id', component: NativeLogComponent},
         ]
       },
       {path: 'jobs', component: JobsComponent},
+      {path: 'configuration', component: ConfigurationComponent},
       {
         path: 'accounts',
         children: [
@@ -43,7 +46,8 @@ const routes: Routes = [
           {path: 'apps', component: ListAppsComponent}
         ]
       },
-      {path: '', redirectTo: 'services', pathMatch: 'full'}
+      {path: 'developer', component: DeveloperComponent},
+      {path: '', redirectTo: 'status', pathMatch: 'full'}
     ]
   }
 ];
@@ -66,6 +70,8 @@ const routes: Routes = [
     EditAccountComponent,
     ListAppsComponent,
     JobsComponent,
+    ConfigurationComponent,
+    DeveloperComponent,
   ]
 })
 export class CoreServicesModule {

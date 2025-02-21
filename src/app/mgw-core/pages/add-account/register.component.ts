@@ -56,7 +56,7 @@ export class RegisterComponent {
     this.userService.addUser(user).subscribe({
       next: (_: any) => {
         this.waitingForRegister = false;
-        this.router.navigate(['/core/accounts/users'])
+        this.router.navigate(['/system/accounts/users'])
       },
       error: (err) => {
         this.waitingForRegister = false;

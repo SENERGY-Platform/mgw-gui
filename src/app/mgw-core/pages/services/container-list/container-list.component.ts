@@ -141,6 +141,6 @@ export class ContainerListComponent implements OnInit, OnDestroy {
   }
 
   showLogs(containerID: string) {
-    this.router.navigate(["core/services/container-logs/" + containerID])
+    this.router.navigate(["system/status/container-logs/" + containerID])
   }
 }

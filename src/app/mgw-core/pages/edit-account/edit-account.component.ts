@@ -78,7 +78,7 @@ export class EditAccountComponent {
 
     this.usersService.editUser(this.user.id, newUser).subscribe({
       next: (_) => {
-        this.router.navigate(['/core/accounts/users']);
+        this.router.navigate(['/system/accounts/users']);
       },
       error: (err) => {
         this.errorService.handleError("EditAccountComponent", "edit", err);

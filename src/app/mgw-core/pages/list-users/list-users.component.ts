@@ -110,6 +110,6 @@ export class ListUsersComponent implements OnInit {
   }
 
   editUser(user: HumanUser) {
-    this.router.navigate(['/core/accounts/users/' + user.id + "/edit"])
+    this.router.navigate(['/system/accounts/users/' + user.id + "/edit"])
   }
 }
