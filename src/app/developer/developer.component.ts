@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from "@angular/material/card";
 import {SwaggerListComponent, Item} from "./swagger-list/swagger-list.component";
 
-const publicBase = location.protocol + '//' + location.host + "/core/api";
+const publicBase = location.protocol + "//" + location.host + "/core/api";
 const gatewayBase = "http://core-api";
 const docBase = "/core/swagger";
 
@@ -25,6 +25,7 @@ export class DeveloperComponent {
     {name: "auth-service", apiUrl: publicBase+"/auth-service", docUrl: docBase+"/public/auth-service/index.html"},
     {name: "ce-wrapper", apiUrl: publicBase+"/ce-wrapper", docUrl: docBase+"/public/ce-wrapper/index.html"},
     {name: "core-manager", apiUrl: publicBase+"/core-manager", docUrl: docBase+"/public/core-manager/index.html"},
+    {name: "deployment-discovery", apiUrl: location.protocol+"//" +location.host+"/core/discovery", docUrl: docBase+"/public/module-manager/index.html#/Deployment%20Advertisements/get_discovery"},
     {name: "host-manager", apiUrl: publicBase+"/host-manager", docUrl: docBase+"/public/host-manager/index.html"},
     {name: "module-manager", apiUrl: publicBase+"/module-manager", docUrl: docBase+"/public/module-manager/index.html"},
     {name: "secret-manager", apiUrl: publicBase+"/secret-manager", docUrl: docBase+"/public/secret-manager/index.html"},
