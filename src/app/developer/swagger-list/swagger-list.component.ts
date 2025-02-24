@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -13,6 +13,7 @@ import {MatIconButton} from "@angular/material/button";
 
 export interface Item {
   name: string;
+  auth: boolean;
   apiUrl: string;
   docUrl: string;
 }
@@ -39,7 +40,7 @@ export interface Item {
 })
 export class SwaggerListComponent implements OnInit {
   dataSource = new MatTableDataSource<Item>();
-  displayColumns = ['name', 'apiUrl', 'docUrl']
+  displayColumns = ['name', 'auth', 'apiUrl', 'docUrl']
   @Input() items?: Item[];
 
   ngOnInit(): void {

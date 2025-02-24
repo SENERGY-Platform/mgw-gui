@@ -6,6 +6,13 @@
     </td>
   </ng-container>
 
+  <ng-container matColumnDef="auth">
+    <th *matHeaderCellDef class="button-column" mat-header-cell>Authentication</th>
+    <td *matCellDef="let item" mat-cell>
+      {{ item.auth }}
+    </td>
+  </ng-container>
+
   <ng-container matColumnDef="apiUrl">
     <th *matHeaderCellDef mat-header-cell>Url</th>
     <td *matCellDef="let item" mat-cell>
