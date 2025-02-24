@@ -10,7 +10,6 @@ import {
 } from "@angular/material/table";
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
-import {MatSort, MatSortHeader} from "@angular/material/sort";
 
 export interface Item {
   name: string;
@@ -32,8 +31,6 @@ export interface Item {
     MatIconButton,
     MatRow,
     MatRowDef,
-    MatSort,
-    MatSortHeader,
     MatTable,
     MatHeaderCellDef,
   ],
