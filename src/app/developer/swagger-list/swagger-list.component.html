@@ -1,0 +1,29 @@
+<table [dataSource]="dataSource" mat-table>
+  <ng-container matColumnDef="name">
+    <th *matHeaderCellDef class="button-column" mat-header-cell>Name</th>
+    <td *matCellDef="let item" mat-cell>
+      {{ item.name }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="apiUrl">
+    <th *matHeaderCellDef mat-header-cell>Url</th>
+    <td *matCellDef="let item" mat-cell>
+      {{ item.apiUrl }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="docUrl">
+    <th *matHeaderCellDef class="button-column" disableClear  mat-header-cell>Swagger</th>
+    <td *matCellDef="let item" mat-cell>
+      <button (click)="goToLink(item.docUrl)" color="primary" mat-icon-button
+              matTooltip="Open">
+        <mat-icon>open_in_new</mat-icon>
+      </button>
+      {{ item.link }}
+    </td>
+  </ng-container>
+
+  <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+  <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+</table>

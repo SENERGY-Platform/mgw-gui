@@ -1,1 +1,33 @@
-<p>developer works!</p>
+<div class="layout-margin">
+  <mat-card appearance="raised">
+    <mat-card-header>
+      <mat-card-title>Public APIs</mat-card-title>
+      <mat-card-subtitle>For app or web developers.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <app-swagger-list [items]="publicApis"></app-swagger-list>
+    </mat-card-content>
+  </mat-card>
+</div>
+<div class="layout-margin">
+  <mat-card appearance="raised">
+    <mat-card-header>
+      <mat-card-title>Module APIs</mat-card-title>
+      <mat-card-subtitle>For module developers, only accessible to deployments.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <app-swagger-list [items]="moduleApis"></app-swagger-list>
+    </mat-card-content>
+  </mat-card>
+</div>
+<div class="layout-margin">
+  <mat-card appearance="raised">
+    <mat-card-header>
+      <mat-card-title>Internal APIs</mat-card-title>
+      <mat-card-subtitle>Used by mgw-core services.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <app-swagger-list [items]="internalApis"></app-swagger-list>
+    </mat-card-content>
+  </mat-card>
+</div>

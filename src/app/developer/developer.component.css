@@ -1,0 +1,12 @@
+.mat-mdc-card-header{
+  background-color: #8b97dc;
+  padding: 16px 16px 16px;
+}
+
+.mat-mdc-card-title{
+  color: #ffffff;
+}
+
+.mat-mdc-card-subtitle{
+  color: #f8f8f8;
+}
