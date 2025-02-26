@@ -59,7 +59,7 @@ export class ErrorService {
     }
 
     console.error('Error =>> Service: ' + service + ' =>> Method: ' + method);
-    this.notifierService.showError("There was a problem: " + errorMessage)
+    this.notifierService.showError("Error: " + errorMessage)
 
 
     // Return an observable with a user-facing error message.
