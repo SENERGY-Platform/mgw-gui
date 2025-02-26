@@ -5,6 +5,17 @@ import {InfoResponse} from '../../models/info';
 import {ApiService} from '../api/api.service';
 import {HttpParams} from "@angular/common/http";
 
+export interface AppResponse {
+  id: string;
+  name: string;
+  socket: string;
+}
+
+export interface AppRequest {
+  name: string;
+  socket: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,11 +31,11 @@ export class HostManagerService {
     return <Observable<HostResource[]>>this.http.get(this.hostManagerPath + "/host-resources")
   }
 
-  getApplications(): Observable<Application[]> {
-    return <Observable<Application[]>>this.http.get(this.hostManagerPath + "/applications")
+  getApplications(): Observable<AppResponse[]> {
+    return <Observable<AppResponse[]>>this.http.get(this.hostManagerPath + "/applications")
   }
 
-  addApplication(application: Application): Observable<any> {
+  addApplication(application: AppRequest): Observable<any> {
     return <Observable<any>>this.http.post(this.hostManagerPath + "/applications", application, undefined, "text")
   }
 
