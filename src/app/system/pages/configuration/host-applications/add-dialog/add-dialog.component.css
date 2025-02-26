@@ -1,0 +1,23 @@
+.mat-mdc-dialog-container .mat-mdc-dialog-title + .mat-mdc-dialog-content {
+  padding-bottom: 0;
+}
+
+.mat-mdc-dialog-container {
+  min-width: 150px;
+  max-width: 250px;
+}
+
+.mat-mdc-dialog-actions {
+  padding-top: 0;
+  padding-right: 25px;
+  padding-bottom: 25px;
+}
+
+.input-container {
+  padding-top: 5px;
+}
+
+.input-field {
+  width: 100%;
+}
+

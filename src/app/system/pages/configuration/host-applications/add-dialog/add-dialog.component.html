@@ -1,0 +1,19 @@
+<form [formGroup]="form" (ngSubmit)="submit(form)">
+  <h2 mat-dialog-title>Add host application</h2>
+  <mat-dialog-content>
+    <div class="input-container">
+      <mat-form-field appearance="outline" class="input-field">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" required>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="input-field">
+        <mat-label>Socket path</mat-label>
+        <input matInput formControlName="socket" required>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" (click)="dialogRef.close()">Cancel</button>
+    <button mat-stroked-button type="submit" [disabled]="!form.valid">Add</button>
+  </mat-dialog-actions>
+</form>
