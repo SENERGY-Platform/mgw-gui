@@ -827,8 +827,8 @@ export class ModuleManagerMockService {
         "license": "Apache-2.0",
         "author": "Author",
         "is_deployed": true,
-        "has_error": false,
-        "error_msg": "",
+        "has_error": true,
+        "error_msg": "container inspect failed: connection refused",
         "deployment": {
           "id": "dep-b",
           "module_source": "localhost",

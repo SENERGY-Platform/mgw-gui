@@ -75,7 +75,7 @@ export class RepositoriesComponent implements OnInit {
         this.ready = true
       },
       error: (err) => {
-        this.errorService.handleError(RepositoriesComponent.name, "load", err)
+        this.errorService.handleError(RepositoriesComponent.name, "load", err, "Loading the repositories failed")
         this.ready = true
       }
     })
@@ -98,7 +98,7 @@ export class RepositoriesComponent implements OnInit {
       ).subscribe({
         next: (_) => this.load(),
         error: (err) => {
-          this.errorService.handleError(RepositoriesComponent.name, "add", err)
+          this.errorService.handleError(RepositoriesComponent.name, "add", err, "Adding the repository failed")
           this.load()
         }
       })
@@ -123,7 +123,7 @@ export class RepositoriesComponent implements OnInit {
           this.load()
         }
       },
-      error: (err) => this.errorService.handleError(RepositoriesComponent.name, "delete", err)
+      error: (err) => this.errorService.handleError(RepositoriesComponent.name, "delete", err, "Deleting the repository failed")
     })
   }
 }

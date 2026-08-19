@@ -18,24 +18,32 @@
 
 import {HttpErrorResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {throwError} from 'rxjs';
-import {NotificationService} from './notifications.service';
+import {ErrorDialogComponent} from '../../components/error-dialog/error-dialog.component';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorService {
-  constructor(private notifierService: NotificationService) {
+  constructor(
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+  ) {
   }
 
-  handleError(service: string, method: string, error: HttpErrorResponse | Error) {
-    // shall handle errors at the backend, e.g. 400/500 and display error response
-    // client errors like trying to parse json when response is text
-    // client errros like network problems
-
-    var errorMessage
+  // Shows a short, readable notification with a Details action that opens the
+  // full error. `context` says what failed in the user's terms ("Loading
+  // modules failed"); without it a generic message is used. The raw error is
+  // never shown in the notification itself - a 502 from the gateway is a page
+  // of HTML.
+  handleError(service: string, method: string, error: HttpErrorResponse | Error | any, context?: string) {
+    var errorMessage: string
+    var status = 0
     if (error instanceof HttpErrorResponse) {
+      status = error.status
       if (typeof (error.error) == 'object') {
         // e.g cant parse response body
         errorMessage = error.message
@@ -43,35 +51,35 @@ export class ErrorService {
         // backend message
         errorMessage = error.error
       }
-
-      if (error.status === 0) {
-        // A client-side or network error occurred before getting a response. Handle it accordingly.
-        console.error('A client error occurred:', errorMessage);
-      } else {
-        // The backend returned an unsuccessful response code.
-        // The response body may contain clues as to what went wrong. It is contained in error.error
-        console.error(`Backend returned code ${error.status}, Error: `, errorMessage);
-      }
-    } else {
-      // e.g. custom Exception
+    } else if (error instanceof Error) {
       errorMessage = error.message
-      console.error(errorMessage)
-    }
-
-    console.error('Error =>> Service: ' + service + ' =>> Method: ' + method);
-    if (error instanceof HttpErrorResponse && error.status === 503) {
-      // module-manager serializes long-running operations: 503 means another
-      // job is still active, the body names it
-      this.notifierService.showError("Another operation is still running, please wait for it to finish. (" + errorMessage + ")")
     } else {
-      this.notifierService.showError("Error: " + errorMessage)
+      errorMessage = String(error)
     }
 
+    console.error('Error =>> Service: ' + service + ' =>> Method: ' + method, errorMessage);
+
+    var short = context || "The last action failed"
+    if (status === 503) {
+      // the module-manager serializes long-running operations: 503 means
+      // another job is still active
+      short = (context ? context + " — " : "") + "Another operation is still running, please wait for it to finish."
+    } else if (status > 0) {
+      short = short + " (HTTP " + status + ")"
+    }
+
+    this.snackBar.open(short, 'Details', {panelClass: ['error'], duration: 10000})
+      .onAction().subscribe(() => {
+        this.dialog.open(ErrorDialogComponent, {
+          data: {
+            context: short,
+            source: service + "." + method + (status > 0 ? " — HTTP " + status : ""),
+            detail: errorMessage,
+          }
+        })
+      })
 
     // Return an observable with a user-facing error message.
     return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 }
-
-// TODO log + error with specific message or return value like []
-// ui component show human message

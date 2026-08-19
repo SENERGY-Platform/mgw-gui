@@ -32,8 +32,9 @@ import {
   ModuleReduced,
   needsDeploymentUpdate
 } from 'src/app/core/models/modules';
-import {DeploymentDeleteJobResult, DeploymentJobResult} from 'src/app/core/models/jobs';
 import {JobResultKind} from 'src/app/core/components/job-loader-modal/job-loader-modal.component';
+import {ErrorDialogComponent} from 'src/app/core/components/error-dialog/error-dialog.component';
+import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
 
 @Component({
   selector: 'app-list',
@@ -104,7 +105,7 @@ export class ListComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         if (!background) {
-          this.errorService.handleError(ListComponent.name, "loadModules", err)
+          this.errorService.handleError(ListComponent.name, "loadModules", err, "Loading the modules failed")
         }
         this.ready = true
       }
@@ -172,7 +173,7 @@ export class ListComponent implements OnInit, OnDestroy {
         this.startPeriodicRefresh()
       },
       error: (err) => {
-        this.errorService.handleError(ListComponent.name, method, err)
+        this.errorService.handleError(ListComponent.name, method, err, method === "start" ? "Starting the deployments failed" : "Stopping the deployments failed")
         this.ready = true
         this.startPeriodicRefresh()
       }
@@ -191,7 +192,7 @@ export class ListComponent implements OnInit, OnDestroy {
     if (moduleIDs.length === 0) {
       return
     }
-    this.runJob(this.moduleService.recreateDeployments(moduleIDs), "Deployments are recreating", "deployments", "recreate")
+    this.runJob(this.moduleService.recreateDeployments(moduleIDs), "Deployments are recreating", "deployments", "recreate", "Recreate containers", "Containers recreated", "Recreating the containers failed")
   }
 
   deleteDeployment(moduleID: string) {
@@ -211,13 +212,13 @@ export class ListComponent implements OnInit, OnDestroy {
         if (!confirmed) {
           return of(null)
         }
-        this.runJob(this.moduleService.removeDeployments(moduleIDs), "Deployments are being deleted", "deployments-delete", "delete")
+        this.runJob(this.moduleService.removeDeployments(moduleIDs), "Deployments are being deleted", "deployments-delete", "delete", "Delete deployments", "Deployments deleted", "Deleting the deployments failed")
         return of(true)
       })
     ).subscribe()
   }
 
-  private runJob(obs: Observable<any>, message: string, resultKind: JobResultKind, method: string) {
+  private runJob(obs: Observable<any>, message: string, resultKind: JobResultKind, method: string, resultTitle: string, successMessage: string, errorContext: string) {
     this.ready = false
     this.stopPeriodicRefresh()
     obs.pipe(
@@ -226,26 +227,36 @@ export class ListComponent implements OnInit, OnDestroy {
       })
     ).subscribe({
       next: (jobResult) => {
-        this.reportPartialFailures(jobResult?.result, method)
+        // the job succeeds even if single modules failed, per-module errors are in the result
+        if (jobResult?.result) {
+          this.utilService.presentJobResult(resultTitle, mapDeploymentResults(jobResult.result), successMessage)
+        }
         this.selectionClear()
         this.loadModules(false)
         this.startPeriodicRefresh()
       },
       error: (err) => {
-        this.errorService.handleError(ListComponent.name, method, err)
+        this.errorService.handleError(ListComponent.name, method, err, errorContext)
         this.ready = true
         this.startPeriodicRefresh()
       }
     })
   }
 
-  // the job succeeds even if single modules failed, per-module errors are in the result
-  private reportPartialFailures(result: DeploymentJobResult | DeploymentDeleteJobResult | undefined, method: string) {
-    if (!result || !result.results_err_num) {
-      return
-    }
-    var errors = (result.results || []).filter(r => r.has_error).map(r => r.module_id + ": " + r.error_msg)
-    this.errorService.handleError(ListComponent.name, method, new Error(result.results_err_num + " module(s) failed. " + errors.join("; ")))
+  // some models carry a partial error, e.g. when the deployment of a module
+  // could not be retrieved completely
+  showModuleError(module: ModuleReduced) {
+    this.dialog.open(ErrorDialogComponent, {
+      data: {
+        context: "The module was loaded with errors",
+        source: module.id,
+        detail: module.error_msg || module.deployment?.error_msg || "",
+      }
+    })
+  }
+
+  moduleHasError(module: ModuleReduced): boolean {
+    return module.has_error || (module.is_deployed && module.deployment.has_error)
   }
 
   deploy(moduleID: string) {

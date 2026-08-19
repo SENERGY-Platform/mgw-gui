@@ -1,3 +1,9 @@
 mat-form-field {
   width: 100%;
 }
+.error-banner {
+  border-left: 4px solid #b3372f;
+  background: rgba(179, 55, 47, 0.08);
+  padding: 6px 12px;
+  font-size: 13px;
+}

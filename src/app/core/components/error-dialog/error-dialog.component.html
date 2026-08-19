@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>{{ context }}</h1>
+
+<div class="dialog-content" mat-dialog-content>
+  <p *ngIf="source" class="source">Source: {{ source }}</p>
+  <pre *ngIf="detail" class="detail">{{ detail }}</pre>
+  <p *ngIf="!detail">No further details were reported.</p>
+</div>
+
+<div mat-dialog-actions>
+  <button [mat-dialog-close]="undefined" color="primary" mat-raised-button>Close</button>
+</div>

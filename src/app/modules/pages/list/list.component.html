@@ -44,6 +44,10 @@
             <div *ngSwitchCase="'unknown'" class="circle yellow" matTooltip="Deployment state unknown"></div>
             <span *ngSwitchCase="'none'" matTooltip="Not deployed">–</span>
           </div>
+          <button (click)="showModuleError(module)" *ngIf="moduleHasError(module)" class="module-error" mat-icon-button
+                  matTooltip="Loaded with errors — click for details">
+            <mat-icon color="warn">warning</mat-icon>
+          </button>
         </td>
       </ng-container>
 

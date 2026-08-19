@@ -31,7 +31,7 @@ import {DeploymentRequestModule} from 'src/app/core/models/deployment-request';
 import {GlobalConfig} from 'src/app/core/models/global-configs';
 import {HostResource} from 'src/app/host/models/models';
 import {Secret} from 'src/app/secrets/models/secret_models';
-import {DeploymentUpdateJobResult} from 'src/app/core/models/jobs';
+import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
 
 // Edit (update) the deployment of a module: the form is prefilled from the
 // embedded deployment and submitted via PUT /deployments. Also applies a
@@ -79,7 +79,7 @@ export class ShowModuleComponentComponent implements OnInit {
         this.ready = true
       },
       error: (err) => {
-        this.errorService.handleError(ShowModuleComponentComponent.name, "ngOnInit", err)
+        this.errorService.handleError(ShowModuleComponentComponent.name, "ngOnInit", err, "Loading the deployment failed")
         this.ready = true
       }
     })
@@ -95,22 +95,16 @@ export class ShowModuleComponentComponent implements OnInit {
       concatMap(job => this.utilService.checkJobStatus(job.id, "Updating deployment", "module-manager", "deployments-update"))
     ).subscribe({
       next: (jobResult) => {
-        this.reportPartialFailures(jobResult?.result)
+        if (jobResult?.result) {
+          this.utilService.presentJobResult("Update deployment", mapDeploymentResults(jobResult.result), "Deployment updated")
+        }
         this.router.navigateByUrl("/modules")
       },
       error: (err) => {
-        this.errorService.handleError(ShowModuleComponentComponent.name, "submit", err)
+        this.errorService.handleError(ShowModuleComponentComponent.name, "submit", err, "Updating the deployment failed")
         this.submitting = false
       }
     })
-  }
-
-  private reportPartialFailures(result: DeploymentUpdateJobResult | undefined) {
-    if (!result || !result.results_err_num) {
-      return
-    }
-    var errors = (result.results || []).filter(r => r.has_error).map(r => r.module_id + ": " + r.error_msg)
-    this.errorService.handleError(ShowModuleComponentComponent.name, "submit", new Error(result.results_err_num + " update(s) failed. " + errors.join("; ")))
   }
 
   updatePending(): boolean {

@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>{{ title }}</h1>
+
+<div class="dialog-content" mat-dialog-content>
+  <p *ngIf="failedCount() > 0" class="summary">{{ failedCount() }} of {{ items.length }} item(s) failed.</p>
+
+  <div *ngFor="let item of items" [class.failed]="!item.ok" class="item">
+    <mat-icon *ngIf="item.ok" class="ok-icon">check_circle</mat-icon>
+    <mat-icon *ngIf="!item.ok" class="failed-icon">error</mat-icon>
+    <div class="item-body">
+      <div class="label">{{ item.label }}</div>
+      <div *ngIf="item.message" class="message">{{ item.message }}</div>
+      <div *ngIf="item.hint" class="hint">{{ item.hint }}</div>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <button [mat-dialog-close]="undefined" color="primary" mat-raised-button>Close</button>
+</div>

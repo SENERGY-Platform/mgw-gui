@@ -31,7 +31,7 @@ import {DeploymentRequestModule, DeploymentUserInput} from 'src/app/core/models/
 import {GlobalConfig} from 'src/app/core/models/global-configs';
 import {HostResource} from 'src/app/host/models/models';
 import {Secret} from 'src/app/secrets/models/secret_models';
-import {DeploymentJobResult} from 'src/app/core/models/jobs';
+import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
 
 // Create deployments: /deployment-request resolves the requested module plus
 // its dependencies, one form per module, submitted together as a batch.
@@ -79,7 +79,7 @@ export class ModulesComponent implements OnInit {
         this.ready = true
       },
       error: (err) => {
-        this.errorService.handleError(ModulesComponent.name, "ngOnInit", err)
+        this.errorService.handleError(ModulesComponent.name, "ngOnInit", err, "Loading the deployment form failed")
         this.ready = true
       }
     })
@@ -103,22 +103,16 @@ export class ModulesComponent implements OnInit {
       concatMap(job => this.utilService.checkJobStatus(job.id, "Creating deployments", "module-manager", "deployments"))
     ).subscribe({
       next: (jobResult) => {
-        this.reportPartialFailures(jobResult?.result)
+        if (jobResult?.result) {
+          this.utilService.presentJobResult("Create deployments", mapDeploymentResults(jobResult.result), "Deployment created")
+        }
         this.router.navigateByUrl("/modules")
       },
       error: (err) => {
-        this.errorService.handleError(ModulesComponent.name, "submit", err)
+        this.errorService.handleError(ModulesComponent.name, "submit", err, "Creating the deployment failed")
         this.submitting = false
       }
     })
-  }
-
-  private reportPartialFailures(result: DeploymentJobResult | undefined) {
-    if (!result || !result.results_err_num) {
-      return
-    }
-    var errors = (result.results || []).filter(r => r.has_error).map(r => r.module_id + ": " + r.error_msg)
-    this.errorService.handleError(ModulesComponent.name, "submit", new Error(result.results_err_num + " deployment(s) failed. " + errors.join("; ")))
   }
 
   cancel() {

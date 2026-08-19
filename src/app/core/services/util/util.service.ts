@@ -21,6 +21,9 @@ import {MatDialog} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
 import {ConfirmDialogComponent} from '../../components/confirm-dialog/confirm-dialog.component';
 import {JobLoaderModalComponent, JobResultKind} from '../../components/job-loader-modal/job-loader-modal.component';
+import {JobResultDialogComponent} from '../../components/job-result-dialog/job-result-dialog.component';
+import {hasFailures, JobResultItem} from '../../models/job-result-view';
+import {NotificationService} from './notifications.service';
 
 
 @Injectable({
@@ -28,8 +31,19 @@ import {JobLoaderModalComponent, JobResultKind} from '../../components/job-loade
 })
 export class UtilService {
   constructor(
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private notificationService: NotificationService,
   ) {
+  }
+
+  // Presents a job outcome: failures open the result dialog with per-item
+  // errors and hints, a clean run only shows a short success notification.
+  presentJobResult(title: string, items: JobResultItem[], successMessage?: string) {
+    if (hasFailures(items)) {
+      this.dialog.open(JobResultDialogComponent, {data: {title: title, items: items}})
+    } else if (successMessage) {
+      this.notificationService.showSuccess(successMessage)
+    }
   }
 
   dateIsToday(dateTime: string | number): Boolean {

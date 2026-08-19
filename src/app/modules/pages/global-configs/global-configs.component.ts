@@ -91,7 +91,7 @@ export class GlobalConfigsComponent implements OnInit {
         this.ready = true
       },
       error: (err) => {
-        this.errorService.handleError(GlobalConfigsComponent.name, "load", err)
+        this.errorService.handleError(GlobalConfigsComponent.name, "load", err, "Loading the global configs failed")
         this.ready = true
       }
     })
@@ -114,7 +114,7 @@ export class GlobalConfigsComponent implements OnInit {
       }
       this.moduleService.createGlobalConfig(input).subscribe({
         next: (_) => this.load(),
-        error: (err) => this.errorService.handleError(GlobalConfigsComponent.name, "add", err)
+        error: (err) => this.errorService.handleError(GlobalConfigsComponent.name, "add", err, "Creating the global config failed")
       })
     })
   }
@@ -126,7 +126,7 @@ export class GlobalConfigsComponent implements OnInit {
       }
       this.moduleService.updateGlobalConfig(config.id, input).subscribe({
         next: (_) => this.load(),
-        error: (err) => this.errorService.handleError(GlobalConfigsComponent.name, "edit", err)
+        error: (err) => this.errorService.handleError(GlobalConfigsComponent.name, "edit", err, "Saving the global config failed")
       })
     })
   }
@@ -145,7 +145,7 @@ export class GlobalConfigsComponent implements OnInit {
           this.load()
         }
       },
-      error: (err) => this.errorService.handleError(GlobalConfigsComponent.name, "delete", err)
+      error: (err) => this.errorService.handleError(GlobalConfigsComponent.name, "delete", err, "Deleting the global config failed")
     })
   }
 }

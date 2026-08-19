@@ -1,0 +1,44 @@
+.dialog-content {
+  min-width: 420px;
+  max-width: 680px;
+}
+
+.summary {
+  font-weight: 500;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.ok-icon {
+  color: #2e7d4f;
+}
+
+.failed-icon {
+  color: #b3372f;
+}
+
+.label {
+  overflow-wrap: anywhere;
+}
+
+.message {
+  font-size: 13px;
+  color: #b3372f;
+  overflow-wrap: anywhere;
+}
+
+.hint {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.65);
+  margin-top: 2px;
+}

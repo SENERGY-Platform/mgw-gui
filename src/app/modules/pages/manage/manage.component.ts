@@ -44,7 +44,7 @@ import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {RepoModule} from 'src/app/core/models/repositories';
 import {ChangeRequestItem, ModulesChangeRequest} from 'src/app/core/models/modules';
-import {ModulesChangeJobResult} from 'src/app/core/models/jobs';
+import {mapModulesChangeResult, mapRepositoryRefreshResult} from 'src/app/core/models/job-result-view';
 import {ChangeRequestDialogComponent} from '../../components/change-request-dialog/change-request-dialog.component';
 import {RefreshReposDialogComponent} from '../../components/refresh-repos-dialog/refresh-repos-dialog.component';
 
@@ -107,7 +107,7 @@ export class ManageComponent implements OnInit {
         this.ready = true
       },
       error: (err) => {
-        this.errorService.handleError(ManageComponent.name, "load", err)
+        this.errorService.handleError(ManageComponent.name, "load", err, "Loading the module catalog failed")
         this.ready = true
       }
     })
@@ -210,7 +210,7 @@ export class ManageComponent implements OnInit {
         this.openReviewDialog(request)
       },
       error: (err) => {
-        this.errorService.handleError(ManageComponent.name, "createAndReview", err)
+        this.errorService.handleError(ManageComponent.name, "createAndReview", err, "Creating the change request failed")
       }
     })
   }
@@ -241,25 +241,19 @@ export class ManageComponent implements OnInit {
       })
     ).subscribe({
       next: (jobResult) => {
-        this.reportFailedChanges(jobResult?.result)
+        // the job succeeds even if single modules failed
+        if (jobResult?.result) {
+          this.utilService.presentJobResult("Module changes", mapModulesChangeResult(jobResult.result), "Module changes applied")
+        }
         this.pendingRequest = null
         this.clearCart()
         this.load()
       },
       error: (err) => {
-        this.errorService.handleError(ManageComponent.name, "executeRequest", err)
+        this.errorService.handleError(ManageComponent.name, "executeRequest", err, "Applying the module changes failed")
         this.ready = true
       }
     })
-  }
-
-  // the job succeeds even if single modules failed
-  private reportFailedChanges(result: ModulesChangeJobResult | undefined) {
-    if (!result || !result.failed?.length) {
-      return
-    }
-    var errors = result.failed.map(f => f.id + " (" + f.action + "): " + f.error)
-    this.errorService.handleError(ManageComponent.name, "executeRequest", new Error(result.failed.length + " module change(s) failed. " + errors.join("; ")))
   }
 
   private discardRequest() {
@@ -268,7 +262,7 @@ export class ManageComponent implements OnInit {
         this.pendingRequest = null
       },
       error: (err) => {
-        this.errorService.handleError(ManageComponent.name, "discardRequest", err)
+        this.errorService.handleError(ManageComponent.name, "discardRequest", err, "Discarding the change request failed")
       }
     })
   }
@@ -290,7 +284,7 @@ export class ManageComponent implements OnInit {
         })
       },
       error: (err) => {
-        this.errorService.handleError(ManageComponent.name, "refreshRepositories", err)
+        this.errorService.handleError(ManageComponent.name, "refreshRepositories", err, "Loading the repositories failed")
       }
     })
   }
@@ -303,17 +297,15 @@ export class ManageComponent implements OnInit {
       })
     ).subscribe({
       next: (jobResult) => {
-        var result = jobResult?.result
-        if (result?.results_err_num > 0) {
-          var errors = (result.Results || []).filter((r: any) => r.has_error).map((r: any) => r.source + ": " + r.error_msg)
-          this.errorService.handleError(ManageComponent.name, "runRefresh", new Error(errors.join("; ")))
+        if (jobResult?.result) {
+          this.utilService.presentJobResult("Repository refresh", mapRepositoryRefreshResult(jobResult.result), "Repositories refreshed")
         }
         // a refresh discards the pending change request
         this.pendingRequest = null
         this.load()
       },
       error: (err) => {
-        this.errorService.handleError(ManageComponent.name, "runRefresh", err)
+        this.errorService.handleError(ManageComponent.name, "runRefresh", err, "Refreshing the repositories failed")
         this.ready = true
       }
     })
