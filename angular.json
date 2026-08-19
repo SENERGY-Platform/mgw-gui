@@ -148,7 +148,8 @@
           "options": {
             "polyfills": [
               "zone.js",
-              "zone.js/testing"
+              "zone.js/testing",
+              "src/testing/init-environment.ts"
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [

@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-// environment.ts and the services import each other; loading the environment
-// first keeps the circular chain in an order that initializes cleanly
-import 'src/environments/environment';
 import {of, throwError} from 'rxjs';
 import {ManageComponent} from './manage.component';
 import {RepoModule} from 'src/app/core/models/repositories';
