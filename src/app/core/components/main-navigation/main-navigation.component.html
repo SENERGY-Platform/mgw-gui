@@ -23,7 +23,7 @@
 
           <ul [ngClass]="{'toggled': isSectionOpen(section)}" class="toggle-list">
             <li *ngFor="let page of section.pages">
-              <button class="toggle-list-button" routerLink="{{page.state}}"
+              <button [routerLinkActiveOptions]="{exact: true}" class="toggle-list-button" routerLink="{{page.state}}"
                       routerLinkActive="background-color-sidenav">
                 <mat-icon>
                   {{ page.icon }}
