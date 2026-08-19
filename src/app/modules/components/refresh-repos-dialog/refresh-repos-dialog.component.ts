@@ -23,7 +23,7 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from '@angular/material/dialog';
-import {NgFor, NgIf} from '@angular/common';
+
 import {FormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {MatCheckbox} from '@angular/material/checkbox';
@@ -36,7 +36,7 @@ import {Repository} from 'src/app/core/models/repositories';
     selector: 'refresh-repos-dialog',
     templateUrl: './refresh-repos-dialog.component.html',
     styleUrls: ['./refresh-repos-dialog.component.css'],
-    imports: [NgIf, NgFor, FormsModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatCheckbox]
+    imports: [FormsModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatCheckbox]
 })
 export class RefreshReposDialogComponent {
   repositories: Repository[] = []

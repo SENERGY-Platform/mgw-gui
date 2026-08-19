@@ -1,9 +1,15 @@
 <h1 mat-dialog-title>{{ context }}</h1>
 
 <div class="dialog-content" mat-dialog-content>
-  <p *ngIf="source" class="source">Source: {{ source }}</p>
-  <pre *ngIf="detail" class="detail">{{ detail }}</pre>
-  <p *ngIf="!detail">No further details were reported.</p>
+  @if (source) {
+    <p class="source">Source: {{ source }}</p>
+  }
+  @if (detail) {
+    <pre class="detail">{{ detail }}</pre>
+  }
+  @if (!detail) {
+    <p>No further details were reported.</p>
+  }
 </div>
 
 <div mat-dialog-actions>

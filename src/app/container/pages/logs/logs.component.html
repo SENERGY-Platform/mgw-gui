@@ -10,8 +10,10 @@
   </div>
 
   <div id="logs">
-    <pre *ngIf="ready && !init"><code [highlight]="logs" [lineNumbers]="true">
-    </code></pre>
+    @if (ready && !init) {
+      <pre><code [highlight]="logs" [lineNumbers]="true">
+      </code></pre>
+    }
   </div>
 
 </div>

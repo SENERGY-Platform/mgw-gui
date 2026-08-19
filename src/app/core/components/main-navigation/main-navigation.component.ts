@@ -7,7 +7,7 @@ import {AuthService} from '../../services/auth/auth.service';
 import {ErrorService} from '../../services/util/error.service';
 import {SidenavPageModel} from './models/sidenav-page.model';
 import {SidenavSectionModel} from './models/sidenav-section.model';
-import {NgClass, NgFor, NgIf, UpperCasePipe} from '@angular/common';
+import { NgClass, UpperCasePipe } from '@angular/common';
 import {MatIcon} from '@angular/material/icon';
 import {MatIconButton} from '@angular/material/button';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
@@ -16,7 +16,7 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
     selector: 'app-main-navigation',
     templateUrl: './main-navigation.component.html',
     styleUrls: ['./main-navigation.component.css'],
-    imports: [MatSidenavContainer, MatSidenav, NgFor, NgIf, RouterLinkActive, RouterLink, MatIcon, NgClass, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, MatSidenavContent, RouterOutlet, UpperCasePipe]
+    imports: [MatSidenavContainer, MatSidenav, RouterLinkActive, RouterLink, MatIcon, NgClass, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, MatSidenavContent, RouterOutlet, UpperCasePipe]
 })
 export class MainNavigationComponent implements OnInit {
   @ViewChild('sidenav', {static: false}) sidenav!: MatSidenav;

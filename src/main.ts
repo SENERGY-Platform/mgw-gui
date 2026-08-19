@@ -6,7 +6,7 @@ import {AppModule} from './app/app.module';
 import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {AuthCheckInterceptor} from './app/core/services/auth/interceptor/auth.interceptor';
 import {environment} from './environments/environment';
-import {LOCALE_ID, importProvidersFrom} from '@angular/core';
+import {LOCALE_ID, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
 import {HIGHLIGHT_OPTIONS} from 'ngx-highlightjs';
 import {BrowserModule, bootstrapApplication} from '@angular/platform-browser';
 import {MatIconModule} from '@angular/material/icon';
@@ -23,7 +23,7 @@ import {AppComponent} from './app/app.component';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    importProvidersFrom(BrowserModule, MatIconModule, AppRoutingModule, DeploymentsModule, ContainerModule, ModulesModule, SecretsModule, CoreServicesModule, AuthModule),
+    provideZoneChangeDetection(),importProvidersFrom(BrowserModule, MatIconModule, AppRoutingModule, DeploymentsModule, ContainerModule, ModulesModule, SecretsModule, CoreServicesModule, AuthModule),
     {
       provide: HTTP_INTERCEPTORS, useClass: AuthCheckInterceptor, multi: true
     },

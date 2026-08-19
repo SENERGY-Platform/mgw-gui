@@ -28,7 +28,7 @@ import {
   MatTable,
   MatTableDataSource
 } from '@angular/material/table';
-import {DatePipe, NgIf} from '@angular/common';
+import { DatePipe } from '@angular/common';
 import {MatTooltip} from '@angular/material/tooltip';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
@@ -42,7 +42,7 @@ import {AuxDeployment} from 'src/app/core/models/aux-deployments';
     selector: 'aux-deployments-list',
     templateUrl: './aux-deployments-list.component.html',
     styleUrls: ['./aux-deployments-list.component.css'],
-    imports: [NgIf, DatePipe, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatTooltip, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
+    imports: [DatePipe, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatTooltip, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
 })
 export class AuxDeploymentsListComponent implements OnInit, OnDestroy {
   @Input() deploymentID: string = ""

@@ -21,7 +21,7 @@ import {UtilService} from '../../services/util/util.service';
 import {SelectionModel} from '@angular/cdk/collections';
 import {CoreEndpoint, CoreEndpointsResponse} from 'src/app/deployments/models/endpoints';
 import {SpinnerComponent} from '../spinner/spinner.component';
-import {NgIf} from '@angular/common';
+
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {MatCheckbox} from '@angular/material/checkbox';
@@ -30,7 +30,7 @@ import {MatCheckbox} from '@angular/material/checkbox';
     selector: 'list-endpoints',
     templateUrl: './list-endpoints.component.html',
     styleUrls: ['./list-endpoints.component.css'],
-    imports: [SpinnerComponent, NgIf, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, RouterLink, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatCheckbox]
+    imports: [SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, RouterLink, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatCheckbox]
 })
 export class ListEndpointsComponent implements OnInit {
   dataSource = new MatTableDataSource<CoreEndpoint>();

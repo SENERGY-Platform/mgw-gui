@@ -10,7 +10,7 @@ import {Router, RouterLink} from '@angular/router';
 import {CoreEndpoint, CoreEndpointsResponse} from '../../models/endpoints';
 import {UtilService} from 'src/app/core/services/util/util.service';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
-import {NgIf, NgFor} from '@angular/common';
+
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {
   ListEndpointsComponent as ListEndpointsComponent_1
@@ -20,7 +20,7 @@ import {
     selector: 'app-list',
     templateUrl: './list-endpoints.component.html',
     styleUrls: ['./list-endpoints.component.css'],
-    imports: [SpinnerComponent, NgIf, NgFor, MatCard, MatCardContent, RouterLink, ListEndpointsComponent_1]
+    imports: [SpinnerComponent, MatCard, MatCardContent, RouterLink, ListEndpointsComponent_1]
 })
 export class ListEndpointsComponent implements OnInit {
   deploymentIDs: string[] = []

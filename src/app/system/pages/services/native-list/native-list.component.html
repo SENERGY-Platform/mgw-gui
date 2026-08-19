@@ -1,5 +1,7 @@
 <div class="layout-margin">
-  <div *ngIf="dataSource.data.length === 0 && ready">No components found.</div>
+  @if (dataSource.data.length === 0 && ready) {
+    <div>No components found.</div>
+  }
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
   <div [hidden]="!ready || dataSource.data.length === 0">

@@ -33,7 +33,7 @@ import {ModuleManagerService} from 'src/app/core/services/module-manager/module-
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {UtilService} from 'src/app/core/services/util/util.service';
 import {concatMap} from 'rxjs';
-import {NgFor, NgIf} from '@angular/common';
+
 import {FormsModule} from '@angular/forms';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
 import {MatButton, MatIconButton} from '@angular/material/button';
@@ -60,7 +60,7 @@ interface VariantOption {
     selector: 'manage-modules',
     templateUrl: './manage.component.html',
     styleUrls: ['./manage.component.css'],
-    imports: [NgIf, NgFor, FormsModule, MatCheckbox, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, MatIconButton, MatTooltip, MatIcon, MatFormField, MatLabel, MatSuffix, MatInput, MatSelect, MatOption]
+    imports: [FormsModule, MatCheckbox, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, MatIconButton, MatTooltip, MatIcon, MatFormField, MatLabel, MatSuffix, MatInput, MatSelect, MatOption]
 })
 export class ManageComponent implements OnInit {
   dataSource = new MatTableDataSource<RepoModule>();

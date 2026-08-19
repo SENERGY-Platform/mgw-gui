@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {environment} from 'src/environments/environment';
-import {NgIf} from '@angular/common';
+
 import {MainNavigationComponent} from './core/components/main-navigation/main-navigation.component';
 import {RouterOutlet} from '@angular/router';
 
@@ -8,7 +8,7 @@ import {RouterOutlet} from '@angular/router';
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
-    imports: [NgIf, MainNavigationComponent, RouterOutlet]
+    imports: [MainNavigationComponent, RouterOutlet]
 })
 export class AppComponent {
   title = 'Gateway';

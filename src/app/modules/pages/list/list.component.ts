@@ -20,7 +20,7 @@ import {Router, RouterLink} from '@angular/router';
 import {UtilService} from 'src/app/core/services/util/util.service';
 import {SelectionModel} from '@angular/cdk/collections';
 import {concatMap, Observable, of} from 'rxjs';
-import {NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
+
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
 import {MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -40,7 +40,7 @@ import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
     selector: 'app-list',
     templateUrl: './list.component.html',
     styleUrls: ['./list.component.css'],
-    imports: [NgIf, NgSwitch, NgSwitchCase, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatCheckbox, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton, RouterLink]
+    imports: [SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatCheckbox, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton, RouterLink]
 })
 export class ListComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<ModuleReduced>();

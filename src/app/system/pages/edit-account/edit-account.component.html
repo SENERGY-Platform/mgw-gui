@@ -1,18 +1,21 @@
 <div [formGroup]="form" class="form-margin">
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-  <div *ngIf="ready">
-    <mat-form-field color="accent">
-      <mat-label>Password</mat-label>
-      <input formControlName="password" matInput placeholder="Password" type="password">
-    </mat-form-field>
-    <mat-form-field color="accent">
-      <mat-label>Confirmation</mat-label>
-      <input formControlName="confirmation" matInput placeholder="Confirmation" type="password">
-    </mat-form-field>
-    <mat-error *ngIf="form.errors?.['match'] && (form.touched || form.dirty)">{{ getErrorMessage() }}</mat-error>
-
-    <button [routerLink]="'/system/accounts/users'" color="primary" mat-raised-button>Cancel</button>
-    <button (click)="edit()" [disabled]="!form.valid" color="primary" mat-raised-button type="submit">Update</button>
-  </div>
+  @if (ready) {
+    <div>
+      <mat-form-field color="accent">
+        <mat-label>Password</mat-label>
+        <input formControlName="password" matInput placeholder="Password" type="password">
+      </mat-form-field>
+      <mat-form-field color="accent">
+        <mat-label>Confirmation</mat-label>
+        <input formControlName="confirmation" matInput placeholder="Confirmation" type="password">
+      </mat-form-field>
+      @if (form.errors?.['match'] && (form.touched || form.dirty)) {
+        <mat-error>{{ getErrorMessage() }}</mat-error>
+      }
+      <button [routerLink]="'/system/accounts/users'" color="primary" mat-raised-button>Cancel</button>
+      <button (click)="edit()" [disabled]="!form.valid" color="primary" mat-raised-button type="submit">Update</button>
+    </div>
+  }
 </div>

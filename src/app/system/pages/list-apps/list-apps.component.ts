@@ -19,7 +19,7 @@ import {ErrorService} from 'src/app/core/services/util/error.service';
 import {DeviceUser, DeviceUsersResponse} from '../../models/users';
 import {SelectionModel} from '@angular/cdk/collections';
 import {NotificationService} from 'src/app/core/services/util/notifications.service';
-import {NgIf} from '@angular/common';
+
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
 import {MatCheckbox} from '@angular/material/checkbox';
 import {MatFabButton, MatIconButton} from '@angular/material/button';
@@ -29,7 +29,7 @@ import {MatIcon} from '@angular/material/icon';
     selector: 'app-list-apps',
     templateUrl: './list-apps.component.html',
     styleUrls: ['./list-apps.component.css'],
-    imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
+    imports: [SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
 })
 export class ListAppsComponent {
   dataSource = new MatTableDataSource<DeviceUser>();

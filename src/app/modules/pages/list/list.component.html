@@ -1,22 +1,24 @@
 <!--
-  ~ Copyright 2021 InfAI (CC SES)
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
+~ Copyright 2021 InfAI (CC SES)
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~     http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
 
 <div class="layout-margin">
 
-  <div *ngIf="dataSource.data.length === 0 && ready">No modules found.</div>
+  @if (dataSource.data.length === 0 && ready) {
+    <div>No modules found.</div>
+  }
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
   <div [hidden]="(!ready && init) || dataSource.data.length === 0" class="mat-elevation-z1">
@@ -24,12 +26,12 @@
       <ng-container matColumnDef="select">
         <th *matHeaderCellDef class="button-column" mat-header-cell>
           <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
-                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+            [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
         </th>
         <td *matCellDef="let row" mat-cell>
           <mat-checkbox (change)="$event ? selection.toggle(row.id) : null" (click)="$event.stopPropagation()"
-                        [checked]="selection.isSelected(row.id)">
+            [checked]="selection.isSelected(row.id)">
           </mat-checkbox>
         </td>
       </ng-container>
@@ -37,17 +39,31 @@
       <ng-container matColumnDef="status">
         <th *matHeaderCellDef class="button-column" mat-header-cell>Status</th>
         <td *matCellDef="let module" mat-cell>
-          <div [ngSwitch]="statusOf(module)">
-            <div *ngSwitchCase="'healthy'" class="circle green" matTooltip="Deployment healthy"></div>
-            <div *ngSwitchCase="'unhealthy'" class="circle red" matTooltip="Deployment unhealthy"></div>
-            <div *ngSwitchCase="'disabled'" class="circle grey" matTooltip="Deployment stopped"></div>
-            <div *ngSwitchCase="'unknown'" class="circle yellow" matTooltip="Deployment state unknown"></div>
-            <span *ngSwitchCase="'none'" matTooltip="Not deployed">–</span>
+          <div>
+            @switch (statusOf(module)) {
+              @case ('healthy') {
+                <div class="circle green" matTooltip="Deployment healthy"></div>
+              }
+              @case ('unhealthy') {
+                <div class="circle red" matTooltip="Deployment unhealthy"></div>
+              }
+              @case ('disabled') {
+                <div class="circle grey" matTooltip="Deployment stopped"></div>
+              }
+              @case ('unknown') {
+                <div class="circle yellow" matTooltip="Deployment state unknown"></div>
+              }
+              @case ('none') {
+                <span matTooltip="Not deployed">–</span>
+              }
+            }
           </div>
-          <button (click)="showModuleError(module)" *ngIf="moduleHasError(module)" class="module-error" mat-icon-button
-                  matTooltip="Loaded with errors — click for details">
-            <mat-icon color="warn">warning</mat-icon>
-          </button>
+          @if (moduleHasError(module)) {
+            <button (click)="showModuleError(module)" class="module-error" mat-icon-button
+              matTooltip="Loaded with errors — click for details">
+              <mat-icon color="warn">warning</mat-icon>
+            </button>
+          }
         </td>
       </ng-container>
 
@@ -62,24 +78,30 @@
         <th *matHeaderCellDef mat-header-cell mat-sort-header>Version</th>
         <td *matCellDef="let module" mat-cell>
           {{ module.version }}
-          <mat-icon *ngIf="needsDeploymentUpdate(module)" class="update-hint" color="warn"
-                    matTooltip="The installed module changed (installed: {{module.version}} / {{module.channel}}, deployed: {{module.deployment.module_version}} / {{module.deployment.module_channel}}). Edit the deployment to apply the change.">
-            upgrade
-          </mat-icon>
+          @if (needsDeploymentUpdate(module)) {
+            <mat-icon class="update-hint" color="warn"
+              matTooltip="The installed module changed (installed: {{module.version}} / {{module.channel}}, deployed: {{module.deployment.module_version}} / {{module.deployment.module_channel}}). Edit the deployment to apply the change.">
+              upgrade
+            </mat-icon>
+          }
         </td>
       </ng-container>
 
       <ng-container matColumnDef="deploy">
         <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Deploy</th>
         <td *matCellDef="let module" mat-cell>
-          <button (click)="deploy(module.id)" *ngIf="!module.is_deployed" color="primary" mat-icon-button
-                  matTooltip="Create deployment">
-            <mat-icon>rocket_launch</mat-icon>
-          </button>
-          <button (click)="edit(module.id)" *ngIf="module.is_deployed" color="primary" mat-icon-button
-                  matTooltip="Edit deployment">
-            <mat-icon>edit</mat-icon>
-          </button>
+          @if (!module.is_deployed) {
+            <button (click)="deploy(module.id)" color="primary" mat-icon-button
+              matTooltip="Create deployment">
+              <mat-icon>rocket_launch</mat-icon>
+            </button>
+          }
+          @if (module.is_deployed) {
+            <button (click)="edit(module.id)" color="primary" mat-icon-button
+              matTooltip="Edit deployment">
+              <mat-icon>edit</mat-icon>
+            </button>
+          }
         </td>
       </ng-container>
 
@@ -87,7 +109,7 @@
         <th *matHeaderCellDef class="button-column" mat-header-cell>Start</th>
         <td *matCellDef="let module" mat-cell>
           <button (click)="start(module.id)" [disabled]="!module.is_deployed || module.deployment.enabled"
-                  color="primary" mat-icon-button matTooltip="Start">
+            color="primary" mat-icon-button matTooltip="Start">
             <mat-icon>start</mat-icon>
           </button>
         </td>
@@ -97,7 +119,7 @@
         <th *matHeaderCellDef class="button-column" mat-header-cell>Stop</th>
         <td *matCellDef="let module" mat-cell>
           <button (click)="stop(module.id)" [disabled]="!module.is_deployed || !module.deployment.enabled"
-                  color="primary" mat-icon-button matTooltip="Stop">
+            color="primary" mat-icon-button matTooltip="Stop">
             <mat-icon>stop</mat-icon>
           </button>
         </td>
@@ -107,7 +129,7 @@
         <th *matHeaderCellDef class="button-column" mat-header-cell>Recreate</th>
         <td *matCellDef="let module" mat-cell>
           <button (click)="recreate(module.id)" [disabled]="!module.is_deployed" color="primary" mat-icon-button
-                  matTooltip="Recreate containers">
+            matTooltip="Recreate containers">
             <mat-icon>restart_alt</mat-icon>
           </button>
         </td>
@@ -117,7 +139,7 @@
         <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Delete</th>
         <td *matCellDef="let module" mat-cell>
           <button (click)="deleteDeployment(module.id)" [disabled]="!module.is_deployed" color="primary"
-                  mat-icon-button matTooltip="Delete deployment">
+            mat-icon-button matTooltip="Delete deployment">
             <mat-icon>delete</mat-icon>
           </button>
         </td>

@@ -1,16 +1,20 @@
 <h1 mat-dialog-title>Refresh repositories</h1>
 
 <div mat-dialog-content>
-  <p *ngIf="hasPendingChangeRequest" class="warning">
-    Refreshing discards the pending change request.
-  </p>
+  @if (hasPendingChangeRequest) {
+    <p class="warning">
+      Refreshing discards the pending change request.
+    </p>
+  }
 
   <p>Select the repositories to refresh:</p>
-  <div *ngFor="let repo of repositories">
-    <mat-checkbox [(ngModel)]="selected[repo.Source]">
-      {{ repo.Source }} <span class="type">({{ repo.Type }})</span>
-    </mat-checkbox>
-  </div>
+  @for (repo of repositories; track repo) {
+    <div>
+      <mat-checkbox [(ngModel)]="selected[repo.Source]">
+        {{ repo.Source }} <span class="type">({{ repo.Type }})</span>
+      </mat-checkbox>
+    </div>
+  }
 </div>
 
 <div mat-dialog-actions>

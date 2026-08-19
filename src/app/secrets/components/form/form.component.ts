@@ -5,7 +5,7 @@ import {SecretManagerServiceService} from 'src/app/core/services/secret-manager/
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {CreateSecret, Secret, SecretType, SecretTypes} from '../../models/secret_models';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
-import {NgFor, NgIf} from '@angular/common';
+
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatSelect} from '@angular/material/select';
 import {MatOption} from '@angular/material/core';
@@ -17,7 +17,7 @@ import {MatButton} from '@angular/material/button';
     selector: 'secret-form',
     templateUrl: './form.component.html',
     styleUrls: ['./form.component.css'],
-    imports: [SpinnerComponent, NgIf, MatFormField, MatLabel, MatSelect, FormsModule, NgFor, MatOption, ReactiveFormsModule, MatInput, CdkTextareaAutosize, MatButton]
+    imports: [SpinnerComponent, MatFormField, MatLabel, MatSelect, FormsModule, MatOption, ReactiveFormsModule, MatInput, CdkTextareaAutosize, MatButton]
 })
 export class FormComponent implements OnChanges, OnInit {
   @Input() mode: string = "add"

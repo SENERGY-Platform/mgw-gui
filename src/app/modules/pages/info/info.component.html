@@ -1,135 +1,135 @@
 <spinner [show]="!ready"></spinner>
 
-<div *ngIf="ready" class="form-margin">
-  <p *ngIf="module.has_error" class="error-banner">
-    The module was loaded with errors: {{ module.error_msg }}
-  </p>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Module Name</mat-label>
-    <input [readonly]="true" [value]="module.name" matInput>
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Module ID</mat-label>
-    <input [readonly]="true" [value]="module.id" matInput>
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Author</mat-label>
-    <input [readonly]="true" [value]="module.author" matInput>
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Version</mat-label>
-    <input [readonly]="true" [value]="module.version" matInput>
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Repository Source</mat-label>
-    <input [readonly]="true" [value]="module.source" matInput>
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Repository Channel</mat-label>
-    <input [readonly]="true" [value]="module.channel" matInput>
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>License</mat-label>
-    <input [readonly]="true" [value]="module.license" matInput>
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Description</mat-label>
-    <input [readonly]="true" [value]="module.description" matInput>
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Added</mat-label>
-    <input [readonly]="true" [value]="module.added | date: 'short'" matInput>
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Updated</mat-label>
-    <input [readonly]="true" [value]="module.updated | date: 'short'" matInput>
-  </mat-form-field>
-
-  <mat-chip-listbox aria-label="Tags">
-    <mat-chip *ngFor="let tag of module.tags">{{ tag }}</mat-chip>
-  </mat-chip-listbox>
-
-  <div *ngIf="module.is_deployed">
-    <h3>Deployment</h3>
-
-    <p *ngIf="module.deployment.has_error" class="error-banner">
-      The runtime information of the deployment could not be retrieved completely: {{ module.deployment.error_msg }}
-    </p>
-
-    <h3>Containers</h3>
-    <table *ngIf="module.deployment.containers" class="containers-table">
-      <tr>
-        <th>Status</th>
-        <th>Service</th>
-        <th>Container</th>
-        <th>Logs</th>
-      </tr>
-      <tr *ngFor="let entry of module.deployment.containers | keyvalue">
-        <td>
-          <div *ngIf="entry.value.state === 'running' && entry.value.health !== 'unhealthy'" class="circle green"
-               matTooltip="{{entry.value.state}} {{entry.value.health}}"></div>
-          <div *ngIf="entry.value.state !== 'running' || entry.value.health === 'unhealthy'" class="circle red"
-               matTooltip="{{entry.value.state || 'container missing'}} {{entry.value.health}}"></div>
-        </td>
-        <td>{{ entry.key }}</td>
-        <td class="container-name">{{ entry.value.name }}</td>
-        <td>
-          <button [routerLink]="'/containers/' + entry.value.name + '/logs'" color="primary" mat-icon-button
-                  matTooltip="Show logs">
-            <mat-icon>article</mat-icon>
-          </button>
-        </td>
-      </tr>
-    </table>
-    <p *ngIf="!module.deployment.containers">No container information available.</p>
-
+@if (ready) {
+  <div class="form-margin">
+    @if (module.has_error) {
+      <p class="error-banner">
+        The module was loaded with errors: {{ module.error_msg }}
+      </p>
+    }
     <mat-form-field appearance="fill">
-      <mat-label>Deployment ID</mat-label>
-      <input [readonly]="true" [value]="module.deployment.id" matInput>
+      <mat-label>Module Name</mat-label>
+      <input [readonly]="true" [value]="module.name" matInput>
     </mat-form-field>
-
     <mat-form-field appearance="fill">
-      <mat-label>Status</mat-label>
-      <input [readonly]="true" [value]="deploymentStateLabel()" matInput>
+      <mat-label>Module ID</mat-label>
+      <input [readonly]="true" [value]="module.id" matInput>
     </mat-form-field>
-
     <mat-form-field appearance="fill">
-      <mat-label>Deployed Module Version</mat-label>
-      <input [readonly]="true" [value]="module.deployment.module_version" matInput>
+      <mat-label>Author</mat-label>
+      <input [readonly]="true" [value]="module.author" matInput>
     </mat-form-field>
-
     <mat-form-field appearance="fill">
-      <mat-label>Deployed From</mat-label>
-      <input [readonly]="true" [value]="module.deployment.module_source + ' / ' + module.deployment.module_channel"
-             matInput>
+      <mat-label>Version</mat-label>
+      <input [readonly]="true" [value]="module.version" matInput>
     </mat-form-field>
-
     <mat-form-field appearance="fill">
-      <mat-label>Created</mat-label>
-      <input [readonly]="true" [value]="module.deployment.created | date: 'short'" matInput>
+      <mat-label>Repository Source</mat-label>
+      <input [readonly]="true" [value]="module.source" matInput>
     </mat-form-field>
-
+    <mat-form-field appearance="fill">
+      <mat-label>Repository Channel</mat-label>
+      <input [readonly]="true" [value]="module.channel" matInput>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>License</mat-label>
+      <input [readonly]="true" [value]="module.license" matInput>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+      <input [readonly]="true" [value]="module.description" matInput>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Added</mat-label>
+      <input [readonly]="true" [value]="module.added | date: 'short'" matInput>
+    </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Updated</mat-label>
-      <input [readonly]="true" [value]="module.deployment.updated | date: 'short'" matInput>
+      <input [readonly]="true" [value]="module.updated | date: 'short'" matInput>
     </mat-form-field>
-
-    <h3>Auxiliary Deployments</h3>
-    <aux-deployments-list [deploymentID]="module.deployment.id"></aux-deployments-list>
+    <mat-chip-listbox aria-label="Tags">
+      @for (tag of module.tags; track tag) {
+        <mat-chip>{{ tag }}</mat-chip>
+      }
+    </mat-chip-listbox>
+    @if (module.is_deployed) {
+      <div>
+        <h3>Deployment</h3>
+        @if (module.deployment.has_error) {
+          <p class="error-banner">
+            The runtime information of the deployment could not be retrieved completely: {{ module.deployment.error_msg }}
+          </p>
+        }
+        <h3>Containers</h3>
+        @if (module.deployment.containers) {
+          <table class="containers-table">
+            <tr>
+              <th>Status</th>
+              <th>Service</th>
+              <th>Container</th>
+              <th>Logs</th>
+            </tr>
+            @for (entry of module.deployment.containers | keyvalue; track entry) {
+              <tr>
+                <td>
+                  @if (entry.value.state === 'running' && entry.value.health !== 'unhealthy') {
+                    <div class="circle green"
+                    matTooltip="{{entry.value.state}} {{entry.value.health}}"></div>
+                  }
+                  @if (entry.value.state !== 'running' || entry.value.health === 'unhealthy') {
+                    <div class="circle red"
+                    matTooltip="{{entry.value.state || 'container missing'}} {{entry.value.health}}"></div>
+                  }
+                </td>
+                <td>{{ entry.key }}</td>
+                <td class="container-name">{{ entry.value.name }}</td>
+                <td>
+                  <button [routerLink]="'/containers/' + entry.value.name + '/logs'" color="primary" mat-icon-button
+                    matTooltip="Show logs">
+                    <mat-icon>article</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </table>
+        }
+        @if (!module.deployment.containers) {
+          <p>No container information available.</p>
+        }
+        <mat-form-field appearance="fill">
+          <mat-label>Deployment ID</mat-label>
+          <input [readonly]="true" [value]="module.deployment.id" matInput>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Status</mat-label>
+          <input [readonly]="true" [value]="deploymentStateLabel()" matInput>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Deployed Module Version</mat-label>
+          <input [readonly]="true" [value]="module.deployment.module_version" matInput>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Deployed From</mat-label>
+          <input [readonly]="true" [value]="module.deployment.module_source + ' / ' + module.deployment.module_channel"
+            matInput>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Created</mat-label>
+          <input [readonly]="true" [value]="module.deployment.created | date: 'short'" matInput>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Updated</mat-label>
+          <input [readonly]="true" [value]="module.deployment.updated | date: 'short'" matInput>
+        </mat-form-field>
+        <h3>Auxiliary Deployments</h3>
+        <aux-deployments-list [deploymentID]="module.deployment.id"></aux-deployments-list>
+      </div>
+    }
+    @if (!module.is_deployed) {
+      <div>
+        <h3>Deployment</h3>
+        <p>This module is not deployed.</p>
+      </div>
+    }
   </div>
-
-  <div *ngIf="!module.is_deployed">
-    <h3>Deployment</h3>
-    <p>This module is not deployed.</p>
-  </div>
-</div>
+}

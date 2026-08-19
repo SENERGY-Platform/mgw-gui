@@ -3,7 +3,7 @@ import {FormsModule} from "@angular/forms";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatSlideToggle, MatSlideToggleChange} from "@angular/material/slide-toggle";
-import {NgIf} from "@angular/common";
+
 import {UtilService} from "../../../../core/services/util/util.service";
 import {ErrorService} from "../../../../core/services/util/error.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -13,14 +13,13 @@ import {Highlight} from "ngx-highlightjs";
 @Component({
     selector: 'app-native-log',
     imports: [
-        FormsModule,
-        MatFormField,
-        MatInput,
-        MatLabel,
-        MatSlideToggle,
-        NgIf,
-        Highlight
-    ],
+    FormsModule,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    MatSlideToggle,
+    Highlight
+],
     templateUrl: './native-log.component.html',
     styleUrl: './native-log.component.css'
 })

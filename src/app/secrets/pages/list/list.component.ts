@@ -16,7 +16,7 @@ import {
 import {SecretManagerServiceService} from 'src/app/core/services/secret-manager/secret-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {Secret, SecretTypesDisplayNames} from '../../models/secret_models';
-import {NgIf} from '@angular/common';
+
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
 import {MatFabButton, MatIconButton} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
@@ -26,7 +26,7 @@ import {MatIcon} from '@angular/material/icon';
     selector: 'app-list',
     templateUrl: './list.component.html',
     styleUrls: ['./list.component.css'],
-    imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, RouterLink, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
+    imports: [SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, RouterLink, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
 })
 export class ListComponent {
   dataSource = new MatTableDataSource<Secret>();

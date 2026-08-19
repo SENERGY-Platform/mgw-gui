@@ -19,7 +19,7 @@ import {UserService} from 'src/app/core/services/user/user.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {map} from 'rxjs';
 import {Router, RouterLink} from '@angular/router';
-import {NgIf} from '@angular/common';
+
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
 import {MatCheckbox} from '@angular/material/checkbox';
 import {MatFabButton, MatIconButton} from '@angular/material/button';
@@ -29,7 +29,7 @@ import {MatIcon} from '@angular/material/icon';
     selector: 'app-list-users',
     templateUrl: './list-users.component.html',
     styleUrls: ['./list-users.component.css'],
-    imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton, RouterLink]
+    imports: [SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton, RouterLink]
 })
 export class ListUsersComponent implements OnInit {
   dataSource = new MatTableDataSource<HumanUser>();

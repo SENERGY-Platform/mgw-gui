@@ -1,36 +1,44 @@
 <!--
-  ~ Copyright (c) 2026 InfAI (CC SES)
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
+~ Copyright (c) 2026 InfAI (CC SES)
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~     http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
 
 <div class="layout-margin">
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-  <div *ngIf="ready">
-    <h2>Create deployment</h2>
-    <p *ngIf="modules.length > 1" class="hint">The module and its dependencies are deployed together — one section per
-      module.</p>
-    <p *ngIf="modules.length === 0">Nothing to deploy: the module and all its dependencies are already deployed.</p>
-
-    <deployment-form *ngFor="let module of modules" [globalConfigs]="globalConfigs" [hostResources]="hostResources"
-                     [module]="module" [secrets]="secrets"></deployment-form>
-
-    <div class="actions">
-      <button (click)="cancel()" [disabled]="submitting" mat-button>Cancel</button>
-      <button (click)="submit()" *ngIf="modules.length > 0" [disabled]="submitting" color="primary"
-              mat-raised-button>Deploy
-      </button>
+  @if (ready) {
+    <div>
+      <h2>Create deployment</h2>
+      @if (modules.length > 1) {
+        <p class="hint">The module and its dependencies are deployed together — one section per
+        module.</p>
+      }
+      @if (modules.length === 0) {
+        <p>Nothing to deploy: the module and all its dependencies are already deployed.</p>
+      }
+      @for (module of modules; track module) {
+        <deployment-form [globalConfigs]="globalConfigs" [hostResources]="hostResources"
+        [module]="module" [secrets]="secrets"></deployment-form>
+      }
+      <div class="actions">
+        <button (click)="cancel()" [disabled]="submitting" mat-button>Cancel</button>
+        @if (modules.length > 0) {
+          <button (click)="submit()" [disabled]="submitting" color="primary"
+            mat-raised-button>Deploy
+          </button>
+        }
+      </div>
     </div>
-  </div>
+  }
 </div>

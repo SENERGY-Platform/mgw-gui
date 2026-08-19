@@ -33,7 +33,7 @@ import {ModuleManagerService} from 'src/app/core/services/module-manager/module-
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {UtilService} from 'src/app/core/services/util/util.service';
 import {concatMap, of} from 'rxjs';
-import {NgIf} from '@angular/common';
+
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
 import {MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -45,7 +45,7 @@ import {AddRepositoryDialogComponent} from '../../components/add-repository-dial
     selector: 'repositories',
     templateUrl: './repositories.component.html',
     styleUrls: ['./repositories.component.css'],
-    imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
+    imports: [SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
 })
 export class RepositoriesComponent implements OnInit {
   dataSource = new MatTableDataSource<Repository>();

@@ -2,7 +2,7 @@ import {Component, Inject} from '@angular/core';
 import {ActivatedRoute, RouterLink} from '@angular/router';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
-import {DatePipe, KeyValuePipe, NgFor, NgIf} from '@angular/common';
+import { DatePipe, KeyValuePipe } from '@angular/common';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatChip, MatChipListbox} from '@angular/material/chips';
@@ -20,7 +20,7 @@ import {
     selector: 'module-info',
     templateUrl: './info.component.html',
     styleUrls: ['./info.component.css'],
-    imports: [SpinnerComponent, NgIf, MatFormField, MatLabel, MatInput, MatChipListbox, NgFor, MatChip, DatePipe, KeyValuePipe, RouterLink, MatIconButton, MatIcon, MatTooltip, AuxDeploymentsListComponent]
+    imports: [SpinnerComponent, MatFormField, MatLabel, MatInput, MatChipListbox, MatChip, DatePipe, KeyValuePipe, RouterLink, MatIconButton, MatIcon, MatTooltip, AuxDeploymentsListComponent]
 })
 export class InfoComponent {
   module!: ModuleInfo

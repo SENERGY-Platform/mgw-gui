@@ -22,7 +22,7 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from '@angular/material/dialog';
-import {NgIf} from '@angular/common';
+
 import {FormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {MatFormField, MatHint, MatLabel} from '@angular/material/form-field';
@@ -46,7 +46,7 @@ const GITHUB_TEMPLATE = {
     selector: 'add-repository-dialog',
     templateUrl: './add-repository-dialog.component.html',
     styleUrls: ['./add-repository-dialog.component.css'],
-    imports: [NgIf, FormsModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatFormField, MatLabel, MatHint, MatInput, MatSelect, MatOption]
+    imports: [FormsModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatFormField, MatLabel, MatHint, MatInput, MatSelect, MatOption]
 })
 export class AddRepositoryDialogComponent {
   repositoryType: string = 'github.com'

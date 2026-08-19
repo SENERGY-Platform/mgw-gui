@@ -23,7 +23,7 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from '@angular/material/dialog';
-import {NgIf} from '@angular/common';
+
 import {FormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {MatCheckbox} from '@angular/material/checkbox';
@@ -48,7 +48,7 @@ import {
     selector: 'global-config-dialog',
     templateUrl: './global-config-dialog.component.html',
     styleUrls: ['./global-config-dialog.component.css'],
-    imports: [NgIf, FormsModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatCheckbox, MatFormField, MatLabel, MatHint, MatInput, MatSelect, MatOption]
+    imports: [FormsModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatCheckbox, MatFormField, MatLabel, MatHint, MatInput, MatSelect, MatOption]
 })
 export class GlobalConfigDialogComponent {
   DATA_TYPE_STRING = DATA_TYPE_STRING

@@ -15,7 +15,7 @@ import {UserService} from 'src/app/core/services/user/user.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {HumanUser, UserRequest} from '../../models/users';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
-import {NgIf} from '@angular/common';
+
 import {MatFormField, MatLabel, MatError} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
@@ -30,7 +30,7 @@ export function passwordMustMatch(control: AbstractControl): ValidationErrors | 
     selector: 'app-edit-account',
     templateUrl: './edit-account.component.html',
     styleUrls: ['./edit-account.component.css'],
-    imports: [FormsModule, ReactiveFormsModule, SpinnerComponent, NgIf, MatFormField, MatLabel, MatInput, MatError, MatButton, RouterLink]
+    imports: [FormsModule, ReactiveFormsModule, SpinnerComponent, MatFormField, MatLabel, MatInput, MatError, MatButton, RouterLink]
 })
 export class EditAccountComponent {
   form = new FormGroup({

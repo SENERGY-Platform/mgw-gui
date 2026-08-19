@@ -2,42 +2,56 @@
 
 <div mat-dialog-content>
   <p class="created">Change request created {{ request.created | date: 'medium' }}. It stays pending until it is
-    applied or discarded; refreshing the repositories also discards it.</p>
+  applied or discarded; refreshing the repositories also discards it.</p>
 
-  <div *ngIf="isEmpty()">
-    <p>Nothing to do: all requested modules are already installed in the requested variant and version.</p>
-  </div>
+  @if (isEmpty()) {
+    <div>
+      <p>Nothing to do: all requested modules are already installed in the requested variant and version.</p>
+    </div>
+  }
 
-  <div *ngIf="request.install?.length">
-    <h3>Install ({{ request.install!.length }})</h3>
-    <ul>
-      <li *ngFor="let module of request.install">
-        {{ module.name }} {{ module.version }}
-        <span class="variant">from {{ module.source }} / {{ module.channel }}</span>
-      </li>
-    </ul>
-  </div>
+  @if (request.install?.length) {
+    <div>
+      <h3>Install ({{ request.install!.length }})</h3>
+      <ul>
+        @for (module of request.install; track module) {
+          <li>
+            {{ module.name }} {{ module.version }}
+            <span class="variant">from {{ module.source }} / {{ module.channel }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  }
 
-  <div *ngIf="request.change?.length">
-    <h3>Change ({{ request.change!.length }})</h3>
-    <ul>
-      <li *ngFor="let pair of request.change">
-        {{ pair[0].name }}:
-        {{ pair[0].version }} <span class="variant">({{ pair[0].source }} / {{ pair[0].channel }})</span>
-        &rarr;
-        {{ pair[1].version }} <span class="variant">({{ pair[1].source }} / {{ pair[1].channel }})</span>
-      </li>
-    </ul>
-  </div>
+  @if (request.change?.length) {
+    <div>
+      <h3>Change ({{ request.change!.length }})</h3>
+      <ul>
+        @for (pair of request.change; track pair) {
+          <li>
+            {{ pair[0].name }}:
+            {{ pair[0].version }} <span class="variant">({{ pair[0].source }} / {{ pair[0].channel }})</span>
+            &rarr;
+            {{ pair[1].version }} <span class="variant">({{ pair[1].source }} / {{ pair[1].channel }})</span>
+          </li>
+        }
+      </ul>
+    </div>
+  }
 
-  <div *ngIf="request.remove?.length">
-    <h3>Remove ({{ request.remove!.length }})</h3>
-    <ul>
-      <li *ngFor="let id of request.remove">{{ id }}</li>
-    </ul>
-    <p class="hint">A module can only be removed while it has no deployment. Delete its deployment first on the
+  @if (request.remove?.length) {
+    <div>
+      <h3>Remove ({{ request.remove!.length }})</h3>
+      <ul>
+        @for (id of request.remove; track id) {
+          <li>{{ id }}</li>
+        }
+      </ul>
+      <p class="hint">A module can only be removed while it has no deployment. Delete its deployment first on the
       Modules page.</p>
-  </div>
+    </div>
+  }
 </div>
 
 <div mat-dialog-actions>

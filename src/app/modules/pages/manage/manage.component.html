@@ -1,18 +1,18 @@
 <!--
-  ~ Copyright (c) 2026 InfAI (CC SES)
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
+~ Copyright (c) 2026 InfAI (CC SES)
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~     http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
 
 <div class="layout-margin">
 
@@ -29,7 +29,9 @@
       <mat-label>Repository</mat-label>
       <mat-select (selectionChange)="load()" [(ngModel)]="repoFilter">
         <mat-option value="">All repositories</mat-option>
-        <mat-option *ngFor="let repo of repositories" [value]="repo.Source">{{ repo.Source }}</mat-option>
+        @for (repo of repositories; track repo) {
+          <mat-option [value]="repo.Source">{{ repo.Source }}</mat-option>
+        }
       </mat-select>
     </mat-form-field>
 
@@ -38,7 +40,9 @@
 
     <span class="spacer"></span>
 
-    <span *ngIf="updatesCount > 0" class="updates-count">{{ updatesCount }} update(s) available</span>
+    @if (updatesCount > 0) {
+      <span class="updates-count">{{ updatesCount }} update(s) available</span>
+    }
     <button (click)="updateAll()" [disabled]="updatesCount === 0" color="primary" mat-button>
       <mat-icon>upgrade</mat-icon>
       Update all
@@ -49,15 +53,19 @@
     </button>
   </div>
 
-  <div *ngIf="pendingRequest" class="pending-banner">
-    <mat-icon>pending_actions</mat-icon>
-    <span>A change request is pending.</span>
-    <button (click)="openPendingRequest()" color="primary" mat-button>Review</button>
-  </div>
+  @if (pendingRequest) {
+    <div class="pending-banner">
+      <mat-icon>pending_actions</mat-icon>
+      <span>A change request is pending.</span>
+      <button (click)="openPendingRequest()" color="primary" mat-button>Review</button>
+    </div>
+  }
 
-  <div *ngIf="dataSource.data.length === 0 && ready">No modules found. Refresh the repositories to fetch the latest
-    module list.
-  </div>
+  @if (dataSource.data.length === 0 && ready) {
+    <div>No modules found. Refresh the repositories to fetch the latest
+      module list.
+    </div>
+  }
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
   <div [hidden]="(!ready && init) || dataSource.data.length === 0" class="mat-elevation-z1">
@@ -65,10 +73,14 @@
       <ng-container matColumnDef="status">
         <th *matHeaderCellDef class="button-column" mat-header-cell>Status</th>
         <td *matCellDef="let module" mat-cell>
-          <span *ngIf="module.is_installed && module.installed_variant.next_version" class="badge update"
-                matTooltip="Update available: {{module.installed_variant.version}} → {{module.installed_variant.next_version}}">update</span>
-          <span *ngIf="module.is_installed && !module.installed_variant.next_version"
-                class="badge installed">installed</span>
+          @if (module.is_installed && module.installed_variant.next_version) {
+            <span class="badge update"
+            matTooltip="Update available: {{module.installed_variant.version}} → {{module.installed_variant.next_version}}">update</span>
+          }
+          @if (module.is_installed && !module.installed_variant.next_version) {
+            <span
+            class="badge installed">installed</span>
+          }
         </td>
       </ng-container>
 
@@ -83,13 +95,19 @@
       <ng-container matColumnDef="version">
         <th *matHeaderCellDef mat-header-cell>Version</th>
         <td *matCellDef="let module" mat-cell>
-          <span *ngIf="!module.is_installed">{{ module.version }}</span>
-          <span *ngIf="module.is_installed">
-            {{ module.installed_variant.version }}
-            <span *ngIf="module.installed_variant.next_version" class="next-version">
-              → {{ module.installed_variant.next_version }}
+          @if (!module.is_installed) {
+            <span>{{ module.version }}</span>
+          }
+          @if (module.is_installed) {
+            <span>
+              {{ module.installed_variant.version }}
+              @if (module.installed_variant.next_version) {
+                <span class="next-version">
+                  → {{ module.installed_variant.next_version }}
+                </span>
+              }
             </span>
-          </span>
+          }
         </td>
       </ng-container>
 
@@ -97,11 +115,13 @@
         <th *matHeaderCellDef mat-header-cell>Repository / Channel</th>
         <td *matCellDef="let module" mat-cell>
           <mat-select [(ngModel)]="selectedVariant[module.id]"
-                      [disabled]="(variantOptionsById[module.id] || []).length < 2"
-                      class="variant-select">
-            <mat-option *ngFor="let option of variantOptionsById[module.id]" [value]="option.key">
-              {{ option.source }} / {{ option.channel }} ({{ option.version }})
-            </mat-option>
+            [disabled]="(variantOptionsById[module.id] || []).length < 2"
+            class="variant-select">
+            @for (option of variantOptionsById[module.id]; track option) {
+              <mat-option [value]="option.key">
+                {{ option.source }} / {{ option.channel }} ({{ option.version }})
+              </mat-option>
+            }
           </mat-select>
         </td>
       </ng-container>
@@ -109,35 +129,43 @@
       <ng-container matColumnDef="action">
         <th *matHeaderCellDef class="action-column" mat-header-cell>Action</th>
         <td *matCellDef="let module" mat-cell>
-          <span *ngIf="cartAction(module.id)" class="badge cart">
-            {{ cartAction(module.id) }}
-            <button (click)="undo(module.id)" mat-icon-button matTooltip="Undo">
-              <mat-icon>undo</mat-icon>
-            </button>
-          </span>
+          @if (cartAction(module.id)) {
+            <span class="badge cart">
+              {{ cartAction(module.id) }}
+              <button (click)="undo(module.id)" mat-icon-button matTooltip="Undo">
+                <mat-icon>undo</mat-icon>
+              </button>
+            </span>
+          }
 
-          <span *ngIf="!cartAction(module.id)">
-            <button (click)="install(module)" *ngIf="!module.is_installed" color="primary" mat-icon-button
-                    matTooltip="Install">
-              <mat-icon>add_circle</mat-icon>
-            </button>
-
-            <button (click)="install(module)" *ngIf="isVariantChange(module)" color="primary" mat-icon-button
-                    matTooltip="Switch to the selected repository/channel">
-              <mat-icon>swap_horiz</mat-icon>
-            </button>
-
-            <button (click)="update(module)"
-                    *ngIf="module.is_installed && module.installed_variant.next_version && !isVariantChange(module)"
-                    color="primary" mat-icon-button matTooltip="Update to {{module.installed_variant.next_version}}">
-              <mat-icon>upgrade</mat-icon>
-            </button>
-
-            <button (click)="remove(module)" *ngIf="module.is_installed" color="warn" mat-icon-button
-                    matTooltip="Remove module">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </span>
+          @if (!cartAction(module.id)) {
+            <span>
+              @if (!module.is_installed) {
+                <button (click)="install(module)" color="primary" mat-icon-button
+                  matTooltip="Install">
+                  <mat-icon>add_circle</mat-icon>
+                </button>
+              }
+              @if (isVariantChange(module)) {
+                <button (click)="install(module)" color="primary" mat-icon-button
+                  matTooltip="Switch to the selected repository/channel">
+                  <mat-icon>swap_horiz</mat-icon>
+                </button>
+              }
+              @if (module.is_installed && module.installed_variant.next_version && !isVariantChange(module)) {
+                <button (click)="update(module)"
+                  color="primary" mat-icon-button matTooltip="Update to {{module.installed_variant.next_version}}">
+                  <mat-icon>upgrade</mat-icon>
+                </button>
+              }
+              @if (module.is_installed) {
+                <button (click)="remove(module)" color="warn" mat-icon-button
+                  matTooltip="Remove module">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              }
+            </span>
+          }
         </td>
       </ng-container>
 
@@ -146,9 +174,11 @@
     </table>
   </div>
 
-  <div *ngIf="cartCount() > 0" class="cart-bar mat-elevation-z3">
-    <span>{{ cartCount() }} pending change(s)</span>
-    <button (click)="clearCart()" mat-button>Clear</button>
-    <button (click)="reviewCart()" color="primary" mat-raised-button>Review &amp; apply</button>
-  </div>
+  @if (cartCount() > 0) {
+    <div class="cart-bar mat-elevation-z3">
+      <span>{{ cartCount() }} pending change(s)</span>
+      <button (click)="clearCart()" mat-button>Clear</button>
+      <button (click)="reviewCart()" color="primary" mat-raised-button>Review &amp; apply</button>
+    </div>
+  }
 </div>

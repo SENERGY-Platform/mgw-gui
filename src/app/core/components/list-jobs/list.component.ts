@@ -31,7 +31,7 @@ interface JobRow {
   error?: { message: string, code: number } | null;
   done: boolean;
 }
-import {DatePipe, NgIf} from '@angular/common';
+import { DatePipe } from '@angular/common';
 import {SpinnerComponent} from '../spinner/spinner.component';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -41,7 +41,7 @@ import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/mat
     selector: 'list-job',
     templateUrl: './list.component.html',
     styleUrls: ['./list.component.css'],
-    imports: [NgIf, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, DatePipe, MatCard, MatCardContent, MatCardHeader, MatCardTitle]
+    imports: [SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, DatePipe, MatCard, MatCardContent, MatCardHeader, MatCardTitle]
 })
 export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
   dataSource = new MatTableDataSource<JobRow>();

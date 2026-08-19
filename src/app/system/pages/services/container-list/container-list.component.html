@@ -1,5 +1,7 @@
 <div class="layout-margin">
-  <div *ngIf="dataSource.data.length === 0 && ready">No containers found.</div>
+  @if (dataSource.data.length === 0 && ready) {
+    <div>No containers found.</div>
+  }
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
   <div [hidden]="(!ready && init) || dataSource.data.length === 0">
@@ -28,11 +30,19 @@
           <ng-container matColumnDef="status">
             <th *matHeaderCellDef mat-header-cell>Health</th>
             <td *matCellDef="let service" mat-cell>
-          <span *ngIf="service.container.state">
-            <div *ngIf="service.container.state != 'running'" class="circle red"></div>
-            <div *ngIf="service.container.state == 'running'" class="circle green"></div>
-          </span>
-              <div *ngIf="!service.container.state" class="circle grey"></div>
+              @if (service.container.state) {
+                <span>
+                  @if (service.container.state != 'running') {
+                    <div class="circle red"></div>
+                  }
+                  @if (service.container.state == 'running') {
+                    <div class="circle green"></div>
+                  }
+                </span>
+              }
+              @if (!service.container.state) {
+                <div class="circle grey"></div>
+              }
             </td>
           </ng-container>
 

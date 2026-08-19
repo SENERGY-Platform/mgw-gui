@@ -22,7 +22,7 @@ import {
   MatDialogContent,
   MatDialogTitle
 } from '@angular/material/dialog';
-import {NgFor, NgIf} from '@angular/common';
+
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {JobResultItem} from 'src/app/core/models/job-result-view';
@@ -33,7 +33,7 @@ import {JobResultItem} from 'src/app/core/models/job-result-view';
     selector: 'job-result-dialog',
     templateUrl: './job-result-dialog.component.html',
     styleUrls: ['./job-result-dialog.component.css'],
-    imports: [NgIf, NgFor, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatIcon]
+    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatIcon]
 })
 export class JobResultDialogComponent {
   title: string

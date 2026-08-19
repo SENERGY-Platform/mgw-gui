@@ -22,7 +22,7 @@ import {
   MatDialogContent,
   MatDialogTitle
 } from '@angular/material/dialog';
-import {NgIf} from '@angular/common';
+
 import {MatButton} from '@angular/material/button';
 
 // Shows the full error behind a short notification: what failed (context),
@@ -31,7 +31,7 @@ import {MatButton} from '@angular/material/button';
     selector: 'error-dialog',
     templateUrl: './error-dialog.component.html',
     styleUrls: ['./error-dialog.component.css'],
-    imports: [NgIf, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton]
+    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton]
 })
 export class ErrorDialogComponent {
   context: string

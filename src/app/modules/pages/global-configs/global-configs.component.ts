@@ -34,7 +34,7 @@ import {ModuleManagerService} from 'src/app/core/services/module-manager/module-
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {UtilService} from 'src/app/core/services/util/util.service';
 import {concatMap, of} from 'rxjs';
-import {NgIf} from '@angular/common';
+
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
 import {MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -51,7 +51,7 @@ import {GlobalConfigDialogComponent} from '../../components/global-config-dialog
     selector: 'global-configs',
     templateUrl: './global-configs.component.html',
     styleUrls: ['./global-configs.component.css'],
-    imports: [NgIf, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
+    imports: [SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
 })
 export class GlobalConfigsComponent implements OnInit {
   dataSource = new MatTableDataSource<GlobalConfig>();

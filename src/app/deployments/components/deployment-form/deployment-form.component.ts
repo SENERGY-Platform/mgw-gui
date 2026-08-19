@@ -15,7 +15,7 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {NgFor, NgIf} from '@angular/common';
+
 import {FormsModule} from '@angular/forms';
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from '@angular/material/card';
 import {MatFormField, MatHint, MatLabel} from '@angular/material/form-field';
@@ -93,7 +93,7 @@ interface FileGroupRow {
     selector: 'deployment-form',
     templateUrl: './deployment-form.component.html',
     styleUrls: ['./deployment-form.component.css'],
-    imports: [NgIf, NgFor, FormsModule, MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatFormField, MatLabel, MatHint, MatInput, MatSelect, MatOption, MatCheckbox, MatIconButton, MatIcon, MatTooltip]
+    imports: [FormsModule, MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatFormField, MatLabel, MatHint, MatInput, MatSelect, MatOption, MatCheckbox, MatIconButton, MatIcon, MatTooltip]
 })
 export class DeploymentFormComponent implements OnInit {
   @Input() module!: DeploymentRequestModule

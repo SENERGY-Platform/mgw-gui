@@ -19,7 +19,7 @@ import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
 import {MatSort} from "@angular/material/sort";
 import {Router} from "@angular/router";
-import {NgIf} from "@angular/common";
+
 import {Log} from "../../../models/logs";
 import {InfoResponse} from "../../../../core/models/info";
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
@@ -33,25 +33,24 @@ interface ListItem {
 @Component({
     selector: 'app-native-list',
     imports: [
-        MatCell,
-        MatCellDef,
-        MatColumnDef,
-        MatHeaderCell,
-        MatHeaderRow,
-        MatHeaderRowDef,
-        MatRow,
-        MatRowDef,
-        MatTable,
-        NgIf,
-        SpinnerComponent,
-        MatHeaderCellDef,
-        MatIcon,
-        MatIconButton,
-        MatCard,
-        MatCardContent,
-        MatCardHeader,
-        MatCardTitle
-    ],
+    MatCell,
+    MatCellDef,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRow,
+    MatRowDef,
+    MatTable,
+    SpinnerComponent,
+    MatHeaderCellDef,
+    MatIcon,
+    MatIconButton,
+    MatCard,
+    MatCardContent,
+    MatCardHeader,
+    MatCardTitle
+],
     templateUrl: './native-list.component.html',
     styleUrl: './native-list.component.css'
 })

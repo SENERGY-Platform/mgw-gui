@@ -23,7 +23,7 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from '@angular/material/dialog';
-import {DatePipe, NgFor, NgIf} from '@angular/common';
+import { DatePipe } from '@angular/common';
 import {MatButton} from '@angular/material/button';
 import {ModulesChangeRequest} from 'src/app/core/models/modules';
 
@@ -33,7 +33,7 @@ import {ModulesChangeRequest} from 'src/app/core/models/modules';
     selector: 'change-request-dialog',
     templateUrl: './change-request-dialog.component.html',
     styleUrls: ['./change-request-dialog.component.css'],
-    imports: [NgIf, NgFor, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, DatePipe]
+    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, DatePipe]
 })
 export class ChangeRequestDialogComponent {
   request!: ModulesChangeRequest

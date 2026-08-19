@@ -11,7 +11,7 @@ import {
 import {MatCheckbox} from "@angular/material/checkbox";
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
-import {NgIf} from "@angular/common";
+
 import {SpinnerComponent} from "../../../../core/components/spinner/spinner.component";
 import {CoreService, CoreServicesResponse} from "../../../models/services";
 import {MatSort} from "@angular/material/sort";
@@ -27,26 +27,25 @@ import {MatDivider} from "@angular/material/divider";
 @Component({
     selector: 'app-container-list',
     imports: [
-        MatCell,
-        MatCellDef,
-        MatColumnDef,
-        MatHeaderCell,
-        MatHeaderRow,
-        MatHeaderRowDef,
-        MatIcon,
-        MatIconButton,
-        MatRow,
-        MatRowDef,
-        MatTable,
-        NgIf,
-        SpinnerComponent,
-        MatHeaderCellDef,
-        MatCard,
-        MatCardContent,
-        MatCardTitle,
-        MatCardHeader,
-        MatDivider
-    ],
+    MatCell,
+    MatCellDef,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatIcon,
+    MatIconButton,
+    MatRow,
+    MatRowDef,
+    MatTable,
+    SpinnerComponent,
+    MatHeaderCellDef,
+    MatCard,
+    MatCardContent,
+    MatCardTitle,
+    MatCardHeader,
+    MatDivider
+],
     templateUrl: './container-list.component.html',
     styleUrl: './container-list.component.css'
 })

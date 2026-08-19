@@ -1,25 +1,27 @@
 <!--
-  ~ Copyright 2021 InfAI (CC SES)
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
+~ Copyright 2021 InfAI (CC SES)
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~     http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
 <div class="layout-margin">
   <mat-card appearance="raised">
     <mat-card-header>
       <mat-card-title>{{ source }} jobs</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <div *ngIf="dataSource.data.length === 0 && ready">No jobs found.</div>
+      @if (dataSource.data.length === 0 && ready) {
+        <div>No jobs found.</div>
+      }
       <spinner [show]="!ready && init"></spinner>
 
       <div [hidden]="(!ready && init) || dataSource.data.length === 0">
@@ -69,7 +71,9 @@
           <ng-container matColumnDef="error">
             <th *matHeaderCellDef mat-header-cell mat-sort-header>Error</th>
             <td *matCellDef="let job" mat-cell>
-              <p *ngIf="!!job.error">{{ job.error.code + ": " + job.error.message }}</p>
+              @if (!!job.error) {
+                <p>{{ job.error.code + ": " + job.error.message }}</p>
+              }
             </td>
           </ng-container>
 
@@ -77,7 +81,7 @@
             <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Cancel</th>
             <td *matCellDef="let job" mat-cell>
               <button (click)="cancelJob(job.id)" [disabled]="job.done" color="primary" mat-icon-button
-                      matTooltip="Cancel">
+                matTooltip="Cancel">
                 <mat-icon>stop</mat-icon>
               </button>
             </td>
