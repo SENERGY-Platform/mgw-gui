@@ -31,10 +31,9 @@ jobs:
       - name: Build
         run: npx ng build
 
-      # gate: test (warn until 2026-09-30, then flip continue-on-error to false)
+      # gate: test (enforce)
       - name: Test
         run: npx ng test --watch=false --browsers=ChromeHeadless
-        continue-on-error: true
 
       # gate: vulns (warn until 2026-10-31, then flip continue-on-error to false)
       - name: Audit production dependencies
