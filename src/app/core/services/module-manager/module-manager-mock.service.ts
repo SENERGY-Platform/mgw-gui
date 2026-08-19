@@ -54,6 +54,10 @@ export class ModuleManagerMockService {
         "created": new Date().toISOString(),
         "updated": new Date().toISOString(),
         "state": 1,
+        "containers": {
+          "web": {"name": "mgw-mock-dep-web", "alias": "web", "image_id": "sha256:abc", "state": "running", "health": ""},
+          "worker": {"name": "mgw-mock-dep-worker", "alias": "worker", "image_id": "sha256:def", "state": "stopped", "health": ""}
+        },
         "has_error": false,
         "error_msg": ""
       }

@@ -19,6 +19,7 @@
 // lib/constants; field names follow the JSON tags of the Go structs.
 
 import {ErrorResult} from './jobs';
+import {AuxContainer} from './aux-deployments';
 
 // constants.DeploymentState
 export const DEPLOYMENT_STATE_UNKNOWN = 0; // disabled or could not be determined
@@ -67,6 +68,9 @@ export interface DeploymentInfo extends ErrorResult {
   updated: string;
   // 1 = healthy, 2 = unhealthy, 0 if disabled or undetermined
   state: number;
+  // containers by module service reference; the engine-known name is the
+  // handle for the ce-wrapper log endpoint
+  containers: Record<string, AuxContainer> | null;
 }
 
 // Subset of the full Module returned by /modules and /modules/{MOD_ID},

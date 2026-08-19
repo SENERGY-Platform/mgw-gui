@@ -1,12 +1,15 @@
 import {Component, Inject} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
-import {DatePipe, NgFor, NgIf} from '@angular/common';
+import {DatePipe, KeyValuePipe, NgFor, NgIf} from '@angular/common';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatChip, MatChipListbox} from '@angular/material/chips';
 import {AuxDeploymentsListComponent} from 'src/app/deployments/components/aux-deployments-list/aux-deployments-list.component';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
 import {
   DEPLOYMENT_STATE_HEALTHY,
   DEPLOYMENT_STATE_UNHEALTHY,
@@ -18,7 +21,7 @@ import {
   templateUrl: './info.component.html',
   styleUrls: ['./info.component.css'],
   standalone: true,
-  imports: [SpinnerComponent, NgIf, MatFormField, MatLabel, MatInput, MatChipListbox, NgFor, MatChip, DatePipe, AuxDeploymentsListComponent]
+  imports: [SpinnerComponent, NgIf, MatFormField, MatLabel, MatInput, MatChipListbox, NgFor, MatChip, DatePipe, KeyValuePipe, RouterLink, MatIconButton, MatIcon, MatTooltip, AuxDeploymentsListComponent]
 })
 export class InfoComponent {
   module!: ModuleInfo

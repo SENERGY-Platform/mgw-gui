@@ -7,3 +7,25 @@ mat-form-field {
   padding: 6px 12px;
   font-size: 13px;
 }
+
+.containers-table {
+  border-collapse: collapse;
+  margin-bottom: 8px;
+}
+
+.containers-table th {
+  text-align: left;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 4px 16px 4px 0;
+}
+
+.containers-table td {
+  padding: 4px 16px 4px 0;
+}
+
+.container-name {
+  font-family: monospace;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+}
