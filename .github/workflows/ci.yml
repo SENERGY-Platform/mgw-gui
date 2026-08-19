@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - next-gen
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # gate: secrets (enforce) - scans the working tree, not the history
+      - name: Scan for secrets
+        run: |
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:latest \
+            detect --source /repo --no-git --no-banner --redact
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # gates: build + typecheck (enforce) - tsc runs strict as part of the build
+      - name: Build
+        run: npx ng build
+
+      # gate: test (warn until 2026-09-30, then flip continue-on-error to false)
+      - name: Test
+        run: npx ng test --watch=false --browsers=ChromeHeadless
+        continue-on-error: true
+
+      # gate: vulns (warn until 2026-10-31, then flip continue-on-error to false)
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+        continue-on-error: true
