@@ -88,6 +88,38 @@ export interface ModuleInfo extends ErrorResult {
   deployment: DeploymentInfo;
 }
 
+// Exactly one intent per item: remove, update, or a variant given by source
+// and channel (install or change).
+export interface ChangeRequestItem {
+  id: string;
+  source?: string;
+  channel?: string;
+  remove?: boolean;
+  update?: boolean;
+}
+
+export interface ModuleAbbreviated {
+  id: string;
+  name: string;
+  description: string;
+  source: string;
+  channel: string;
+  version: string;
+}
+
+// The pending change request is a singleton on the module-manager: POST
+// creates or replaces it, PATCH executes and clears it, DELETE discards it.
+// A repository refresh also discards it.
+export interface ModulesChangeRequest {
+  // includes automatically resolved dependencies
+  install: ModuleAbbreviated[] | null;
+  // item format: [currentVariant, nextVariant]
+  change: [ModuleAbbreviated, ModuleAbbreviated][] | null;
+  // IDs of the modules that will be removed
+  remove: string[] | null;
+  created: string;
+}
+
 // True if the installed module variant differs from the one the deployment
 // was created for: the deployment has to be updated by the user.
 export function needsDeploymentUpdate(module: ModuleReduced): boolean {

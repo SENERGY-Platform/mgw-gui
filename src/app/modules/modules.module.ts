@@ -14,22 +14,18 @@ import {MatTableModule} from '@angular/material/table';
 
 import {MatSortModule} from '@angular/material/sort';
 import {ListComponent} from './pages/list/list.component';
-import {AddComponent} from './pages/add/add.component';
 import {InfoComponent} from './pages/info/info.component';
-import {UpdateModalComponent} from './components/update-modal/update-modal.component';
 import {MatCardModule} from '@angular/material/card';
-import {UpdateComponent} from './pages/update/update.component';
+import {ManageComponent} from './pages/manage/manage.component';
 import {DeploymentsModule} from '../deployments/deployments.module';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
 const routes: Routes = [
   {
     path: 'modules', children: [
-      {path: 'add', component: AddComponent},
       {path: '', component: ListComponent},
+      {path: 'manage', component: ManageComponent},
       {path: 'info/:id', component: InfoComponent},
-      {path: 'update/:id', component: UpdateComponent}
-
     ]
   },
 ];
@@ -55,10 +51,8 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     ListComponent,
-    AddComponent,
     InfoComponent,
-    UpdateModalComponent,
-    UpdateComponent
+    ManageComponent
   ],
   exports: []
 })

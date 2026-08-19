@@ -1,0 +1,9 @@
+.warning {
+  color: #b3372f;
+  font-weight: 500;
+}
+
+.type {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+}

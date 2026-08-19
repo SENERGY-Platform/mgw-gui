@@ -19,7 +19,8 @@ import {
   ModulesChangeJobResult,
   RepositoryJobResult
 } from '../../models/jobs';
-import {ModuleReduced} from '../../models/modules';
+import {ChangeRequestItem, ModuleReduced, ModulesChangeRequest} from '../../models/modules';
+import {RepoModule, Repository} from '../../models/repositories';
 
 
 const TEMPLATE = {
@@ -530,6 +531,150 @@ export class ModuleManagerMockService {
     return new Observable(obs => {
       obs.next({"id": "id", "completed": new Date(), "error": ""})
     })
+  }
+
+  getRepositories(): Observable<Repository[]> {
+    return of([
+      {
+        "Type": "host-dir",
+        "Source": "localhost",
+        "Priority": 0,
+        "Channels": [{"Name": "default", "Priority": 0}]
+      },
+      {
+        "Type": "github.com",
+        "Source": "github.com/SENERGY-Platform/mgw-module-repository",
+        "Priority": 1,
+        "Channels": [{"Name": "main", "Priority": 1}, {"Name": "beta", "Priority": 0}]
+      }
+    ])
+  }
+
+  refreshRepositories(sources?: string[]): Observable<Job> {
+    return of({
+      "id": "job-repo-refresh",
+      "description": "refresh repositories",
+      "start": new Date().toISOString(),
+      "end": new Date().toISOString()
+    })
+  }
+
+  loadRepositoryModules(name?: string): Observable<RepoModule[]> {
+    var modules: RepoModule[] = [
+      {
+        "id": "github.com/SENERGY-Platform/mgw-test-module-a",
+        "name": "Test Module A",
+        "description": "Installed module with an available update",
+        "version": "v1.2.0",
+        "repository_variants": [
+          {
+            "source": "github.com/SENERGY-Platform/mgw-module-repository",
+            "priority": 1,
+            "channels": [{"name": "main", "priority": 1, "version": "v1.2.0"}]
+          }
+        ],
+        "is_installed": true,
+        "installed_variant": {
+          "source": "github.com/SENERGY-Platform/mgw-module-repository",
+          "channel": "main",
+          "version": "v1.1.0",
+          "next_version": "v1.2.0"
+        }
+      },
+      {
+        "id": "github.com/SENERGY-Platform/mgw-test-module-c",
+        "name": "Test Module C",
+        "description": "Module offered by two repositories",
+        "version": "v2.0.0",
+        "repository_variants": [
+          {
+            "source": "github.com/SENERGY-Platform/mgw-module-repository",
+            "priority": 1,
+            "channels": [{"name": "main", "priority": 1, "version": "v2.0.0"}]
+          },
+          {
+            "source": "localhost",
+            "priority": 0,
+            "channels": [{"name": "default", "priority": 0, "version": "v2.1.0-dev"}]
+          }
+        ],
+        "is_installed": false,
+        "installed_variant": {"source": "", "channel": "", "version": "", "next_version": ""}
+      },
+      {
+        "id": "github.com/SENERGY-Platform/mgw-test-module-d",
+        "name": "Test Module D",
+        "description": "Not installed module",
+        "version": "v0.3.0",
+        "repository_variants": [
+          {
+            "source": "github.com/SENERGY-Platform/mgw-module-repository",
+            "priority": 1,
+            "channels": [{"name": "main", "priority": 1, "version": "v0.3.0"}]
+          }
+        ],
+        "is_installed": false,
+        "installed_variant": {"source": "", "channel": "", "version": "", "next_version": ""}
+      }
+    ]
+    if (name) {
+      modules = modules.filter(m => m.name.toLowerCase().includes(name.toLowerCase()))
+    }
+    return of(modules).pipe(delay(300));
+  }
+
+  getAvailableUpdatesCount(): Observable<number> {
+    return of(1)
+  }
+
+  private pendingChangeRequest: ModulesChangeRequest | null = null
+
+  getModulesChangeRequest(): Observable<ModulesChangeRequest> {
+    if (this.pendingChangeRequest) {
+      return of(this.pendingChangeRequest)
+    }
+    return new Observable(obs => {
+      obs.error({status: 404, error: "no pending change request"})
+    })
+  }
+
+  createModulesChangeRequest(items: ChangeRequestItem[]): Observable<ModulesChangeRequest> {
+    this.pendingChangeRequest = {
+      "install": items.filter(i => !i.remove && !i.update).map(i => ({
+        "id": i.id,
+        "name": i.id.split("/").pop() || i.id,
+        "description": "",
+        "source": i.source || "",
+        "channel": i.channel || "",
+        "version": "v1.0.0"
+      })),
+      "change": items.filter(i => i.update).map(i => ([
+        {"id": i.id, "name": i.id.split("/").pop() || i.id, "description": "", "source": "src", "channel": "main", "version": "v1.1.0"},
+        {"id": i.id, "name": i.id.split("/").pop() || i.id, "description": "", "source": "src", "channel": "main", "version": "v1.2.0"}
+      ] as any)),
+      "remove": items.filter(i => i.remove).map(i => i.id),
+      "created": new Date().toISOString()
+    }
+    return of(this.pendingChangeRequest)
+  }
+
+  createUpdateAllChangeRequest(): Observable<ModulesChangeRequest> {
+    return this.createModulesChangeRequest([{id: "github.com/SENERGY-Platform/mgw-test-module-a", update: true}])
+  }
+
+  executeModulesChangeRequest(): Observable<Job> {
+    this.pendingChangeRequest = null
+    return of({
+      "id": "job-modules-change",
+      "description": "execute modules change request",
+      "start": new Date().toISOString(),
+      "end": new Date().toISOString()
+    })
+  }
+
+  discardModulesChangeRequest(): Observable<any> {
+    this.pendingChangeRequest = null
+    return of(true)
   }
 
   loadModulesReduced(): Observable<ModuleReduced[]> {

@@ -27,7 +27,8 @@ import {
   RepositoryJobResult
 } from '../../models/jobs';
 import {AuxDeployment, AuxDeploymentResponse} from 'src/app/deployments/models/sub-deployments';
-import {ModuleReduced} from '../../models/modules';
+import {ChangeRequestItem, ModuleReduced, ModulesChangeRequest} from '../../models/modules';
+import {RepoModule, Repository} from '../../models/repositories';
 
 @Injectable({
   providedIn: 'root'
@@ -101,6 +102,67 @@ export class ModuleManagerService {
     var url = this.moduleManagerPath + "/deployments"
     let queryParams = new HttpParams().set("module_ids", moduleIDs.join(","))
     return <Observable<Job>>this.http.delete(url, undefined, queryParams)
+  }
+
+  // Repositories
+
+  getRepositories(): Observable<Repository[]> {
+    var url = this.moduleManagerPath + "/repositories"
+    return <Observable<Repository[]>>this.http.get(url)
+  }
+
+  // job, result via getRepositoriesRefreshResult; discards a pending modules change request
+  refreshRepositories(sources?: string[]): Observable<Job> {
+    var url = this.moduleManagerPath + "/repositories"
+    let queryParams = new HttpParams()
+    if (sources && sources.length > 0) {
+      queryParams = queryParams.set("sources", sources.join(","))
+    }
+    return <Observable<Job>>this.http.patch(url, undefined, queryParams)
+  }
+
+  loadRepositoryModules(name?: string): Observable<RepoModule[]> {
+    var url = this.moduleManagerPath + "/repository-modules"
+    let queryParams = new HttpParams()
+    if (name) {
+      queryParams = queryParams.set("name", name)
+    }
+    return <Observable<RepoModule[]>>this.http.get(url, queryParams)
+  }
+
+  getAvailableUpdatesCount(): Observable<number> {
+    var url = this.moduleManagerPath + "/modules-available-updates"
+    return <Observable<number>>this.http.get(url)
+  }
+
+  // Modules change request (singleton: POST creates or replaces, PATCH
+  // executes and clears, DELETE discards; GET returns 404 if none is pending)
+
+  getModulesChangeRequest(): Observable<ModulesChangeRequest> {
+    var url = this.moduleManagerPath + "/modules-change-request"
+    return <Observable<ModulesChangeRequest>>this.http.get(url)
+  }
+
+  createModulesChangeRequest(items: ChangeRequestItem[]): Observable<ModulesChangeRequest> {
+    var url = this.moduleManagerPath + "/modules-change-request"
+    return <Observable<ModulesChangeRequest>>this.http.post(url, items)
+  }
+
+  createUpdateAllChangeRequest(): Observable<ModulesChangeRequest> {
+    var url = this.moduleManagerPath + "/modules-change-request"
+    let queryParams = new HttpParams().set("update_all", "true")
+    return <Observable<ModulesChangeRequest>>this.http.post(url, undefined, queryParams)
+  }
+
+  // job, result via getModulesChangeResult
+  executeModulesChangeRequest(): Observable<Job> {
+    var url = this.moduleManagerPath + "/modules-change-request"
+    return <Observable<Job>>this.http.patch(url)
+  }
+
+  discardModulesChangeRequest(): Observable<any> {
+    var url = this.moduleManagerPath + "/modules-change-request"
+    return this.http.delete(url, undefined, undefined, 'text')
   }
 
   // Module Update
