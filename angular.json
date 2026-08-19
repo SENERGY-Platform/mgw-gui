@@ -127,8 +127,9 @@
             "production": {
               "buildTarget": "mgw-gui:build:production"
             },
-            "development": {
-              "buildTarget": "mgw-gui:build:development"
+            "local_development": {
+              "buildTarget": "mgw-gui:build:local_development",
+              "proxyConfig": "proxy.conf.json"
             },
             "development_mock": {
               "buildTarget": "mgw-gui:build:development_mock"

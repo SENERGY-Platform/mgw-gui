@@ -6,7 +6,10 @@ import {HostManagerService} from "src/app/core/services/host-manager/host-manage
 import {SecretManagerServiceService} from "src/app/core/services/secret-manager/secret-manager-service.service";
 import {ModuleManagerService} from "../app/core/services/module-manager/module-manager-service.service";
 
-const CORE_PREFIX = "http://localhost:8080/core";
+// Relative path: requests go through the dev-server proxy (proxy.conf.json)
+// to the local MGW core on http://localhost:8080. Same-origin, so no CORS
+// issues and the Kratos session cookie works.
+const CORE_PREFIX = "/core";
 
 export const environment = {
   production: false,
