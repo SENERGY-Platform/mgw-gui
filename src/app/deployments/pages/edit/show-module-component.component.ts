@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {concatMap, forkJoin, of} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {NgIf} from '@angular/common';
+import {NgFor, NgIf} from '@angular/common';
 import {MatButton} from '@angular/material/button';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
 import {HostManagerService} from 'src/app/core/services/host-manager/host-manager.service';
@@ -41,16 +41,16 @@ import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
   templateUrl: './show-module-component.component.html',
   styleUrls: ['./show-module-component.component.css'],
   standalone: true,
-  imports: [NgIf, SpinnerComponent, MatButton, DeploymentFormComponent]
+  imports: [NgIf, NgFor, SpinnerComponent, MatButton, DeploymentFormComponent]
 })
 export class ShowModuleComponentComponent implements OnInit {
-  module?: DeploymentRequestModule
+  modules: DeploymentRequestModule[] = []
   hostResources: HostResource[] = []
   secrets: Secret[] = []
   globalConfigs: GlobalConfig[] = []
   ready: boolean = false
   submitting: boolean = false
-  @ViewChild(DeploymentFormComponent) form?: DeploymentFormComponent
+  @ViewChildren(DeploymentFormComponent) forms!: QueryList<DeploymentFormComponent>
 
   constructor(
     private route: ActivatedRoute,
@@ -64,15 +64,19 @@ export class ShowModuleComponentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    var moduleID = decodeURIComponent(this.route.snapshot.params['id'])
+    // one or more module IDs, each URI-encoded, joined by commas (batch edit)
+    var moduleIDs = String(this.route.snapshot.params['ids']).split(',').map(id => decodeURIComponent(id))
     forkJoin({
-      module: this.moduleService.loadModuleFull(moduleID),
+      modules: this.moduleService.loadModulesFull(moduleIDs),
       hostResources: this.hostService.getHostResources().pipe(catchError(() => of(<HostResource[]>[]))),
       secrets: this.secretService.getSecrets().pipe(catchError(() => of(<Secret[]>[]))),
       globalConfigs: this.moduleService.getGlobalConfigs().pipe(catchError(() => of({}))),
     }).subscribe({
       next: (result) => {
-        this.module = result.module
+        // only deployed modules can be edited; the list endpoint currently
+        // reports is_deployed=false despite embedding the deployment, so a
+        // populated deployment ID counts as deployed too
+        this.modules = (result.modules || []).filter(module => module.is_deployed || !!module.deployment?.id)
         this.hostResources = result.hostResources || []
         this.secrets = result.secrets || []
         this.globalConfigs = Object.values(result.globalConfigs || {})
@@ -86,17 +90,25 @@ export class ShowModuleComponentComponent implements OnInit {
   }
 
   submit() {
-    var input = this.form?.collect()
-    if (!input) {
+    var inputs = []
+    for (const form of this.forms.toArray()) {
+      var input = form.collect()
+      if (!input) {
+        return // per-field errors are shown inline
+      }
+      inputs.push(input)
+    }
+    if (inputs.length === 0) {
+      this.router.navigateByUrl("/modules")
       return
     }
     this.submitting = true
-    this.moduleService.updateDeployments([input]).pipe(
+    this.moduleService.updateDeployments(inputs).pipe(
       concatMap(job => this.utilService.checkJobStatus(job.id, "Updating deployment", "module-manager", "deployments-update"))
     ).subscribe({
       next: (jobResult) => {
         if (jobResult?.result) {
-          this.utilService.presentJobResult("Update deployment", mapDeploymentResults(jobResult.result), "Deployment updated")
+          this.utilService.presentJobResult("Update deployments", mapDeploymentResults(jobResult.result), "Deployment(s) updated")
         }
         this.router.navigateByUrl("/modules")
       },
@@ -108,7 +120,7 @@ export class ShowModuleComponentComponent implements OnInit {
   }
 
   updatePending(): boolean {
-    return !!this.module && this.module.is_deployed && this.module.deployment.module_version !== this.module.version
+    return this.modules.some(module => module.deployment.module_version !== module.version)
   }
 
   cancel() {

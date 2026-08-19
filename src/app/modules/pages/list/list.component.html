@@ -136,6 +136,10 @@
         <th *matHeaderCellDef colspan="10" mat-header-cell>
           <div>
             <span>You have selected {{ selection.selected.length }} modules</span>
+            <button (click)="editMultiple()" color="accent" mat-icon-button matTooltip="Edit deployments">
+              <mat-icon>edit</mat-icon>
+            </button>
+
             <button (click)="startMultiple()" color="accent" mat-icon-button matTooltip="Start">
               <mat-icon>start</mat-icon>
             </button>

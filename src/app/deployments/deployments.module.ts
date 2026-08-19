@@ -15,15 +15,11 @@ import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
 import {ShowModuleComponentComponent} from './pages/edit/show-module-component.component';
 import {JobLoaderModalComponent} from '../core/components/job-loader-modal/job-loader-modal.component';
-import {InfoComponent} from './pages/info/info.component';
 import {MatCardModule} from '@angular/material/card';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {ListEndpointsComponent} from './pages/list-endpoints/list-endpoints.component';
 import {AddEndpointComponent} from './pages/add-endpoint/add-endpoint.component';
-import {ListContainersComponent} from './pages/list-containers/list.component';
-import {InfoSubDeploymentComponent} from './pages/info-sub-deployment/info-sub-deployment.component';
-import {DeploymentListComponent} from './components/list/deployment-list.component';
 import {MatTabsModule} from '@angular/material/tabs';
 
 const routes: Routes = [
@@ -31,11 +27,9 @@ const routes: Routes = [
     path: 'deployments',
     children: [
       {path: 'add/:id', component: ModulesComponent},
-      {path: 'edit/:id', component: ShowModuleComponentComponent},
-      {path: ':deploymentID/info', component: InfoComponent},
+      {path: 'edit/:ids', component: ShowModuleComponentComponent},
       {path: 'endpoints', component: ListEndpointsComponent},
-      {path: 'endpoints/add/:id', component: AddEndpointComponent},
-      {path: ':deploymentID/sub/:subDeploymentID/info', component: InfoSubDeploymentComponent},
+      {path: 'endpoints/add/:id', component: AddEndpointComponent}
     ]
   }
 ];
@@ -64,12 +58,8 @@ const routes: Routes = [
     ModulesComponent,
     ShowModuleComponentComponent,
     JobLoaderModalComponent,
-    InfoComponent,
     ListEndpointsComponent,
-    AddEndpointComponent,
-    ListContainersComponent,
-    InfoSubDeploymentComponent,
-    DeploymentListComponent
+    AddEndpointComponent
   ],
   exports: []
 })

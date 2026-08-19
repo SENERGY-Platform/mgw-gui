@@ -96,6 +96,9 @@
       <mat-label>Updated</mat-label>
       <input [readonly]="true" [value]="module.deployment.updated | date: 'short'" matInput>
     </mat-form-field>
+
+    <h3>Auxiliary Deployments</h3>
+    <aux-deployments-list [deploymentID]="module.deployment.id"></aux-deployments-list>
   </div>
 
   <div *ngIf="!module.is_deployed">

@@ -267,6 +267,15 @@ export class ListComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl("/deployments/edit/" + encodeURIComponent(moduleID))
   }
 
+  // batch edit: one form per selected deployed module, saved as one job
+  editMultiple() {
+    var ids = this.selectedDeployedIds()
+    if (ids.length === 0) {
+      return
+    }
+    this.router.navigateByUrl("/deployments/edit/" + ids.map(id => encodeURIComponent(id)).join(","))
+  }
+
   showModuleInfo(moduleID: string) {
     this.router.navigateByUrl("/modules/info/" + encodeURIComponent(moduleID))
   }

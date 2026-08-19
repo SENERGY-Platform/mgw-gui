@@ -1,0 +1,8 @@
+.empty {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 13px;
+}
+
+table {
+  width: 100%;
+}

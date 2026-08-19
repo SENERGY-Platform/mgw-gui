@@ -1,0 +1,56 @@
+<!--
+  ~ Copyright (c) 2026 InfAI (CC SES)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<spinner [show]="!ready"></spinner>
+
+<div *ngIf="ready && dataSource.data.length === 0" class="empty">
+  No auxiliary deployments. Modules spawn and manage them on their own; the UI only shows their state.
+</div>
+
+<table *ngIf="ready && dataSource.data.length > 0" [dataSource]="dataSource" class="mat-elevation-z1" mat-table>
+  <ng-container matColumnDef="status">
+    <th *matHeaderCellDef class="button-column" mat-header-cell>Status</th>
+    <td *matCellDef="let aux" mat-cell>
+      <div *ngIf="statusOf(aux) === 'healthy'" class="circle green" matTooltip="Running"></div>
+      <div *ngIf="statusOf(aux) === 'unhealthy'" class="circle red"
+           matTooltip="{{aux.container?.state || 'container missing'}} {{aux.container?.health}}"></div>
+      <div *ngIf="statusOf(aux) === 'disabled'" class="circle grey" matTooltip="Disabled"></div>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <th *matHeaderCellDef mat-header-cell>Name</th>
+    <td *matCellDef="let aux" mat-cell>{{ aux.name }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="reference">
+    <th *matHeaderCellDef mat-header-cell>Reference</th>
+    <td *matCellDef="let aux" mat-cell>{{ aux.reference }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="image">
+    <th *matHeaderCellDef mat-header-cell>Image</th>
+    <td *matCellDef="let aux" mat-cell>{{ aux.image }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="updated">
+    <th *matHeaderCellDef mat-header-cell>Updated</th>
+    <td *matCellDef="let aux" mat-cell>{{ aux.updated | date: 'short' }}</td>
+  </ng-container>
+
+  <tr *matHeaderRowDef="displayColumns" mat-header-row></tr>
+  <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+</table>

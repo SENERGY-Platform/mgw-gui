@@ -6,6 +6,7 @@ import {DatePipe, NgFor, NgIf} from '@angular/common';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatChip, MatChipListbox} from '@angular/material/chips';
+import {AuxDeploymentsListComponent} from 'src/app/deployments/components/aux-deployments-list/aux-deployments-list.component';
 import {
   DEPLOYMENT_STATE_HEALTHY,
   DEPLOYMENT_STATE_UNHEALTHY,
@@ -17,7 +18,7 @@ import {
   templateUrl: './info.component.html',
   styleUrls: ['./info.component.css'],
   standalone: true,
-  imports: [SpinnerComponent, NgIf, MatFormField, MatLabel, MatInput, MatChipListbox, NgFor, MatChip, DatePipe]
+  imports: [SpinnerComponent, NgIf, MatFormField, MatLabel, MatInput, MatChipListbox, NgFor, MatChip, DatePipe, AuxDeploymentsListComponent]
 })
 export class InfoComponent {
   module!: ModuleInfo

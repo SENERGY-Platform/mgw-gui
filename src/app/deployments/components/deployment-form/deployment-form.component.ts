@@ -116,7 +116,8 @@ export class DeploymentFormComponent implements OnInit {
 
   private buildRows() {
     var inputs = this.module.inputs || <any>{}
-    var deployment = (this.prefill && this.module.is_deployed) ? this.module.deployment : undefined
+    // deployment.id check: see the is_deployed workaround in the edit page
+    var deployment = (this.prefill && (this.module.is_deployed || this.module.deployment?.id)) ? this.module.deployment : undefined
 
     for (const [ref, input] of Object.entries(inputs.configs || {})) {
       var config = (this.module.configs || {})[ref]

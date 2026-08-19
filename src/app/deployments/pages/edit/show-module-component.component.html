@@ -17,19 +17,22 @@
 <div class="layout-margin">
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-  <div *ngIf="ready && module">
-    <h2>Edit deployment</h2>
+  <div *ngIf="ready">
+    <h2>{{ modules.length > 1 ? 'Edit deployments' : 'Edit deployment' }}</h2>
     <p *ngIf="updatePending()" class="update-hint">
-      The installed module is at {{ module.version }} while the deployment was created for
-      {{ module.deployment.module_version }} — saving applies the update to the deployment.
+      At least one installed module is newer than the version its deployment was created for — saving applies the
+      update to the deployment.
     </p>
+    <p *ngIf="modules.length === 0">Nothing to edit: none of the selected modules has a deployment.</p>
 
-    <deployment-form [globalConfigs]="globalConfigs" [hostResources]="hostResources" [module]="module"
-                     [prefill]="true" [secrets]="secrets"></deployment-form>
+    <deployment-form *ngFor="let module of modules" [globalConfigs]="globalConfigs" [hostResources]="hostResources"
+                     [module]="module" [prefill]="true" [secrets]="secrets"></deployment-form>
 
     <div class="actions">
       <button (click)="cancel()" [disabled]="submitting" mat-button>Cancel</button>
-      <button (click)="submit()" [disabled]="submitting" color="primary" mat-raised-button>Save</button>
+      <button (click)="submit()" *ngIf="modules.length > 0" [disabled]="submitting" color="primary"
+              mat-raised-button>Save
+      </button>
     </div>
   </div>
 </div>
