@@ -1,0 +1,173 @@
+<!--
+  ~ Copyright (c) 2026 InfAI (CC SES)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<mat-card appearance="outlined" class="module-card">
+  <mat-card-header>
+    <mat-card-title>{{ module.name }}</mat-card-title>
+    <mat-card-subtitle>{{ module.id }} {{ module.version }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+
+    <div *ngIf="configRows.length === 0 && resourceRows.length === 0 && secretRows.length === 0 && fileRows.length === 0 && fileGroupRows.length === 0"
+         class="no-inputs">
+      This module needs no configuration.
+    </div>
+
+    <section *ngIf="configRows.length > 0">
+      <h3>Configuration</h3>
+      <div *ngFor="let row of configRows" class="input-row">
+        <div class="input-label">
+          <span class="group-label" *ngIf="groupLabel(row.input.group)">{{ groupLabel(row.input.group) }}</span>
+          <span>{{ row.input.name }}</span>
+          <span class="description">{{ row.input.description }}</span>
+        </div>
+
+        <mat-checkbox *ngIf="row.matchingGlobals.length > 0" [(ngModel)]="row.useGlobal"
+                      matTooltip="Use a global config instead of a direct value">global
+        </mat-checkbox>
+
+        <mat-form-field *ngIf="row.useGlobal" appearance="fill" class="input-field">
+          <mat-label>Global config</mat-label>
+          <mat-select [(ngModel)]="row.globalConfigId">
+            <mat-option *ngFor="let gc of row.matchingGlobals" [value]="gc.id">{{ gc.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <ng-container *ngIf="!row.useGlobal">
+          <mat-form-field *ngIf="!row.config.is_slice && row.config.options && row.config.options.length > 0 && !row.config.opt_ext"
+                          appearance="fill" class="input-field">
+            <mat-label>{{ row.input.name }}</mat-label>
+            <mat-select [(ngModel)]="row.raw">
+              <mat-option *ngFor="let option of row.config.options" [value]="'' + option">{{ option }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field *ngIf="!row.config.is_slice && row.config.data_type === 'bool'" appearance="fill"
+                          class="input-field">
+            <mat-label>{{ row.input.name }}</mat-label>
+            <mat-select [(ngModel)]="row.raw">
+              <mat-option value="true">true</mat-option>
+              <mat-option value="false">false</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field *ngIf="!row.config.is_slice && row.config.data_type !== 'bool' && !(row.config.options && row.config.options.length > 0 && !row.config.opt_ext)"
+                          appearance="fill" class="input-field">
+            <mat-label>{{ row.input.name }}</mat-label>
+            <input [(ngModel)]="row.raw"
+                   [step]="row.config.type_opt?.['step'] || (row.config.data_type === 'int' ? 1 : 'any')"
+                   [type]="(row.config.data_type === 'int' || row.config.data_type === 'float') ? 'number' : 'text'"
+                   matInput>
+            <mat-hint *ngIf="row.config.options && row.config.options.length > 0">Suggested: {{ row.config.options.join(', ') }}</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field *ngIf="row.config.is_slice" appearance="fill" class="input-field">
+            <mat-label>{{ row.input.name }}</mat-label>
+            <textarea [(ngModel)]="row.raw" matInput rows="3"></textarea>
+            <mat-hint>One value per line</mat-hint>
+          </mat-form-field>
+        </ng-container>
+
+        <p *ngIf="row.error" class="error">{{ row.error }}</p>
+      </div>
+    </section>
+
+    <section *ngIf="resourceRows.length > 0">
+      <h3>Host Resources</h3>
+      <div *ngFor="let row of resourceRows" class="input-row">
+        <div class="input-label">
+          <span>{{ row.input.name }}</span>
+          <span class="description">{{ row.input.description }}</span>
+        </div>
+        <mat-form-field appearance="fill" class="input-field">
+          <mat-label>{{ row.input.name }}</mat-label>
+          <mat-select [(ngModel)]="row.selectedId">
+            <mat-option value="">—</mat-option>
+            <mat-option *ngFor="let resource of hostResources" [value]="resource.id">
+              {{ resource.name }} ({{ resource.path }})
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <p *ngIf="row.error" class="error">{{ row.error }}</p>
+      </div>
+    </section>
+
+    <section *ngIf="secretRows.length > 0">
+      <h3>Secrets</h3>
+      <div *ngFor="let row of secretRows" class="input-row">
+        <div class="input-label">
+          <span>{{ row.input.name }}</span>
+          <span class="description">{{ row.input.description }} ({{ row.type }})</span>
+        </div>
+        <mat-form-field appearance="fill" class="input-field">
+          <mat-label>{{ row.input.name }}</mat-label>
+          <mat-select [(ngModel)]="row.selectedId">
+            <mat-option value="">—</mat-option>
+            <mat-option *ngFor="let secret of secretOptionsFor(row)" [value]="secret.id">{{ secret.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <p *ngIf="row.error" class="error">{{ row.error }}</p>
+      </div>
+    </section>
+
+    <section *ngIf="fileRows.length > 0">
+      <h3>Files</h3>
+      <div *ngFor="let row of fileRows" class="input-row">
+        <div class="input-label">
+          <span>{{ row.input.name }}<span *ngIf="row.required"> *</span></span>
+          <span class="description">{{ row.input.description }}</span>
+        </div>
+        <mat-form-field appearance="fill" class="input-field file-field">
+          <mat-label>{{ row.input.name }}</mat-label>
+          <textarea [(ngModel)]="row.text" matInput rows="6" spellcheck="false"></textarea>
+          <mat-hint *ngIf="row.hasDefault">Prefilled with the module default</mat-hint>
+        </mat-form-field>
+      </div>
+    </section>
+
+    <section *ngIf="fileGroupRows.length > 0">
+      <h3>File Groups</h3>
+      <div *ngFor="let row of fileGroupRows" class="input-row">
+        <div class="input-label">
+          <span>{{ row.input.name }}</span>
+          <span class="description">{{ row.input.description }}</span>
+        </div>
+        <div *ngFor="let file of row.files; let i = index" class="group-file">
+          <mat-form-field appearance="fill" class="path-field">
+            <mat-label>Path</mat-label>
+            <input [(ngModel)]="file.path" matInput>
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="format-field">
+            <mat-label>Format</mat-label>
+            <input [(ngModel)]="file.format" matInput>
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="input-field file-field">
+            <mat-label>Content</mat-label>
+            <textarea [(ngModel)]="file.text" matInput rows="4" spellcheck="false"></textarea>
+          </mat-form-field>
+          <button (click)="removeGroupFile(row, i)" mat-icon-button matTooltip="Remove file">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <button (click)="addGroupFile(row)" mat-icon-button matTooltip="Add file">
+          <mat-icon>add</mat-icon>
+        </button>
+        <p *ngIf="row.error" class="error">{{ row.error }}</p>
+      </div>
+    </section>
+
+  </mat-card-content>
+</mat-card>

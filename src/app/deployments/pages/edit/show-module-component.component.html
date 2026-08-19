@@ -1,7 +1,35 @@
-<div class="form-margin">
+<!--
+  ~ Copyright (c) 2026 InfAI (CC SES)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="layout-margin">
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-  <div *ngIf="ready">
-    <deployment [deploymentID]="deploymentID" [mode]="mode"></deployment>
+  <div *ngIf="ready && module">
+    <h2>Edit deployment</h2>
+    <p *ngIf="updatePending()" class="update-hint">
+      The installed module is at {{ module.version }} while the deployment was created for
+      {{ module.deployment.module_version }} — saving applies the update to the deployment.
+    </p>
+
+    <deployment-form [globalConfigs]="globalConfigs" [hostResources]="hostResources" [module]="module"
+                     [prefill]="true" [secrets]="secrets"></deployment-form>
+
+    <div class="actions">
+      <button (click)="cancel()" [disabled]="submitting" mat-button>Cancel</button>
+      <button (click)="submit()" [disabled]="submitting" color="primary" mat-raised-button>Save</button>
+    </div>
   </div>
 </div>

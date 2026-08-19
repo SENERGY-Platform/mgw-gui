@@ -30,6 +30,7 @@ import {AuxDeployment, AuxDeploymentResponse} from 'src/app/deployments/models/s
 import {ChangeRequestItem, ModuleReduced, ModulesChangeRequest} from '../../models/modules';
 import {RepoModule, Repository} from '../../models/repositories';
 import {GlobalConfig, GlobalConfigInput} from '../../models/global-configs';
+import {DeploymentRequestModule, DeploymentUserInput} from '../../models/deployment-request';
 
 @Injectable({
   providedIn: 'root'
@@ -78,6 +79,30 @@ export class ModuleManagerService {
   }
 
   // Deployments (next-gen API, addressed by module IDs)
+
+  // the modules that must be configured to deploy the given ones, including dependencies
+  loadDeploymentRequest(moduleIDs: string[]): Observable<DeploymentRequestModule[]> {
+    var url = this.moduleManagerPath + "/deployment-request"
+    let queryParams = new HttpParams().set("module_ids", moduleIDs.join(","))
+    return <Observable<DeploymentRequestModule[]>>this.http.get(url, queryParams)
+  }
+
+  loadModuleFull(moduleID: string): Observable<DeploymentRequestModule> {
+    var url = this.moduleManagerPath + "/modules/" + this.doubleEncode(moduleID)
+    return <Observable<DeploymentRequestModule>>this.http.get(url)
+  }
+
+  // job, result via getDeploymentsResult
+  createDeployments(inputs: DeploymentUserInput[]): Observable<Job> {
+    var url = this.moduleManagerPath + "/deployments"
+    return <Observable<Job>>this.http.post(url, inputs)
+  }
+
+  // job, result via getDeploymentsUpdateResult
+  updateDeployments(inputs: DeploymentUserInput[]): Observable<Job> {
+    var url = this.moduleManagerPath + "/deployments"
+    return <Observable<Job>>this.http.put(url, inputs)
+  }
 
   // synchronous: only sets the enabled flag, the runtime monitor starts the
   // containers afterwards; returns the IDs of the enabled deployments

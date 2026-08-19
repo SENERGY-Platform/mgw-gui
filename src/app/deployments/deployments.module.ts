@@ -10,11 +10,9 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatDialogModule} from '@angular/material/dialog';
 import {RouterModule, Routes} from '@angular/router';
 import {ModulesComponent} from './pages/add/modules.component';
-import {DeploymentTemplate2} from './components/single-deployment/deployment-template';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
-import {DeploymentComponentComponent} from './components/module-deployment/deployment-component.component';
 import {ShowModuleComponentComponent} from './pages/edit/show-module-component.component';
 import {JobLoaderModalComponent} from '../core/components/job-loader-modal/job-loader-modal.component';
 import {InfoComponent} from './pages/info/info.component';
@@ -23,7 +21,6 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {ListEndpointsComponent} from './pages/list-endpoints/list-endpoints.component';
 import {AddEndpointComponent} from './pages/add-endpoint/add-endpoint.component';
-import {GroupComponent} from './components/group/group.component';
 import {ListContainersComponent} from './pages/list-containers/list.component';
 import {InfoSubDeploymentComponent} from './pages/info-sub-deployment/info-sub-deployment.component';
 import {DeploymentListComponent} from './components/list/deployment-list.component';
@@ -65,21 +62,16 @@ const routes: Routes = [
     MatTabsModule,
     ReactiveFormsModule,
     ModulesComponent,
-    DeploymentTemplate2,
-    DeploymentComponentComponent,
     ShowModuleComponentComponent,
     JobLoaderModalComponent,
     InfoComponent,
     ListEndpointsComponent,
     AddEndpointComponent,
-    GroupComponent,
     ListContainersComponent,
     InfoSubDeploymentComponent,
     DeploymentListComponent
   ],
-  exports: [
-    DeploymentComponentComponent
-  ]
+  exports: []
 })
 export class DeploymentsModule {
 }

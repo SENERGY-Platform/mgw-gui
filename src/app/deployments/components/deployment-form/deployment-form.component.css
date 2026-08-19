@@ -1,0 +1,70 @@
+.module-card {
+  margin-bottom: 16px;
+}
+
+section h3 {
+  margin: 16px 0 8px;
+}
+
+.no-inputs {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.input-row {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.input-label {
+  display: flex;
+  flex-direction: column;
+  min-width: 240px;
+  max-width: 320px;
+}
+
+.group-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.description {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.input-field {
+  flex: 1;
+  min-width: 280px;
+}
+
+.file-field textarea {
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.group-file {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  align-items: baseline;
+}
+
+.path-field {
+  width: 220px;
+}
+
+.format-field {
+  width: 140px;
+}
+
+.error {
+  width: 100%;
+  color: #b3372f;
+  font-weight: 500;
+  margin: 0 0 8px;
+}

@@ -1,5 +1,11 @@
-spinner {
-  position: fixed;
-  top: 50%;
-  left: 50%;
+.hint {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
 }

@@ -22,6 +22,7 @@ import {
 import {ChangeRequestItem, ModuleReduced, ModulesChangeRequest} from '../../models/modules';
 import {RepoModule, Repository} from '../../models/repositories';
 import {GlobalConfig, GlobalConfigInput} from '../../models/global-configs';
+import {DeploymentRequestModule, DeploymentUserInput} from '../../models/deployment-request';
 
 
 const TEMPLATE = {
@@ -531,6 +532,79 @@ export class ModuleManagerMockService {
   addModule(module: AddModule): Observable<any> {
     return new Observable(obs => {
       obs.next({"id": "id", "completed": new Date(), "error": ""})
+    })
+  }
+
+  private mockRequestModule(id: string): DeploymentRequestModule {
+    return {
+      "id": id,
+      "name": "Mock " + (id.split("/").pop() || id),
+      "description": "Mock module for the deployment form",
+      "version": "v1.0.0",
+      "is_deployed": false,
+      "has_error": false,
+      "error_msg": "",
+      "deployment": <any>{},
+      "inputs": {
+        "configs": {
+          "greeting": {"name": "Greeting", "description": "Shown on the start page", "group": "general"},
+          "port": {"name": "Port", "description": "1024-65535", "group": "general"},
+          "hosts": {"name": "Hosts", "description": "One per line", "group": ""}
+        },
+        "resources": {"serial": {"name": "Serial Adapter", "description": "", "group": ""}},
+        "secrets": {"cert": {"name": "Certificate", "description": "", "group": ""}},
+        "files": {"conf": {"name": "Config File", "description": "", "group": ""}},
+        "file_groups": {"extra": {"name": "Extra Files", "description": "", "group": ""}},
+        "groups": {"general": {"name": "General", "description": "", "group": ""}}
+      },
+      "configs": {
+        "greeting": {"default": "hello", "options": null, "opt_ext": false, "type": "text", "type_opt": {"max_len": 20}, "data_type": "string", "is_slice": false},
+        "port": {"default": 8080, "options": null, "opt_ext": false, "type": "number", "type_opt": {"min": 1024, "max": 65535}, "data_type": "int", "is_slice": false},
+        "hosts": {"default": null, "options": null, "opt_ext": false, "type": "text", "type_opt": null, "data_type": "string", "is_slice": true}
+      },
+      "secrets": {"cert": {"type": "certificate"}},
+      "files": {"conf": {"type": "generic", "required": false, "default_data": "bW9jaz10cnVl"}}
+    }
+  }
+
+  loadDeploymentRequest(moduleIDs: string[]): Observable<DeploymentRequestModule[]> {
+    return of(moduleIDs.map(id => this.mockRequestModule(id))).pipe(delay(300))
+  }
+
+  loadModuleFull(moduleID: string): Observable<DeploymentRequestModule> {
+    var module = this.mockRequestModule(moduleID)
+    module.is_deployed = true
+    module.deployment = <any>{
+      "id": "dep-a",
+      "module_version": "v1.0.0",
+      "enabled": true,
+      "host_resources": {},
+      "secrets": {},
+      "configs": {"greeting": {"data_type": 1, "is_slice": false, "value": "servus"}},
+      "global_configs": {},
+      "files": {},
+      "file_groups": {},
+      "has_error": false,
+      "error_msg": ""
+    }
+    return of(module)
+  }
+
+  createDeployments(inputs: DeploymentUserInput[]): Observable<Job> {
+    return of({
+      "id": "job-deploy",
+      "description": "create deployments",
+      "start": new Date().toISOString(),
+      "end": new Date().toISOString()
+    })
+  }
+
+  updateDeployments(inputs: DeploymentUserInput[]): Observable<Job> {
+    return of({
+      "id": "job-deploy-update",
+      "description": "update deployments",
+      "start": new Date().toISOString(),
+      "end": new Date().toISOString()
     })
   }
 
