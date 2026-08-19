@@ -12,7 +12,7 @@ import {
   RepositoryJobResult
 } from '../../models/jobs';
 import {ChangeRequestItem, ModuleReduced, ModulesChangeRequest} from '../../models/modules';
-import {RepoModule, Repository} from '../../models/repositories';
+import {RepoModule, RepoModulesFilter, Repository} from '../../models/repositories';
 import {GlobalConfig, GlobalConfigInput} from '../../models/global-configs';
 import {DeploymentRequestModule, DeploymentUserInput} from '../../models/deployment-request';
 import {AuxDeployment} from '../../models/aux-deployments';
@@ -254,7 +254,7 @@ export class ModuleManagerMockService {
     })
   }
 
-  loadRepositoryModules(name?: string): Observable<RepoModule[]> {
+  loadRepositoryModules(filter?: RepoModulesFilter): Observable<RepoModule[]> {
     var modules: RepoModule[] = [
       {
         "id": "github.com/SENERGY-Platform/mgw-test-module-a",
@@ -312,8 +312,17 @@ export class ModuleManagerMockService {
         "installed_variant": {"source": "", "channel": "", "version": "", "next_version": ""}
       }
     ]
-    if (name) {
-      modules = modules.filter(m => m.name.toLowerCase().includes(name.toLowerCase()))
+    if (filter?.name) {
+      modules = modules.filter(m => m.name.toLowerCase().includes(filter.name!.toLowerCase()))
+    }
+    if (filter?.installed) {
+      modules = modules.filter(m => m.is_installed)
+    }
+    if (filter?.updateAvailable) {
+      modules = modules.filter(m => m.is_installed && !!m.installed_variant.next_version)
+    }
+    if (filter?.repositories && filter.repositories.length > 0) {
+      modules = modules.filter(m => (m.repository_variants || []).some(v => filter.repositories!.includes(v.source)))
     }
     return of(modules).pipe(delay(300));
   }

@@ -13,7 +13,7 @@ import {
 } from '../../models/jobs';
 import {AuxDeployment} from '../../models/aux-deployments';
 import {ChangeRequestItem, ModuleReduced, ModulesChangeRequest} from '../../models/modules';
-import {RepoModule, Repository} from '../../models/repositories';
+import {RepoModule, RepoModulesFilter, Repository} from '../../models/repositories';
 import {GlobalConfig, GlobalConfigInput} from '../../models/global-configs';
 import {DeploymentRequestModule, DeploymentUserInput} from '../../models/deployment-request';
 
@@ -142,11 +142,20 @@ export class ModuleManagerService {
     return this.http.delete(url, undefined, undefined, 'text')
   }
 
-  loadRepositoryModules(name?: string): Observable<RepoModule[]> {
+  loadRepositoryModules(filter?: RepoModulesFilter): Observable<RepoModule[]> {
     var url = this.moduleManagerPath + "/repository-modules"
     let queryParams = new HttpParams()
-    if (name) {
-      queryParams = queryParams.set("name", name)
+    if (filter?.name) {
+      queryParams = queryParams.set("name", filter.name)
+    }
+    if (filter?.installed) {
+      queryParams = queryParams.set("installed", "true")
+    }
+    if (filter?.updateAvailable) {
+      queryParams = queryParams.set("update_available", "true")
+    }
+    if (filter?.repositories && filter.repositories.length > 0) {
+      queryParams = queryParams.set("repositories", filter.repositories.join(","))
     }
     return <Observable<RepoModule[]>>this.http.get(url, queryParams)
   }

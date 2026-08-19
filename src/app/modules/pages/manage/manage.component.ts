@@ -37,12 +37,13 @@ import {NgFor, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
 import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatCheckbox} from '@angular/material/checkbox';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatIcon} from '@angular/material/icon';
 import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
-import {RepoModule} from 'src/app/core/models/repositories';
+import {RepoModule, Repository} from 'src/app/core/models/repositories';
 import {ChangeRequestItem, ModulesChangeRequest} from 'src/app/core/models/modules';
 import {mapModulesChangeResult, mapRepositoryRefreshResult} from 'src/app/core/models/job-result-view';
 import {ChangeRequestDialogComponent} from '../../components/change-request-dialog/change-request-dialog.component';
@@ -60,7 +61,7 @@ interface VariantOption {
   templateUrl: './manage.component.html',
   styleUrls: ['./manage.component.css'],
   standalone: true,
-  imports: [NgIf, NgFor, FormsModule, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, MatIconButton, MatTooltip, MatIcon, MatFormField, MatLabel, MatSuffix, MatInput, MatSelect, MatOption]
+  imports: [NgIf, NgFor, FormsModule, MatCheckbox, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, MatIconButton, MatTooltip, MatIcon, MatFormField, MatLabel, MatSuffix, MatInput, MatSelect, MatOption]
 })
 export class ManageComponent implements OnInit {
   dataSource = new MatTableDataSource<RepoModule>();
@@ -68,6 +69,11 @@ export class ManageComponent implements OnInit {
   init: Boolean = true;
   displayColumns = ['status', 'name', 'version', 'variant', 'action']
   nameFilter: string = ''
+  installedOnly: boolean = false
+  updatesOnly: boolean = false
+  // repository source to restrict the catalog to, empty = all
+  repoFilter: string = ''
+  repositories: Repository[] = []
   updatesCount: number = 0
   // the user's collected intents, keyed by module ID ("shopping cart")
   cart: Record<string, ChangeRequestItem> = {}
@@ -89,12 +95,22 @@ export class ManageComponent implements OnInit {
   ngOnInit(): void {
     this.load()
     this.checkPendingRequest()
+    this.moduleService.getRepositories().subscribe({
+      next: (repositories) => this.repositories = repositories || [],
+      error: (_) => {
+      }
+    })
     this.init = false
   }
 
   load() {
     this.ready = false
-    this.moduleService.loadRepositoryModules(this.nameFilter || undefined).subscribe({
+    this.moduleService.loadRepositoryModules({
+      name: this.nameFilter || undefined,
+      installed: this.installedOnly || undefined,
+      updateAvailable: this.updatesOnly || undefined,
+      repositories: this.repoFilter ? [this.repoFilter] : undefined,
+    }).subscribe({
       next: (modules) => {
         modules = modules || []
         modules.forEach(module => {
@@ -268,24 +284,17 @@ export class ManageComponent implements OnInit {
   }
 
   refreshRepositories() {
-    this.moduleService.getRepositories().subscribe({
-      next: (repositories) => {
-        var dialogRef = this.dialog.open(RefreshReposDialogComponent, {
-          data: {
-            repositories: repositories || [],
-            hasPendingChangeRequest: !!this.pendingRequest
-          }
-        })
-        dialogRef.afterClosed().subscribe(sources => {
-          if (sources === undefined) {
-            return
-          }
-          this.runRefresh(sources.length > 0 ? sources : undefined)
-        })
-      },
-      error: (err) => {
-        this.errorService.handleError(ManageComponent.name, "refreshRepositories", err, "Loading the repositories failed")
+    var dialogRef = this.dialog.open(RefreshReposDialogComponent, {
+      data: {
+        repositories: this.repositories,
+        hasPendingChangeRequest: !!this.pendingRequest
       }
+    })
+    dialogRef.afterClosed().subscribe(sources => {
+      if (sources === undefined) {
+        return
+      }
+      this.runRefresh(sources.length > 0 ? sources : undefined)
     })
   }
 

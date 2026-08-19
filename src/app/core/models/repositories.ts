@@ -55,6 +55,15 @@ export interface InstalledModuleVariant {
   next_version: string;
 }
 
+// UI-side filter for /repository-modules; maps to the query parameters
+// name, installed, update_available and repositories (csv).
+export interface RepoModulesFilter {
+  name?: string;
+  installed?: boolean;
+  updateAvailable?: boolean;
+  repositories?: string[];
+}
+
 export interface RepoModule {
   id: string;
   name: string;

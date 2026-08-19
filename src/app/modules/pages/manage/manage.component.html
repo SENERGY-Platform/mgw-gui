@@ -25,6 +25,17 @@
       </button>
     </mat-form-field>
 
+    <mat-form-field appearance="fill" class="repo-filter" subscriptSizing="dynamic">
+      <mat-label>Repository</mat-label>
+      <mat-select (selectionChange)="load()" [(ngModel)]="repoFilter">
+        <mat-option value="">All repositories</mat-option>
+        <mat-option *ngFor="let repo of repositories" [value]="repo.Source">{{ repo.Source }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-checkbox (change)="load()" [(ngModel)]="installedOnly">Installed</mat-checkbox>
+    <mat-checkbox (change)="load()" [(ngModel)]="updatesOnly">Updates</mat-checkbox>
+
     <span class="spacer"></span>
 
     <span *ngIf="updatesCount > 0" class="updates-count">{{ updatesCount }} update(s) available</span>
