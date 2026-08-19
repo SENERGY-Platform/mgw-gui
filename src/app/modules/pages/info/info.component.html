@@ -66,6 +66,33 @@
       The runtime information of the deployment could not be retrieved completely: {{ module.deployment.error_msg }}
     </p>
 
+    <h3>Containers</h3>
+    <table *ngIf="module.deployment.containers" class="containers-table">
+      <tr>
+        <th>Status</th>
+        <th>Service</th>
+        <th>Container</th>
+        <th>Logs</th>
+      </tr>
+      <tr *ngFor="let entry of module.deployment.containers | keyvalue">
+        <td>
+          <div *ngIf="entry.value.state === 'running' && entry.value.health !== 'unhealthy'" class="circle green"
+               matTooltip="{{entry.value.state}} {{entry.value.health}}"></div>
+          <div *ngIf="entry.value.state !== 'running' || entry.value.health === 'unhealthy'" class="circle red"
+               matTooltip="{{entry.value.state || 'container missing'}} {{entry.value.health}}"></div>
+        </td>
+        <td>{{ entry.key }}</td>
+        <td class="container-name">{{ entry.value.name }}</td>
+        <td>
+          <button [routerLink]="'/containers/' + entry.value.name + '/logs'" color="primary" mat-icon-button
+                  matTooltip="Show logs">
+            <mat-icon>article</mat-icon>
+          </button>
+        </td>
+      </tr>
+    </table>
+    <p *ngIf="!module.deployment.containers">No container information available.</p>
+
     <mat-form-field appearance="fill">
       <mat-label>Deployment ID</mat-label>
       <input [readonly]="true" [value]="module.deployment.id" matInput>
@@ -96,33 +123,6 @@
       <mat-label>Updated</mat-label>
       <input [readonly]="true" [value]="module.deployment.updated | date: 'short'" matInput>
     </mat-form-field>
-
-    <h3>Containers</h3>
-    <table *ngIf="module.deployment.containers" class="containers-table">
-      <tr>
-        <th>Status</th>
-        <th>Service</th>
-        <th>Container</th>
-        <th>Logs</th>
-      </tr>
-      <tr *ngFor="let entry of module.deployment.containers | keyvalue">
-        <td>
-          <div *ngIf="entry.value.state === 'running' && entry.value.health !== 'unhealthy'" class="circle green"
-               matTooltip="{{entry.value.state}} {{entry.value.health}}"></div>
-          <div *ngIf="entry.value.state !== 'running' || entry.value.health === 'unhealthy'" class="circle red"
-               matTooltip="{{entry.value.state || 'container missing'}} {{entry.value.health}}"></div>
-        </td>
-        <td>{{ entry.key }}</td>
-        <td class="container-name">{{ entry.value.name }}</td>
-        <td>
-          <button [routerLink]="'/containers/' + entry.value.name + '/logs'" color="primary" mat-icon-button
-                  matTooltip="Show logs">
-            <mat-icon>article</mat-icon>
-          </button>
-        </td>
-      </tr>
-    </table>
-    <p *ngIf="!module.deployment.containers">No container information available.</p>
 
     <h3>Auxiliary Deployments</h3>
     <aux-deployments-list [deploymentID]="module.deployment.id"></aux-deployments-list>
