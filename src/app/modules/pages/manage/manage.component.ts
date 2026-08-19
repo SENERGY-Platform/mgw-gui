@@ -73,6 +73,9 @@ export class ManageComponent implements OnInit {
   cart: Record<string, ChangeRequestItem> = {}
   // selected variant per module ID, format source|channel
   selectedVariant: Record<string, string> = {}
+  // precomputed per module ID: template bindings need stable identities,
+  // recomputing arrays per change detection cycle loops the renderer
+  variantOptionsById: Record<string, VariantOption[]> = {}
   pendingRequest: ModulesChangeRequest | null = null
 
   constructor(
@@ -95,6 +98,7 @@ export class ManageComponent implements OnInit {
       next: (modules) => {
         modules = modules || []
         modules.forEach(module => {
+          this.variantOptionsById[module.id] = this.computeVariantOptions(module)
           if (!this.selectedVariant[module.id]) {
             this.selectedVariant[module.id] = this.defaultVariantKey(module)
           }
@@ -124,7 +128,7 @@ export class ManageComponent implements OnInit {
     })
   }
 
-  variantOptions(module: RepoModule): VariantOption[] {
+  private computeVariantOptions(module: RepoModule): VariantOption[] {
     var options: VariantOption[] = []
     for (const variant of module.repository_variants || []) {
       for (const channel of variant.channels || []) {
@@ -143,7 +147,7 @@ export class ManageComponent implements OnInit {
     if (module.is_installed) {
       return module.installed_variant.source + "|" + module.installed_variant.channel
     }
-    var options = this.variantOptions(module)
+    var options = this.variantOptionsById[module.id] || []
     return options.length > 0 ? options[0].key : ""
   }
 

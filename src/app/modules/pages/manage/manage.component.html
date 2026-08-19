@@ -85,9 +85,10 @@
       <ng-container matColumnDef="variant">
         <th *matHeaderCellDef mat-header-cell>Repository / Channel</th>
         <td *matCellDef="let module" mat-cell>
-          <mat-select [(ngModel)]="selectedVariant[module.id]" [disabled]="variantOptions(module).length < 2"
+          <mat-select [(ngModel)]="selectedVariant[module.id]"
+                      [disabled]="(variantOptionsById[module.id] || []).length < 2"
                       class="variant-select">
-            <mat-option *ngFor="let option of variantOptions(module)" [value]="option.key">
+            <mat-option *ngFor="let option of variantOptionsById[module.id]" [value]="option.key">
               {{ option.source }} / {{ option.channel }} ({{ option.version }})
             </mat-option>
           </mat-select>
