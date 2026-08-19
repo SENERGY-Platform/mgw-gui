@@ -25,31 +25,30 @@ import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/mat
 import {MatDivider} from "@angular/material/divider";
 
 @Component({
-  selector: 'app-container-list',
-  standalone: true,
-  imports: [
-    MatCell,
-    MatCellDef,
-    MatColumnDef,
-    MatHeaderCell,
-    MatHeaderRow,
-    MatHeaderRowDef,
-    MatIcon,
-    MatIconButton,
-    MatRow,
-    MatRowDef,
-    MatTable,
-    NgIf,
-    SpinnerComponent,
-    MatHeaderCellDef,
-    MatCard,
-    MatCardContent,
-    MatCardTitle,
-    MatCardHeader,
-    MatDivider
-  ],
-  templateUrl: './container-list.component.html',
-  styleUrl: './container-list.component.css'
+    selector: 'app-container-list',
+    imports: [
+        MatCell,
+        MatCellDef,
+        MatColumnDef,
+        MatHeaderCell,
+        MatHeaderRow,
+        MatHeaderRowDef,
+        MatIcon,
+        MatIconButton,
+        MatRow,
+        MatRowDef,
+        MatTable,
+        NgIf,
+        SpinnerComponent,
+        MatHeaderCellDef,
+        MatCard,
+        MatCardContent,
+        MatCardTitle,
+        MatCardHeader,
+        MatDivider
+    ],
+    templateUrl: './container-list.component.html',
+    styleUrl: './container-list.component.css'
 })
 export class ContainerListComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<CoreService>();

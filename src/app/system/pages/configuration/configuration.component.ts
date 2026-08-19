@@ -6,20 +6,19 @@ import {HostNetRngBlacklistComponent} from "./host-net-rng-blacklist/host-net-rn
 import {MatDivider} from "@angular/material/divider";
 
 @Component({
-  selector: 'app-configuration',
-  standalone: true,
-  imports: [
-    HostApplicationsComponent,
-    HostNetItfBlacklistComponent,
-    HostNetRngBlacklistComponent,
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
-    MatCardTitle,
-    MatDivider
-  ],
-  templateUrl: './configuration.component.html',
-  styleUrl: './configuration.component.css'
+    selector: 'app-configuration',
+    imports: [
+        HostApplicationsComponent,
+        HostNetItfBlacklistComponent,
+        HostNetRngBlacklistComponent,
+        MatCard,
+        MatCardContent,
+        MatCardHeader,
+        MatCardTitle,
+        MatDivider
+    ],
+    templateUrl: './configuration.component.html',
+    styleUrl: './configuration.component.css'
 })
 export class ConfigurationComponent {
 

@@ -39,11 +39,10 @@ import {AuxDeployment} from 'src/app/core/models/aux-deployments';
 // The management API deliberately has no write operations for them - those
 // live under /restricted and belong to the modules themselves.
 @Component({
-  selector: 'aux-deployments-list',
-  templateUrl: './aux-deployments-list.component.html',
-  styleUrls: ['./aux-deployments-list.component.css'],
-  standalone: true,
-  imports: [NgIf, DatePipe, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatTooltip, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
+    selector: 'aux-deployments-list',
+    templateUrl: './aux-deployments-list.component.html',
+    styleUrls: ['./aux-deployments-list.component.css'],
+    imports: [NgIf, DatePipe, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatTooltip, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
 })
 export class AuxDeploymentsListComponent implements OnInit, OnDestroy {
   @Input() deploymentID: string = ""

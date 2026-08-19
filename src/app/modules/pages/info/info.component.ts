@@ -17,11 +17,10 @@ import {
 } from 'src/app/core/models/modules';
 
 @Component({
-  selector: 'module-info',
-  templateUrl: './info.component.html',
-  styleUrls: ['./info.component.css'],
-  standalone: true,
-  imports: [SpinnerComponent, NgIf, MatFormField, MatLabel, MatInput, MatChipListbox, NgFor, MatChip, DatePipe, KeyValuePipe, RouterLink, MatIconButton, MatIcon, MatTooltip, AuxDeploymentsListComponent]
+    selector: 'module-info',
+    templateUrl: './info.component.html',
+    styleUrls: ['./info.component.css'],
+    imports: [SpinnerComponent, NgIf, MatFormField, MatLabel, MatInput, MatChipListbox, NgFor, MatChip, DatePipe, KeyValuePipe, RouterLink, MatIconButton, MatIcon, MatTooltip, AuxDeploymentsListComponent]
 })
 export class InfoComponent {
   module!: ModuleInfo

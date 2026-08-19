@@ -19,31 +19,30 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {AddDialogComponent, DialogData} from "./add-dialog/add-dialog.component";
 
 @Component({
-  selector: 'app-host-net-itf-blacklist',
-  standalone: true,
-  imports: [
-    MatCell,
-    MatCellDef,
-    MatColumnDef,
-    MatHeaderCell,
-    MatHeaderRow,
-    MatHeaderRowDef,
-    MatIcon,
-    MatIconButton,
-    MatRow,
-    MatRowDef,
-    MatSort,
-    MatSortHeader,
-    MatTable,
-    MatTooltip,
-    MatHeaderCellDef,
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
-    MatCardTitle
-  ],
-  templateUrl: './host-net-itf-blacklist.component.html',
-  styleUrl: './host-net-itf-blacklist.component.css'
+    selector: 'app-host-net-itf-blacklist',
+    imports: [
+        MatCell,
+        MatCellDef,
+        MatColumnDef,
+        MatHeaderCell,
+        MatHeaderRow,
+        MatHeaderRowDef,
+        MatIcon,
+        MatIconButton,
+        MatRow,
+        MatRowDef,
+        MatSort,
+        MatSortHeader,
+        MatTable,
+        MatTooltip,
+        MatHeaderCellDef,
+        MatCard,
+        MatCardContent,
+        MatCardHeader,
+        MatCardTitle
+    ],
+    templateUrl: './host-net-itf-blacklist.component.html',
+    styleUrl: './host-net-itf-blacklist.component.css'
 })
 export class HostNetItfBlacklistComponent implements AfterViewInit, OnInit {
   displayedColumns: string[] = ['name', 'delete'];

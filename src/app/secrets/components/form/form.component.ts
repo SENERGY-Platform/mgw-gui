@@ -14,11 +14,10 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {MatButton} from '@angular/material/button';
 
 @Component({
-  selector: 'secret-form',
-  templateUrl: './form.component.html',
-  styleUrls: ['./form.component.css'],
-  standalone: true,
-  imports: [SpinnerComponent, NgIf, MatFormField, MatLabel, MatSelect, FormsModule, NgFor, MatOption, ReactiveFormsModule, MatInput, CdkTextareaAutosize, MatButton]
+    selector: 'secret-form',
+    templateUrl: './form.component.html',
+    styleUrls: ['./form.component.css'],
+    imports: [SpinnerComponent, NgIf, MatFormField, MatLabel, MatSelect, FormsModule, NgFor, MatOption, ReactiveFormsModule, MatInput, CdkTextareaAutosize, MatButton]
 })
 export class FormComponent implements OnChanges, OnInit {
   @Input() mode: string = "add"

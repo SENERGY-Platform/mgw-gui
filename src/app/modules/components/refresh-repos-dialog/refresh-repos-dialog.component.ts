@@ -33,11 +33,10 @@ import {Repository} from 'src/app/core/models/repositories';
 // sources (empty array = all) or undefined when cancelled. Refreshing only
 // some repositories avoids GitHub rate limits during local development.
 @Component({
-  selector: 'refresh-repos-dialog',
-  templateUrl: './refresh-repos-dialog.component.html',
-  styleUrls: ['./refresh-repos-dialog.component.css'],
-  standalone: true,
-  imports: [NgIf, NgFor, FormsModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatCheckbox]
+    selector: 'refresh-repos-dialog',
+    templateUrl: './refresh-repos-dialog.component.html',
+    styleUrls: ['./refresh-repos-dialog.component.css'],
+    imports: [NgIf, NgFor, FormsModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatCheckbox]
 })
 export class RefreshReposDialogComponent {
   repositories: Repository[] = []

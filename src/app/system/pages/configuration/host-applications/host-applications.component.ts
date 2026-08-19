@@ -19,32 +19,31 @@ import {MatIconButton} from "@angular/material/button";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
-  selector: 'app-host-applications',
-  standalone: true,
-  imports: [
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
-    MatCardTitle,
-    MatTable,
-    MatSort,
-    MatColumnDef,
-    MatHeaderCell,
-    MatSortHeader,
-    MatSortModule,
-    MatCell,
-    MatCellDef,
-    MatHeaderCellDef,
-    MatHeaderRowDef,
-    MatHeaderRow,
-    MatRow,
-    MatRowDef,
-    MatIcon,
-    MatIconButton,
-    MatTooltip
-  ],
-  templateUrl: './host-applications.component.html',
-  styleUrl: './host-applications.component.css'
+    selector: 'app-host-applications',
+    imports: [
+        MatCard,
+        MatCardContent,
+        MatCardHeader,
+        MatCardTitle,
+        MatTable,
+        MatSort,
+        MatColumnDef,
+        MatHeaderCell,
+        MatSortHeader,
+        MatSortModule,
+        MatCell,
+        MatCellDef,
+        MatHeaderCellDef,
+        MatHeaderRowDef,
+        MatHeaderRow,
+        MatRow,
+        MatRowDef,
+        MatIcon,
+        MatIconButton,
+        MatTooltip
+    ],
+    templateUrl: './host-applications.component.html',
+    styleUrl: './host-applications.component.css'
 })
 export class HostApplicationsComponent implements AfterViewInit, OnInit {
   displayedColumns: string[] = ['name', 'path', 'delete'];

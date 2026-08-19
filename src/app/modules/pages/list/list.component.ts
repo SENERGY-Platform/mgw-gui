@@ -37,11 +37,10 @@ import {ErrorDialogComponent} from 'src/app/core/components/error-dialog/error-d
 import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
 
 @Component({
-  selector: 'app-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.css'],
-  standalone: true,
-  imports: [NgIf, NgSwitch, NgSwitchCase, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatCheckbox, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton, RouterLink]
+    selector: 'app-list',
+    templateUrl: './list.component.html',
+    styleUrls: ['./list.component.css'],
+    imports: [NgIf, NgSwitch, NgSwitchCase, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatCheckbox, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton, RouterLink]
 })
 export class ListComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<ModuleReduced>();

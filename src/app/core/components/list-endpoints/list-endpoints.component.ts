@@ -27,11 +27,10 @@ import {MatIcon} from '@angular/material/icon';
 import {MatCheckbox} from '@angular/material/checkbox';
 
 @Component({
-  selector: 'list-endpoints',
-  templateUrl: './list-endpoints.component.html',
-  styleUrls: ['./list-endpoints.component.css'],
-  standalone: true,
-  imports: [SpinnerComponent, NgIf, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, RouterLink, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatCheckbox]
+    selector: 'list-endpoints',
+    templateUrl: './list-endpoints.component.html',
+    styleUrls: ['./list-endpoints.component.css'],
+    imports: [SpinnerComponent, NgIf, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, RouterLink, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatCheckbox]
 })
 export class ListEndpointsComponent implements OnInit {
   dataSource = new MatTableDataSource<CoreEndpoint>();

@@ -36,11 +36,10 @@ import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
 // Create deployments: /deployment-request resolves the requested module plus
 // its dependencies, one form per module, submitted together as a batch.
 @Component({
-  selector: 'add-deployment',
-  templateUrl: './modules.component.html',
-  styleUrls: ['./modules.component.css'],
-  standalone: true,
-  imports: [NgIf, NgFor, SpinnerComponent, MatButton, DeploymentFormComponent]
+    selector: 'add-deployment',
+    templateUrl: './modules.component.html',
+    styleUrls: ['./modules.component.css'],
+    imports: [NgIf, NgFor, SpinnerComponent, MatButton, DeploymentFormComponent]
 })
 export class ModulesComponent implements OnInit {
   modules: DeploymentRequestModule[] = []

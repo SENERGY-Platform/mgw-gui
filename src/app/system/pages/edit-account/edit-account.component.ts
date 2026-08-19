@@ -27,11 +27,10 @@ export function passwordMustMatch(control: AbstractControl): ValidationErrors | 
 }
 
 @Component({
-  selector: 'app-edit-account',
-  templateUrl: './edit-account.component.html',
-  styleUrls: ['./edit-account.component.css'],
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, SpinnerComponent, NgIf, MatFormField, MatLabel, MatInput, MatError, MatButton, RouterLink]
+    selector: 'app-edit-account',
+    templateUrl: './edit-account.component.html',
+    styleUrls: ['./edit-account.component.css'],
+    imports: [FormsModule, ReactiveFormsModule, SpinnerComponent, NgIf, MatFormField, MatLabel, MatInput, MatError, MatButton, RouterLink]
 })
 export class EditAccountComponent {
   form = new FormGroup({

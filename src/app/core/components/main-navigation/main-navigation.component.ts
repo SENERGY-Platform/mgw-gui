@@ -13,11 +13,10 @@ import {MatIconButton} from '@angular/material/button';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 
 @Component({
-  selector: 'app-main-navigation',
-  templateUrl: './main-navigation.component.html',
-  styleUrls: ['./main-navigation.component.css'],
-  standalone: true,
-  imports: [MatSidenavContainer, MatSidenav, NgFor, NgIf, RouterLinkActive, RouterLink, MatIcon, NgClass, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, MatSidenavContent, RouterOutlet, UpperCasePipe]
+    selector: 'app-main-navigation',
+    templateUrl: './main-navigation.component.html',
+    styleUrls: ['./main-navigation.component.css'],
+    imports: [MatSidenavContainer, MatSidenav, NgFor, NgIf, RouterLinkActive, RouterLink, MatIcon, NgClass, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, MatSidenavContent, RouterOutlet, UpperCasePipe]
 })
 export class MainNavigationComponent implements OnInit {
   @ViewChild('sidenav', {static: false}) sidenav!: MatSidenav;

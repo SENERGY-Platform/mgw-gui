@@ -28,11 +28,10 @@ import {MatButton} from '@angular/material/button';
 // Shows the full error behind a short notification: what failed (context),
 // where it happened technically, and the raw response for diagnosis.
 @Component({
-  selector: 'error-dialog',
-  templateUrl: './error-dialog.component.html',
-  styleUrls: ['./error-dialog.component.css'],
-  standalone: true,
-  imports: [NgIf, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton]
+    selector: 'error-dialog',
+    templateUrl: './error-dialog.component.html',
+    styleUrls: ['./error-dialog.component.css'],
+    imports: [NgIf, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton]
 })
 export class ErrorDialogComponent {
   context: string

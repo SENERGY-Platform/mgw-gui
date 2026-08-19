@@ -31,30 +31,29 @@ interface ListItem {
 }
 
 @Component({
-  selector: 'app-native-list',
-  standalone: true,
-  imports: [
-    MatCell,
-    MatCellDef,
-    MatColumnDef,
-    MatHeaderCell,
-    MatHeaderRow,
-    MatHeaderRowDef,
-    MatRow,
-    MatRowDef,
-    MatTable,
-    NgIf,
-    SpinnerComponent,
-    MatHeaderCellDef,
-    MatIcon,
-    MatIconButton,
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
-    MatCardTitle
-  ],
-  templateUrl: './native-list.component.html',
-  styleUrl: './native-list.component.css'
+    selector: 'app-native-list',
+    imports: [
+        MatCell,
+        MatCellDef,
+        MatColumnDef,
+        MatHeaderCell,
+        MatHeaderRow,
+        MatHeaderRowDef,
+        MatRow,
+        MatRowDef,
+        MatTable,
+        NgIf,
+        SpinnerComponent,
+        MatHeaderCellDef,
+        MatIcon,
+        MatIconButton,
+        MatCard,
+        MatCardContent,
+        MatCardHeader,
+        MatCardTitle
+    ],
+    templateUrl: './native-list.component.html',
+    styleUrl: './native-list.component.css'
 })
 export class NativeListComponent implements OnInit {
   ready: boolean = false

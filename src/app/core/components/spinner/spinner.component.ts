@@ -19,11 +19,10 @@ import {NgIf} from '@angular/common';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 
 @Component({
-  selector: 'spinner',
-  templateUrl: './spinner.component.html',
-  styleUrls: ['./spinner.component.css'],
-  standalone: true,
-  imports: [NgIf, MatProgressSpinner],
+    selector: 'spinner',
+    templateUrl: './spinner.component.html',
+    styleUrls: ['./spinner.component.css'],
+    imports: [NgIf, MatProgressSpinner]
 })
 export class SpinnerComponent {
   @Input() show = false;

@@ -16,21 +16,20 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'app-add-dialog',
-  standalone: true,
-  imports: [
-    MatFormField,
-    MatInput,
-    MatLabel,
-    MatDialogContent,
-    MatDialogTitle,
-    MatButton,
-    MatDialogActions,
-    FormsModule,
-    ReactiveFormsModule
-  ],
-  templateUrl: './add-dialog.component.html',
-  styleUrl: './add-dialog.component.css'
+    selector: 'app-add-dialog',
+    imports: [
+        MatFormField,
+        MatInput,
+        MatLabel,
+        MatDialogContent,
+        MatDialogTitle,
+        MatButton,
+        MatDialogActions,
+        FormsModule,
+        ReactiveFormsModule
+    ],
+    templateUrl: './add-dialog.component.html',
+    styleUrl: './add-dialog.component.css'
 })
 export class AddDialogComponent implements OnInit {
   form!: FormGroup;

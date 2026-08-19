@@ -37,11 +37,10 @@ import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
 // embedded deployment and submitted via PUT /deployments. Also applies a
 // pending module update to the deployment (deployed version lags installed).
 @Component({
-  selector: 'edit-deployment',
-  templateUrl: './show-module-component.component.html',
-  styleUrls: ['./show-module-component.component.css'],
-  standalone: true,
-  imports: [NgIf, NgFor, SpinnerComponent, MatButton, DeploymentFormComponent]
+    selector: 'edit-deployment',
+    templateUrl: './show-module-component.component.html',
+    styleUrls: ['./show-module-component.component.css'],
+    imports: [NgIf, NgFor, SpinnerComponent, MatButton, DeploymentFormComponent]
 })
 export class ShowModuleComponentComponent implements OnInit {
   modules: DeploymentRequestModule[] = []

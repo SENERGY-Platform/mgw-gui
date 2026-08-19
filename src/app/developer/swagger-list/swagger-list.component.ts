@@ -19,24 +19,23 @@ export interface Item {
 }
 
 @Component({
-  selector: 'app-swagger-list',
-  standalone: true,
-  imports: [
-    MatCell,
-    MatCellDef,
-    MatColumnDef,
-    MatHeaderCell,
-    MatHeaderRow,
-    MatHeaderRowDef,
-    MatIcon,
-    MatIconButton,
-    MatRow,
-    MatRowDef,
-    MatTable,
-    MatHeaderCellDef,
-  ],
-  templateUrl: './swagger-list.component.html',
-  styleUrl: './swagger-list.component.css'
+    selector: 'app-swagger-list',
+    imports: [
+        MatCell,
+        MatCellDef,
+        MatColumnDef,
+        MatHeaderCell,
+        MatHeaderRow,
+        MatHeaderRowDef,
+        MatIcon,
+        MatIconButton,
+        MatRow,
+        MatRowDef,
+        MatTable,
+        MatHeaderCellDef,
+    ],
+    templateUrl: './swagger-list.component.html',
+    styleUrl: './swagger-list.component.css'
 })
 export class SwaggerListComponent implements OnInit {
   dataSource = new MatTableDataSource<Item>();

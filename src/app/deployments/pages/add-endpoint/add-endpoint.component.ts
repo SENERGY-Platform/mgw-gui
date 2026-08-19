@@ -10,11 +10,10 @@ import {MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
 
 @Component({
-  selector: 'app-add-endpoint',
-  templateUrl: './add-endpoint.component.html',
-  styleUrls: ['./add-endpoint.component.css'],
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, RouterLink]
+    selector: 'app-add-endpoint',
+    templateUrl: './add-endpoint.component.html',
+    styleUrls: ['./add-endpoint.component.css'],
+    imports: [FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, RouterLink]
 })
 export class AddEndpointComponent {
   form = new FormGroup({

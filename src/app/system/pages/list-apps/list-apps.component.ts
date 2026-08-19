@@ -26,11 +26,10 @@ import {MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
-  selector: 'app-list-apps',
-  templateUrl: './list-apps.component.html',
-  styleUrls: ['./list-apps.component.css'],
-  standalone: true,
-  imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
+    selector: 'app-list-apps',
+    templateUrl: './list-apps.component.html',
+    styleUrls: ['./list-apps.component.css'],
+    imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
 })
 export class ListAppsComponent {
   dataSource = new MatTableDataSource<DeviceUser>();

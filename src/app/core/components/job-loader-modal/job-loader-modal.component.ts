@@ -17,11 +17,10 @@ export type JobResultKind =
   | 'repositories-refresh'
 
 @Component({
-  selector: 'app-job-loader-modal',
-  templateUrl: './job-loader-modal.component.html',
-  styleUrls: ['./job-loader-modal.component.css'],
-  standalone: true,
-  imports: [SpinnerComponent]
+    selector: 'app-job-loader-modal',
+    templateUrl: './job-loader-modal.component.html',
+    styleUrls: ['./job-loader-modal.component.css'],
+    imports: [SpinnerComponent]
 })
 export class JobLoaderModalComponent implements OnInit {
   jobID!: string

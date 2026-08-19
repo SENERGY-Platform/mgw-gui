@@ -42,11 +42,10 @@ import {Repository} from 'src/app/core/models/repositories';
 import {AddRepositoryDialogComponent} from '../../components/add-repository-dialog/add-repository-dialog.component';
 
 @Component({
-  selector: 'repositories',
-  templateUrl: './repositories.component.html',
-  styleUrls: ['./repositories.component.css'],
-  standalone: true,
-  imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
+    selector: 'repositories',
+    templateUrl: './repositories.component.html',
+    styleUrls: ['./repositories.component.css'],
+    imports: [NgIf, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
 })
 export class RepositoriesComponent implements OnInit {
   dataSource = new MatTableDataSource<Repository>();

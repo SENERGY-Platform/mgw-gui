@@ -13,11 +13,10 @@ import {NgIf} from '@angular/common';
 import {Highlight} from 'ngx-highlightjs';
 
 @Component({
-  selector: 'app-logs',
-  templateUrl: './logs.component.html',
-  styleUrls: ['./logs.component.css'],
-  standalone: true,
-  imports: [MatSlideToggle, FormsModule, MatFormField, MatLabel, MatInput, NgIf, Highlight]
+    selector: 'app-logs',
+    templateUrl: './logs.component.html',
+    styleUrls: ['./logs.component.css'],
+    imports: [MatSlideToggle, FormsModule, MatFormField, MatLabel, MatInput, NgIf, Highlight]
 })
 export class LogsComponent implements OnDestroy {
   containerID!: string

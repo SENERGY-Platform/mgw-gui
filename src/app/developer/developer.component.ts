@@ -7,18 +7,17 @@ const gatewayBase = "http://core-api";
 const docBase = "/core/swagger";
 
 @Component({
-  selector: 'app-developer',
-  standalone: true,
-  imports: [
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
-    MatCardTitle,
-    MatCardSubtitle,
-    SwaggerListComponent,
-  ],
-  templateUrl: './developer.component.html',
-  styleUrl: './developer.component.css'
+    selector: 'app-developer',
+    imports: [
+        MatCard,
+        MatCardContent,
+        MatCardHeader,
+        MatCardTitle,
+        MatCardSubtitle,
+        SwaggerListComponent,
+    ],
+    templateUrl: './developer.component.html',
+    styleUrl: './developer.component.css'
 })
 export class DeveloperComponent {
   publicApis: Item[] = [

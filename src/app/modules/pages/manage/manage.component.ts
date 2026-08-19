@@ -57,11 +57,10 @@ interface VariantOption {
 }
 
 @Component({
-  selector: 'manage-modules',
-  templateUrl: './manage.component.html',
-  styleUrls: ['./manage.component.css'],
-  standalone: true,
-  imports: [NgIf, NgFor, FormsModule, MatCheckbox, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, MatIconButton, MatTooltip, MatIcon, MatFormField, MatLabel, MatSuffix, MatInput, MatSelect, MatOption]
+    selector: 'manage-modules',
+    templateUrl: './manage.component.html',
+    styleUrls: ['./manage.component.css'],
+    imports: [NgIf, NgFor, FormsModule, MatCheckbox, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, MatIconButton, MatTooltip, MatIcon, MatFormField, MatLabel, MatSuffix, MatInput, MatSelect, MatOption]
 })
 export class ManageComponent implements OnInit {
   dataSource = new MatTableDataSource<RepoModule>();

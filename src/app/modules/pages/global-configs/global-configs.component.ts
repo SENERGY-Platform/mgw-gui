@@ -48,11 +48,10 @@ import {
 import {GlobalConfigDialogComponent} from '../../components/global-config-dialog/global-config-dialog.component';
 
 @Component({
-  selector: 'global-configs',
-  templateUrl: './global-configs.component.html',
-  styleUrls: ['./global-configs.component.css'],
-  standalone: true,
-  imports: [NgIf, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
+    selector: 'global-configs',
+    templateUrl: './global-configs.component.html',
+    styleUrls: ['./global-configs.component.css'],
+    imports: [NgIf, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
 })
 export class GlobalConfigsComponent implements OnInit {
   dataSource = new MatTableDataSource<GlobalConfig>();

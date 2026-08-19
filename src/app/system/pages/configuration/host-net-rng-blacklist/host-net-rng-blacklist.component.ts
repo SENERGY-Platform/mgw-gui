@@ -19,31 +19,30 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {AddDialogComponent, DialogData} from "./add-dialog/add-dialog.component";
 
 @Component({
-  selector: 'app-host-net-rng-blacklist',
-  standalone: true,
-  imports: [
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
-    MatCardTitle,
-    MatCell,
-    MatCellDef,
-    MatColumnDef,
-    MatHeaderCell,
-    MatHeaderRow,
-    MatHeaderRowDef,
-    MatIcon,
-    MatIconButton,
-    MatRow,
-    MatRowDef,
-    MatSort,
-    MatSortHeader,
-    MatTable,
-    MatTooltip,
-    MatHeaderCellDef
-  ],
-  templateUrl: './host-net-rng-blacklist.component.html',
-  styleUrl: './host-net-rng-blacklist.component.css'
+    selector: 'app-host-net-rng-blacklist',
+    imports: [
+        MatCard,
+        MatCardContent,
+        MatCardHeader,
+        MatCardTitle,
+        MatCell,
+        MatCellDef,
+        MatColumnDef,
+        MatHeaderCell,
+        MatHeaderRow,
+        MatHeaderRowDef,
+        MatIcon,
+        MatIconButton,
+        MatRow,
+        MatRowDef,
+        MatSort,
+        MatSortHeader,
+        MatTable,
+        MatTooltip,
+        MatHeaderCellDef
+    ],
+    templateUrl: './host-net-rng-blacklist.component.html',
+    styleUrl: './host-net-rng-blacklist.component.css'
 })
 export class HostNetRngBlacklistComponent implements AfterViewInit, OnInit {
   displayedColumns: string[] = ['range', 'delete'];

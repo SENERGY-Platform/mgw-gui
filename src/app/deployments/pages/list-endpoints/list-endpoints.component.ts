@@ -17,11 +17,10 @@ import {
 } from '../../../core/components/list-endpoints/list-endpoints.component';
 
 @Component({
-  selector: 'app-list',
-  templateUrl: './list-endpoints.component.html',
-  styleUrls: ['./list-endpoints.component.css'],
-  standalone: true,
-  imports: [SpinnerComponent, NgIf, NgFor, MatCard, MatCardContent, RouterLink, ListEndpointsComponent_1]
+    selector: 'app-list',
+    templateUrl: './list-endpoints.component.html',
+    styleUrls: ['./list-endpoints.component.css'],
+    imports: [SpinnerComponent, NgIf, NgFor, MatCard, MatCardContent, RouterLink, ListEndpointsComponent_1]
 })
 export class ListEndpointsComponent implements OnInit {
   deploymentIDs: string[] = []

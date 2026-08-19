@@ -30,11 +30,10 @@ import {ModulesChangeRequest} from 'src/app/core/models/modules';
 // Shows the pending modules change request for review. Closes with
 // 'execute', 'discard' or undefined (keep the request pending).
 @Component({
-  selector: 'change-request-dialog',
-  templateUrl: './change-request-dialog.component.html',
-  styleUrls: ['./change-request-dialog.component.css'],
-  standalone: true,
-  imports: [NgIf, NgFor, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, DatePipe]
+    selector: 'change-request-dialog',
+    templateUrl: './change-request-dialog.component.html',
+    styleUrls: ['./change-request-dialog.component.css'],
+    imports: [NgIf, NgFor, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, DatePipe]
 })
 export class ChangeRequestDialogComponent {
   request!: ModulesChangeRequest

@@ -38,11 +38,10 @@ import {MatIcon} from '@angular/material/icon';
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
 
 @Component({
-  selector: 'list-job',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.css'],
-  standalone: true,
-  imports: [NgIf, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, DatePipe, MatCard, MatCardContent, MatCardHeader, MatCardTitle]
+    selector: 'list-job',
+    templateUrl: './list.component.html',
+    styleUrls: ['./list.component.css'],
+    imports: [NgIf, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, DatePipe, MatCard, MatCardContent, MatCardHeader, MatCardTitle]
 })
 export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
   dataSource = new MatTableDataSource<JobRow>();

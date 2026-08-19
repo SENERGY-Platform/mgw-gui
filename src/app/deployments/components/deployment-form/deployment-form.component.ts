@@ -90,11 +90,10 @@ interface FileGroupRow {
 // (deployment-request or the installed module for edits) and the selectable
 // options, then collects a DeploymentUserInput per form on submit.
 @Component({
-  selector: 'deployment-form',
-  templateUrl: './deployment-form.component.html',
-  styleUrls: ['./deployment-form.component.css'],
-  standalone: true,
-  imports: [NgIf, NgFor, FormsModule, MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatFormField, MatLabel, MatHint, MatInput, MatSelect, MatOption, MatCheckbox, MatIconButton, MatIcon, MatTooltip]
+    selector: 'deployment-form',
+    templateUrl: './deployment-form.component.html',
+    styleUrls: ['./deployment-form.component.css'],
+    imports: [NgIf, NgFor, FormsModule, MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatFormField, MatLabel, MatHint, MatInput, MatSelect, MatOption, MatCheckbox, MatIconButton, MatIcon, MatTooltip]
 })
 export class DeploymentFormComponent implements OnInit {
   @Input() module!: DeploymentRequestModule

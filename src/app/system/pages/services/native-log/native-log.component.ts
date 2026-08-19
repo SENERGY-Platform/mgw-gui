@@ -11,19 +11,18 @@ import {CoreManagerService} from "../../../../core/services/core-manager/core-ma
 import {Highlight} from "ngx-highlightjs";
 
 @Component({
-  selector: 'app-native-log',
-  standalone: true,
-  imports: [
-    FormsModule,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    MatSlideToggle,
-    NgIf,
-    Highlight
-  ],
-  templateUrl: './native-log.component.html',
-  styleUrl: './native-log.component.css'
+    selector: 'app-native-log',
+    imports: [
+        FormsModule,
+        MatFormField,
+        MatInput,
+        MatLabel,
+        MatSlideToggle,
+        NgIf,
+        Highlight
+    ],
+    templateUrl: './native-log.component.html',
+    styleUrl: './native-log.component.css'
 })
 export class NativeLogComponent implements OnDestroy{
   logID!: string
