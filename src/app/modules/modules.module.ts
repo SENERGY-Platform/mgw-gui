@@ -17,6 +17,7 @@ import {ListComponent} from './pages/list/list.component';
 import {InfoComponent} from './pages/info/info.component';
 import {MatCardModule} from '@angular/material/card';
 import {ManageComponent} from './pages/manage/manage.component';
+import {GlobalConfigsComponent} from './pages/global-configs/global-configs.component';
 import {DeploymentsModule} from '../deployments/deployments.module';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
@@ -25,6 +26,7 @@ const routes: Routes = [
     path: 'modules', children: [
       {path: '', component: ListComponent},
       {path: 'manage', component: ManageComponent},
+      {path: 'global-configs', component: GlobalConfigsComponent},
       {path: 'info/:id', component: InfoComponent},
     ]
   },
@@ -52,7 +54,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     ListComponent,
     InfoComponent,
-    ManageComponent
+    ManageComponent,
+    GlobalConfigsComponent
   ],
   exports: []
 })

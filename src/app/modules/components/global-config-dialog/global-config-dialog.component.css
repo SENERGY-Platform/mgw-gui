@@ -1,0 +1,23 @@
+.dialog-content {
+  min-width: 420px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.type-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.error {
+  color: #b3372f;
+  font-weight: 500;
+}
+
+.hint {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+}

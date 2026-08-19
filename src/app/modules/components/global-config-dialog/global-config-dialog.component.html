@@ -1,0 +1,54 @@
+<h1 mat-dialog-title>{{ isEdit ? 'Edit global config' : 'New global config' }}</h1>
+
+<div class="dialog-content" mat-dialog-content>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Name</mat-label>
+    <input [(ngModel)]="name" matInput>
+  </mat-form-field>
+
+  <div class="type-row">
+    <mat-form-field appearance="fill">
+      <mat-label>Data type</mat-label>
+      <mat-select [(ngModel)]="dataType">
+        <mat-option [value]="DATA_TYPE_STRING">string</mat-option>
+        <mat-option [value]="DATA_TYPE_INT">int</mat-option>
+        <mat-option [value]="DATA_TYPE_FLOAT">float</mat-option>
+        <mat-option [value]="DATA_TYPE_BOOL">bool</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-checkbox [(ngModel)]="isSlice">List of values</mat-checkbox>
+  </div>
+
+  <p *ngIf="isEdit" class="hint">Deployments referencing this config use the value as declared by their module
+    config — changing the data type can break them.</p>
+
+  <mat-form-field *ngIf="isSlice" appearance="fill" class="full-width">
+    <mat-label>Values</mat-label>
+    <textarea [(ngModel)]="rawValue" matInput rows="6"></textarea>
+    <mat-hint>One value per line{{ dataType === DATA_TYPE_BOOL ? ' (true or false)' : '' }}</mat-hint>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="!isSlice && dataType !== DATA_TYPE_BOOL" appearance="fill" class="full-width">
+    <mat-label>Value</mat-label>
+    <input [(ngModel)]="rawValue" [step]="dataType === DATA_TYPE_INT ? 1 : 'any'"
+           [type]="(dataType === DATA_TYPE_INT || dataType === DATA_TYPE_FLOAT) ? 'number' : 'text'" matInput>
+    <mat-hint *ngIf="dataType === DATA_TYPE_INT">Whole number</mat-hint>
+    <mat-hint *ngIf="dataType === DATA_TYPE_FLOAT">Number</mat-hint>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="!isSlice && dataType === DATA_TYPE_BOOL" appearance="fill" class="full-width">
+    <mat-label>Value</mat-label>
+    <mat-select [(ngModel)]="boolValue">
+      <mat-option value="true">true</mat-option>
+      <mat-option value="false">false</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <p *ngIf="error" class="error">{{ error }}</p>
+</div>
+
+<div mat-dialog-actions>
+  <button [mat-dialog-close]="undefined" mat-button>Cancel</button>
+  <button (click)="save()" color="primary" mat-raised-button>{{ isEdit ? 'Save' : 'Create' }}</button>
+</div>

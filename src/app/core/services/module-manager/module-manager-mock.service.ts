@@ -21,6 +21,7 @@ import {
 } from '../../models/jobs';
 import {ChangeRequestItem, ModuleReduced, ModulesChangeRequest} from '../../models/modules';
 import {RepoModule, Repository} from '../../models/repositories';
+import {GlobalConfig, GlobalConfigInput} from '../../models/global-configs';
 
 
 const TEMPLATE = {
@@ -531,6 +532,34 @@ export class ModuleManagerMockService {
     return new Observable(obs => {
       obs.next({"id": "id", "completed": new Date(), "error": ""})
     })
+  }
+
+  private globalConfigs: Record<string, GlobalConfig> = {
+    "gc-1": {"id": "gc-1", "name": "MQTT Broker Host", "data_type": 1, "is_slice": false, "value": "broker.local"},
+    "gc-2": {"id": "gc-2", "name": "Retry Limits", "data_type": 2, "is_slice": true, "value": [3, 5, 10]},
+    "gc-3": {"id": "gc-3", "name": "Debug Enabled", "data_type": 4, "is_slice": false, "value": false}
+  }
+  private globalConfigCounter = 3
+
+  getGlobalConfigs(): Observable<Record<string, GlobalConfig>> {
+    return of({...this.globalConfigs}).pipe(delay(300))
+  }
+
+  createGlobalConfig(input: GlobalConfigInput): Observable<string> {
+    this.globalConfigCounter++
+    var id = "gc-" + this.globalConfigCounter
+    this.globalConfigs[id] = {"id": id, ...input}
+    return of(id)
+  }
+
+  updateGlobalConfig(configID: string, input: GlobalConfigInput): Observable<any> {
+    this.globalConfigs[configID] = {"id": configID, ...input}
+    return of(true)
+  }
+
+  deleteGlobalConfig(configID: string): Observable<any> {
+    delete this.globalConfigs[configID]
+    return of(true)
   }
 
   getRepositories(): Observable<Repository[]> {
