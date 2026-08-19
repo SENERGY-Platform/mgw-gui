@@ -70,10 +70,6 @@ mat-sidenav-container {
   position: relative;
   max-height: 0;
   z-index: 1;
-  -webkit-transition: 0.4s cubic-bezier(0.35, 0, 0.25, 1);
-  -webkit-transition-property: max-height;
-  -moz-transition: 0.4s cubic-bezier(0.35, 0, 0.25, 1);
-  -moz-transition-property: max-height;
   transition: 0.4s cubic-bezier(0.35, 0, 0.25, 1);
   transition-property: max-height
 }
@@ -85,9 +81,7 @@ mat-sidenav-container {
 
 .toggle-icon.toggled {
   transform: rotate(-180deg);
-  -webkit-transform: rotate(-180deg);
   transition: transform 0.3s ease-in-out;
-  -webkit-transition: -webkit-transform 0.3s ease-in-out;
 }
 
 .toggle-list-button {
@@ -105,7 +99,6 @@ mat-sidenav-container {
   color: inherit;
   margin: auto 0 auto auto;
   transition: transform .3s linear;
-  -webkit-transition: -webkit-transform .3s linear;
 }
 
 .background-color-sidenav {

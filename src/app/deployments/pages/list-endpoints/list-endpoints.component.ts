@@ -6,7 +6,7 @@ import {CoreService, CoreServicesResponse} from 'src/app/system/models/services'
 import {CoreManagerService} from 'src/app/core/services/core-manager/core-manager.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {SelectionModel} from '@angular/cdk/collections';
-import {Router, RouterLink} from '@angular/router';
+import {Router} from '@angular/router';
 import {CoreEndpoint, CoreEndpointsResponse} from '../../models/endpoints';
 import {UtilService} from 'src/app/core/services/util/util.service';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
@@ -20,7 +20,7 @@ import {
     selector: 'app-list',
     templateUrl: './list-endpoints.component.html',
     styleUrls: ['./list-endpoints.component.css'],
-    imports: [SpinnerComponent, MatCard, MatCardContent, RouterLink, ListEndpointsComponent_1]
+    imports: [SpinnerComponent, MatCard, MatCardContent, ListEndpointsComponent_1]
 })
 export class ListEndpointsComponent implements OnInit {
   deploymentIDs: string[] = []
