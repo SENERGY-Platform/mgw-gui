@@ -1,3 +1,7 @@
-#update-button {
-  margin: 10px
+.update-hint {
+  vertical-align: middle;
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  margin-left: 4px;
 }

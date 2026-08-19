@@ -22,13 +22,13 @@
   </mat-form-field>
 
   <mat-form-field appearance="fill">
-    <mat-label>Type</mat-label>
-    <input [readonly]="true" [value]="module.type" matInput>
+    <mat-label>Repository Source</mat-label>
+    <input [readonly]="true" [value]="module.source" matInput>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
-    <mat-label>Deployment Type</mat-label>
-    <input [readonly]="true" [value]="module.deployment_type" matInput>
+    <mat-label>Repository Channel</mat-label>
+    <input [readonly]="true" [value]="module.channel" matInput>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
@@ -55,4 +55,43 @@
     <mat-chip *ngFor="let tag of module.tags">{{ tag }}</mat-chip>
   </mat-chip-listbox>
 
+  <div *ngIf="module.is_deployed">
+    <h3>Deployment</h3>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Deployment ID</mat-label>
+      <input [readonly]="true" [value]="module.deployment.id" matInput>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Status</mat-label>
+      <input [readonly]="true" [value]="deploymentStateLabel()" matInput>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Deployed Module Version</mat-label>
+      <input [readonly]="true" [value]="module.deployment.module_version" matInput>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Deployed From</mat-label>
+      <input [readonly]="true" [value]="module.deployment.module_source + ' / ' + module.deployment.module_channel"
+             matInput>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Created</mat-label>
+      <input [readonly]="true" [value]="module.deployment.created | date: 'short'" matInput>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Updated</mat-label>
+      <input [readonly]="true" [value]="module.deployment.updated | date: 'short'" matInput>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="!module.is_deployed">
+    <h3>Deployment</h3>
+    <p>This module is not deployed.</p>
+  </div>
 </div>

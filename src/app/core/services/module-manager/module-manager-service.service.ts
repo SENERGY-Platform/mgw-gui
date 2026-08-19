@@ -27,6 +27,7 @@ import {
   RepositoryJobResult
 } from '../../models/jobs';
 import {AuxDeployment, AuxDeploymentResponse} from 'src/app/deployments/models/sub-deployments';
+import {ModuleReduced} from '../../models/modules';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +68,39 @@ export class ModuleManagerService {
   loadModule(moduleId: string): Observable<any> {
     var url = this.moduleManagerPath + "/modules/" + this.doubleEncode(moduleId)
     return this.http.get(url)
+  }
+
+  loadModulesReduced(): Observable<ModuleReduced[]> {
+    var url = this.moduleManagerPath + "/modules-reduced"
+    return <Observable<ModuleReduced[]>>this.http.get(url)
+  }
+
+  // Deployments (next-gen API, addressed by module IDs)
+
+  // synchronous: only sets the enabled flag, the runtime monitor starts the
+  // containers afterwards; returns the IDs of the enabled deployments
+  enableDeployments(moduleIDs: string[]): Observable<string[]> {
+    var url = this.moduleManagerPath + "/deployments-enable"
+    return <Observable<string[]>>this.http.post(url, moduleIDs)
+  }
+
+  // synchronous, see enableDeployments
+  disableDeployments(moduleIDs: string[]): Observable<string[]> {
+    var url = this.moduleManagerPath + "/deployments-disable"
+    return <Observable<string[]>>this.http.post(url, moduleIDs)
+  }
+
+  // job, result via getDeploymentsResult
+  recreateDeployments(moduleIDs: string[]): Observable<Job> {
+    var url = this.moduleManagerPath + "/deployments-recreate"
+    return <Observable<Job>>this.http.post(url, moduleIDs)
+  }
+
+  // job, result via getDeploymentsDeleteResult
+  removeDeployments(moduleIDs: string[]): Observable<Job> {
+    var url = this.moduleManagerPath + "/deployments"
+    let queryParams = new HttpParams().set("module_ids", moduleIDs.join(","))
+    return <Observable<Job>>this.http.delete(url, undefined, queryParams)
   }
 
   // Module Update

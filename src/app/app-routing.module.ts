@@ -3,7 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {DeveloperComponent} from "./developer/developer.component";
 
 const routes: Routes = [
-  {path: '', redirectTo: '/deployments', pathMatch: 'full'},
+  {path: '', redirectTo: '/modules', pathMatch: 'full'},
   {path: 'developer', component: DeveloperComponent},
 ];
 

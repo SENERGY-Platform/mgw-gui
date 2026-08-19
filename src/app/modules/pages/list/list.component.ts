@@ -15,34 +15,44 @@ import {
   MatTableDataSource
 } from '@angular/material/table';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
-import {Module, ModuleUpdates} from '../../models/module_models';
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {Router, RouterLink} from '@angular/router';
 import {UtilService} from 'src/app/core/services/util/util.service';
-import {UpdateModalComponent} from '../../components/update-modal/update-modal.component';
-import {catchError, concatMap, forkJoin, map, Observable, of, throwError} from 'rxjs';
-import {NgIf} from '@angular/common';
+import {SelectionModel} from '@angular/cdk/collections';
+import {concatMap, Observable, of} from 'rxjs';
+import {NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
-import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
+import {MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatIcon} from '@angular/material/icon';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {
+  DEPLOYMENT_STATE_HEALTHY,
+  DEPLOYMENT_STATE_UNHEALTHY,
+  ModuleReduced,
+  needsDeploymentUpdate
+} from 'src/app/core/models/modules';
+import {DeploymentDeleteJobResult, DeploymentJobResult} from 'src/app/core/models/jobs';
+import {JobResultKind} from 'src/app/core/components/job-loader-modal/job-loader-modal.component';
 
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css'],
   standalone: true,
-  imports: [NgIf, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, MatFabButton, RouterLink]
+  imports: [NgIf, NgSwitch, NgSwitchCase, SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatCheckbox, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton, RouterLink]
 })
 export class ListComponent implements OnInit, OnDestroy {
-  dataSource = new MatTableDataSource<Module>();
+  dataSource = new MatTableDataSource<ModuleReduced>();
   ready: Boolean = false;
   init: Boolean = true;
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['name', 'version', 'info', 'deploy', 'delete', 'update']
-  moduleIDsReadyForUpdate: Record<string, string[]> = {}
-  availableModuleUpdates: ModuleUpdates = {}
+  displayColumns = ['select', 'status', 'name', 'version', 'deploy', 'start', 'stop', 'recreate', 'delete', 'info']
+  selection = new SelectionModel<string>(true, []);
+  modulesById: Record<string, ModuleReduced> = {}
   interval: any
+
+  needsDeploymentUpdate = needsDeploymentUpdate
 
   constructor(
     public dialog: MatDialog,
@@ -51,130 +61,31 @@ export class ListComponent implements OnInit, OnDestroy {
     private router: Router,
     private utilService: UtilService
   ) {
-
   }
 
   ngOnInit(): void {
-    var moduleObs = this.loadModules();
-    var updateObs = this.checkForCurrentlyAvailableUpdates();
-    forkJoin([moduleObs, updateObs]).subscribe({
-      next: (b) => {
-        console.log(b)
-        this.ready = true
-      },
-      error: (err) => {
-        this.errorService.handleError(ListComponent.name, "ngOnInit", err)
-        this.ready = true
-      }
-    })
-
-    this.init = false;
-
+    this.loadModules(false)
     this.startPeriodicRefresh()
-  }
-
-  startPeriodicRefresh() {
-    this.interval = setInterval(() => {
-      this.checkForCurrentlyAvailableUpdates().subscribe();
-    }, 5000);
+    this.init = false;
   }
 
   ngOnDestroy(): void {
+    this.stopPeriodicRefresh()
+  }
+
+  startPeriodicRefresh() {
+    this.stopPeriodicRefresh()
+    this.interval = setInterval(() => {
+      this.loadModules(true);
+    }, 5000);
+  }
+
+  stopPeriodicRefresh() {
     clearTimeout(this.interval)
   }
 
-  checkForCurrentlyAvailableUpdates(): Observable<boolean> {
-    // Only get currently available updates, this does not trigger the backend to check for actual new versions in the repos
-    return this.moduleService.getAvailableUpdates().pipe(
-      map(updates => {
-        if (!!updates) {
-          this.availableModuleUpdates = updates
-        }
-        return true
-      })
-    )
-  }
-
-
-  checkForUpdates() {
-    this.stopPendingUpdates().pipe(
-      concatMap(_ => {
-        return this.moduleService.checkForUpdates()
-      }),
-      concatMap(jobID => {
-        var message = "Check for module updates"
-        return this.utilService.checkJobStatus(jobID, message, "module-manager")
-      }),
-      concatMap(jobResult => {
-        if (!jobResult.success) {
-          throwError(() => new Error(jobResult.error))
-        }
-        return this.moduleService.getAvailableUpdates()
-      }),
-      concatMap(updates => {
-        // response can be null
-        if (!!updates) {
-          this.availableModuleUpdates = updates
-        }
-        return of()
-      }),
-      catchError(err => {
-        this.errorService.handleError(ListComponent.name, "checkForUpdates", err)
-        this.ready = true
-        return of()
-      })
-    ).subscribe()
-
-  }
-
-  stopPendingUpdates(): Observable<boolean> {
-    for (const [moduleID, update] of Object.entries(this.availableModuleUpdates)) {
-      if (update.pending) {
-        return this.moduleService.cancelModuleUpdate(moduleID).pipe(
-          map(result => true),
-          catchError((err) => {
-            throw err
-          })
-        )
-      }
-    }
-
-    return of(true)
-  }
-
-  startUpdate(moduleID: string) {
-    this.ready = false
-    // otherwise an update is not possible
-    this.stopPendingUpdates().pipe(
-      concatMap((_) => {
-        this.ready = true
-        var moduleUpdate = this.availableModuleUpdates[moduleID]
-
-        var dialogRef = this.dialog.open(UpdateModalComponent, {
-          data: {
-            availableModuleUpdate: moduleUpdate,
-            moduleID: moduleID
-          }
-        });
-
-        return dialogRef?.afterClosed()
-      }),
-      concatMap((_) => {
-        return this.loadModules()
-      })
-    ).subscribe({
-      next: (_) => {
-
-      },
-      error: (err) => {
-        this.ready = true
-        this.errorService.handleError(ListComponent.name, "stopPendingUpdates", err)
-      }
-    })
-  }
-
   ngAfterViewInit(): void {
-    this.dataSource.sortingDataAccessor = (row: Module, sortHeaderId: string) => {
+    this.dataSource.sortingDataAccessor = (row: ModuleReduced, sortHeaderId: string) => {
       var value = (<any>row)[sortHeaderId];
       value = (typeof (value) === 'string') ? value.toUpperCase() : value;
       return value
@@ -182,58 +93,193 @@ export class ListComponent implements OnInit, OnDestroy {
     this.dataSource.sort = this.sort;
   }
 
-  loadModules(): Observable<boolean> {
-    return this.moduleService.loadModules().pipe(
-      map((modules) => {
-        if (!modules) {
-          this.dataSource.data = []
-        } else {
-          var moduleList: Module[] = []
-          for (const [_, module] of Object.entries(modules)) {
-            moduleList.push(module)
-          }
-          this.dataSource.data = moduleList
+  loadModules(background: boolean) {
+    this.moduleService.loadModulesReduced().subscribe({
+      next: (modules) => {
+        modules = modules || []
+        this.modulesById = {}
+        modules.forEach(module => this.modulesById[module.id] = module)
+        this.dataSource.data = modules
+        this.ready = true
+      },
+      error: (err) => {
+        if (!background) {
+          this.errorService.handleError(ListComponent.name, "loadModules", err)
         }
-        return true
-      })
-    )
+        this.ready = true
+      }
+    })
   }
 
-  deleteModule(moduleID: string) {
-    this.stopPeriodicRefresh()
+  // disabled deployments have state 0, same as deployments with undetermined state
+  statusOf(module: ModuleReduced): string {
+    if (!module.is_deployed) {
+      return "none"
+    }
+    if (!module.deployment.enabled) {
+      return "disabled"
+    }
+    switch (module.deployment.state) {
+      case DEPLOYMENT_STATE_HEALTHY:
+        return "healthy"
+      case DEPLOYMENT_STATE_UNHEALTHY:
+        return "unhealthy"
+      default:
+        return "unknown"
+    }
+  }
 
-    this.moduleService.deleteModule(moduleID).pipe(
-      concatMap(jobID => {
-        var message = "Delete module"
-        return this.utilService.checkJobStatus(jobID, message, "module-manager")
-      }),
-      concatMap((_) => {
-        return this.loadModules()
-      }),
-    ).subscribe({
+  // Start/Stop set the enabled flag synchronously, the runtime monitor
+  // starts/stops the containers afterwards (picked up by the refresh)
+
+  start(moduleID: string) {
+    this.enable([moduleID])
+  }
+
+  startMultiple() {
+    this.enable(this.selectedDeployedIds())
+  }
+
+  private enable(moduleIDs: string[]) {
+    if (moduleIDs.length === 0) {
+      return
+    }
+    this.runSync(this.moduleService.enableDeployments(moduleIDs), "start")
+  }
+
+  stop(moduleID: string) {
+    this.disable([moduleID])
+  }
+
+  stopMultiple() {
+    this.disable(this.selectedDeployedIds())
+  }
+
+  private disable(moduleIDs: string[]) {
+    if (moduleIDs.length === 0) {
+      return
+    }
+    this.runSync(this.moduleService.disableDeployments(moduleIDs), "stop")
+  }
+
+  private runSync(obs: Observable<string[]>, method: string) {
+    this.ready = false
+    this.stopPeriodicRefresh()
+    obs.subscribe({
       next: (_) => {
-        this.ready = true
+        this.selectionClear()
+        this.loadModules(false)
         this.startPeriodicRefresh()
       },
       error: (err) => {
-        this.errorService.handleError(ListComponent.name, "deleteModule", err)
+        this.errorService.handleError(ListComponent.name, method, err)
         this.ready = true
         this.startPeriodicRefresh()
       }
     })
   }
 
-  deployModule(moduleID: string) {
-    var path = "/deployments/add/" + encodeURIComponent(moduleID)
-    this.router.navigateByUrl(path)
+  recreate(moduleID: string) {
+    this.tryRecreate([moduleID])
+  }
+
+  recreateMultiple() {
+    this.tryRecreate(this.selectedDeployedIds())
+  }
+
+  private tryRecreate(moduleIDs: string[]) {
+    if (moduleIDs.length === 0) {
+      return
+    }
+    this.runJob(this.moduleService.recreateDeployments(moduleIDs), "Deployments are recreating", "deployments", "recreate")
+  }
+
+  deleteDeployment(moduleID: string) {
+    this.tryDelete([moduleID])
+  }
+
+  deleteMultiple() {
+    this.tryDelete(this.selectedDeployedIds())
+  }
+
+  private tryDelete(moduleIDs: string[]) {
+    if (moduleIDs.length === 0) {
+      return
+    }
+    this.utilService.askForConfirmation("Delete the deployment(s) of " + moduleIDs.length + " module(s)? Data stored in volumes will be removed.").pipe(
+      concatMap(confirmed => {
+        if (!confirmed) {
+          return of(null)
+        }
+        this.runJob(this.moduleService.removeDeployments(moduleIDs), "Deployments are being deleted", "deployments-delete", "delete")
+        return of(true)
+      })
+    ).subscribe()
+  }
+
+  private runJob(obs: Observable<any>, message: string, resultKind: JobResultKind, method: string) {
+    this.ready = false
+    this.stopPeriodicRefresh()
+    obs.pipe(
+      concatMap(job => {
+        return this.utilService.checkJobStatus(job.id, message, "module-manager", resultKind)
+      })
+    ).subscribe({
+      next: (jobResult) => {
+        this.reportPartialFailures(jobResult?.result, method)
+        this.selectionClear()
+        this.loadModules(false)
+        this.startPeriodicRefresh()
+      },
+      error: (err) => {
+        this.errorService.handleError(ListComponent.name, method, err)
+        this.ready = true
+        this.startPeriodicRefresh()
+      }
+    })
+  }
+
+  // the job succeeds even if single modules failed, per-module errors are in the result
+  private reportPartialFailures(result: DeploymentJobResult | DeploymentDeleteJobResult | undefined, method: string) {
+    if (!result || !result.results_err_num) {
+      return
+    }
+    var errors = (result.results || []).filter(r => r.has_error).map(r => r.module_id + ": " + r.error_msg)
+    this.errorService.handleError(ListComponent.name, method, new Error(result.results_err_num + " module(s) failed. " + errors.join("; ")))
+  }
+
+  deploy(moduleID: string) {
+    this.router.navigateByUrl("/deployments/add/" + encodeURIComponent(moduleID))
+  }
+
+  edit(moduleID: string) {
+    this.router.navigateByUrl("/deployments/edit/" + encodeURIComponent(moduleID))
   }
 
   showModuleInfo(moduleID: string) {
-    var path = "/modules/info/" + encodeURIComponent(moduleID)
-    this.router.navigateByUrl(path)
+    this.router.navigateByUrl("/modules/info/" + encodeURIComponent(moduleID))
   }
 
-  stopPeriodicRefresh() {
-    clearTimeout(this.interval)
+  selectedDeployedIds(): string[] {
+    return this.selection.selected.filter(id => this.modulesById[id]?.is_deployed)
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const currentViewed = this.dataSource.connect().value.length;
+    return numSelected === currentViewed;
+  }
+
+  masterToggle() {
+    if (this.isAllSelected()) {
+      this.selectionClear();
+    } else {
+      this.selectionClear();
+      this.dataSource.connect().value.forEach((row) => this.selection.select(row.id));
+    }
+  }
+
+  selectionClear(): void {
+    this.selection.clear();
   }
 }

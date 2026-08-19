@@ -19,6 +19,7 @@ import {
   ModulesChangeJobResult,
   RepositoryJobResult
 } from '../../models/jobs';
+import {ModuleReduced} from '../../models/modules';
 
 
 const TEMPLATE = {
@@ -263,21 +264,34 @@ export class ModuleManagerMockService {
     })
   }
 
-  public loadModule(_: Module): Observable<Module> {
-    return new Observable(obs => {
-      obs.next({
-        "id": "github.com/SENERGY-Platform/mgw-test-module-a",
-        "name": "module 1",
-        "description": "bla",
-        "version": "v.1.0",
-        "author": "Author",
-        "deployment_type": "single",
-        "license": "license",
-        "tags": ["tag1", "tag2", "tag3"],
-        "type": "type",
-        "added": new Date(),
-        "updated": new Date()
-      })
+  public loadModule(_: Module): Observable<any> {
+    return of({
+      "id": "github.com/SENERGY-Platform/mgw-test-module-a",
+      "name": "module 1",
+      "description": "bla",
+      "version": "v1.1.0",
+      "author": "Author",
+      "license": "Apache-2.0",
+      "tags": ["tag1", "tag2", "tag3"],
+      "source": "github.com/SENERGY-Platform/mgw-module-repository",
+      "channel": "main",
+      "added": new Date().toISOString(),
+      "updated": new Date().toISOString(),
+      "is_deployed": true,
+      "has_error": false,
+      "error_msg": "",
+      "deployment": {
+        "id": "dep-a",
+        "module_source": "github.com/SENERGY-Platform/mgw-module-repository",
+        "module_channel": "main",
+        "module_version": "v1.0.0",
+        "enabled": true,
+        "created": new Date().toISOString(),
+        "updated": new Date().toISOString(),
+        "state": 1,
+        "has_error": false,
+        "error_msg": ""
+      }
     })
   }
 
@@ -515,6 +529,105 @@ export class ModuleManagerMockService {
   addModule(module: AddModule): Observable<any> {
     return new Observable(obs => {
       obs.next({"id": "id", "completed": new Date(), "error": ""})
+    })
+  }
+
+  loadModulesReduced(): Observable<ModuleReduced[]> {
+    var modules: ModuleReduced[] = [
+      {
+        "id": "github.com/SENERGY-Platform/mgw-test-module-a",
+        "source": "github.com/SENERGY-Platform/mgw-module-repository",
+        "channel": "main",
+        "version": "v1.1.0",
+        "name": "Test Module A",
+        "description": "Deployed module with a pending deployment update",
+        "tags": ["tag1"],
+        "license": "Apache-2.0",
+        "author": "Author",
+        "is_deployed": true,
+        "has_error": false,
+        "error_msg": "",
+        "deployment": {
+          "id": "dep-a",
+          "module_source": "github.com/SENERGY-Platform/mgw-module-repository",
+          "module_channel": "main",
+          "module_version": "v1.0.0",
+          "enabled": true,
+          "created": new Date().toISOString(),
+          "updated": new Date().toISOString(),
+          "state": 1,
+          "has_error": false,
+          "error_msg": ""
+        }
+      },
+      {
+        "id": "github.com/SENERGY-Platform/mgw-test-module-b/mgw-module",
+        "source": "localhost",
+        "channel": "default",
+        "version": "v1.0.0",
+        "name": "Test Module B",
+        "description": "Deployed but disabled module",
+        "tags": [],
+        "license": "Apache-2.0",
+        "author": "Author",
+        "is_deployed": true,
+        "has_error": false,
+        "error_msg": "",
+        "deployment": {
+          "id": "dep-b",
+          "module_source": "localhost",
+          "module_channel": "default",
+          "module_version": "v1.0.0",
+          "enabled": false,
+          "created": new Date().toISOString(),
+          "updated": new Date().toISOString(),
+          "state": 0,
+          "has_error": false,
+          "error_msg": ""
+        }
+      },
+      {
+        "id": "github.com/SENERGY-Platform/mgw-test-module-c",
+        "source": "github.com/SENERGY-Platform/mgw-module-repository",
+        "channel": "main",
+        "version": "v2.0.0",
+        "name": "Test Module C",
+        "description": "Installed module without a deployment",
+        "tags": ["tag2"],
+        "license": "Apache-2.0",
+        "author": "Author",
+        "is_deployed": false,
+        "has_error": false,
+        "error_msg": "",
+        "deployment": <any>{}
+      }
+    ]
+    return of(modules).pipe(delay(500));
+  }
+
+  enableDeployments(moduleIDs: string[]): Observable<string[]> {
+    return of(moduleIDs)
+  }
+
+  disableDeployments(moduleIDs: string[]): Observable<string[]> {
+    return of(moduleIDs)
+  }
+
+  recreateDeployments(moduleIDs: string[]): Observable<Job> {
+    return of({
+      "id": "job-recreate",
+      "description": "recreate deployments",
+      "start": new Date().toISOString(),
+      "end": new Date().toISOString()
+    })
+  }
+
+  removeDeployments(moduleIDs: string[]): Observable<Job> {
+    return of({
+      "id": "job-delete",
+      "description": "delete deployments",
+      "start": new Date().toISOString(),
+      "end": new Date().toISOString()
     })
   }
 
