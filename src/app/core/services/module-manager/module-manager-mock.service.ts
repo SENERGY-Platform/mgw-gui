@@ -11,7 +11,14 @@ import {
 import {Deployment, DeploymentRequest, DeploymentTemplate} from 'src/app/deployments/models/deployment_models';
 import {ErrorService} from '../util/error.service';
 import {delay} from "rxjs/operators";
-import {Job} from 'src/app/system/models/job.model';
+import {
+  DeploymentDeleteJobResult,
+  DeploymentJobResult,
+  DeploymentUpdateJobResult,
+  Job,
+  ModulesChangeJobResult,
+  RepositoryJobResult
+} from '../../models/jobs';
 
 
 const TEMPLATE = {
@@ -441,13 +448,9 @@ export class ModuleManagerMockService {
     return new Observable(obs => {
       obs.next({
         "id": "id",
-        "completed": new Date(),
-        "error": null,
-        "created": new Date(),
-        "canceled": new Date(),
         "description": "Test",
-        "started": new Date(),
-        "result": ""
+        "start": new Date().toISOString(),
+        "end": new Date().toISOString()
       })
     })
   }
@@ -456,13 +459,9 @@ export class ModuleManagerMockService {
     return new Observable(obs => {
       obs.next({
         "id": "id",
-        "completed": new Date(),
-        "error": null,
-        "created": new Date(),
-        "canceled": new Date(),
         "description": "Test",
-        "started": new Date(),
-        "result": ""
+        "start": new Date().toISOString(),
+        "end": new Date().toISOString()
       })
     })
   }
@@ -495,13 +494,9 @@ export class ModuleManagerMockService {
     return new Observable(obs => {
       obs.next({
         "id": "id",
-        "completed": new Date(),
-        "error": null,
-        "created": new Date(),
-        "canceled": new Date(),
         "description": "Test",
-        "started": new Date(),
-        "result": ""
+        "start": new Date().toISOString(),
+        "end": new Date().toISOString()
       })
     })
   }
@@ -510,13 +505,9 @@ export class ModuleManagerMockService {
     return new Observable(obs => {
       obs.next({
         "id": "id",
-        "completed": new Date(),
-        "error": null,
-        "created": new Date(),
-        "canceled": new Date(),
         "description": "Test",
-        "started": new Date(),
-        "result": ""
+        "start": new Date().toISOString(),
+        "end": new Date().toISOString()
       })
     })
   }
@@ -527,24 +518,51 @@ export class ModuleManagerMockService {
     })
   }
 
-  getJobStatus(jobID: string): Observable<unknown | Job> {
-    return new Observable(obs => {
-      obs.next({"id": "id", "completed": new Date(), "error": null})
+  getJobStatus(jobID: string): Observable<Job> {
+    return of({
+      "id": jobID,
+      "description": "Mock job",
+      "start": new Date().toISOString(),
+      "end": new Date().toISOString()
     })
   }
 
-  getJobs(): Observable<Job[]> {
-    var jobs = [{
-      "id": "id",
-      "completed": new Date(),
-      "error": null,
-      "created": new Date(),
-      "canceled": new Date(),
-      "description": "Test",
-      "started": new Date(),
-      "result": ""
-    }]
+  getJobs(jobIDs?: string[]): Observable<Job[]> {
+    var jobs: Job[] = [
+      {
+        "id": "job-1",
+        "description": "Completed mock job",
+        "start": new Date().toISOString(),
+        "end": new Date().toISOString()
+      },
+      {
+        "id": "job-2",
+        "description": "Running mock job",
+        "start": new Date().toISOString(),
+        "end": "0001-01-01T00:00:00Z"
+      }
+    ]
     return of(jobs).pipe(delay(1000));
+  }
+
+  getModulesChangeResult(jobID: string): Observable<ModulesChangeJobResult> {
+    return of({"job_id": jobID, "has_error": false, "error_msg": "", "success": [], "failed": []})
+  }
+
+  getDeploymentsResult(jobID: string): Observable<DeploymentJobResult> {
+    return of({"job_id": jobID, "has_error": false, "error_msg": "", "results": [], "results_err_num": 0})
+  }
+
+  getDeploymentsUpdateResult(jobID: string): Observable<DeploymentUpdateJobResult> {
+    return of({"job_id": jobID, "has_error": false, "error_msg": "", "results": [], "results_err_num": 0})
+  }
+
+  getDeploymentsDeleteResult(jobID: string): Observable<DeploymentDeleteJobResult> {
+    return of({"job_id": jobID, "has_error": false, "error_msg": "", "results": [], "results_err_num": 0})
+  }
+
+  getRepositoriesRefreshResult(jobID: string): Observable<RepositoryJobResult> {
+    return of({"job_id": jobID, "has_error": false, "error_msg": "", "Results": [], "results_err_num": 0})
   }
 
   deleteModule(_: string): Observable<any> {
@@ -557,6 +575,10 @@ export class ModuleManagerMockService {
     return new Observable(obs => {
       obs.next(true)
     })
+  }
+
+  stopJobs(jobIDs: string[]): Observable<any> {
+    return of(true)
   }
 
   deleteDeployment(deploymentID: string, force: boolean): Observable<any> {

@@ -3,9 +3,18 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
-import {Job} from 'src/app/system/models/job.model';
+import {Job as CoreManagerJob} from 'src/app/system/models/job.model';
+import {isJobDone, JobResult} from 'src/app/core/models/jobs';
 import {CoreManagerService} from '../../services/core-manager/core-manager.service';
 import {SpinnerComponent} from '../spinner/spinner.component';
+
+// Result endpoint to query once a module-manager job has ended.
+export type JobResultKind =
+  'modules-change'
+  | 'deployments'
+  | 'deployments-update'
+  | 'deployments-delete'
+  | 'repositories-refresh'
 
 @Component({
   selector: 'app-job-loader-modal',
@@ -20,6 +29,8 @@ export class JobLoaderModalComponent implements OnInit {
   jobIsCompleted: boolean = false
   message!: string
   service!: string
+  resultKind?: JobResultKind
+  private closing: boolean = false
 
   constructor(
     @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
@@ -31,34 +42,95 @@ export class JobLoaderModalComponent implements OnInit {
     this.jobID = data.jobID
     this.message = data.message
     this.service = data.service
+    this.resultKind = data.resultKind
   }
 
   ngOnInit(): void {
     // TODO better interal + obsersable
     this.interval = setInterval(() => {
-      let obs: Observable<Job> = this.moduleService.getJobStatus(this.jobID)
       if (this.service === "core-manager") {
-        obs = this.coreService.getJobStatus(this.jobID)
+        this.checkCoreManagerJob()
+      } else {
+        this.checkModuleManagerJob()
       }
-
-      obs.subscribe({
-        next: jobResponse => {
-          if (jobResponse.completed && !jobResponse.error) {
-            this.close(true, jobResponse.result, undefined)
-          } else if (jobResponse.error) {
-            this.errorService.handleError(JobLoaderModalComponent.name, "ngOnInit", new Error(jobResponse.error.message))
-            this.close(false, undefined, jobResponse.error.message)
-          }
-        },
-        error: (error) => {
-          this.close(false, undefined, error)
-        }
-      })
     }, 1000);
   }
 
+  // module-manager jobs carry no outcome themselves: poll until "end" is set,
+  // then fetch the typed result from the matching /results endpoint
+  checkModuleManagerJob() {
+    this.moduleService.getJobStatus(this.jobID).subscribe({
+      next: job => {
+        if (isJobDone(job) && !this.closing) {
+          this.closing = true
+          this.fetchResultAndClose()
+        }
+      },
+      error: (error) => {
+        this.close(false, undefined, error)
+      }
+    })
+  }
+
+  fetchResultAndClose() {
+    if (!this.resultKind) {
+      this.close(true, undefined)
+      return
+    }
+    let obs: Observable<JobResult>
+    switch (this.resultKind) {
+      case 'modules-change':
+        obs = this.moduleService.getModulesChangeResult(this.jobID)
+        break
+      case 'deployments':
+        obs = this.moduleService.getDeploymentsResult(this.jobID)
+        break
+      case 'deployments-update':
+        obs = this.moduleService.getDeploymentsUpdateResult(this.jobID)
+        break
+      case 'deployments-delete':
+        obs = this.moduleService.getDeploymentsDeleteResult(this.jobID)
+        break
+      case 'repositories-refresh':
+        obs = this.moduleService.getRepositoriesRefreshResult(this.jobID)
+        break
+    }
+    obs.subscribe({
+      next: result => {
+        // has_error marks an aborted job; partial per-item failures are
+        // reported inside the result and are up to the caller to present
+        if (result.has_error) {
+          this.errorService.handleError(JobLoaderModalComponent.name, "fetchResultAndClose", new Error(result.error_msg))
+          this.close(false, result, result.error_msg)
+        } else {
+          this.close(true, result, undefined)
+        }
+      },
+      error: (error) => {
+        this.close(false, undefined, error)
+      }
+    })
+  }
+
+  checkCoreManagerJob() {
+    this.coreService.getJobStatus(this.jobID).subscribe({
+      next: (jobResponse: CoreManagerJob) => {
+        if (jobResponse.completed && !jobResponse.error) {
+          this.close(true, jobResponse.result, undefined)
+        } else if (jobResponse.error) {
+          this.errorService.handleError(JobLoaderModalComponent.name, "checkCoreManagerJob", new Error(jobResponse.error.message))
+          this.close(false, undefined, jobResponse.error.message)
+        }
+      },
+      error: (error) => {
+        this.close(false, undefined, error)
+      }
+    })
+  }
+
   cancel() {
-    this.moduleService.stopJob(this.jobID).subscribe(
+    var obs = this.service === "core-manager" ? this.coreService.stopJob(this.jobID) : this.moduleService.stopJob(this.jobID)
+    obs.subscribe(
       {
         next: (result) => {
           this.close(true, undefined)
@@ -71,7 +143,7 @@ export class JobLoaderModalComponent implements OnInit {
     )
   }
 
-  close(success: boolean, result?: string, errorMessage: string | undefined = undefined) {
+  close(success: boolean, result?: any, errorMessage: string | undefined = undefined) {
     clearInterval(this.interval)
     this.dialogRef.close({
       "success": success,

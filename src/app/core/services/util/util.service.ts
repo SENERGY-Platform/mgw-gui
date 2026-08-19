@@ -20,7 +20,7 @@ import {Injectable} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
 import {ConfirmDialogComponent} from '../../components/confirm-dialog/confirm-dialog.component';
-import {JobLoaderModalComponent} from '../../components/job-loader-modal/job-loader-modal.component';
+import {JobLoaderModalComponent, JobResultKind} from '../../components/job-loader-modal/job-loader-modal.component';
 
 
 @Injectable({
@@ -45,18 +45,21 @@ export class UtilService {
   }
 
 
-  checkJobStatus(jobID: string, message: string, service: string): Observable<any> {
+  checkJobStatus(jobID: string, message: string, service: string, resultKind?: JobResultKind): Observable<any> {
     /*
       Shows a Modal with a loading circle.
       When the job completed successfully, the modal will close
       When the job returned an error, the modal will close with the error message
+      For module-manager jobs, resultKind selects the /results endpoint whose
+      typed result is returned in the close event.
     */
 
     var dialogRef = this.dialog.open(JobLoaderModalComponent, {
       data: {
         jobID: jobID,
         message: message,
-        service: service
+        service: service,
+        resultKind: resultKind
       }
     });
 

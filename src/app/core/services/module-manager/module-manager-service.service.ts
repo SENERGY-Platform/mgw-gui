@@ -18,7 +18,14 @@ import {
   ModuleUpdateTemplate
 } from 'src/app/deployments/models/deployment_models';
 import {InfoResponse} from '../../models/info';
-import {Job} from 'src/app/system/models/job.model';
+import {
+  DeploymentDeleteJobResult,
+  DeploymentJobResult,
+  DeploymentUpdateJobResult,
+  Job,
+  ModulesChangeJobResult,
+  RepositoryJobResult
+} from '../../models/jobs';
 import {AuxDeployment, AuxDeploymentResponse} from 'src/app/deployments/models/sub-deployments';
 
 @Injectable({
@@ -285,13 +292,49 @@ export class ModuleManagerService {
   // Jobs
 
   stopJob(jobID: string): Observable<any> {
-    var url = this.moduleManagerPath + "/jobs/" + jobID + "/cancel"
-    return <Observable<any>>this.http.patch(url)
+    var url = this.moduleManagerPath + "/jobs/" + jobID
+    return <Observable<any>>this.http.patch(url, undefined, undefined, 'text')
   }
 
-  getJobs(): Observable<Job[]> {
+  stopJobs(jobIDs: string[]): Observable<any> {
+    var url = this.moduleManagerPath + "/jobs-cancel"
+    return <Observable<any>>this.http.post(url, jobIDs, undefined, 'text')
+  }
+
+  getJobs(jobIDs?: string[]): Observable<Job[]> {
     var url = this.moduleManagerPath + "/jobs"
-    return <Observable<Job[]>>this.http.get(url)
+    let queryParams = new HttpParams()
+    if (jobIDs && jobIDs.length > 0) {
+      queryParams = queryParams.set("ids", jobIDs.join(","))
+    }
+    return <Observable<Job[]>>this.http.get(url, queryParams)
+  }
+
+  // Job results, available once the job has ended (isJobDone)
+
+  getModulesChangeResult(jobID: string): Observable<ModulesChangeJobResult> {
+    var url = this.moduleManagerPath + "/results/modules-change/" + jobID
+    return <Observable<ModulesChangeJobResult>>this.http.get(url)
+  }
+
+  getDeploymentsResult(jobID: string): Observable<DeploymentJobResult> {
+    var url = this.moduleManagerPath + "/results/deployments/" + jobID
+    return <Observable<DeploymentJobResult>>this.http.get(url)
+  }
+
+  getDeploymentsUpdateResult(jobID: string): Observable<DeploymentUpdateJobResult> {
+    var url = this.moduleManagerPath + "/results/deployments-update/" + jobID
+    return <Observable<DeploymentUpdateJobResult>>this.http.get(url)
+  }
+
+  getDeploymentsDeleteResult(jobID: string): Observable<DeploymentDeleteJobResult> {
+    var url = this.moduleManagerPath + "/results/deployments-delete/" + jobID
+    return <Observable<DeploymentDeleteJobResult>>this.http.get(url)
+  }
+
+  getRepositoriesRefreshResult(jobID: string): Observable<RepositoryJobResult> {
+    var url = this.moduleManagerPath + "/results/repositories-refresh/" + jobID
+    return <Observable<RepositoryJobResult>>this.http.get(url)
   }
 
   getInfo(): Observable<InfoResponse> {

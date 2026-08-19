@@ -59,7 +59,13 @@ export class ErrorService {
     }
 
     console.error('Error =>> Service: ' + service + ' =>> Method: ' + method);
-    this.notifierService.showError("Error: " + errorMessage)
+    if (error instanceof HttpErrorResponse && error.status === 503) {
+      // module-manager serializes long-running operations: 503 means another
+      // job is still active, the body names it
+      this.notifierService.showError("Another operation is still running, please wait for it to finish. (" + errorMessage + ")")
+    } else {
+      this.notifierService.showError("Error: " + errorMessage)
+    }
 
 
     // Return an observable with a user-facing error message.

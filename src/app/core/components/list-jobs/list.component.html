@@ -76,7 +76,7 @@
           <ng-container matColumnDef="cancel">
             <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Cancel</th>
             <td *matCellDef="let job" mat-cell>
-              <button (click)="cancelJob(job.id)" [disabled]="job.completed" color="primary" mat-icon-button
+              <button (click)="cancelJob(job.id)" [disabled]="job.done" color="primary" mat-icon-button
                       matTooltip="Cancel">
                 <mat-icon>stop</mat-icon>
               </button>
