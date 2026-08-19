@@ -28,6 +28,7 @@ export class MainNavigationComponent implements OnInit {
       new SidenavPageModel("Installed", 'link', "extension", "/modules"),
       new SidenavPageModel("Add & Remove", 'link', "library_add", "/modules/manage"),
       new SidenavPageModel("Global Configs", 'link', "tune", "/modules/global-configs"),
+      new SidenavPageModel("Repositories", 'link', "cloud_download", "/modules/repositories"),
     ]),
     new SidenavSectionModel("Secrets", "link", "key", "/secrets", []),
     new SidenavSectionModel("System", "toggle", "dns", "/system", [

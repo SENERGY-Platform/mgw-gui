@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>Add repository</h1>
+
+<div class="dialog-content" mat-dialog-content>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Type</mat-label>
+    <mat-select [(ngModel)]="repositoryType">
+      <mat-option value="github.com">github.com</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Source definition (JSON)</mat-label>
+    <textarea [(ngModel)]="definitionJson" class="definition" matInput rows="12" spellcheck="false"></textarea>
+    <mat-hint>Passed verbatim to the repository type handler</mat-hint>
+  </mat-form-field>
+
+  <p *ngIf="error" class="error">{{ error }}</p>
+</div>
+
+<div mat-dialog-actions>
+  <button [mat-dialog-close]="undefined" mat-button>Cancel</button>
+  <button (click)="save()" color="primary" mat-raised-button>Add</button>
+</div>

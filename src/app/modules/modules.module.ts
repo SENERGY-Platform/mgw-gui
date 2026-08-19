@@ -18,6 +18,7 @@ import {InfoComponent} from './pages/info/info.component';
 import {MatCardModule} from '@angular/material/card';
 import {ManageComponent} from './pages/manage/manage.component';
 import {GlobalConfigsComponent} from './pages/global-configs/global-configs.component';
+import {RepositoriesComponent} from './pages/repositories/repositories.component';
 import {DeploymentsModule} from '../deployments/deployments.module';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
@@ -27,6 +28,7 @@ const routes: Routes = [
       {path: '', component: ListComponent},
       {path: 'manage', component: ManageComponent},
       {path: 'global-configs', component: GlobalConfigsComponent},
+      {path: 'repositories', component: RepositoriesComponent},
       {path: 'info/:id', component: InfoComponent},
     ]
   },
@@ -55,7 +57,8 @@ const routes: Routes = [
     ListComponent,
     InfoComponent,
     ManageComponent,
-    GlobalConfigsComponent
+    GlobalConfigsComponent,
+    RepositoriesComponent
   ],
   exports: []
 })

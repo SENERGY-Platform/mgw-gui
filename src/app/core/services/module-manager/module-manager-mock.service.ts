@@ -579,6 +579,14 @@ export class ModuleManagerMockService {
     ])
   }
 
+  createRepository(repositoryType: string, definition: any): Observable<any> {
+    return of(true)
+  }
+
+  deleteRepository(source: string): Observable<any> {
+    return of(true)
+  }
+
   refreshRepositories(sources?: string[]): Observable<Job> {
     return of({
       "id": "job-repo-refresh",

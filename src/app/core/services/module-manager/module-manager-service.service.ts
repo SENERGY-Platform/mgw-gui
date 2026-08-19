@@ -122,6 +122,19 @@ export class ModuleManagerService {
     return <Observable<Job>>this.http.patch(url, undefined, queryParams)
   }
 
+  // the body is passed verbatim to the repository type handler
+  // (github.com: {owner, repository, reference, priority, channels})
+  createRepository(repositoryType: string, definition: any): Observable<any> {
+    var url = this.moduleManagerPath + "/repositories"
+    let queryParams = new HttpParams().set("type", repositoryType)
+    return this.http.post(url, definition, queryParams, 'text')
+  }
+
+  deleteRepository(source: string): Observable<any> {
+    var url = this.moduleManagerPath + "/repositories/" + this.doubleEncode(source)
+    return this.http.delete(url, undefined, undefined, 'text')
+  }
+
   loadRepositoryModules(name?: string): Observable<RepoModule[]> {
     var url = this.moduleManagerPath + "/repository-modules"
     let queryParams = new HttpParams()

@@ -1,0 +1,17 @@
+.dialog-content {
+  min-width: 480px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.definition {
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.error {
+  color: #b3372f;
+  font-weight: 500;
+}
