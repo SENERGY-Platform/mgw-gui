@@ -1,16 +1,16 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {ListDeploymentsComponent} from './list-deployments.component';
+import {ListParentDeploymentsComponent} from './list-deployments.component';
 
-describe('ListDeploymentsComponent', () => {
-  let component: ListDeploymentsComponent;
-  let fixture: ComponentFixture<ListDeploymentsComponent>;
+describe('ListParentDeploymentsComponent', () => {
+  let component: ListParentDeploymentsComponent;
+  let fixture: ComponentFixture<ListParentDeploymentsComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ListDeploymentsComponent]
+      imports: [ListParentDeploymentsComponent]
     });
-    fixture = TestBed.createComponent(ListDeploymentsComponent);
+    fixture = TestBed.createComponent(ListParentDeploymentsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
