@@ -71,8 +71,8 @@ export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
   };
 
   dataSource = new MatTableDataSource<JobRow>();
-  ready: Boolean = false;
-  init: Boolean = true;
+  ready = false;
+  init = true;
   interval: any;
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['job', 'status', 'started', 'finished', 'actions'];
@@ -188,7 +188,7 @@ export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit(): void {}
 
   cancelJob(jobID: string) {
-    var obs = this.source === 'core-manager' ? this.coreService.stopJob(jobID) : this.moduleService.stopJob(jobID);
+    const obs = this.source === 'core-manager' ? this.coreService.stopJob(jobID) : this.moduleService.stopJob(jobID);
     obs.subscribe({
       next: (_) => {
         this.loadJobs();

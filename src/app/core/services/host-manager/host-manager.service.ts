@@ -25,69 +25,74 @@ export class HostManagerService {
   constructor(private http: ApiService) {}
 
   getHostResources(): Observable<HostResource[]> {
-    return <Observable<HostResource[]>>this.http.get(this.hostManagerPath + '/host-resources');
+    return this.http.get(this.hostManagerPath + '/host-resources') as Observable<HostResource[]>;
   }
 
   getApplications(): Observable<AppResponse[]> {
-    return <Observable<AppResponse[]>>this.http.get(this.hostManagerPath + '/applications');
+    return this.http.get(this.hostManagerPath + '/applications') as Observable<AppResponse[]>;
   }
 
   addApplication(application: AppRequest): Observable<any> {
-    return <Observable<any>>this.http.post(this.hostManagerPath + '/applications', application, undefined, 'text');
+    return this.http.post(this.hostManagerPath + '/applications', application, undefined, 'text') as Observable<any>;
   }
 
   removeApplication(id: string): Observable<any> {
-    return <Observable<any>>(
-      this.http.delete(this.hostManagerPath + '/applications/' + id, undefined, undefined, 'text')
-    );
+    return this.http.delete(
+      this.hostManagerPath + '/applications/' + id,
+      undefined,
+      undefined,
+      'text',
+    ) as Observable<any>;
   }
 
   getBlacklistNetInterfaces(): Observable<string[]> {
-    return <Observable<string[]>>this.http.get(this.hostManagerPath + '/blacklists/net-interfaces');
+    return this.http.get(this.hostManagerPath + '/blacklists/net-interfaces') as Observable<string[]>;
   }
 
   addBlacklistNetInterface(name: string): Observable<any> {
-    return <Observable<any>>(
-      this.http.post(this.hostManagerPath + '/blacklists/net-interfaces', name, undefined, undefined)
-    );
+    return this.http.post(
+      this.hostManagerPath + '/blacklists/net-interfaces',
+      name,
+      undefined,
+      undefined,
+    ) as Observable<any>;
   }
 
   removeBlacklistNetInterface(name: string): Observable<any> {
-    let queryParams = new HttpParams();
-    return <Observable<any>>(
-      this.http.delete(
-        this.hostManagerPath + '/blacklists/net-interfaces',
-        undefined,
-        queryParams.set('value', name),
-        undefined,
-      )
-    );
+    const queryParams = new HttpParams();
+    return this.http.delete(
+      this.hostManagerPath + '/blacklists/net-interfaces',
+      undefined,
+      queryParams.set('value', name),
+      undefined,
+    ) as Observable<any>;
   }
 
   getBlacklistNetRanges(): Observable<string[]> {
-    return <Observable<string[]>>this.http.get(this.hostManagerPath + '/blacklists/net-ranges');
+    return this.http.get(this.hostManagerPath + '/blacklists/net-ranges') as Observable<string[]>;
   }
 
   addBlacklistNetRanges(range: string): Observable<any> {
-    return <Observable<any>>(
-      this.http.post(this.hostManagerPath + '/blacklists/net-ranges', range, undefined, undefined)
-    );
+    return this.http.post(
+      this.hostManagerPath + '/blacklists/net-ranges',
+      range,
+      undefined,
+      undefined,
+    ) as Observable<any>;
   }
 
   removeBlacklistNetRange(range: string): Observable<any> {
-    let queryParams = new HttpParams();
-    return <Observable<any>>(
-      this.http.delete(
-        this.hostManagerPath + '/blacklists/net-ranges',
-        undefined,
-        queryParams.set('value', range),
-        undefined,
-      )
-    );
+    const queryParams = new HttpParams();
+    return this.http.delete(
+      this.hostManagerPath + '/blacklists/net-ranges',
+      undefined,
+      queryParams.set('value', range),
+      undefined,
+    ) as Observable<any>;
   }
 
   getInfo(): Observable<InfoResponse> {
-    var url = this.hostManagerPath + '/info';
-    return <Observable<InfoResponse>>this.http.get(url);
+    const url = this.hostManagerPath + '/info';
+    return this.http.get(url) as Observable<InfoResponse>;
   }
 }

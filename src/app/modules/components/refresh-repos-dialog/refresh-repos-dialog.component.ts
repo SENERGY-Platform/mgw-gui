@@ -51,7 +51,7 @@ import {Repository} from 'src/app/core/models/repositories';
 export class RefreshReposDialogComponent {
   repositories: Repository[] = [];
   selected: Record<string, boolean> = {};
-  hasPendingChangeRequest: boolean = false;
+  hasPendingChangeRequest = false;
 
   constructor(
     public dialogRef: MatDialogRef<RefreshReposDialogComponent>,

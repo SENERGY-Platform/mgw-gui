@@ -1,20 +1,12 @@
 import {ConfigTemplate, HostResourcesTemplate, SecretTemplate} from './deployment_models';
 
 export interface Template {
-  secrets: {
-    [id: string]: SecretTemplate;
-  };
-  configs: {
-    [id: string]: ConfigTemplate;
-  };
-  hostResources: {
-    [id: string]: HostResourcesTemplate;
-  };
+  secrets: Record<string, SecretTemplate>;
+  configs: Record<string, ConfigTemplate>;
+  hostResources: Record<string, HostResourcesTemplate>;
 }
 
-export interface FormTemplate {
-  [group_id: string]: Template;
-}
+export type FormTemplate = Record<string, Template>;
 
 export interface Group {
   [id: string]: Group;

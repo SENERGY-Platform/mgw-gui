@@ -5,14 +5,8 @@ export interface BaseRequest {
   module_id: string;
 }
 
-export interface Labels {
-  [label_key: string]: string;
-}
+export type Labels = Record<string, string>;
 
-export interface Configs {
-  [config_key: string]: string;
-}
+export type Configs = Record<string, string>;
 
-export interface Volumes {
-  [volume_key: string]: string;
-}
+export type Volumes = Record<string, string>;

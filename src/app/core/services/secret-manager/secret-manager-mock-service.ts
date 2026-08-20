@@ -10,7 +10,7 @@ export class SecretManagerMockService {
   constructor(private http: ApiService) {}
 
   getSecrets(): Observable<Secret[]> {
-    var secrets = [
+    const secrets = [
       {type: SecretTypes.APIKey, id: 'login', name: 'API KEY', value: 'kjhsdfjkshfsjkdfh'},
       {type: SecretTypes.BasicAuth, id: 'login', name: 'Login data', value: ''},
       {type: SecretTypes.Certificate, id: 'cert', name: 'Certificate', value: 'certificate'},
@@ -19,7 +19,7 @@ export class SecretManagerMockService {
   }
 
   getSecret(secretID: string): Observable<Secret> {
-    var secret = {type: SecretTypes.APIKey, id: 'login', name: 'API KEY', value: 'kjhsdfjkshfsjkdfh'};
+    const secret = {type: SecretTypes.APIKey, id: 'login', name: 'API KEY', value: 'kjhsdfjkshfsjkdfh'};
     return of(secret).pipe(delay(1000));
   }
 
@@ -28,7 +28,7 @@ export class SecretManagerMockService {
   }
 
   getSecretTypes(): Observable<SecretType[]> {
-    var types = [
+    const types = [
       {name: 'Certificate', id: SecretTypes.Certificate},
       {name: 'API Key', id: SecretTypes.APIKey},
       {name: 'Credentials', id: SecretTypes.BasicAuth},

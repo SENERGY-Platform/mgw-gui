@@ -19,11 +19,11 @@ import {Highlight} from 'ngx-highlightjs';
 })
 export class LogsComponent implements OnDestroy {
   containerID!: string;
-  ready: boolean = false;
-  init: boolean = true;
+  ready = false;
+  init = true;
   interval: any;
   maxLines: any = 100;
-  logs: string = '';
+  logs = '';
   autoRefreshEnabled = true;
 
   constructor(

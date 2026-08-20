@@ -86,7 +86,7 @@ export function parseConfigValue(dataType: number, isSlice: boolean, raw: string
   if (!isSlice) {
     return parseConfigItem(dataType, raw);
   }
-  var items = raw
+  const items = raw
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => line !== '');

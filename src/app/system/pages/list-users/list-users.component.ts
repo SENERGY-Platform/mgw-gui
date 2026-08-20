@@ -57,8 +57,8 @@ import {MatIcon} from '@angular/material/icon';
 })
 export class ListUsersComponent implements OnInit {
   dataSource = new MatTableDataSource<HumanUser>();
-  ready: Boolean = false;
-  init: Boolean = true;
+  ready = false;
+  init = true;
   interval: any;
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['username', 'actions'];

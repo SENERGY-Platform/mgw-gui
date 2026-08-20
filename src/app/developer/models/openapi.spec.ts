@@ -51,7 +51,7 @@ describe('flattenOperations', () => {
   it('ignores keys that are not http methods', () => {
     const operations = flattenOperations(
       doc({
-        paths: {'/secrets': {get: {summary: 'Get'}, parameters: <any>[]}},
+        paths: {'/secrets': {get: {summary: 'Get'}, parameters: [] as any}},
       }),
     );
 

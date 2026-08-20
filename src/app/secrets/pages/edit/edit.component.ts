@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FormComponent} from '../../components/form/form.component';
 
@@ -8,7 +8,7 @@ import {FormComponent} from '../../components/form/form.component';
   styleUrls: ['./edit.component.css'],
   imports: [FormComponent],
 })
-export class EditComponent {
+export class EditComponent implements OnInit {
   secretID!: string;
 
   constructor(private route: ActivatedRoute) {}

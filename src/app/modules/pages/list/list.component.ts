@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, ViewChild, AfterViewInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {
@@ -106,10 +106,10 @@ interface StatusFilter {
     EmptyStateComponent,
   ],
 })
-export class ListComponent implements OnInit, OnDestroy {
+export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
   dataSource = new MatTableDataSource<ModuleReduced>();
-  ready: Boolean = false;
-  init: Boolean = true;
+  ready = false;
+  init = true;
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['select', 'module', 'status', 'version', 'actions'];
   selection = new SelectionModel<string>(true, []);
@@ -168,7 +168,7 @@ export class ListComponent implements OnInit, OnDestroy {
         case 'status':
           return this.statusOf(row);
         default:
-          var value = (<any>row)[sortHeaderId];
+          var value = (row as any)[sortHeaderId];
           return typeof value === 'string' ? value.toUpperCase() : value;
       }
     };
@@ -444,7 +444,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
   // batch edit: one form per selected deployed module, saved as one job
   editMultiple() {
-    var ids = this.selectedDeployedIds();
+    const ids = this.selectedDeployedIds();
     if (ids.length === 0) {
       return;
     }

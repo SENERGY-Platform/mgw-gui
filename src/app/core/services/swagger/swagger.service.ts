@@ -85,7 +85,7 @@ export class SwaggerService {
         withCredentials: true,
       })
       .pipe(
-        map((response) => this.toResult(<HttpResponse<string>>response, started)),
+        map((response) => this.toResult(response as HttpResponse<string>, started)),
         catchError((error) => of(this.errorToResult(error, started))),
       );
   }

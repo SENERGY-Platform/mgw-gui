@@ -42,7 +42,7 @@ function makeComponent(modules: RepoModule[]) {
     getAvailableUpdatesCount: () => of(0),
     getModulesChangeRequest: () => throwError(() => ({status: 404})),
   };
-  return new ManageComponent(<any>{}, moduleService, <any>{handleError: () => undefined}, <any>{});
+  return new ManageComponent({} as any, moduleService, {handleError: () => undefined} as any, {} as any);
 }
 
 describe('ManageComponent.load', () => {

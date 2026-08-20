@@ -12,7 +12,7 @@ export class HostManagerMockService {
   constructor(private http: ApiService) {}
 
   getHostResources(): Observable<HostResource[]> {
-    var resources = [
+    const resources = [
       {
         id: 'app:2093119d7ddfa917288995a9142e4cfbacbdd31e',
         name: 'DBus',

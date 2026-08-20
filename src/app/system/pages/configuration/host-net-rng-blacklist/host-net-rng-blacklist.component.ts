@@ -92,7 +92,7 @@ export class HostNetRngBlacklistComponent implements AfterViewInit, OnInit {
   }
 
   addNetInterface(): void {
-    let addDialogRef: MatDialogRef<AddDialogComponent, DialogData> = this.dialog.open(AddDialogComponent);
+    const addDialogRef: MatDialogRef<AddDialogComponent, DialogData> = this.dialog.open(AddDialogComponent);
     addDialogRef.afterClosed().subscribe((result) => {
       if (result !== undefined && result !== null && result.range !== '') {
         this.hostManagerService.addBlacklistNetRanges(result.range).subscribe({

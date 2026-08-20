@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, ViewChild, OnInit} from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import {
   MatCell,
@@ -54,10 +54,10 @@ import {MatIcon} from '@angular/material/icon';
     EmptyStateComponent,
   ],
 })
-export class ListAppsComponent {
+export class ListAppsComponent implements OnInit {
   dataSource = new MatTableDataSource<DeviceUser>();
-  ready: Boolean = false;
-  init: Boolean = true;
+  ready = false;
+  init = true;
   interval: any;
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['username', 'model', 'manufacturer', 'actions'];

@@ -57,8 +57,8 @@ export class ModulesComponent implements OnInit {
   hostResources: HostResource[] = [];
   secrets: Secret[] = [];
   globalConfigs: GlobalConfig[] = [];
-  ready: boolean = false;
-  submitting: boolean = false;
+  ready = false;
+  submitting = false;
   @ViewChildren(DeploymentFormComponent) forms!: QueryList<DeploymentFormComponent>;
 
   constructor(
@@ -72,11 +72,11 @@ export class ModulesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    var moduleID = decodeURIComponent(this.route.snapshot.params['id']);
+    const moduleID = decodeURIComponent(this.route.snapshot.params['id']);
     forkJoin({
       modules: this.moduleService.loadDeploymentRequest([moduleID]),
-      hostResources: this.hostService.getHostResources().pipe(catchError(() => of(<HostResource[]>[]))),
-      secrets: this.secretService.getSecrets().pipe(catchError(() => of(<Secret[]>[]))),
+      hostResources: this.hostService.getHostResources().pipe(catchError(() => of([] as HostResource[]))),
+      secrets: this.secretService.getSecrets().pipe(catchError(() => of([] as Secret[]))),
       globalConfigs: this.moduleService.getGlobalConfigs().pipe(catchError(() => of({}))),
     }).subscribe({
       next: (result) => {
@@ -95,9 +95,9 @@ export class ModulesComponent implements OnInit {
   }
 
   submit() {
-    var inputs: DeploymentUserInput[] = [];
+    const inputs: DeploymentUserInput[] = [];
     for (const form of this.forms.toArray()) {
-      var input = form.collect();
+      const input = form.collect();
       if (!input) {
         return; // per-field errors are shown inline
       }

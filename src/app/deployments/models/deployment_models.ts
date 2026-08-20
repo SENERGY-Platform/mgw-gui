@@ -46,9 +46,7 @@ export interface Deployment {
   state: null | string;
 }
 
-export interface DeploymentResponse {
-  [deployment_id: string]: Deployment;
-}
+export type DeploymentResponse = Record<string, Deployment>;
 
 // Deployment Template -> Info for loading the form
 export interface HostResourcesTemplate {
@@ -100,9 +98,7 @@ export interface InputGroup {
   group?: string;
 }
 
-export interface InputGroups {
-  [id: string]: InputGroup;
-}
+export type InputGroups = Record<string, InputGroup>;
 
 export interface DeploymentTemplate extends DeploymentTemplateBase {}
 

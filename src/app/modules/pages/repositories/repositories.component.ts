@@ -69,8 +69,8 @@ import {AddRepositoryDialogComponent} from '../../components/add-repository-dial
 })
 export class RepositoriesComponent implements OnInit {
   dataSource = new MatTableDataSource<Repository>();
-  ready: Boolean = false;
-  init: Boolean = true;
+  ready = false;
+  init = true;
   displayColumns = ['source', 'priority', 'channels', 'actions'];
 
   constructor(

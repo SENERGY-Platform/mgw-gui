@@ -120,7 +120,7 @@ export class DeploymentFormComponent implements OnInit {
   @Input() secrets: Secret[] = [];
   @Input() globalConfigs: GlobalConfig[] = [];
   // prefill from the existing deployment (edit mode)
-  @Input() prefill: boolean = false;
+  @Input() prefill = false;
 
   configRows: ConfigRow[] = [];
   configGroups: ConfigGroup[] = [];
@@ -134,9 +134,9 @@ export class DeploymentFormComponent implements OnInit {
   }
 
   private buildRows() {
-    var inputs = this.module.inputs || <any>{};
+    const inputs = this.module.inputs || ({} as any);
     // deployment.id check: see the is_deployed workaround in the edit page
-    var deployment =
+    const deployment =
       this.prefill && (this.module.is_deployed || this.module.deployment?.id) ? this.module.deployment : undefined;
 
     for (const [ref, input] of Object.entries(inputs.configs || {})) {
@@ -144,11 +144,11 @@ export class DeploymentFormComponent implements OnInit {
       if (!config) {
         continue;
       }
-      var globalId = deployment?.global_configs?.[ref] || '';
-      var existing = deployment?.configs?.[ref];
+      const globalId = deployment?.global_configs?.[ref] || '';
+      const existing = deployment?.configs?.[ref];
       this.configRows.push({
         ref: ref,
-        input: <ModuleInput>input,
+        input: input as ModuleInput,
         config: config,
         raw: existing ? formatConfigValue(existing) : this.defaultRaw(config),
         useGlobal: !!globalId,
@@ -163,7 +163,7 @@ export class DeploymentFormComponent implements OnInit {
     for (const [ref, input] of Object.entries(inputs.resources || {})) {
       this.resourceRows.push({
         ref: ref,
-        input: <ModuleInput>input,
+        input: input as ModuleInput,
         selectedId: deployment?.host_resources?.[ref] || '',
         error: '',
       });
@@ -172,7 +172,7 @@ export class DeploymentFormComponent implements OnInit {
     for (const [ref, input] of Object.entries(inputs.secrets || {})) {
       this.secretRows.push({
         ref: ref,
-        input: <ModuleInput>input,
+        input: input as ModuleInput,
         type: (this.module.secrets || {})[ref]?.type || '',
         selectedId: deployment?.secrets?.[ref]?.id || '',
         error: '',
@@ -180,11 +180,11 @@ export class DeploymentFormComponent implements OnInit {
     }
 
     for (const [ref, input] of Object.entries(inputs.files || {})) {
-      var file = (this.module.files || {})[ref];
-      var existingData = deployment?.files?.[ref];
+      const file = (this.module.files || {})[ref];
+      const existingData = deployment?.files?.[ref];
       this.fileRows.push({
         ref: ref,
-        input: <ModuleInput>input,
+        input: input as ModuleInput,
         required: file?.required || false,
         text: decodeFileData(existingData !== undefined ? existingData : file?.default_data || ''),
         hasDefault: !!file?.default_data,
@@ -192,10 +192,10 @@ export class DeploymentFormComponent implements OnInit {
     }
 
     for (const [ref, input] of Object.entries(inputs.file_groups || {})) {
-      var existingGroup = deployment?.file_groups?.[ref];
+      const existingGroup = deployment?.file_groups?.[ref];
       this.fileGroupRows.push({
         ref: ref,
-        input: <ModuleInput>input,
+        input: input as ModuleInput,
         files: (existingGroup?.files || []).map((f) => ({
           path: f.path,
           format: f.format,
@@ -205,7 +205,7 @@ export class DeploymentFormComponent implements OnInit {
       });
     }
 
-    var byGroup = (a: {input: ModuleInput}, b: {input: ModuleInput}) =>
+    const byGroup = (a: {input: ModuleInput}, b: {input: ModuleInput}) =>
       this.groupLabel(a.input.group).localeCompare(this.groupLabel(b.input.group)) ||
       a.input.name.localeCompare(b.input.name);
     this.configRows.sort(byGroup);
@@ -217,10 +217,10 @@ export class DeploymentFormComponent implements OnInit {
   // Preserves the sort order established above: rows are already ordered by
   // group label, so groups come out in the same order without a second sort.
   private groupConfigRows(): ConfigGroup[] {
-    var groups: ConfigGroup[] = [];
+    const groups: ConfigGroup[] = [];
     for (const row of this.configRows) {
       var label = this.groupLabel(row.input.group);
-      var group = groups.find((g) => g.label === label);
+      let group = groups.find((g) => g.label === label);
       if (!group) {
         group = {label: label, rows: []};
         groups.push(group);
@@ -264,10 +264,10 @@ export class DeploymentFormComponent implements OnInit {
 
   // flattened path of the nested input groups, e.g. "Broker / Advanced"
   groupLabel(groupRef: string): string {
-    var groups = this.module.inputs?.groups || {};
-    var parts: string[] = [];
-    var ref = groupRef;
-    var guard = 0;
+    const groups = this.module.inputs?.groups || {};
+    const parts: string[] = [];
+    let ref = groupRef;
+    let guard = 0;
     while (ref && groups[ref] && guard < 10) {
       parts.unshift(groups[ref].name || ref);
       ref = groups[ref].group;
@@ -294,8 +294,8 @@ export class DeploymentFormComponent implements OnInit {
   // Collects the user input for this module. Returns undefined and marks the
   // offending fields when validation fails.
   collect(): DeploymentUserInput | undefined {
-    var valid = true;
-    var result: DeploymentUserInput = {
+    let valid = true;
+    const result: DeploymentUserInput = {
       module_id: this.module.id,
       host_resources: {},
       secrets: {},
@@ -350,7 +350,7 @@ export class DeploymentFormComponent implements OnInit {
 
     for (const row of this.fileGroupRows) {
       row.error = '';
-      var files: Record<string, any> = {};
+      const files: Record<string, any> = {};
       for (const file of row.files) {
         if (!file.path.trim()) {
           row.error = 'Every file of the group needs a path';

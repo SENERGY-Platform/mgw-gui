@@ -38,8 +38,8 @@ export class ErrorService {
   // never shown in the notification itself - a 502 from the gateway is a page
   // of HTML.
   handleError(service: string, method: string, error: HttpErrorResponse | Error | any, context?: string) {
-    var errorMessage: string;
-    var status = 0;
+    let errorMessage: string;
+    let status = 0;
     if (error instanceof HttpErrorResponse) {
       status = error.status;
       if (typeof error.error == 'object') {
@@ -57,7 +57,7 @@ export class ErrorService {
 
     console.error('Error =>> Service: ' + service + ' =>> Method: ' + method, errorMessage);
 
-    var short = context || 'The last action failed';
+    let short = context || 'The last action failed';
     if (status === 503) {
       // the module-manager serializes long-running operations: 503 means
       // another job is still active

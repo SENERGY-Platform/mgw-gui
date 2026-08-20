@@ -97,17 +97,17 @@ interface VariantOption {
 })
 export class ManageComponent implements OnInit {
   dataSource = new MatTableDataSource<RepoModule>();
-  ready: Boolean = false;
-  init: Boolean = true;
+  ready = false;
+  init = true;
   displayColumns = ['name', 'status', 'version', 'variant', 'action'];
-  nameFilter: string = '';
+  nameFilter = '';
   // one chip instead of two independent checkboxes: the combination
   // "installed + updates" is just the updates scope, so it was never useful
   scope: 'all' | 'installed' | 'updates' = 'all';
   // repository source to restrict the catalog to, empty = all
-  repoFilter: string = '';
+  repoFilter = '';
   repositories: Repository[] = [];
-  updatesCount: number = 0;
+  updatesCount = 0;
   // the user's collected intents, keyed by module ID ("shopping cart")
   cart: Record<string, ChangeRequestItem> = {};
   // selected variant per module ID, format source|channel
@@ -223,7 +223,7 @@ export class ManageComponent implements OnInit {
   }
 
   private computeVariantOptions(module: RepoModule): VariantOption[] {
-    var options: VariantOption[] = [];
+    const options: VariantOption[] = [];
     for (const variant of module.repository_variants || []) {
       for (const channel of variant.channels || []) {
         options.push({
@@ -241,7 +241,7 @@ export class ManageComponent implements OnInit {
     if (module.is_installed) {
       return module.installed_variant.source + '|' + module.installed_variant.channel;
     }
-    var options = this.variantOptionsById[module.id] || [];
+    const options = this.variantOptionsById[module.id] || [];
     return options.length > 0 ? options[0].key : '';
   }
 
@@ -251,7 +251,7 @@ export class ManageComponent implements OnInit {
   }
 
   install(module: RepoModule) {
-    var [source, channel] = (this.selectedVariant[module.id] || '').split('|');
+    const [source, channel] = (this.selectedVariant[module.id] || '').split('|');
     this.cart[module.id] = {id: module.id, source: source, channel: channel};
   }
 
@@ -268,7 +268,7 @@ export class ManageComponent implements OnInit {
   }
 
   cartAction(moduleID: string): string {
-    var item = this.cart[moduleID];
+    const item = this.cart[moduleID];
     if (!item) {
       return '';
     }
@@ -321,7 +321,7 @@ export class ManageComponent implements OnInit {
   }
 
   private openReviewDialog(request: ModulesChangeRequest) {
-    var dialogRef = this.dialog.open(ChangeRequestDialogComponent, {data: {request: request}});
+    const dialogRef = this.dialog.open(ChangeRequestDialogComponent, {data: {request: request}});
     dialogRef.afterClosed().subscribe((action) => {
       if (action === 'execute') {
         this.executeRequest();
@@ -384,7 +384,7 @@ export class ManageComponent implements OnInit {
   }
 
   refreshRepositories() {
-    var dialogRef = this.dialog.open(RefreshReposDialogComponent, {
+    const dialogRef = this.dialog.open(RefreshReposDialogComponent, {
       data: {
         repositories: this.repositories,
         hasPendingChangeRequest: !!this.pendingRequest,

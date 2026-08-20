@@ -58,8 +58,8 @@ export class ShowModuleComponentComponent implements OnInit {
   hostResources: HostResource[] = [];
   secrets: Secret[] = [];
   globalConfigs: GlobalConfig[] = [];
-  ready: boolean = false;
-  submitting: boolean = false;
+  ready = false;
+  submitting = false;
   @ViewChildren(DeploymentFormComponent) forms!: QueryList<DeploymentFormComponent>;
 
   constructor(
@@ -74,13 +74,13 @@ export class ShowModuleComponentComponent implements OnInit {
 
   ngOnInit(): void {
     // one or more module IDs, each URI-encoded, joined by commas (batch edit)
-    var moduleIDs = String(this.route.snapshot.params['ids'])
+    const moduleIDs = String(this.route.snapshot.params['ids'])
       .split(',')
       .map((id) => decodeURIComponent(id));
     forkJoin({
       modules: this.moduleService.loadModulesFull(moduleIDs),
-      hostResources: this.hostService.getHostResources().pipe(catchError(() => of(<HostResource[]>[]))),
-      secrets: this.secretService.getSecrets().pipe(catchError(() => of(<Secret[]>[]))),
+      hostResources: this.hostService.getHostResources().pipe(catchError(() => of([] as HostResource[]))),
+      secrets: this.secretService.getSecrets().pipe(catchError(() => of([] as Secret[]))),
       globalConfigs: this.moduleService.getGlobalConfigs().pipe(catchError(() => of({}))),
     }).subscribe({
       next: (result) => {
@@ -106,9 +106,9 @@ export class ShowModuleComponentComponent implements OnInit {
   }
 
   submit() {
-    var inputs = [];
+    const inputs = [];
     for (const form of this.forms.toArray()) {
-      var input = form.collect();
+      const input = form.collect();
       if (!input) {
         return; // per-field errors are shown inline
       }

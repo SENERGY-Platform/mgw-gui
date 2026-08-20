@@ -1,4 +1,4 @@
-import {Component, Inject, ViewChild} from '@angular/core';
+import {Component, Inject, ViewChild, AfterViewInit} from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import {
   MatCell,
@@ -53,10 +53,10 @@ import {MatIcon} from '@angular/material/icon';
     EmptyStateComponent,
   ],
 })
-export class ListComponent {
+export class ListComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<Secret>();
-  ready: Boolean = false;
-  init: Boolean = true;
+  ready = false;
+  init = true;
   interval: any;
   secretTypesDisplayNames: Record<any, string> = SecretTypesDisplayNames; // any type because elements in matCellDef are not typed
   @ViewChild(MatSort) sort!: MatSort;

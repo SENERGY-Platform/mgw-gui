@@ -55,7 +55,7 @@ interface ListItem {
   styleUrl: './native-list.component.css',
 })
 export class NativeListComponent implements OnInit {
-  ready: boolean = false;
+  ready = false;
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['name', 'version', 'actions'];
   dataSource = new MatTableDataSource<ListItem>();
@@ -78,7 +78,7 @@ export class NativeListComponent implements OnInit {
 
     forkJoin(obs).subscribe({
       next: (responses: any[]) => {
-        let infoResponses: InfoResponse[] = [];
+        const infoResponses: InfoResponse[] = [];
         let logs: Log[] = [];
         responses.forEach((response) => {
           if (instanceOfInfoResponse(response)) {
@@ -89,7 +89,7 @@ export class NativeListComponent implements OnInit {
         });
         console.log(infoResponses);
         console.log(logs);
-        let itemMap: Map<string, ListItem> = new Map();
+        const itemMap = new Map<string, ListItem>();
         infoResponses.forEach((response) => {
           let item = itemMap.get(response.name);
           if (item === undefined) {

@@ -60,15 +60,15 @@ const GITHUB_TEMPLATE = {
   ],
 })
 export class AddRepositoryDialogComponent {
-  repositoryType: string = 'github.com';
+  repositoryType = 'github.com';
   definitionJson: string = JSON.stringify(GITHUB_TEMPLATE, null, 2);
-  error: string = '';
+  error = '';
 
   constructor(public dialogRef: MatDialogRef<AddRepositoryDialogComponent>) {}
 
   save() {
     this.error = '';
-    var definition: any;
+    let definition: any;
     try {
       definition = JSON.parse(this.definitionJson);
     } catch (err: any) {

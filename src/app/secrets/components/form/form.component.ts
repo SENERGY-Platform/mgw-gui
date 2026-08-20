@@ -33,11 +33,11 @@ import {PageHeaderComponent} from 'src/app/core/components/page-header/page-head
   ],
 })
 export class FormComponent implements OnChanges, OnInit {
-  @Input() mode: string = 'add';
+  @Input() mode = 'add';
   @Input() secretID!: string;
   form: any;
   SecretTypesConst = SecretTypes;
-  ready: boolean = false;
+  ready = false;
   secretTypes: SecretType[] = [];
   selectedSecretType!: string;
 
@@ -55,7 +55,7 @@ export class FormComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    var attribute = 'secretID';
+    const attribute = 'secretID';
     if (changes[attribute] && changes[attribute].currentValue) {
       this.secretID = changes[attribute].currentValue;
       this.ready = false;
@@ -88,18 +88,18 @@ export class FormComponent implements OnChanges, OnInit {
   }
 
   setupForm(secret: Secret | null = null) {
-    var secretName = '';
-    var secretType = this.selectedSecretType;
-    var secretValue = '';
+    let secretName = '';
+    let secretType = this.selectedSecretType;
+    const secretValue = '';
 
-    if (!!secret) {
+    if (secret) {
       secretName = secret.name;
       secretType = secret.type;
     }
 
     if (this.selectedSecretType == this.SecretTypesConst.BasicAuth) {
-      var username = '';
-      var password = '';
+      const username = '';
+      const password = '';
 
       this.form = this.fb.group({
         name: this.fb.control(secretName),
@@ -121,7 +121,7 @@ export class FormComponent implements OnChanges, OnInit {
   }
 
   parseSecretRequest(): CreateSecret {
-    var secretRequest: CreateSecret;
+    let secretRequest: CreateSecret;
 
     if (this.selectedSecretType == this.SecretTypesConst.BasicAuth) {
       secretRequest = {
@@ -141,9 +141,9 @@ export class FormComponent implements OnChanges, OnInit {
 
   createSecret() {
     if (this.form.valid) {
-      var secretRequest = this.parseSecretRequest();
+      const secretRequest = this.parseSecretRequest();
 
-      if (!!secretRequest) {
+      if (secretRequest) {
         this.ready = false;
         this.secretService.createSecret(secretRequest).subscribe({
           next: (_) => {
@@ -161,9 +161,9 @@ export class FormComponent implements OnChanges, OnInit {
 
   updateSecret() {
     if (this.form.valid) {
-      var secretRequest = this.parseSecretRequest();
+      const secretRequest = this.parseSecretRequest();
 
-      if (!!secretRequest) {
+      if (secretRequest) {
         this.ready = false;
         this.secretService.updateSecret(secretRequest, this.secretID).subscribe({
           next: (_) => {

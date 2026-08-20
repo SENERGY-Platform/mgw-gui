@@ -70,7 +70,7 @@ export class ModuleManagerMockService {
       is_deployed: false,
       has_error: false,
       error_msg: '',
-      deployment: <any>{},
+      deployment: {} as any,
       inputs: {
         configs: {
           greeting: {name: 'Greeting', description: 'Shown on the start page', group: 'general'},
@@ -122,9 +122,9 @@ export class ModuleManagerMockService {
   }
 
   loadModuleFull(moduleID: string): Observable<DeploymentRequestModule> {
-    var module = this.mockRequestModule(moduleID);
+    const module = this.mockRequestModule(moduleID);
     module.is_deployed = true;
-    module.deployment = <any>{
+    module.deployment = {
       id: 'dep-a',
       module_version: 'v1.0.0',
       enabled: true,
@@ -136,16 +136,16 @@ export class ModuleManagerMockService {
       file_groups: {},
       has_error: false,
       error_msg: '',
-    };
+    } as any;
     return of(module);
   }
 
   loadModulesFull(moduleIDs: string[]): Observable<DeploymentRequestModule[]> {
     return of(
       moduleIDs.map((id) => {
-        var module = this.mockRequestModule(id);
+        const module = this.mockRequestModule(id);
         module.is_deployed = true;
-        module.deployment = <any>{
+        module.deployment = {
           id: 'dep-' + (id.split('/').pop() || id),
           module_version: 'v1.0.0',
           enabled: true,
@@ -157,7 +157,7 @@ export class ModuleManagerMockService {
           file_groups: {},
           has_error: false,
           error_msg: '',
-        };
+        } as any;
         return module;
       }),
     ).pipe(delay(300));
@@ -214,7 +214,7 @@ export class ModuleManagerMockService {
 
   createGlobalConfig(input: GlobalConfigInput): Observable<string> {
     this.globalConfigCounter++;
-    var id = 'gc-' + this.globalConfigCounter;
+    const id = 'gc-' + this.globalConfigCounter;
     this.globalConfigs[id] = {id: id, ...input};
     return of(id);
   }
@@ -267,7 +267,7 @@ export class ModuleManagerMockService {
   }
 
   loadRepositoryModules(filter?: RepoModulesFilter): Observable<RepoModule[]> {
-    var modules: RepoModule[] = [
+    let modules: RepoModule[] = [
       {
         id: 'github.com/SENERGY-Platform/mgw-test-module-a',
         name: 'Test Module A',
@@ -417,7 +417,7 @@ export class ModuleManagerMockService {
   }
 
   loadModulesReduced(): Observable<ModuleReduced[]> {
-    var modules: ModuleReduced[] = [
+    const modules: ModuleReduced[] = [
       {
         id: 'github.com/SENERGY-Platform/mgw-test-module-a',
         source: 'github.com/SENERGY-Platform/mgw-module-repository',
@@ -483,7 +483,7 @@ export class ModuleManagerMockService {
         is_deployed: false,
         has_error: false,
         error_msg: '',
-        deployment: <any>{},
+        deployment: {} as any,
       },
     ];
     return of(modules).pipe(delay(500));
@@ -525,7 +525,7 @@ export class ModuleManagerMockService {
   }
 
   getJobs(jobIDs?: string[]): Observable<Job[]> {
-    var jobs: Job[] = [
+    const jobs: Job[] = [
       {
         id: 'job-1',
         description: 'Completed mock job',

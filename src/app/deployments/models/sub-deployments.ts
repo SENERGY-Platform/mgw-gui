@@ -31,6 +31,4 @@ export interface AuxDeployment extends AuxDeploymentBase {
   container: AuxDepContainer;
 }
 
-export interface AuxDeploymentResponse {
-  [depID: string]: AuxDeployment;
-}
+export type AuxDeploymentResponse = Record<string, AuxDeployment>;

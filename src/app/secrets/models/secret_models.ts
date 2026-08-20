@@ -24,7 +24,7 @@ export enum SecretTypes {
   PrivateKey = 'private-key',
 }
 
-export var SecretTypesDisplayNames: {[key in SecretTypes]: string} = {
+export var SecretTypesDisplayNames: Record<SecretTypes, string> = {
   [SecretTypes.Certificate]: 'Certificate',
   [SecretTypes.BasicAuth]: 'Credentials',
   [SecretTypes.APIKey]: 'API Key',

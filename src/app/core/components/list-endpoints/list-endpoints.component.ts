@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild, OnDestroy} from '@angular/core';
 import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {
   MatCell,
@@ -54,13 +54,13 @@ import {MatTooltip} from '@angular/material/tooltip';
     MatTooltip,
   ],
 })
-export class ListEndpointsComponent implements OnInit {
+export class ListEndpointsComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<CoreEndpoint>();
   dataSourceAlias = new MatTableDataSource<CoreEndpoint>();
 
   interval: any;
-  ready: Boolean = false;
-  init: Boolean = true;
+  ready = false;
+  init = true;
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['url', 'add'];
   displayColumnsAlias = ['select', 'url', 'delete'];

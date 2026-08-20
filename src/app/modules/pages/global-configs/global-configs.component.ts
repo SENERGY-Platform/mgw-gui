@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild, AfterViewInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {
@@ -70,10 +70,10 @@ import {GlobalConfigDialogComponent} from '../../components/global-config-dialog
     EmptyStateComponent,
   ],
 })
-export class GlobalConfigsComponent implements OnInit {
+export class GlobalConfigsComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<GlobalConfig>();
-  ready: Boolean = false;
-  init: Boolean = true;
+  ready = false;
+  init = true;
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['name', 'type', 'value', 'actions'];
 
@@ -91,7 +91,7 @@ export class GlobalConfigsComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.dataSource.sortingDataAccessor = (row: GlobalConfig, sortHeaderId: string) => {
-      var value = (<any>row)[sortHeaderId];
+      let value = (row as any)[sortHeaderId];
       value = typeof value === 'string' ? value.toUpperCase() : value;
       return value;
     };
@@ -113,12 +113,12 @@ export class GlobalConfigsComponent implements OnInit {
   }
 
   typeLabel(config: GlobalConfig): string {
-    var label = DATA_TYPE_LABELS[config.data_type] || 'unknown';
+    const label = DATA_TYPE_LABELS[config.data_type] || 'unknown';
     return config.is_slice ? label + ' list' : label;
   }
 
   valuePreview(config: GlobalConfig): string {
-    var value = formatConfigValue(config).replace(/\n/g, ', ');
+    const value = formatConfigValue(config).replace(/\n/g, ', ');
     return value.length > 60 ? value.slice(0, 60) + '…' : value;
   }
 

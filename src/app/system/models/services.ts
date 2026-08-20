@@ -15,6 +15,4 @@ interface Image {
   tag: string;
 }
 
-export interface CoreServicesResponse {
-  [serviceID: string]: CoreService;
-}
+export type CoreServicesResponse = Record<string, CoreService>;

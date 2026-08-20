@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -44,7 +44,7 @@ export function passwordMustMatch(control: AbstractControl): ValidationErrors | 
     PageHeaderComponent,
   ],
 })
-export class EditAccountComponent {
+export class EditAccountComponent implements OnDestroy {
   form = new FormGroup(
     {
       password: new FormControl('', {nonNullable: true, validators: Validators.required}),

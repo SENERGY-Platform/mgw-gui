@@ -14,9 +14,7 @@ export interface Module {
   updated: Date;
 }
 
-export interface ModuleResponse {
-  [module_id: string]: Module;
-}
+export type ModuleResponse = Record<string, Module>;
 
 export interface AddModule {
   id?: string;
@@ -30,9 +28,7 @@ export interface ModuleUpdate {
   versions: string[];
 }
 
-export interface ModuleUpdates {
-  [module_id: string]: ModuleUpdate;
-}
+export type ModuleUpdates = Record<string, ModuleUpdate>;
 
 export interface ModuleUpdatePrepare {
   version: string;

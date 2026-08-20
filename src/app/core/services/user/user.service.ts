@@ -20,11 +20,11 @@ export class UserService {
     if (type) {
       queryParams = queryParams.set('type', type);
     }
-    return <Observable<T>>this.http.get(this.userPath + this.identitiesPath, queryParams);
+    return this.http.get(this.userPath + this.identitiesPath, queryParams) as Observable<T>;
   }
 
   getUser(userId: string) {
-    return <Observable<HumanUser>>this.http.get(this.userPath + this.identitiesPath + '/' + userId);
+    return this.http.get(this.userPath + this.identitiesPath + '/' + userId) as Observable<HumanUser>;
   }
 
   listHumanUsers() {
@@ -44,12 +44,12 @@ export class UserService {
   }
 
   openPairingMode() {
-    var url = this.userPath + this.pairingPath + '/open';
+    const url = this.userPath + this.pairingPath + '/open';
     return this.http.patch(url, {withCredentials: true});
   }
 
   closePairingMode() {
-    var url = this.userPath + this.pairingPath + '/close';
+    const url = this.userPath + this.pairingPath + '/close';
     return this.http.patch(url, {withCredentials: true});
   }
 
@@ -58,7 +58,7 @@ export class UserService {
   }
 
   getInfo(): Observable<InfoResponse> {
-    var url = this.userPath + '/info';
-    return <Observable<InfoResponse>>this.http.get(url);
+    const url = this.userPath + '/info';
+    return this.http.get(url) as Observable<InfoResponse>;
   }
 }

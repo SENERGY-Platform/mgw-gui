@@ -52,7 +52,7 @@ export function hasFailures(items: JobResultItem[]): boolean {
 }
 
 export function mapModulesChangeResult(result: ModulesChangeJobResult): JobResultItem[] {
-  var items: JobResultItem[] = [];
+  const items: JobResultItem[] = [];
   if (result.has_error) {
     items.push({label: 'Change request', ok: false, message: result.error_msg, hint: hintForError(result.error_msg)});
   }
@@ -73,7 +73,7 @@ export function mapModulesChangeResult(result: ModulesChangeJobResult): JobResul
 export function mapDeploymentResults(
   result: DeploymentJobResult | DeploymentUpdateJobResult | DeploymentDeleteJobResult,
 ): JobResultItem[] {
-  var items: JobResultItem[] = [];
+  const items: JobResultItem[] = [];
   if (result.has_error) {
     items.push({label: 'Job', ok: false, message: result.error_msg, hint: hintForError(result.error_msg)});
   }
@@ -89,14 +89,14 @@ export function mapDeploymentResults(
 }
 
 export function mapRepositoryRefreshResult(result: RepositoryJobResult): JobResultItem[] {
-  var items: JobResultItem[] = [];
+  const items: JobResultItem[] = [];
   if (result.has_error) {
     items.push({label: 'Refresh', ok: false, message: result.error_msg, hint: hintForError(result.error_msg)});
   }
   // upstream struct field has no json tag, hence the capital R
   for (const entry of result.Results || []) {
-    var channelErrors = (entry.channel_errors || []).map((c) => c.channel + ': ' + c.error_msg);
-    var failed = entry.has_error || channelErrors.length > 0;
+    const channelErrors = (entry.channel_errors || []).map((c) => c.channel + ': ' + c.error_msg);
+    const failed = entry.has_error || channelErrors.length > 0;
     items.push({
       label: entry.source + (entry.refresh ? '' : ' (skipped)'),
       ok: !failed,

@@ -61,10 +61,10 @@ import {StatusPillComponent, StatusTone} from 'src/app/core/components/status-pi
   ],
 })
 export class AuxDeploymentsListComponent implements OnInit, OnDestroy {
-  @Input() deploymentID: string = '';
+  @Input() deploymentID = '';
 
   dataSource = new MatTableDataSource<AuxDeployment>();
-  ready: boolean = false;
+  ready = false;
   interval: any;
   displayColumns = ['status', 'name', 'reference', 'image', 'updated'];
 

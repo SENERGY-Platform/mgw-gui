@@ -28,8 +28,8 @@ import {PageHeaderComponent} from 'src/app/core/components/page-header/page-head
   ],
 })
 export class RegisterComponent {
-  flowID: string = '';
-  csrf: string = '';
+  flowID = '';
+  csrf = '';
   waitingForRegister = false;
 
   form = new FormGroup({

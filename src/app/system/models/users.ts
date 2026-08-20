@@ -24,13 +24,9 @@ export interface DeviceUser extends BaseUser {
   meta: DeviceUserMeta;
 }
 
-export interface HumanUsersResponse {
-  [userID: string]: HumanUser;
-}
+export type HumanUsersResponse = Record<string, HumanUser>;
 
-export interface DeviceUsersResponse {
-  [userID: string]: DeviceUser;
-}
+export type DeviceUsersResponse = Record<string, DeviceUser>;
 
 export interface UserRequest {
   username: string;

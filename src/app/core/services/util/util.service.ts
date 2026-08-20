@@ -44,11 +44,11 @@ export class UtilService {
     }
   }
 
-  dateIsToday(dateTime: string | number): Boolean {
-    var today = new Date();
+  dateIsToday(dateTime: string | number): boolean {
+    const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    var date = new Date(dateTime);
+    let date = new Date(dateTime);
     if (typeof dateTime == 'number') {
       date = new Date(dateTime);
     }
@@ -65,7 +65,7 @@ export class UtilService {
       typed result is returned in the close event.
     */
 
-    var dialogRef = this.dialog.open(JobLoaderModalComponent, {
+    const dialogRef = this.dialog.open(JobLoaderModalComponent, {
       data: {
         jobID: jobID,
         message: message,
@@ -83,7 +83,7 @@ export class UtilService {
   }
 
   askForConfirmation(message: string): Observable<boolean> {
-    var dialogRef = this.dialog.open(ConfirmDialogComponent, {data: {message: message}});
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {data: {message: message}});
 
     return dialogRef?.afterClosed();
   }

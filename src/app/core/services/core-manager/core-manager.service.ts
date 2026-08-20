@@ -17,67 +17,67 @@ export class CoreManagerService {
   constructor(private http: ApiService) {}
 
   getEndpoints(deploymentId?: string): Observable<CoreEndpointsResponse> {
-    var url = this.coreManagerPath + '/endpoints';
+    let url = this.coreManagerPath + '/endpoints';
     if (deploymentId != null) {
       url = url + '?ref=' + deploymentId;
     }
-    return <Observable<CoreEndpointsResponse>>this.http.get(url, undefined, undefined, false);
+    return this.http.get(url, undefined, undefined, false) as Observable<CoreEndpointsResponse>;
   }
 
   createEndpointAlias(aliasReq: CoreEndpointAliasReq): Observable<any> {
-    var url = this.coreManagerPath + '/endpoints/' + aliasReq.parent_id + '/alias';
-    return <Observable<any>>this.http.post(url, aliasReq, undefined, 'text');
+    const url = this.coreManagerPath + '/endpoints/' + aliasReq.parent_id + '/alias';
+    return this.http.post(url, aliasReq, undefined, 'text') as Observable<any>;
   }
 
   deleteEndpoint(endpointID: string): Observable<any> {
-    var url = this.coreManagerPath + '/endpoints/' + endpointID;
-    return <Observable<any>>this.http.delete(url, undefined, undefined, 'text');
+    const url = this.coreManagerPath + '/endpoints/' + endpointID;
+    return this.http.delete(url, undefined, undefined, 'text') as Observable<any>;
   }
 
   deleteEndpoints(endpointIDs: string[]): Observable<any> {
-    var url = this.coreManagerPath + '/endpoints-batch?ids=' + endpointIDs.join(',');
-    return <Observable<any>>this.http.delete(url, undefined, undefined, 'text');
+    const url = this.coreManagerPath + '/endpoints-batch?ids=' + endpointIDs.join(',');
+    return this.http.delete(url, undefined, undefined, 'text') as Observable<any>;
   }
 
   getServices(): Observable<CoreServicesResponse> {
-    var url = this.coreManagerPath + '/core-services';
-    return <Observable<CoreServicesResponse>>this.http.get(url, undefined, undefined, false);
+    const url = this.coreManagerPath + '/core-services';
+    return this.http.get(url, undefined, undefined, false) as Observable<CoreServicesResponse>;
   }
 
   reloadService(serviceID: string) {
-    var url = this.coreManagerPath + '/core-services/' + serviceID + '/restart';
-    return <Observable<string>>this.http.patch(url, undefined, undefined, 'text');
+    const url = this.coreManagerPath + '/core-services/' + serviceID + '/restart';
+    return this.http.patch(url, undefined, undefined, 'text') as Observable<string>;
   }
 
   getJobStatus(jobID: string): Observable<Job> {
-    var url = this.coreManagerPath + '/jobs/' + jobID;
-    return <Observable<Job>>this.http.get(url);
+    const url = this.coreManagerPath + '/jobs/' + jobID;
+    return this.http.get(url) as Observable<Job>;
   }
 
   stopJob(jobID: string): Observable<any> {
-    var url = this.coreManagerPath + '/jobs/' + jobID + '/cancel';
-    return <Observable<any>>this.http.patch(url);
+    const url = this.coreManagerPath + '/jobs/' + jobID + '/cancel';
+    return this.http.patch(url) as Observable<any>;
   }
 
   getJobs(): Observable<Job[]> {
-    var url = this.coreManagerPath + '/jobs';
-    return <Observable<Job[]>>this.http.get(url);
+    const url = this.coreManagerPath + '/jobs';
+    return this.http.get(url) as Observable<Job[]>;
   }
 
   getInfo(): Observable<InfoResponse> {
-    var url = this.coreManagerPath + '/info';
-    return <Observable<InfoResponse>>this.http.get(url);
+    const url = this.coreManagerPath + '/info';
+    return this.http.get(url) as Observable<InfoResponse>;
   }
 
   getLogs(): Observable<Log[]> {
-    let url = this.coreManagerPath + '/logs';
-    return <Observable<Log[]>>this.http.get(url);
+    const url = this.coreManagerPath + '/logs';
+    return this.http.get(url) as Observable<Log[]>;
   }
 
   getLog(logID: string, max_lines: number): Observable<string> {
-    let url = this.coreManagerPath + '/logs/' + logID;
+    const url = this.coreManagerPath + '/logs/' + logID;
     let queryParams = new HttpParams();
     queryParams = queryParams.set('max_lines', max_lines);
-    return <Observable<string>>this.http.get(url, queryParams, 'text');
+    return this.http.get(url, queryParams, 'text') as Observable<string>;
   }
 }

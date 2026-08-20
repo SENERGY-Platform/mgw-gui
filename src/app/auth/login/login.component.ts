@@ -16,10 +16,10 @@ import {MatIcon} from '@angular/material/icon';
   imports: [SpinnerComponent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, MatIcon],
 })
 export class LoginComponent {
-  flowID: string = '';
-  csrf: string = '';
+  flowID = '';
+  csrf = '';
   waitingForLogin = false;
-  returnTo: string = '';
+  returnTo = '';
 
   form = new FormGroup({
     username: new FormControl('', {nonNullable: true, validators: Validators.required}),

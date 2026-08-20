@@ -13,11 +13,11 @@ export class SecretManagerServiceService {
   constructor(private http: ApiService) {}
 
   getSecrets(): Observable<Secret[]> {
-    return <Observable<Secret[]>>this.http.get(this.secretManagerPath + '/secrets');
+    return this.http.get(this.secretManagerPath + '/secrets') as Observable<Secret[]>;
   }
 
   getSecret(secretID: string): Observable<Secret> {
-    return <Observable<Secret>>this.http.get(this.secretManagerPath + '/secrets/' + secretID);
+    return this.http.get(this.secretManagerPath + '/secrets/' + secretID) as Observable<Secret>;
   }
 
   createSecret(secretRequest: CreateSecret) {
@@ -25,19 +25,19 @@ export class SecretManagerServiceService {
   }
 
   getSecretTypes(): Observable<SecretType[]> {
-    return <Observable<SecretType[]>>this.http.get(this.secretManagerPath + '/types');
+    return this.http.get(this.secretManagerPath + '/types') as Observable<SecretType[]>;
   }
 
   updateSecret(secretRequest: CreateSecret, id: string): Observable<any> {
-    return <Observable<any>>this.http.put(this.secretManagerPath + '/secrets/' + id, secretRequest);
+    return this.http.put(this.secretManagerPath + '/secrets/' + id, secretRequest) as Observable<any>;
   }
 
   deleteSecret(secretID: string): Observable<any> {
-    return <Observable<any>>this.http.delete(this.secretManagerPath + '/secrets/' + secretID);
+    return this.http.delete(this.secretManagerPath + '/secrets/' + secretID) as Observable<any>;
   }
 
   getInfo(): Observable<InfoResponse> {
-    var url = this.secretManagerPath + '/info';
-    return <Observable<InfoResponse>>this.http.get(url);
+    const url = this.secretManagerPath + '/info';
+    return this.http.get(url) as Observable<InfoResponse>;
   }
 }

@@ -36,7 +36,7 @@ export class ApiService {
     withHeaders?: boolean,
     headers?: HttpHeaders,
   ): Observable<unknown> {
-    var options: any = {params: queryParams};
+    const options: any = {params: queryParams};
     if (responseType) {
       options['responseType'] = responseType;
     }
@@ -58,7 +58,7 @@ export class ApiService {
     responseType?: string,
     headers?: HttpHeaders,
   ): Observable<unknown> {
-    var options: any = {params: queryParams};
+    const options: any = {params: queryParams};
     if (responseType) {
       options['responseType'] = responseType;
     }
@@ -72,7 +72,7 @@ export class ApiService {
   }
 
   public put(path: string, payload: any): Observable<unknown> {
-    var options: any = {
+    const options: any = {
       withCredentials: true,
     };
     return this.httpClient.put(this.baseUrl + path, payload, options);
@@ -85,7 +85,7 @@ export class ApiService {
     responseType?: string,
     headers?: HttpHeaders,
   ): Observable<unknown> {
-    var options: any = {
+    const options: any = {
       params: queryParams,
       body: payload,
     };
@@ -107,7 +107,7 @@ export class ApiService {
     responseType?: string,
     headers?: HttpHeaders,
   ): Observable<unknown> {
-    var options: any = {params: queryParams};
+    const options: any = {params: queryParams};
     if (responseType) {
       options['responseType'] = responseType;
     }

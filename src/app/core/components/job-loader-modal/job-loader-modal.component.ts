@@ -21,11 +21,11 @@ export type JobResultKind =
 export class JobLoaderModalComponent implements OnInit {
   jobID!: string;
   interval: any;
-  jobIsCompleted: boolean = false;
+  jobIsCompleted = false;
   message!: string;
   service!: string;
   resultKind?: JobResultKind;
-  private closing: boolean = false;
+  private closing = false;
 
   constructor(
     @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
@@ -132,7 +132,7 @@ export class JobLoaderModalComponent implements OnInit {
   }
 
   cancel() {
-    var obs =
+    const obs =
       this.service === 'core-manager' ? this.coreService.stopJob(this.jobID) : this.moduleService.stopJob(this.jobID);
     obs.subscribe({
       next: (result) => {

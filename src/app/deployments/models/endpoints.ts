@@ -1,7 +1,7 @@
 export interface CoreEndpoint {
   id: string;
   parent_id: string;
-  type: Number;
+  type: number;
   host: string;
   int_path: string;
   ext_path: string;
@@ -10,9 +10,7 @@ export interface CoreEndpoint {
   port: number;
 }
 
-export interface CoreEndpointsResponse {
-  [endpointID: string]: CoreEndpoint;
-}
+export type CoreEndpointsResponse = Record<string, CoreEndpoint>;
 
 export interface CoreEndpointAliasReq {
   parent_id: string;

@@ -175,7 +175,7 @@ export function parseModuleConfigItem(dataType: string, raw: string): any {
 // min_len, max_len, plus the options restriction. The module-manager
 // validates again server-side; this only surfaces errors early.
 export function validateModuleConfigItem(config: ModuleConfigValue, value: any): void {
-  var opt = config.type_opt || {};
+  const opt = config.type_opt || {};
   if (typeof value === 'number') {
     if (opt['min'] !== undefined && opt['min'] !== null && value < opt['min']) {
       throw new Error(value + ' is below the minimum of ' + opt['min']);
@@ -204,11 +204,11 @@ export function validateModuleConfigItem(config: ModuleConfigValue, value: any):
 // item for slices). Returns the typed value or throws.
 export function parseModuleConfigValue(config: ModuleConfigValue, raw: string): any {
   if (!config.is_slice) {
-    var value = parseModuleConfigItem(config.data_type, raw);
+    const value = parseModuleConfigItem(config.data_type, raw);
     validateModuleConfigItem(config, value);
     return value;
   }
-  var items = raw
+  const items = raw
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => line !== '');
@@ -216,7 +216,7 @@ export function parseModuleConfigValue(config: ModuleConfigValue, raw: string): 
     throw new Error('a list needs at least one value (one per line)');
   }
   return items.map((item) => {
-    var value = parseModuleConfigItem(config.data_type, item);
+    const value = parseModuleConfigItem(config.data_type, item);
     validateModuleConfigItem(config, value);
     return value;
   });

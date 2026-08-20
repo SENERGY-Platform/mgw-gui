@@ -61,8 +61,8 @@ export class ContainerListComponent implements OnInit, OnDestroy {
   }
 
   dataSource = new MatTableDataSource<CoreService>();
-  ready: Boolean = false;
-  init: Boolean = true;
+  ready = false;
+  init = true;
   interval: any;
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['name', 'status', 'version', 'actions'];

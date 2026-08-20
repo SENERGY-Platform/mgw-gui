@@ -70,19 +70,19 @@ export class GlobalConfigDialogComponent {
   DATA_TYPE_FLOAT = DATA_TYPE_FLOAT;
   DATA_TYPE_BOOL = DATA_TYPE_BOOL;
 
-  isEdit: boolean = false;
-  name: string = '';
+  isEdit = false;
+  name = '';
   dataType: number = DATA_TYPE_STRING;
-  isSlice: boolean = false;
-  rawValue: string = '';
-  boolValue: string = 'true';
-  error: string = '';
+  isSlice = false;
+  rawValue = '';
+  boolValue = 'true';
+  error = '';
 
   constructor(
     public dialogRef: MatDialogRef<GlobalConfigDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data: any,
   ) {
-    var config: GlobalConfig | undefined = data?.config;
+    const config: GlobalConfig | undefined = data?.config;
     if (config) {
       this.isEdit = true;
       this.name = config.name;
@@ -102,15 +102,15 @@ export class GlobalConfigDialogComponent {
       this.error = 'Name is required';
       return;
     }
-    var raw = this.dataType === DATA_TYPE_BOOL && !this.isSlice ? this.boolValue : this.rawValue;
-    var value: any;
+    const raw = this.dataType === DATA_TYPE_BOOL && !this.isSlice ? this.boolValue : this.rawValue;
+    let value: any;
     try {
       value = parseConfigValue(this.dataType, this.isSlice, raw);
     } catch (err: any) {
       this.error = err.message;
       return;
     }
-    var input: GlobalConfigInput = {
+    const input: GlobalConfigInput = {
       name: this.name.trim(),
       data_type: this.dataType,
       is_slice: this.isSlice,
