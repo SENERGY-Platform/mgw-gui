@@ -1,35 +1,26 @@
-#settings {
-  margin-bottom: 20px;
+.lines {
+  width: 110px;
 }
 
-pre {
-  display: flex;
-  margin-top: 0;
-  margin-bottom: 0;
-  word-wrap: break-word;
+.log-card {
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 14px;
+  background: #0d1117;
+  overflow: hidden;
 }
 
-pre code {
-  flex: 1;
-  line-height: 1.5em;
+.log-card pre {
+  margin: 0;
+  padding: 14px 16px;
+  max-height: calc(100vh - 240px);
+  overflow: auto;
   font-size: 12px;
-  min-height: 100%;
-  padding: 1em 1.2em;
+  line-height: 1.55;
 }
 
-pre code .hljs-line-numbers {
-  padding: 0 !important;
-}
-
-
-/** Line numbers styles */
-.hljs {
-  border: 1px solid gray;
-  border-radius: 4px;
-  transition: border ease 1s;
-}
-
-#logs code {
-  overflow-y: scroll;
-  max-height: calc(100vh - 150px);
+.loading {
+  margin: 0;
+  padding: 20px;
+  font-size: 13px;
+  color: #8b949e;
 }

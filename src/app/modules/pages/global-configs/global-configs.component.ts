@@ -36,7 +36,9 @@ import {UtilService} from 'src/app/core/services/util/util.service';
 import {concatMap, of} from 'rxjs';
 
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
-import {MatFabButton, MatIconButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
+import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
+import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatIcon} from '@angular/material/icon';
 import {
@@ -51,14 +53,14 @@ import {GlobalConfigDialogComponent} from '../../components/global-config-dialog
     selector: 'global-configs',
     templateUrl: './global-configs.component.html',
     styleUrls: ['./global-configs.component.css'],
-    imports: [SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
+    imports: [SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, PageHeaderComponent, EmptyStateComponent]
 })
 export class GlobalConfigsComponent implements OnInit {
   dataSource = new MatTableDataSource<GlobalConfig>();
   ready: Boolean = false;
   init: Boolean = true;
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['name', 'type', 'value', 'id', 'edit', 'delete']
+  displayColumns = ['name', 'type', 'value', 'actions']
 
   constructor(
     public dialog: MatDialog,

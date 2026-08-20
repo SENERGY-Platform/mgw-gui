@@ -8,7 +8,6 @@ import {
   MatHeaderRowDef,
   MatRow, MatRowDef, MatTable, MatTableDataSource
 } from "@angular/material/table";
-import {MatCheckbox} from "@angular/material/checkbox";
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
 
@@ -21,7 +20,8 @@ import {ErrorService} from "../../../../core/services/util/error.service";
 import {Router} from "@angular/router";
 import {UtilService} from "../../../../core/services/util/util.service";
 import {concatMap, map, of, throwError} from "rxjs";
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
+import {MatTooltip} from "@angular/material/tooltip";
+import {StatusPillComponent, StatusTone} from "../../../../core/components/status-pill/status-pill.component";
 
 @Component({
     selector: 'app-container-list',
@@ -39,21 +39,29 @@ import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/mat
     MatTable,
     SpinnerComponent,
     MatHeaderCellDef,
-    MatCard,
-    MatCardContent,
-    MatCardTitle,
-    MatCardHeader
+    MatTooltip,
+    StatusPillComponent
 ],
     templateUrl: './container-list.component.html',
     styleUrl: './container-list.component.css'
 })
 export class ContainerListComponent implements OnInit, OnDestroy {
+  // the engine reports free-form container states; anything but "running"
+  // is a problem for a core service
+  stateTone(service: CoreService): StatusTone {
+    return service.container?.state === 'running' ? 'ok' : (service.container?.state ? 'danger' : 'idle');
+  }
+
+  stateLabel(service: CoreService): string {
+    return service.container?.state || 'unknown';
+  }
+
   dataSource = new MatTableDataSource<CoreService>();
   ready: Boolean = false;
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['name', 'version', 'status', 'restart', 'logs']
+  displayColumns = ['name', 'status', 'version', 'actions']
   selection = new SelectionModel<string>(true, []);
 
   constructor(

@@ -14,61 +14,78 @@
 ~ limitations under the License.
 -->
 
-<div class="layout-margin">
+<div class="mgw-page">
+  <mgw-page-header description="Sources the gateway fetches installable modules from. A higher priority wins when the same module is offered more than once."
+                   title="Repositories">
+    <div pageActions>
+      <button (click)="add()" mat-flat-button>
+        <mat-icon>add</mat-icon>
+        Add repository
+      </button>
+    </div>
+  </mgw-page-header>
 
-  @if (dataSource.data.length === 0 && ready) {
-    <div>No repositories configured.</div>
-  }
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-  <div [hidden]="(!ready && init) || dataSource.data.length === 0" class="mat-elevation-z1">
-    <table [dataSource]="dataSource" mat-table>
-      <ng-container matColumnDef="source">
-        <th *matHeaderCellDef mat-header-cell>Source</th>
-        <td *matCellDef="let repository" mat-cell>
-          {{ repository.Source }}
-        </td>
-      </ng-container>
+  @if (!ready && dataSource.data.length === 0) {
+    <!-- first load: the spinner above is the only feedback -->
+  } @else if (dataSource.data.length === 0) {
+    <mgw-empty-state icon="cloud_download"
+                     message="Without a repository the catalog stays empty. Add a GitHub repository to make modules installable."
+                     title="No repositories configured">
+      <button (click)="add()" emptyAction mat-flat-button>Add repository</button>
+    </mgw-empty-state>
+  } @else {
+    <div class="mgw-table-card">
+      <table [dataSource]="dataSource" mat-table>
+        <ng-container matColumnDef="source">
+          <th *matHeaderCellDef mat-header-cell>Source</th>
+          <td *matCellDef="let repository" mat-cell>
+            <div class="mgw-cell-stack">
+              <span class="mgw-cell-primary">{{ repository.Source }}</span>
+              <span class="mgw-cell-secondary">{{ repository.Type }}</span>
+            </div>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="type">
-        <th *matHeaderCellDef mat-header-cell>Type</th>
-        <td *matCellDef="let repository" mat-cell>
-          {{ repository.Type }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="priority">
+          <th *matHeaderCellDef mat-header-cell>Priority</th>
+          <td *matCellDef="let repository" mat-cell>{{ repository.Priority }}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="priority">
-        <th *matHeaderCellDef mat-header-cell>Priority</th>
-        <td *matCellDef="let repository" mat-cell>
-          {{ repository.Priority }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="channels">
+          <th *matHeaderCellDef mat-header-cell>Channels</th>
+          <td *matCellDef="let repository" mat-cell>
+            @if (channelNames(repository)) {
+              <span class="channels">{{ channelNames(repository) }}</span>
+            } @else {
+              <span class="mgw-cell-secondary">—</span>
+            }
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="channels">
-        <th *matHeaderCellDef mat-header-cell>Channels</th>
-        <td *matCellDef="let repository" mat-cell>
-          {{ channelNames(repository) }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
+          <td *matCellDef="let repository" class="mgw-col-actions" mat-cell>
+            <div class="mgw-row-actions">
+              @if (repository.Type === 'host-dir') {
+                <span class="locked" matTooltip="Part of the core installation and cannot be removed">
+                  <mat-icon>lock</mat-icon>
+                  built in
+                </span>
+              } @else {
+                <button (click)="delete(repository)" class="danger-icon" mat-icon-button
+                        matTooltip="Delete repository">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              }
+            </div>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="delete">
-        <th *matHeaderCellDef class="button-column" mat-header-cell>Delete</th>
-        <td *matCellDef="let repository" mat-cell>
-          <button (click)="delete(repository)" [disabled]="repository.Type === 'host-dir'" color="primary"
-            mat-icon-button matTooltip="Delete repository">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-      <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
-    </table>
-  </div>
-</div>
-
-<div class="fixed-bottom-right-button">
-  <button (click)="add()" class="fab" color="primary" mat-fab matTooltip="Add repository">
-    <mat-icon>add</mat-icon>
-  </button>
+        <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+        <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+      </table>
+    </div>
+  }
 </div>

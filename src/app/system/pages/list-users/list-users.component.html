@@ -14,85 +14,54 @@
 ~ limitations under the License.
 -->
 
-<div class="layout-margin">
-  @if (dataSource.data.length === 0 && ready) {
-    <div>No users found.</div>
-  }
+<div class="mgw-page">
+  <mgw-page-header description="People who can sign in to this gateway." title="Users">
+    <div pageActions>
+      <button [routerLink]="'/system/accounts/add'" mat-flat-button>
+        <mat-icon>person_add</mat-icon>
+        Add user
+      </button>
+    </div>
+  </mgw-page-header>
+
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-  <div [hidden]="(!ready && init) || dataSource.data.length === 0" class="mat-elevation-z1">
-    <table [dataSource]="dataSource" mat-table matSort matSortActive="name" matSortDirection="asc">
-      <ng-container matColumnDef="select">
-        <th *matHeaderCellDef class="button-column" mat-header-cell>
-          <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
-            [indeterminate]="selection.hasValue() && !isAllSelected()">
-          </mat-checkbox>
-        </th>
-        <td *matCellDef="let row" mat-cell>
-          <mat-checkbox (change)="$event ? selection.toggle(row.name) : null" (click)="$event.stopPropagation()"
-            [checked]="selection.isSelected(row.name)">
-          </mat-checkbox>
-        </td>
-      </ng-container>
+  @if (!ready && dataSource.data.length === 0) {
+    <!-- first load: the spinner above is the only feedback -->
+  } @else if (dataSource.data.length === 0) {
+    <mgw-empty-state icon="group" message="No user accounts exist on this gateway yet." title="No users">
+      <button [routerLink]="'/system/accounts/add'" emptyAction mat-flat-button>Add user</button>
+    </mgw-empty-state>
+  } @else {
+    <div class="mgw-table-card">
+      <table [dataSource]="dataSource" mat-table matSort matSortActive="username" matSortDirection="asc">
+        <ng-container matColumnDef="username">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>User</th>
+          <td *matCellDef="let user" mat-cell>
+            <div class="mgw-cell-stack">
+              <span class="mgw-cell-primary">{{ user.username }}</span>
+              <span class="mgw-cell-secondary">{{ user.meta.first_name }} {{ user.meta.last_name }}</span>
+            </div>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="username">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Username</th>
-        <td *matCellDef="let user" mat-cell>
-          {{ user.username }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
+          <td *matCellDef="let user" class="mgw-col-actions" mat-cell>
+            <div class="mgw-row-actions">
+              <button (click)="editUser(user)" mat-icon-button matTooltip="Edit">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button (click)="deleteUser(user.id)" class="danger-icon" mat-icon-button matTooltip="Delete">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="first_name">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>First Name</th>
-        <td *matCellDef="let user" mat-cell>
-          {{ user.meta.first_name }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="last_name">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Last Name</th>
-        <td *matCellDef="let user" mat-cell>
-          {{ user.meta.last_name }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="delete">
-        <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Delete</th>
-        <td *matCellDef="let user" mat-cell>
-          <button (click)="deleteUser(user.id)" color="primary" mat-icon-button matTooltip="Delete">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="edit">
-        <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Edit</th>
-        <td *matCellDef="let user" mat-cell>
-          <button (click)="editUser(user)" color="primary" mat-icon-button matTooltip="Edit">
-            <mat-icon>edit</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="header-all">
-        <th *matHeaderCellDef colspan="10" mat-header-cell>
-          <div>
-            <span>You have selected {{ selection.selected.length }} users</span>
-          </div>
-        </th>
-      </ng-container>
-
-      <tr *matHeaderRowDef="['header-all']" [hidden]="selection.selected.length === 0" mat-header-row>
-      </tr>
-
-      <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-      <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
-    </table>
-  </div>
-</div>
-
-<div class="fixed-bottom-right-button">
-  <button [routerLink]="'/system/accounts/add'" class="fab" color="primary" mat-fab matTooltip="Add module">
-    <mat-icon>add</mat-icon>
-  </button>
+        <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+        <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+      </table>
+    </div>
+  }
 </div>

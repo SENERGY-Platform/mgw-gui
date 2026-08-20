@@ -14,71 +14,71 @@
 ~ limitations under the License.
 -->
 
-<div class="layout-margin">
-
-  @if (dataSource.data.length === 0 && ready) {
-    <div>No global configs defined. Global configs hold values that
-      multiple deployments can reference instead of setting them per deployment.
+<div class="mgw-page">
+  <mgw-page-header description="Values that several deployments can reference instead of each setting them separately."
+                   title="Global configs">
+    <div pageActions>
+      <button (click)="add()" mat-flat-button>
+        <mat-icon>add</mat-icon>
+        Add global config
+      </button>
     </div>
-  }
+  </mgw-page-header>
+
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-  <div [hidden]="(!ready && init) || dataSource.data.length === 0" class="mat-elevation-z1">
-    <table [dataSource]="dataSource" mat-table matSort matSortActive="name" matSortDirection="asc">
-      <ng-container matColumnDef="name">
-        <th *matHeaderCellDef mat-header-cell mat-sort-header>Name</th>
-        <td *matCellDef="let config" mat-cell>
-          {{ config.name }}
-        </td>
-      </ng-container>
+  @if (!ready && dataSource.data.length === 0) {
+    <!-- first load: the spinner above is the only feedback -->
+  } @else if (dataSource.data.length === 0) {
+    <mgw-empty-state icon="tune"
+                     message="A global config holds one value centrally. In a deployment form, switch a field to “Global config” to point at it instead of typing the value again."
+                     title="No global configs defined">
+      <button (click)="add()" emptyAction mat-flat-button>Add global config</button>
+    </mgw-empty-state>
+  } @else {
+    <div class="mgw-table-card">
+      <table [dataSource]="dataSource" mat-table matSort matSortActive="name" matSortDirection="asc">
+        <ng-container matColumnDef="name">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>Name</th>
+          <td *matCellDef="let config" mat-cell>
+            <div class="mgw-cell-stack">
+              <span class="mgw-cell-primary">{{ config.name }}</span>
+              <span class="mgw-cell-secondary mgw-mono">{{ config.id }}</span>
+            </div>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="type">
-        <th *matHeaderCellDef mat-header-cell>Type</th>
-        <td *matCellDef="let config" mat-cell>
-          <span class="type-badge">{{ typeLabel(config) }}</span>
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="type">
+          <th *matHeaderCellDef mat-header-cell>Type</th>
+          <td *matCellDef="let config" mat-cell>
+            <span class="type-badge">{{ typeLabel(config) }}</span>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="value">
-        <th *matHeaderCellDef mat-header-cell>Value</th>
-        <td *matCellDef="let config" mat-cell>
-          {{ valuePreview(config) }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="value">
+          <th *matHeaderCellDef mat-header-cell>Value</th>
+          <td *matCellDef="let config" mat-cell>
+            <span class="value mgw-mono">{{ valuePreview(config) }}</span>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="id">
-        <th *matHeaderCellDef mat-header-cell>ID</th>
-        <td *matCellDef="let config" class="config-id" mat-cell>
-          {{ config.id }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
+          <td *matCellDef="let config" class="mgw-col-actions" mat-cell>
+            <div class="mgw-row-actions">
+              <button (click)="edit(config)" mat-icon-button matTooltip="Edit">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button (click)="delete(config)" class="danger-icon" mat-icon-button matTooltip="Delete">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="edit">
-        <th *matHeaderCellDef class="button-column" mat-header-cell>Edit</th>
-        <td *matCellDef="let config" mat-cell>
-          <button (click)="edit(config)" color="primary" mat-icon-button matTooltip="Edit">
-            <mat-icon>edit</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="delete">
-        <th *matHeaderCellDef class="button-column" mat-header-cell>Delete</th>
-        <td *matCellDef="let config" mat-cell>
-          <button (click)="delete(config)" color="primary" mat-icon-button matTooltip="Delete">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-      <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
-    </table>
-  </div>
-</div>
-
-<div class="fixed-bottom-right-button">
-  <button (click)="add()" class="fab" color="primary" mat-fab matTooltip="Add global config">
-    <mat-icon>add</mat-icon>
-  </button>
+        <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+        <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+      </table>
+    </div>
+  }
 </div>

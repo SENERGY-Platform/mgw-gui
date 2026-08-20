@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
+import {MatButton} from "@angular/material/button";
 import {
   MatCell,
   MatCellDef,
@@ -21,10 +21,7 @@ import {AddDialogComponent, DialogData} from "./add-dialog/add-dialog.component"
 @Component({
     selector: 'app-host-net-rng-blacklist',
     imports: [
-        MatCard,
-        MatCardContent,
-        MatCardHeader,
-        MatCardTitle,
+    MatButton,
         MatCell,
         MatCellDef,
         MatColumnDef,
@@ -45,7 +42,7 @@ import {AddDialogComponent, DialogData} from "./add-dialog/add-dialog.component"
     styleUrl: './host-net-rng-blacklist.component.css'
 })
 export class HostNetRngBlacklistComponent implements AfterViewInit, OnInit {
-  displayedColumns: string[] = ['range', 'delete'];
+  displayedColumns: string[] = ['range', 'actions'];
   dataSource = new MatTableDataSource<string>();
 
   @ViewChild(MatSort) sort!: MatSort;

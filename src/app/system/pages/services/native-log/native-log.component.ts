@@ -8,6 +8,7 @@ import {UtilService} from "../../../../core/services/util/util.service";
 import {ErrorService} from "../../../../core/services/util/error.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CoreManagerService} from "../../../../core/services/core-manager/core-manager.service";
+import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 import {Highlight} from "ngx-highlightjs";
 
 @Component({
@@ -18,7 +19,8 @@ import {Highlight} from "ngx-highlightjs";
     MatInput,
     MatLabel,
     MatSlideToggle,
-    Highlight
+    Highlight,
+    PageHeaderComponent
 ],
     templateUrl: './native-log.component.html',
     styleUrl: './native-log.component.css'

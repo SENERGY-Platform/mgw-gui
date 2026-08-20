@@ -1,20 +1,31 @@
 <spinner [show]="waitingForLogin" class="global-centered-spinner"></spinner>
 
-<div id="container">
-  <div id="form-container">
-    <div (keydown.enter)="login()" (ngSubmit)="login()" [formGroup]="form" class="form">
-      <mat-form-field color="accent">
+<div class="login-page">
+  <div class="card">
+    <div class="brand">
+      <span class="brand-mark">
+        <mat-icon>hub</mat-icon>
+      </span>
+      <span class="brand-text">
+        <span class="brand-name">MGW</span>
+        <span class="brand-sub">Module Gateway</span>
+      </span>
+    </div>
+
+    <h1>Sign in</h1>
+
+    <div (keydown.enter)="login()" [formGroup]="form" class="form">
+      <mat-form-field appearance="outline">
         <mat-label>Username</mat-label>
-        <input formControlName="username" matInput placeholder="Username" type="text">
+        <input autocomplete="username" formControlName="username" matInput type="text">
       </mat-form-field>
 
-      <mat-form-field color="accent">
+      <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
-        <input formControlName="password" matInput placeholder="Password" type="password">
+        <input autocomplete="current-password" formControlName="password" matInput type="password">
       </mat-form-field>
 
-      <button (click)="login()" [disabled]="!form.valid" color="primary" mat-raised-button type="submit">Login</button>
+      <button (click)="login()" [disabled]="!form.valid" mat-flat-button type="submit">Sign in</button>
     </div>
   </div>
-
 </div>

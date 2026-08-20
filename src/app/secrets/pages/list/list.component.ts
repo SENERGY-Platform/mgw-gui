@@ -18,7 +18,11 @@ import {ErrorService} from 'src/app/core/services/util/error.service';
 import {Secret, SecretTypesDisplayNames} from '../../models/secret_models';
 
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
-import {MatFabButton, MatIconButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatSortHeader} from '@angular/material/sort';
+import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
+import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {RouterLink} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
 
@@ -26,7 +30,7 @@ import {MatIcon} from '@angular/material/icon';
     selector: 'app-list',
     templateUrl: './list.component.html',
     styleUrls: ['./list.component.css'],
-    imports: [SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, RouterLink, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
+    imports: [SpinnerComponent, MatTable, MatSort, MatSortHeader, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatButton, MatTooltip, RouterLink, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, PageHeaderComponent, EmptyStateComponent]
 })
 export class ListComponent {
   dataSource = new MatTableDataSource<Secret>();
@@ -35,7 +39,7 @@ export class ListComponent {
   interval: any
   secretTypesDisplayNames: Record<any, string> = SecretTypesDisplayNames; // any type because elements in matCellDef are not typed
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['name', 'type', 'edit', 'delete']
+  displayColumns = ['name', 'type', 'actions']
 
   constructor(
     @Inject("SecretManagerService") private secretService: SecretManagerServiceService,
@@ -43,6 +47,10 @@ export class ListComponent {
   ) {
     this.loadSecrets()
     this.init = false
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.sort = this.sort;
   }
 
   loadSecrets() {

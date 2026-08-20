@@ -1,0 +1,25 @@
+.channels {
+  font-size: 13px;
+}
+
+.locked {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 12px;
+  font-weight: 550;
+}
+
+.locked mat-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
+
+.danger-icon {
+  --mat-icon-button-icon-color: var(--mgw-danger);
+}

@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, Inject, inject, OnInit, ViewChild} from '@angular/core';
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
+import {MatButton} from "@angular/material/button";
 import {
   MatCell,
   MatCellDef,
@@ -21,10 +21,7 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 @Component({
     selector: 'app-host-applications',
     imports: [
-        MatCard,
-        MatCardContent,
-        MatCardHeader,
-        MatCardTitle,
+    MatButton,
         MatTable,
         MatSort,
         MatColumnDef,
@@ -46,7 +43,7 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
     styleUrl: './host-applications.component.css'
 })
 export class HostApplicationsComponent implements AfterViewInit, OnInit {
-  displayedColumns: string[] = ['name', 'path', 'delete'];
+  displayedColumns: string[] = ['name', 'path', 'actions'];
   dataSource = new MatTableDataSource<AppResponse>();
 
   @ViewChild(MatSort) sort!: MatSort;

@@ -1,44 +1,42 @@
-<div class="layout-margin">
-  @if (dataSource.data.length === 0 && ready) {
-    <div>No components found.</div>
-  }
-  <spinner [show]="!ready" class="global-centered-spinner"></spinner>
+<section class="service-group">
+  <header class="group-head">
+    <h2>Native services</h2>
+    <span class="count">{{ dataSource.data.length }}</span>
+  </header>
 
-  <div [hidden]="!ready || dataSource.data.length === 0">
-    <mat-card appearance="raised">
-      <mat-card-header>
-        <mat-card-title>Native Services</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <table [dataSource]="dataSource" mat-table title="Native Components">
+  <spinner [show]="!ready"></spinner>
 
-          <ng-container matColumnDef="name">
-            <th *matHeaderCellDef class="button-column" mat-header-cell>Name</th>
-            <td *matCellDef="let component" mat-cell>
-              {{ component.name }}
-            </td>
-          </ng-container>
+  @if (ready && dataSource.data.length === 0) {
+    <p class="none">No native services found.</p>
+  } @else if (dataSource.data.length > 0) {
+    <div class="mgw-table-card">
+      <table [dataSource]="dataSource" mat-table>
+        <ng-container matColumnDef="name">
+          <th *matHeaderCellDef mat-header-cell>Service</th>
+          <td *matCellDef="let component" mat-cell>
+            <span class="mgw-cell-primary">{{ component.name }}</span>
+          </td>
+        </ng-container>
 
-          <ng-container matColumnDef="version">
-            <th *matHeaderCellDef mat-header-cell>Version</th>
-            <td *matCellDef="let component" mat-cell>
-              {{ component.version }}
-            </td>
-          </ng-container>
+        <ng-container matColumnDef="version">
+          <th *matHeaderCellDef mat-header-cell>Version</th>
+          <td *matCellDef="let component" mat-cell>{{ component.version }}</td>
+        </ng-container>
 
-          <ng-container matColumnDef="logs">
-            <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>Log</th>
-            <td *matCellDef="let component" mat-cell>
-              <button (click)="showLog(component.logId)" color="primary" mat-icon-button matTooltip="Show Log">
-                <mat-icon>description</mat-icon>
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
+          <td *matCellDef="let component" class="mgw-col-actions" mat-cell>
+            <div class="mgw-row-actions">
+              <button (click)="showLog(component.logId)" mat-icon-button matTooltip="Show log">
+                <mat-icon>article</mat-icon>
               </button>
-            </td>
-          </ng-container>
+            </div>
+          </td>
+        </ng-container>
 
-          <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-          <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
-        </table>
-      </mat-card-content>
-    </mat-card>
-  </div>
-</div>
+        <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+        <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+      </table>
+    </div>
+  }
+</section>

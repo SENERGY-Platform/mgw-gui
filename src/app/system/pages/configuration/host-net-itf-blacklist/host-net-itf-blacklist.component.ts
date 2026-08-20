@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
+import {MatButton} from "@angular/material/button";
 import {
   MatCell,
   MatCellDef,
@@ -36,16 +36,13 @@ import {AddDialogComponent, DialogData} from "./add-dialog/add-dialog.component"
         MatTable,
         MatTooltip,
         MatHeaderCellDef,
-        MatCard,
-        MatCardContent,
-        MatCardHeader,
-        MatCardTitle
+    MatButton,
     ],
     templateUrl: './host-net-itf-blacklist.component.html',
     styleUrl: './host-net-itf-blacklist.component.css'
 })
 export class HostNetItfBlacklistComponent implements AfterViewInit, OnInit {
-  displayedColumns: string[] = ['name', 'delete'];
+  displayedColumns: string[] = ['name', 'actions'];
   dataSource = new MatTableDataSource<string>();
 
   @ViewChild(MatSort) sort!: MatSort;

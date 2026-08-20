@@ -1,3 +1,30 @@
-button {
-  margin-right: 20px;
+.card {
+  padding: 4px 20px 20px;
+}
+
+.field {
+  padding: 16px 0;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.desc {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.desc code {
+  font-family: ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--mat-sys-surface-container-high);
+}
+
+.control {
+  width: 100%;
+  margin-top: 8px;
 }

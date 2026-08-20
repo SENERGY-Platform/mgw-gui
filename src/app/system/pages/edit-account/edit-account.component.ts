@@ -16,9 +16,11 @@ import {ErrorService} from 'src/app/core/services/util/error.service';
 import {HumanUser, UserRequest} from '../../models/users';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
 
-import {MatFormField, MatLabel, MatError} from '@angular/material/form-field';
+import {MatFormField} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 
 export function passwordMustMatch(control: AbstractControl): ValidationErrors | null {
   const confirmation = control.get("confirmation");
@@ -30,7 +32,7 @@ export function passwordMustMatch(control: AbstractControl): ValidationErrors | 
     selector: 'app-edit-account',
     templateUrl: './edit-account.component.html',
     styleUrls: ['./edit-account.component.css'],
-    imports: [FormsModule, ReactiveFormsModule, SpinnerComponent, MatFormField, MatLabel, MatInput, MatError, MatButton, RouterLink]
+    imports: [FormsModule, ReactiveFormsModule, SpinnerComponent, MatFormField, MatInput, MatButton, MatIcon, RouterLink, PageHeaderComponent]
 })
 export class EditAccountComponent {
   form = new FormGroup({

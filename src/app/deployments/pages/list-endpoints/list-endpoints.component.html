@@ -14,18 +14,27 @@
 ~ limitations under the License.
 -->
 
-<div class="layout-margin">
+<div class="mgw-page">
+  <mgw-page-header description="HTTP endpoints the running deployments expose through the gateway. Generated endpoints come from the module itself; aliases are the shorter URLs you define."
+                   title="Endpoints"></mgw-page-header>
+
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
-  @if (deploymentIDs.length === 0 && ready) {
-    <div>No endpoints found.</div>
+
+  @if (ready && deploymentIDs.length === 0) {
+    <mgw-empty-state icon="link"
+                     message="Endpoints appear here once a deployed module exposes one. Deploy a module that serves HTTP to get started."
+                     title="No endpoints">
+      <button [routerLink]="'/modules'" emptyAction mat-stroked-button>Go to modules</button>
+    </mgw-empty-state>
   }
 
   @for (deploymentID of deploymentIDs; track deploymentID) {
-    <mat-card class="deployment-container">
-      <mat-card-content>
-        <h2>Deployment ID: {{ deploymentID }}</h2>
-        <list-endpoints [deploymentID]="deploymentID"></list-endpoints>
-      </mat-card-content>
-    </mat-card>
+    <section class="deployment">
+      <header class="deployment-head">
+        <mat-icon>rocket_launch</mat-icon>
+        <span class="mgw-mono">{{ deploymentID }}</span>
+      </header>
+      <list-endpoints [deploymentID]="deploymentID"></list-endpoints>
+    </section>
   }
 </div>

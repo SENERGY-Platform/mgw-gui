@@ -21,15 +21,18 @@ import {map} from 'rxjs';
 import {Router, RouterLink} from '@angular/router';
 
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
-import {MatCheckbox} from '@angular/material/checkbox';
-import {MatFabButton, MatIconButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatSortHeader} from '@angular/material/sort';
+import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
+import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
     selector: 'app-list-users',
     templateUrl: './list-users.component.html',
     styleUrls: ['./list-users.component.css'],
-    imports: [SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton, RouterLink]
+    imports: [SpinnerComponent, MatTable, MatSort, MatSortHeader, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, RouterLink, PageHeaderComponent, EmptyStateComponent]
 })
 export class ListUsersComponent implements OnInit {
   dataSource = new MatTableDataSource<HumanUser>();
@@ -37,7 +40,7 @@ export class ListUsersComponent implements OnInit {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['select', 'username', 'first_name', 'last_name', 'delete', 'edit']
+  displayColumns = ['username', 'actions']
   selection = new SelectionModel<string>(true, []);
 
   constructor(

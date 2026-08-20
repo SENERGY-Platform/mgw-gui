@@ -1,35 +1,45 @@
-<div class="layout-margin">
-
+<div class="mgw-page mgw-page-narrow has-action-bar">
   <spinner [show]="waitingForRegister" class="global-centered-spinner"></spinner>
 
-  <div id="container">
-    <div id="form-container">
-      <div [formGroup]="form" class="form">
-        <mat-form-field color="accent">
-          <mat-label>First Name</mat-label>
-          <input formControlName="firstName" matInput placeholder="" type="text">
+  <mgw-page-header backTo="/system/accounts/users"
+                   description="Create a user account that can sign in to this gateway."
+                   title="Add user"></mgw-page-header>
+
+  <div [formGroup]="form" class="mgw-card card">
+    <div class="row">
+      <div class="field">
+        <label for="reg-first">First name</label>
+        <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+          <input formControlName="firstName" id="reg-first" matInput type="text">
         </mat-form-field>
-
-        <mat-form-field color="accent">
-          <mat-label>Last Name</mat-label>
-          <input formControlName="lastName" matInput placeholder="" type="text">
+      </div>
+      <div class="field">
+        <label for="reg-last">Last name</label>
+        <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+          <input formControlName="lastName" id="reg-last" matInput type="text">
         </mat-form-field>
-
-        <mat-form-field color="accent">
-          <mat-label>Username</mat-label>
-          <input formControlName="username" matInput placeholder="Username" type="text">
-        </mat-form-field>
-
-        <mat-form-field color="accent">
-          <mat-label>Password</mat-label>
-          <input formControlName="password" matInput placeholder="password" type="password">
-        </mat-form-field>
-
-        <button (click)="register()" [disabled]="!form.valid" color="primary" mat-raised-button type="submit">Create
-          Account
-        </button>
-
       </div>
     </div>
+
+    <div class="field">
+      <label for="reg-username">Username</label>
+      <p class="desc">Used to sign in.</p>
+      <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+        <input formControlName="username" id="reg-username" matInput type="text">
+      </mat-form-field>
+    </div>
+
+    <div class="field">
+      <label for="reg-password">Password</label>
+      <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+        <input formControlName="password" id="reg-password" matInput type="password">
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="mgw-action-bar">
+    <span class="mgw-spacer"></span>
+    <button [routerLink]="'/system/accounts/users'" mat-button>Cancel</button>
+    <button (click)="register()" [disabled]="!form.valid" mat-flat-button type="submit">Create account</button>
   </div>
 </div>

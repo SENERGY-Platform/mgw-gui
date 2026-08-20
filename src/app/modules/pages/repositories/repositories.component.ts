@@ -35,7 +35,9 @@ import {UtilService} from 'src/app/core/services/util/util.service';
 import {concatMap, of} from 'rxjs';
 
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
-import {MatFabButton, MatIconButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
+import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
+import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatIcon} from '@angular/material/icon';
 import {Repository} from 'src/app/core/models/repositories';
@@ -45,13 +47,13 @@ import {AddRepositoryDialogComponent} from '../../components/add-repository-dial
     selector: 'repositories',
     templateUrl: './repositories.component.html',
     styleUrls: ['./repositories.component.css'],
-    imports: [SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
+    imports: [SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, PageHeaderComponent, EmptyStateComponent]
 })
 export class RepositoriesComponent implements OnInit {
   dataSource = new MatTableDataSource<Repository>();
   ready: Boolean = false;
   init: Boolean = true;
-  displayColumns = ['source', 'type', 'priority', 'channels', 'delete']
+  displayColumns = ['source', 'priority', 'channels', 'actions']
 
   constructor(
     public dialog: MatDialog,

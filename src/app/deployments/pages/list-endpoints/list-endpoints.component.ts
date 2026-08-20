@@ -11,7 +11,11 @@ import {CoreEndpoint, CoreEndpointsResponse} from '../../models/endpoints';
 import {UtilService} from 'src/app/core/services/util/util.service';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
 
-import {MatCard, MatCardContent} from '@angular/material/card';
+import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
+import {RouterLink} from '@angular/router';
+import {PageHeaderComponent} from '../../../core/components/page-header/page-header.component';
+import {EmptyStateComponent} from '../../../core/components/empty-state/empty-state.component';
 import {
   ListEndpointsComponent as ListEndpointsComponent_1
 } from '../../../core/components/list-endpoints/list-endpoints.component';
@@ -20,7 +24,7 @@ import {
     selector: 'app-list',
     templateUrl: './list-endpoints.component.html',
     styleUrls: ['./list-endpoints.component.css'],
-    imports: [SpinnerComponent, MatCard, MatCardContent, ListEndpointsComponent_1]
+    imports: [SpinnerComponent, MatIcon, MatButton, RouterLink, PageHeaderComponent, EmptyStateComponent, ListEndpointsComponent_1]
 })
 export class ListEndpointsComponent implements OnInit {
   deploymentIDs: string[] = []

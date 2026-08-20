@@ -22,7 +22,7 @@ import {Router} from "@angular/router";
 
 import {Log} from "../../../models/logs";
 import {InfoResponse} from "../../../../core/models/info";
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
+import {MatTooltip} from "@angular/material/tooltip";
 
 interface ListItem {
   name: string;
@@ -46,10 +46,7 @@ interface ListItem {
     MatHeaderCellDef,
     MatIcon,
     MatIconButton,
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
-    MatCardTitle
+    MatTooltip
 ],
     templateUrl: './native-list.component.html',
     styleUrl: './native-list.component.css'
@@ -57,7 +54,7 @@ interface ListItem {
 export class NativeListComponent implements OnInit {
   ready: boolean = false
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['name', 'version', 'logs']
+  displayColumns = ['name', 'version', 'actions']
   dataSource = new MatTableDataSource<ListItem>();
 
   constructor(

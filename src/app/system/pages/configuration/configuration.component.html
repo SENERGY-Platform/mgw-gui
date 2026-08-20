@@ -1,16 +1,8 @@
-<div class="layout-margin">
-  <app-host-applications></app-host-applications>
-</div>
-<div class="layout-margin">
-  <mat-card appearance="raised">
-    <mat-card-header>
-      <mat-card-title>Blacklists</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <app-host-net-itf-blacklist></app-host-net-itf-blacklist>
-      <mat-divider></mat-divider>
-      <app-host-net-rng-blacklist></app-host-net-rng-blacklist>
-    </mat-card-content>
-  </mat-card>
-</div>
+<div class="mgw-page">
+  <mgw-page-header description="Host-level settings of the gateway: which host applications modules may reach, and which network interfaces and ranges are off limits."
+                   title="Configuration"></mgw-page-header>
 
+  <app-host-applications></app-host-applications>
+  <app-host-net-itf-blacklist></app-host-net-itf-blacklist>
+  <app-host-net-rng-blacklist></app-host-net-rng-blacklist>
+</div>

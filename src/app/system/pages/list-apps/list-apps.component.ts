@@ -21,15 +21,18 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {NotificationService} from 'src/app/core/services/util/notifications.service';
 
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
-import {MatCheckbox} from '@angular/material/checkbox';
-import {MatFabButton, MatIconButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatSortHeader} from '@angular/material/sort';
+import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
+import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
     selector: 'app-list-apps',
     templateUrl: './list-apps.component.html',
     styleUrls: ['./list-apps.component.css'],
-    imports: [SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCheckbox, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFabButton]
+    imports: [SpinnerComponent, MatTable, MatSort, MatSortHeader, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, PageHeaderComponent, EmptyStateComponent]
 })
 export class ListAppsComponent {
   dataSource = new MatTableDataSource<DeviceUser>();
@@ -37,7 +40,7 @@ export class ListAppsComponent {
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['select', 'username', 'model', 'manufacturer', 'delete']
+  displayColumns = ['username', 'model', 'manufacturer', 'actions']
   selection = new SelectionModel<string>(true, []);
 
   constructor(

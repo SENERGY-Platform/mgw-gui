@@ -1,23 +1,24 @@
 import {Component, Inject, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {Router} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {SecretManagerServiceService} from 'src/app/core/services/secret-manager/secret-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {CreateSecret, Secret, SecretType, SecretTypes} from '../../models/secret_models';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
 
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatFormField} from '@angular/material/form-field';
 import {MatSelect} from '@angular/material/select';
 import {MatOption} from '@angular/material/core';
 import {MatInput} from '@angular/material/input';
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {MatButton} from '@angular/material/button';
+import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 
 @Component({
     selector: 'secret-form',
     templateUrl: './form.component.html',
     styleUrls: ['./form.component.css'],
-    imports: [SpinnerComponent, MatFormField, MatLabel, MatSelect, FormsModule, MatOption, ReactiveFormsModule, MatInput, CdkTextareaAutosize, MatButton]
+    imports: [SpinnerComponent, MatFormField, MatSelect, FormsModule, MatOption, ReactiveFormsModule, MatInput, CdkTextareaAutosize, MatButton, RouterLink, PageHeaderComponent]
 })
 export class FormComponent implements OnChanges, OnInit {
   @Input() mode: string = "add"
@@ -141,7 +142,7 @@ export class FormComponent implements OnChanges, OnInit {
           {
             next: (_) => {
               this.ready = true
-              this.router.navigate(["/secrets"])
+              this.router.navigate(["/resources/secrets"])
             },
             error: (err) => {
               this.errorService.handleError(FormComponent.name, "createSecret", err)
@@ -163,7 +164,7 @@ export class FormComponent implements OnChanges, OnInit {
           {
             next: (_) => {
               this.ready = true
-              this.router.navigate(["/secrets"])
+              this.router.navigate(["/resources/secrets"])
             },
             error: (err) => {
               this.errorService.handleError(FormComponent.name, "updateSecret", err)

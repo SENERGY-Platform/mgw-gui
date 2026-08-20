@@ -1,19 +1,22 @@
-<div class="layout-margin">
-  <div id="settings">
-    <mat-slide-toggle (change)="autoRefreshToggleChanged($event)" [ngModel]="autoRefreshEnabled">Auto Refresh
-    </mat-slide-toggle>
+<div class="mgw-page">
+  <mgw-page-header backTo="/system/status" description="Most recent output. Increase the line count to look further back."
+                   title="Log">
+    <div pageActions>
+      <mat-slide-toggle (change)="autoRefreshToggleChanged($event)" [ngModel]="autoRefreshEnabled">
+        Auto refresh
+      </mat-slide-toggle>
+      <mat-form-field appearance="outline" class="lines" subscriptSizing="dynamic">
+        <mat-label>Lines</mat-label>
+        <input (ngModelChange)="maxLinesChanges($event)" [(ngModel)]="maxLines" matInput type="number">
+      </mat-form-field>
+    </div>
+  </mgw-page-header>
 
-    <mat-form-field>
-      <mat-label>Lines</mat-label>
-      <input (ngModelChange)="maxLinesChanges($event)" [(ngModel)]="maxLines" matInput>
-    </mat-form-field>
-  </div>
-
-  <div id="logs">
+  <div class="log-card">
     @if (ready && !init) {
-      <pre><code [highlight]="logs" [lineNumbers]="true">
-      </code></pre>
+      <pre><code [highlight]="logs" [lineNumbers]="true"></code></pre>
+    } @else {
+      <p class="loading">Loading log…</p>
     }
   </div>
-
 </div>

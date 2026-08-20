@@ -7,12 +7,13 @@ import {SpinnerComponent} from '../../core/components/spinner/spinner.component'
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css'],
-    imports: [SpinnerComponent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton]
+    imports: [SpinnerComponent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, MatIcon]
 })
 export class LoginComponent {
   flowID: string = "";

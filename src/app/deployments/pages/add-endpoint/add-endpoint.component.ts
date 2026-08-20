@@ -5,15 +5,16 @@ import {concatMap, of, throwError} from 'rxjs';
 import {CoreManagerService} from 'src/app/core/services/core-manager/core-manager.service';
 import {UtilService} from 'src/app/core/services/util/util.service';
 import {CoreEndpointAliasReq} from '../../models/endpoints';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatFormField} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
+import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 
 @Component({
     selector: 'app-add-endpoint',
     templateUrl: './add-endpoint.component.html',
     styleUrls: ['./add-endpoint.component.css'],
-    imports: [FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, RouterLink]
+    imports: [FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatButton, RouterLink, PageHeaderComponent]
 })
 export class AddEndpointComponent {
   form = new FormGroup({
@@ -50,10 +51,10 @@ export class AddEndpointComponent {
       })
     ).subscribe({
       next: (_) => {
-        this.router.navigate(["/deployments/endpoints"])
+        this.router.navigate(["/resources/endpoints"])
       },
       error: (_) => {
-        this.router.navigate(["/deployments/endpoints"])
+        this.router.navigate(["/resources/endpoints"])
       }
     })
   }

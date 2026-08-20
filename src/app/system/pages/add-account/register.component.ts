@@ -6,15 +6,17 @@ import {UserService} from 'src/app/core/services/user/user.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {UserRequest} from '../../models/users';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatFormField} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
+import {RouterLink} from '@angular/router';
+import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.css'],
-    imports: [SpinnerComponent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton]
+    imports: [SpinnerComponent, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatButton, RouterLink, PageHeaderComponent]
 })
 export class RegisterComponent {
   flowID: string = "";

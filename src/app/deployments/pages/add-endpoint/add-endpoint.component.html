@@ -1,10 +1,21 @@
-<div [formGroup]="form" class="form-margin">
-  <mat-form-field color="accent">
-    <mat-label>Path</mat-label>
-    <input formControlName="path" matInput placeholder="Path" type="text">
-  </mat-form-field>
+<div class="mgw-page mgw-page-narrow has-action-bar">
+  <mgw-page-header backTo="/resources/endpoints"
+                   description="Give a generated endpoint a shorter URL. The alias is served under /endpoints/alias/."
+                   title="Add endpoint alias"></mgw-page-header>
 
+  <div [formGroup]="form" class="mgw-card card">
+    <div class="field">
+      <label for="alias-path">Path</label>
+      <p class="desc">The part after /endpoints/alias/, for example <code>dashboard</code>.</p>
+      <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+        <input formControlName="path" id="alias-path" matInput type="text">
+      </mat-form-field>
+    </div>
+  </div>
 
-  <button [routerLink]="'/core/endpoints'" color="primary" mat-raised-button>Cancel</button>
-  <button (click)="add()" [disabled]="!form.valid" color="primary" mat-raised-button type="submit">Add</button>
+  <div class="mgw-action-bar">
+    <span class="mgw-spacer"></span>
+    <button [routerLink]="'/resources/endpoints'" mat-button>Cancel</button>
+    <button (click)="add()" [disabled]="!form.valid" mat-flat-button type="submit">Add alias</button>
+  </div>
 </div>

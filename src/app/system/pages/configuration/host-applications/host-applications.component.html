@@ -1,31 +1,47 @@
-<mat-card appearance="raised">
-  <mat-card-header>
-    <mat-card-title>Host Applications</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <table mat-table [dataSource]="dataSource" matSort>
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">Name</th>
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-      </ng-container>
-      <ng-container matColumnDef="path">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by socket">Socket Path</th>
-        <td mat-cell *matCellDef="let element"> {{element.socket}} </td>
-      </ng-container>
-      <ng-container matColumnDef="delete">
-        <th *matHeaderCellDef class="button-column" disableClear mat-header-cell>
-          <button (click)="addApplication()" color="primary" mat-icon-button matTooltip="Add application">
-            <mat-icon>add_box</mat-icon>
-          </button>
-        </th>
-        <td *matCellDef="let element" mat-cell>
-          <button (click)="removeApplication(element.id)" color="primary" mat-icon-button matTooltip="Remove application">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </mat-card-content>
-</mat-card>
+<section class="config-group">
+  <header class="group-head">
+    <div>
+      <h2>Host applications</h2>
+      <p>Applications on the host that a module may talk to through a socket.</p>
+    </div>
+    <button (click)="addApplication()" mat-stroked-button>
+      <mat-icon>add</mat-icon>
+      Add
+    </button>
+  </header>
+
+  @if (dataSource.data.length === 0) {
+    <p class="none">No host applications configured.</p>
+  } @else {
+    <div class="mgw-table-card">
+      <table [dataSource]="dataSource" mat-table matSort>
+        <ng-container matColumnDef="name">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header sortActionDescription="Sort by name">Name</th>
+          <td *matCellDef="let element" mat-cell>
+            <span class="mgw-cell-primary">{{ element.name }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="path">
+          <th *matHeaderCellDef mat-header-cell mat-sort-header sortActionDescription="Sort by socket">Socket path</th>
+          <td *matCellDef="let element" class="mgw-mono" mat-cell>{{ element.socket }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
+          <td *matCellDef="let element" class="mgw-col-actions" mat-cell>
+            <div class="mgw-row-actions">
+              <button (click)="removeApplication(element.id)" class="danger-icon" mat-icon-button
+                      matTooltip="Remove application">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
+      </table>
+    </div>
+  }
+</section>
