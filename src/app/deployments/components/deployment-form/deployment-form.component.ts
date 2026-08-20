@@ -17,12 +17,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 import {FormsModule} from '@angular/forms';
-import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from '@angular/material/card';
-import {MatFormField, MatHint, MatLabel} from '@angular/material/form-field';
+import {MatFormField, MatHint} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
-import {MatCheckbox} from '@angular/material/checkbox';
-import {MatIconButton} from '@angular/material/button';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {MatTooltip} from '@angular/material/tooltip';
 import {
@@ -86,6 +85,14 @@ interface FileGroupRow {
   error: string;
 }
 
+// Configuration inputs carry the module's own grouping. Rendering that
+// grouping instead of one flat list is what keeps a module with two dozen
+// settings readable.
+interface ConfigGroup {
+  label: string;
+  rows: ConfigRow[];
+}
+
 // One deployment form per module. The parent page loads the modules
 // (deployment-request or the installed module for edits) and the selectable
 // options, then collects a DeploymentUserInput per form on submit.
@@ -93,7 +100,7 @@ interface FileGroupRow {
     selector: 'deployment-form',
     templateUrl: './deployment-form.component.html',
     styleUrls: ['./deployment-form.component.css'],
-    imports: [FormsModule, MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatFormField, MatLabel, MatHint, MatInput, MatSelect, MatOption, MatCheckbox, MatIconButton, MatIcon, MatTooltip]
+    imports: [FormsModule, MatFormField, MatHint, MatInput, MatSelect, MatOption, MatSlideToggle, MatButton, MatIconButton, MatIcon, MatTooltip]
 })
 export class DeploymentFormComponent implements OnInit {
   @Input() module!: DeploymentRequestModule
@@ -104,6 +111,7 @@ export class DeploymentFormComponent implements OnInit {
   @Input() prefill: boolean = false
 
   configRows: ConfigRow[] = []
+  configGroups: ConfigGroup[] = []
   resourceRows: ResourceRow[] = []
   secretRows: SecretRow[] = []
   fileRows: FileRow[] = []
@@ -184,6 +192,40 @@ export class DeploymentFormComponent implements OnInit {
     this.configRows.sort(byGroup)
     this.resourceRows.sort(byGroup)
     this.secretRows.sort(byGroup)
+    this.configGroups = this.groupConfigRows()
+  }
+
+  // Preserves the sort order established above: rows are already ordered by
+  // group label, so groups come out in the same order without a second sort.
+  private groupConfigRows(): ConfigGroup[] {
+    var groups: ConfigGroup[] = []
+    for (const row of this.configRows) {
+      var label = this.groupLabel(row.input.group)
+      var group = groups.find(g => g.label === label)
+      if (!group) {
+        group = {label: label, rows: []}
+        groups.push(group)
+      }
+      group.rows.push(row)
+    }
+    return groups
+  }
+
+  hasInputs(): boolean {
+    return this.configRows.length > 0 || this.resourceRows.length > 0 || this.secretRows.length > 0
+      || this.fileRows.length > 0 || this.fileGroupRows.length > 0
+  }
+
+  // true when the control is a plain text/number input rather than a select
+  isFreeText(row: ConfigRow): boolean {
+    if (row.config.is_slice || row.config.data_type === 'bool') {
+      return false
+    }
+    return !(row.config.options && row.config.options.length > 0 && !row.config.opt_ext)
+  }
+
+  isNumeric(row: ConfigRow): boolean {
+    return row.config.data_type === 'int' || row.config.data_type === 'float'
   }
 
   private defaultRaw(config: ModuleConfigValue): string {

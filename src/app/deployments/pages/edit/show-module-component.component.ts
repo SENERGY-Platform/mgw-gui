@@ -15,11 +15,14 @@
  */
 
 import {Component, Inject, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {concatMap, forkJoin, of} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 
 import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
+import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
 import {HostManagerService} from 'src/app/core/services/host-manager/host-manager.service';
 import {SecretManagerServiceService} from 'src/app/core/services/secret-manager/secret-manager-service.service';
@@ -40,7 +43,7 @@ import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
     selector: 'edit-deployment',
     templateUrl: './show-module-component.component.html',
     styleUrls: ['./show-module-component.component.css'],
-    imports: [SpinnerComponent, MatButton, DeploymentFormComponent]
+    imports: [SpinnerComponent, MatButton, MatIcon, RouterLink, PageHeaderComponent, EmptyStateComponent, DeploymentFormComponent]
 })
 export class ShowModuleComponentComponent implements OnInit {
   modules: DeploymentRequestModule[] = []

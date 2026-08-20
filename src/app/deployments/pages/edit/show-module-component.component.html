@@ -14,33 +14,44 @@
 ~ limitations under the License.
 -->
 
-<div class="layout-margin">
+<div class="mgw-page mgw-page-narrow has-action-bar">
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
   @if (ready) {
-    <div>
-      <h2>{{ modules.length > 1 ? 'Edit deployments' : 'Edit deployment' }}</h2>
-      @if (updatePending()) {
-        <p class="update-hint">
-          At least one installed module is newer than the version its deployment was created for — saving applies the
-          update to the deployment.
-        </p>
-      }
-      @if (modules.length === 0) {
-        <p>Nothing to edit: none of the selected modules has a deployment.</p>
-      }
-      @for (module of modules; track module) {
-        <deployment-form [globalConfigs]="globalConfigs" [hostResources]="hostResources"
-        [module]="module" [prefill]="true" [secrets]="secrets"></deployment-form>
-      }
-      <div class="actions">
-        <button (click)="cancel()" [disabled]="submitting" mat-button>Cancel</button>
-        @if (modules.length > 0) {
-          <button (click)="submit()" [disabled]="submitting" color="primary"
-            mat-raised-button>Save
-          </button>
-        }
+    <mgw-page-header [description]="modules.length > 1
+                       ? 'Change the values of ' + modules.length + ' deployments. They are saved as one job.'
+                       : 'Change the values of this deployment. Saving recreates the containers.'"
+                     [title]="modules.length > 1 ? 'Edit deployments' : 'Edit deployment'"
+                     backTo="/modules"></mgw-page-header>
+
+    @if (updatePending()) {
+      <div class="mgw-notice warn">
+        <mat-icon>upgrade</mat-icon>
+        <span>At least one installed module is newer than the version its deployment was created for. Saving applies
+          that update to the deployment.</span>
       </div>
-    </div>
+    }
+
+    @if (modules.length === 0) {
+      <mgw-empty-state icon="info" message="None of the selected modules has a deployment."
+                       title="Nothing to edit">
+        <button [routerLink]="'/modules'" emptyAction mat-stroked-button>Back to modules</button>
+      </mgw-empty-state>
+    }
+
+    @for (module of modules; track module.id) {
+      <deployment-form [globalConfigs]="globalConfigs" [hostResources]="hostResources"
+                       [module]="module" [prefill]="true" [secrets]="secrets"></deployment-form>
+    }
+
+    @if (modules.length > 0) {
+      <div class="mgw-action-bar">
+        <button (click)="cancel()" [disabled]="submitting" mat-button>Cancel</button>
+        <button (click)="submit()" [disabled]="submitting" mat-flat-button>
+          <mat-icon>save</mat-icon>
+          Save
+        </button>
+      </div>
+    }
   }
 </div>

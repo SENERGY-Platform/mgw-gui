@@ -14,213 +14,233 @@
 ~ limitations under the License.
 -->
 
-<mat-card appearance="outlined" class="module-card">
-  <mat-card-header>
-    <mat-card-title>{{ module.name }}</mat-card-title>
-    <mat-card-subtitle>{{ module.id }} {{ module.version }}</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-
-    @if (configRows.length === 0 && resourceRows.length === 0 && secretRows.length === 0 && fileRows.length === 0 && fileGroupRows.length === 0) {
-      <div
-        class="no-inputs">
-        This module needs no configuration.
+<article class="module">
+  <header class="module-head">
+    <div class="module-title">
+      <mat-icon>extension</mat-icon>
+      <div>
+        <h2>{{ module.name }}</h2>
+        <p class="module-meta">{{ module.id }} · {{ module.version }}</p>
       </div>
-    }
+    </div>
+  </header>
 
-    @if (configRows.length > 0) {
-      <section>
-        <h3>Configuration</h3>
-        @for (row of configRows; track row) {
-          <div class="input-row">
-            <div class="input-label">
-              @if (groupLabel(row.input.group)) {
-                <span class="group-label">{{ groupLabel(row.input.group) }}</span>
-              }
-              <span>{{ row.input.name }}</span>
-              <span class="description">{{ row.input.description }}</span>
-            </div>
+  @if (!hasInputs()) {
+    <p class="no-inputs">
+      <mat-icon>check_circle</mat-icon>
+      This module needs no configuration.
+    </p>
+  }
+
+  @for (group of configGroups; track group.label) {
+    <section class="group">
+      <h3>{{ group.label || 'Configuration' }}</h3>
+      @for (row of group.rows; track row.ref) {
+        <div class="field">
+          <div class="field-head">
+            <label [attr.for]="'cfg-' + row.ref">{{ row.input.name }}</label>
             @if (row.matchingGlobals.length > 0) {
-              <mat-checkbox [(ngModel)]="row.useGlobal"
-                matTooltip="Use a global config instead of a direct value">global
-              </mat-checkbox>
-            }
-            @if (row.useGlobal) {
-              <mat-form-field appearance="fill" class="input-field">
-                <mat-label>Global config</mat-label>
-                <mat-select [(ngModel)]="row.globalConfigId">
-                  @for (gc of row.matchingGlobals; track gc) {
-                    <mat-option [value]="gc.id">{{ gc.name }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-            }
-            @if (!row.useGlobal) {
-              @if (!row.config.is_slice && row.config.options && row.config.options.length > 0 && !row.config.opt_ext) {
-                <mat-form-field
-                  appearance="fill" class="input-field">
-                  <mat-label>{{ row.input.name }}</mat-label>
-                  <mat-select [(ngModel)]="row.raw">
-                    @for (option of row.config.options; track option) {
-                      <mat-option [value]="'' + option">{{ option }}</mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-              }
-              @if (!row.config.is_slice && row.config.data_type === 'bool') {
-                <mat-form-field appearance="fill"
-                  class="input-field">
-                  <mat-label>{{ row.input.name }}</mat-label>
-                  <mat-select [(ngModel)]="row.raw">
-                    <mat-option value="true">true</mat-option>
-                    <mat-option value="false">false</mat-option>
-                  </mat-select>
-                </mat-form-field>
-              }
-              @if (!row.config.is_slice && row.config.data_type !== 'bool' && !(row.config.options && row.config.options.length > 0 && !row.config.opt_ext)) {
-                <mat-form-field
-                  appearance="fill" class="input-field">
-                  <mat-label>{{ row.input.name }}</mat-label>
-                  <input [(ngModel)]="row.raw"
-                    [step]="row.config.type_opt?.['step'] || (row.config.data_type === 'int' ? 1 : 'any')"
-                    [type]="(row.config.data_type === 'int' || row.config.data_type === 'float') ? 'number' : 'text'"
-                    matInput>
-                  @if (row.config.options && row.config.options.length > 0) {
-                    <mat-hint>Suggested: {{ row.config.options.join(', ') }}</mat-hint>
-                  }
-                </mat-form-field>
-              }
-              @if (row.config.is_slice) {
-                <mat-form-field appearance="fill" class="input-field">
-                  <mat-label>{{ row.input.name }}</mat-label>
-                  <textarea [(ngModel)]="row.raw" matInput rows="3"></textarea>
-                  <mat-hint>One value per line</mat-hint>
-                </mat-form-field>
-              }
-            }
-            @if (row.error) {
-              <p class="error">{{ row.error }}</p>
+              <mat-slide-toggle [(ngModel)]="row.useGlobal" class="global-toggle"
+                                matTooltip="Reference a global config instead of entering a value here">
+                Global config
+              </mat-slide-toggle>
             }
           </div>
-        }
-      </section>
-    }
+          @if (row.input.description) {
+            <p class="field-desc">{{ row.input.description }}</p>
+          }
 
-    @if (resourceRows.length > 0) {
-      <section>
-        <h3>Host Resources</h3>
-        @for (row of resourceRows; track row) {
-          <div class="input-row">
-            <div class="input-label">
-              <span>{{ row.input.name }}</span>
-              <span class="description">{{ row.input.description }}</span>
-            </div>
-            <mat-form-field appearance="fill" class="input-field">
-              <mat-label>{{ row.input.name }}</mat-label>
-              <mat-select [(ngModel)]="row.selectedId">
-                <mat-option value="">—</mat-option>
-                @for (resource of hostResources; track resource) {
-                  <mat-option [value]="resource.id">
-                    {{ resource.name }} ({{ resource.path }})
-                  </mat-option>
+          @if (row.useGlobal) {
+            <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+              <mat-select [(ngModel)]="row.globalConfigId" [id]="'cfg-' + row.ref"
+                          placeholder="Select a global config">
+                @for (gc of row.matchingGlobals; track gc.id) {
+                  <mat-option [value]="gc.id">{{ gc.name }}</mat-option>
                 }
               </mat-select>
             </mat-form-field>
-            @if (row.error) {
-              <p class="error">{{ row.error }}</p>
-            }
-          </div>
-        }
-      </section>
-    }
-
-    @if (secretRows.length > 0) {
-      <section>
-        <h3>Secrets</h3>
-        @for (row of secretRows; track row) {
-          <div class="input-row">
-            <div class="input-label">
-              <span>{{ row.input.name }}</span>
-              <span class="description">{{ row.input.description }} ({{ row.type }})</span>
-            </div>
-            <mat-form-field appearance="fill" class="input-field">
-              <mat-label>{{ row.input.name }}</mat-label>
-              <mat-select [(ngModel)]="row.selectedId">
-                <mat-option value="">—</mat-option>
-                @for (secret of secretOptionsFor(row); track secret) {
-                  <mat-option [value]="secret.id">{{ secret.name }}</mat-option>
+          } @else if (row.config.is_slice) {
+            <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+              <textarea [(ngModel)]="row.raw" [id]="'cfg-' + row.ref" matInput rows="3"></textarea>
+              @if (!row.input.description) {
+                <mat-hint>One value per line</mat-hint>
+              }
+            </mat-form-field>
+          } @else if (row.config.data_type === 'bool') {
+            <mat-form-field appearance="outline" class="control narrow" subscriptSizing="dynamic">
+              <mat-select [(ngModel)]="row.raw" [id]="'cfg-' + row.ref">
+                <mat-option value="true">true</mat-option>
+                <mat-option value="false">false</mat-option>
+              </mat-select>
+            </mat-form-field>
+          } @else if (!isFreeText(row)) {
+            <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+              <mat-select [(ngModel)]="row.raw" [id]="'cfg-' + row.ref">
+                @for (option of row.config.options; track option) {
+                  <mat-option [value]="'' + option">{{ option }}</mat-option>
                 }
               </mat-select>
             </mat-form-field>
-            @if (row.error) {
-              <p class="error">{{ row.error }}</p>
-            }
-          </div>
-        }
-      </section>
-    }
-
-    @if (fileRows.length > 0) {
-      <section>
-        <h3>Files</h3>
-        @for (row of fileRows; track row) {
-          <div class="input-row">
-            <div class="input-label">
-              <span>{{ row.input.name }}@if (row.required) {
-                <span> *</span>
-              }</span>
-              <span class="description">{{ row.input.description }}</span>
-            </div>
-            <mat-form-field appearance="fill" class="input-field file-field">
-              <mat-label>{{ row.input.name }}</mat-label>
-              <textarea [(ngModel)]="row.text" matInput rows="6" spellcheck="false"></textarea>
-              @if (row.hasDefault) {
-                <mat-hint>Prefilled with the module default</mat-hint>
+          } @else {
+            <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+              <input [(ngModel)]="row.raw" [id]="'cfg-' + row.ref"
+                     [step]="row.config.type_opt?.['step'] || (row.config.data_type === 'int' ? 1 : 'any')"
+                     [type]="isNumeric(row) ? 'number' : 'text'" matInput>
+              @if (row.config.options && row.config.options.length > 0) {
+                <mat-hint>Suggested: {{ row.config.options.join(', ') }}</mat-hint>
               }
             </mat-form-field>
-          </div>
-        }
-      </section>
-    }
+          }
 
-    @if (fileGroupRows.length > 0) {
-      <section>
-        <h3>File Groups</h3>
-        @for (row of fileGroupRows; track row) {
-          <div class="input-row">
-            <div class="input-label">
-              <span>{{ row.input.name }}</span>
-              <span class="description">{{ row.input.description }}</span>
-            </div>
-            @for (file of row.files; track file; let i = $index) {
-              <div class="group-file">
-                <mat-form-field appearance="fill" class="path-field">
-                  <mat-label>Path</mat-label>
-                  <input [(ngModel)]="file.path" matInput>
-                </mat-form-field>
-                <mat-form-field appearance="fill" class="format-field">
-                  <mat-label>Format</mat-label>
-                  <input [(ngModel)]="file.format" matInput>
-                </mat-form-field>
-                <mat-form-field appearance="fill" class="input-field file-field">
-                  <mat-label>Content</mat-label>
-                  <textarea [(ngModel)]="file.text" matInput rows="4" spellcheck="false"></textarea>
-                </mat-form-field>
+          @if (row.error) {
+            <p class="field-error">
+              <mat-icon>error</mat-icon>
+              {{ row.error }}
+            </p>
+          }
+        </div>
+      }
+    </section>
+  }
+
+  @if (resourceRows.length > 0) {
+    <section class="group">
+      <h3>Host resources</h3>
+      @for (row of resourceRows; track row.ref) {
+        <div class="field">
+          <div class="field-head">
+            <label [attr.for]="'res-' + row.ref">{{ row.input.name }}</label>
+          </div>
+          @if (row.input.description) {
+            <p class="field-desc">{{ row.input.description }}</p>
+          }
+          <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+            <mat-select [(ngModel)]="row.selectedId" [id]="'res-' + row.ref" placeholder="None">
+              <mat-option value="">None</mat-option>
+              @for (resource of hostResources; track resource.id) {
+                <mat-option [value]="resource.id">{{ resource.name }} ({{ resource.path }})</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          @if (row.error) {
+            <p class="field-error">
+              <mat-icon>error</mat-icon>
+              {{ row.error }}
+            </p>
+          }
+        </div>
+      }
+    </section>
+  }
+
+  @if (secretRows.length > 0) {
+    <section class="group">
+      <h3>Secrets</h3>
+      @for (row of secretRows; track row.ref) {
+        <div class="field">
+          <div class="field-head">
+            <label [attr.for]="'sec-' + row.ref">{{ row.input.name }}</label>
+            @if (row.type) {
+              <span class="type-tag">{{ row.type }}</span>
+            }
+          </div>
+          @if (row.input.description) {
+            <p class="field-desc">{{ row.input.description }}</p>
+          }
+          <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+            <mat-select [(ngModel)]="row.selectedId" [id]="'sec-' + row.ref" placeholder="None">
+              <mat-option value="">None</mat-option>
+              @for (secret of secretOptionsFor(row); track secret.id) {
+                <mat-option [value]="secret.id">{{ secret.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          @if (row.error) {
+            <p class="field-error">
+              <mat-icon>error</mat-icon>
+              {{ row.error }}
+            </p>
+          }
+        </div>
+      }
+    </section>
+  }
+
+  @if (fileRows.length > 0) {
+    <section class="group">
+      <h3>Files</h3>
+      @for (row of fileRows; track row.ref) {
+        <div class="field">
+          <div class="field-head">
+            <label [attr.for]="'file-' + row.ref">
+              {{ row.input.name }}
+              @if (row.required) {
+                <span class="required" title="Required">*</span>
+              }
+            </label>
+            @if (row.hasDefault) {
+              <span class="type-tag">module default</span>
+            }
+          </div>
+          @if (row.input.description) {
+            <p class="field-desc">{{ row.input.description }}</p>
+          }
+          <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+            <textarea [(ngModel)]="row.text" [id]="'file-' + row.ref" class="code" matInput rows="8"
+                      spellcheck="false"></textarea>
+          </mat-form-field>
+        </div>
+      }
+    </section>
+  }
+
+  @if (fileGroupRows.length > 0) {
+    <section class="group">
+      <h3>File groups</h3>
+      @for (row of fileGroupRows; track row.ref) {
+        <div class="field">
+          <div class="field-head">
+            <label>{{ row.input.name }}</label>
+          </div>
+          @if (row.input.description) {
+            <p class="field-desc">{{ row.input.description }}</p>
+          }
+
+          @for (file of row.files; track file; let i = $index) {
+            <div class="group-file">
+              <div class="group-file-head">
+                <span class="group-file-index">File {{ i + 1 }}</span>
                 <button (click)="removeGroupFile(row, i)" mat-icon-button matTooltip="Remove file">
                   <mat-icon>delete</mat-icon>
                 </button>
               </div>
-            }
-            <button (click)="addGroupFile(row)" mat-icon-button matTooltip="Add file">
-              <mat-icon>add</mat-icon>
-            </button>
-            @if (row.error) {
-              <p class="error">{{ row.error }}</p>
-            }
-          </div>
-        }
-      </section>
-    }
+              <div class="group-file-meta">
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                  <input [(ngModel)]="file.path" matInput placeholder="Path">
+                </mat-form-field>
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                  <input [(ngModel)]="file.format" matInput placeholder="Format">
+                </mat-form-field>
+              </div>
+              <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+                <textarea [(ngModel)]="file.text" class="code" matInput rows="5" spellcheck="false"></textarea>
+              </mat-form-field>
+            </div>
+          }
 
-  </mat-card-content>
-</mat-card>
+          <button (click)="addGroupFile(row)" mat-stroked-button>
+            <mat-icon>add</mat-icon>
+            Add file
+          </button>
+
+          @if (row.error) {
+            <p class="field-error">
+              <mat-icon>error</mat-icon>
+              {{ row.error }}
+            </p>
+          }
+        </div>
+      }
+    </section>
+  }
+</article>

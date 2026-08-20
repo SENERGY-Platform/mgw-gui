@@ -14,31 +14,42 @@
 ~ limitations under the License.
 -->
 
-<div class="layout-margin">
+<div class="mgw-page mgw-page-narrow has-action-bar">
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
   @if (ready) {
-    <div>
-      <h2>Create deployment</h2>
-      @if (modules.length > 1) {
-        <p class="hint">The module and its dependencies are deployed together — one section per
-        module.</p>
-      }
-      @if (modules.length === 0) {
-        <p>Nothing to deploy: the module and all its dependencies are already deployed.</p>
-      }
-      @for (module of modules; track module) {
-        <deployment-form [globalConfigs]="globalConfigs" [hostResources]="hostResources"
-        [module]="module" [secrets]="secrets"></deployment-form>
-      }
-      <div class="actions">
-        <button (click)="cancel()" [disabled]="submitting" mat-button>Cancel</button>
-        @if (modules.length > 0) {
-          <button (click)="submit()" [disabled]="submitting" color="primary"
-            mat-raised-button>Deploy
-          </button>
-        }
+    <mgw-page-header backTo="/modules"
+                     description="Set the values this module needs before its containers are created."
+                     title="Create deployment"></mgw-page-header>
+
+    @if (modules.length > 1) {
+      <div class="mgw-notice">
+        <mat-icon>account_tree</mat-icon>
+        <span>This module pulls in dependencies. All {{ modules.length }} modules are deployed together — one
+          section per module.</span>
       </div>
-    </div>
+    }
+
+    @if (modules.length === 0) {
+      <mgw-empty-state icon="check_circle" message="The module and all its dependencies already have a deployment."
+                       title="Nothing to deploy">
+        <button [routerLink]="'/modules'" emptyAction mat-stroked-button>Back to modules</button>
+      </mgw-empty-state>
+    }
+
+    @for (module of modules; track module.id) {
+      <deployment-form [globalConfigs]="globalConfigs" [hostResources]="hostResources"
+                       [module]="module" [secrets]="secrets"></deployment-form>
+    }
+
+    @if (modules.length > 0) {
+      <div class="mgw-action-bar">
+        <button (click)="cancel()" [disabled]="submitting" mat-button>Cancel</button>
+        <button (click)="submit()" [disabled]="submitting" mat-flat-button>
+          <mat-icon>rocket_launch</mat-icon>
+          Deploy
+        </button>
+      </div>
+    }
   }
 </div>
