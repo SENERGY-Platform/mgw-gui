@@ -4,6 +4,8 @@ node_modules/
 .angular/
 coverage/
 package-lock.json
+# written by `eslint --suppress-all`; reformatting it would fight the next run
+eslint-suppressions.json
 
 # these carry their own formatting rules
 *.md
