@@ -1,11 +1,14 @@
 {
   "name": "mgw-gui",
   "version": "0.0.0",
+  "license": "Apache-2.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "start:local": "ng serve --configuration local_development",
     "build": "ng build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -39,6 +42,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
+    "prettier": "3.9.6",
     "typescript": "~5.9.3"
   }
 }

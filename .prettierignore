@@ -1,0 +1,9 @@
+# generated or vendored
+dist/
+node_modules/
+.angular/
+coverage/
+package-lock.json
+
+# these carry their own formatting rules
+*.md
