@@ -17,6 +17,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {DeveloperComponent} from './developer/developer.component';
+import {PlaygroundComponent} from './developer/playground/playground.component';
 import {OverviewComponent} from './overview/overview.component';
 
 // Routes moved when the navigation was reorganised around what the user
@@ -33,7 +34,12 @@ const routes: Routes = [
   {path: '', redirectTo: '/overview', pathMatch: 'full'},
   {path: 'overview', component: OverviewComponent},
   ...legacyRedirects,
-  {path: 'developer', component: DeveloperComponent},
+  {
+    path: 'developer', children: [
+      {path: '', component: DeveloperComponent},
+      {path: ':scope/:service', component: PlaygroundComponent},
+    ]
+  },
 ];
 
 @NgModule({

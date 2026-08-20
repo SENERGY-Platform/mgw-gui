@@ -1,41 +1,32 @@
-import { Component } from '@angular/core';
-import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from "@angular/material/card";
-import {SwaggerListComponent, Item} from "./swagger-list/swagger-list.component";
+/*
+ * Copyright (c) 2026 InfAI (CC SES)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-const publicBase = location.protocol + "//" + location.host + "/core/api";
-const gatewayBase = "http://core-api";
-const docBase = "/core/swagger";
+import {Component} from '@angular/core';
+import {PageHeaderComponent} from '../core/components/page-header/page-header.component';
+import {SwaggerListComponent} from './swagger-list/swagger-list.component';
+import {ApiEntry, INTERNAL_APIS, MODULE_APIS, PUBLIC_APIS} from './api-registry';
 
 @Component({
-    selector: 'app-developer',
-    imports: [
-        MatCard,
-        MatCardContent,
-        MatCardHeader,
-        MatCardTitle,
-        MatCardSubtitle,
-        SwaggerListComponent,
-    ],
-    templateUrl: './developer.component.html',
-    styleUrl: './developer.component.css'
+  selector: 'app-developer',
+  imports: [PageHeaderComponent, SwaggerListComponent],
+  templateUrl: './developer.component.html',
+  styleUrl: './developer.component.css'
 })
 export class DeveloperComponent {
-  publicApis: Item[] = [
-    {name: "auth-service", auth: true, apiUrl: publicBase+"/auth-service", docUrl: docBase+"/public/auth-service/index.html"},
-    {name: "ce-wrapper", auth: true, apiUrl: publicBase+"/ce-wrapper", docUrl: docBase+"/public/ce-wrapper/index.html"},
-    {name: "core-manager", auth: true, apiUrl: publicBase+"/core-manager", docUrl: docBase+"/public/core-manager/index.html"},
-    {name: "deployment-discovery", auth: false, apiUrl: location.protocol+"//" +location.host+"/core/discovery", docUrl: docBase+"/public/module-manager/index.html#/Deployment%20Advertisements/get_discovery"},
-    {name: "host-manager", auth: true, apiUrl: publicBase+"/host-manager", docUrl: docBase+"/public/host-manager/index.html"},
-    {name: "module-manager", auth: true, apiUrl: publicBase+"/module-manager", docUrl: docBase+"/public/module-manager/index.html"},
-    {name: "secret-manager", auth: true, apiUrl: publicBase+"/secret-manager", docUrl: docBase+"/public/secret-manager/index.html"},
-  ]
-  moduleApis: Item[] = [
-    {name: "host-manager", auth: false, apiUrl: gatewayBase+"/host-manager", docUrl: docBase+"/module/host-manager/index.html"},
-    {name: "module-manager", auth: false, apiUrl: gatewayBase+"/module-manager", docUrl: docBase+"/module/module-manager/index.html"},
-  ]
-  internalApis: Item[] = [
-    {name: "ce-wrapper", auth: false, apiUrl: gatewayBase+"/ce-wrapper", docUrl: docBase+"/internal/ce-wrapper/index.html"},
-    {name: "core-manager", auth: false, apiUrl: gatewayBase+"/c-manager", docUrl: docBase+"/internal/c-manager/index.html"},
-    {name: "host-manager", auth: false, apiUrl: gatewayBase+"/h-manager", docUrl: docBase+"/internal/h-manager/index.html"},
-  ]
+  publicApis: ApiEntry[] = PUBLIC_APIS;
+  moduleApis: ApiEntry[] = MODULE_APIS;
+  internalApis: ApiEntry[] = INTERNAL_APIS;
 }

@@ -1,36 +1,52 @@
-<table [dataSource]="dataSource" mat-table>
-  <ng-container matColumnDef="name">
-    <th *matHeaderCellDef class="button-column" mat-header-cell>Name</th>
-    <td *matCellDef="let item" mat-cell>
-      {{ item.name }}
-    </td>
-  </ng-container>
+<div class="mgw-table-card">
+  <table [dataSource]="dataSource" mat-table>
+    <ng-container matColumnDef="name">
+      <th *matHeaderCellDef mat-header-cell>Service</th>
+      <td *matCellDef="let item" mat-cell>
+        <span class="mgw-cell-primary">{{ item.name }}</span>
+      </td>
+    </ng-container>
 
-  <ng-container matColumnDef="auth">
-    <th *matHeaderCellDef class="button-column" mat-header-cell>Authentication</th>
-    <td *matCellDef="let item" mat-cell>
-      {{ item.auth }}
-    </td>
-  </ng-container>
+    <ng-container matColumnDef="auth">
+      <th *matHeaderCellDef mat-header-cell>Authentication</th>
+      <td *matCellDef="let item" mat-cell>
+        <mgw-status-pill [label]="item.requiresAuth ? 'session' : 'none'"
+                         [tone]="item.requiresAuth ? 'info' : 'idle'"></mgw-status-pill>
+      </td>
+    </ng-container>
 
-  <ng-container matColumnDef="apiUrl">
-    <th *matHeaderCellDef mat-header-cell>Url</th>
-    <td *matCellDef="let item" mat-cell>
-      {{ item.apiUrl }}
-    </td>
-  </ng-container>
+    <ng-container matColumnDef="apiUrl">
+      <th *matHeaderCellDef mat-header-cell>Base URL</th>
+      <td *matCellDef="let item" mat-cell>
+        <span class="mgw-mono">{{ item.displayUrl }}</span>
+        @if (!isExecutable(item)) {
+          <span class="internal" matTooltip="Served inside the gateway network, not reachable from a browser">
+            internal
+          </span>
+        }
+      </td>
+    </ng-container>
 
-  <ng-container matColumnDef="docUrl">
-    <th *matHeaderCellDef class="button-column" disableClear  mat-header-cell>Swagger</th>
-    <td *matCellDef="let item" mat-cell>
-      <button (click)="goToLink(item.docUrl)" color="primary" mat-icon-button
-              matTooltip="Open">
-        <mat-icon>open_in_new</mat-icon>
-      </button>
-      {{ item.link }}
-    </td>
-  </ng-container>
+    <ng-container matColumnDef="actions">
+      <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
+      <td *matCellDef="let item" class="mgw-col-actions" mat-cell>
+        <div class="mgw-row-actions">
+          @if (hasPlayground(item)) {
+            <button [routerLink]="['/developer', item.scope, item.id]" mat-flat-button
+                    matTooltip="Browse and call the endpoints of this service">
+              <mat-icon>api</mat-icon>
+              Playground
+            </button>
+          }
+          <a [href]="item.docUrl" mat-stroked-button matTooltip="Open the generated Swagger UI" target="_blank">
+            <mat-icon>menu_book</mat-icon>
+            Swagger
+          </a>
+        </div>
+      </td>
+    </ng-container>
 
-  <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-  <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
-</table>
+    <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+    <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+  </table>
+</div>

@@ -1,33 +1,28 @@
-<div class="layout-margin">
-  <mat-card appearance="raised">
-    <mat-card-header>
-      <mat-card-title>Public</mat-card-title>
-      <mat-card-subtitle>APIs for app developers.</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <app-swagger-list [items]="publicApis"></app-swagger-list>
-    </mat-card-content>
-  </mat-card>
-</div>
-<div class="layout-margin">
-  <mat-card appearance="raised">
-    <mat-card-header>
-      <mat-card-title>Module</mat-card-title>
-      <mat-card-subtitle>Internal APIs for module developers.</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <app-swagger-list [items]="moduleApis"></app-swagger-list>
-    </mat-card-content>
-  </mat-card>
-</div>
-<div class="layout-margin">
-  <mat-card appearance="raised">
-    <mat-card-header>
-      <mat-card-title>Core</mat-card-title>
-      <mat-card-subtitle>Internal APIs used by core services.</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <app-swagger-list [items]="internalApis"></app-swagger-list>
-    </mat-card-content>
-  </mat-card>
+<div class="mgw-page">
+  <mgw-page-header description="OpenAPI documentation for the gateway's services, grouped by who the API is meant for."
+                   title="Developer"></mgw-page-header>
+
+  <section class="api-group">
+    <header>
+      <h2>Public</h2>
+      <p>APIs for app developers, reachable from outside the gateway.</p>
+    </header>
+    <app-swagger-list [items]="publicApis"></app-swagger-list>
+  </section>
+
+  <section class="api-group">
+    <header>
+      <h2>Module</h2>
+      <p>Internal APIs a module may call from inside the gateway network.</p>
+    </header>
+    <app-swagger-list [items]="moduleApis"></app-swagger-list>
+  </section>
+
+  <section class="api-group">
+    <header>
+      <h2>Core</h2>
+      <p>Internal APIs the core services use among themselves.</p>
+    </header>
+    <app-swagger-list [items]="internalApis"></app-swagger-list>
+  </section>
 </div>

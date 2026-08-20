@@ -1,0 +1,211 @@
+<!--
+~ Copyright (c) 2026 InfAI (CC SES)
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~     http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
+
+<div class="mgw-page">
+  <mgw-page-header [description]="doc?.info?.description || 'Try the endpoints of this service against the running gateway.'"
+                   [title]="(api?.name || 'API') + ' playground'"
+                   backTo="/developer">
+    <div pageActions>
+      @if (api) {
+        <a [href]="api.docUrl" mat-stroked-button target="_blank">
+          <mat-icon>menu_book</mat-icon>
+          Swagger UI
+        </a>
+      }
+    </div>
+  </mgw-page-header>
+
+  <spinner [show]="!ready" class="global-centered-spinner"></spinner>
+
+  @if (ready && api) {
+    <div class="base-bar">
+      <span class="base-label">Base URL</span>
+      <code>{{ api.displayUrl }}</code>
+      @if (api.requiresAuth) {
+        <span class="tag">session required</span>
+      }
+    </div>
+
+    @if (!executable()) {
+      <div class="mgw-notice warn">
+        <mat-icon>lan</mat-icon>
+        <span>This API is only served inside the gateway network, so requests cannot be sent from the browser. The
+          operations below are shown for reference — call them from a module or a core service.</span>
+      </div>
+    }
+
+    @if (loadError) {
+      <div class="mgw-notice danger">
+        <mat-icon>error</mat-icon>
+        <span>{{ loadError }}</span>
+      </div>
+    }
+  }
+
+  @if (ready && doc) {
+    <div class="layout">
+      <api-operation-list (filterChange)="filter = $event; applyFilter()" (select)="select($event)"
+                          [filter]="filter" [groups]="groups" [selected]="selected"></api-operation-list>
+
+      <section class="detail">
+        @if (!selected) {
+          <div class="placeholder">
+            <mat-icon>api</mat-icon>
+            <p>Select an operation to build and send a request.</p>
+          </div>
+        } @else {
+          <div class="mgw-card request-card mgw-dense">
+            <header class="request-head">
+              <api-method-chip [method]="selected.method"></api-method-chip>
+              <code class="request-url">{{ displayUrl() }}</code>
+              <button (click)="copyUrl()" mat-icon-button matTooltip="Copy URL">
+                <mat-icon>content_copy</mat-icon>
+              </button>
+            </header>
+
+            @if (selected.description) {
+              <p class="op-desc">{{ selected.description }}</p>
+            }
+
+            @if (executable() && restricted(selected)) {
+              <div class="mgw-notice warn restricted-note">
+                <mat-icon>lock</mat-icon>
+                <span>This is part of the service's module-facing surface. It is served on the gateway-internal
+                  network only, so it cannot be called through the public base URL.</span>
+              </div>
+            }
+
+            @if (pathFields.length > 0) {
+              <div class="section">
+                <h4>Path parameters</h4>
+                @for (field of pathFields; track field.parameter.name) {
+                  <div class="param">
+                    <label [attr.for]="'p-' + field.parameter.name">
+                      {{ field.parameter.name }}<span class="required">*</span>
+                    </label>
+                    @if (field.parameter.description) {
+                      <p class="param-desc">{{ field.parameter.description }}</p>
+                    }
+                    <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+                      <input [(ngModel)]="field.value" [id]="'p-' + field.parameter.name" matInput>
+                    </mat-form-field>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (queryFields.length > 0) {
+              <div class="section">
+                <h4>Query parameters</h4>
+                @for (field of queryFields; track field.parameter.name) {
+                  <div class="param">
+                    <label [attr.for]="'q-' + field.parameter.name">
+                      {{ field.parameter.name }}@if (field.parameter.required) {
+                        <span class="required">*</span>
+                      }
+                    </label>
+                    @if (field.parameter.description) {
+                      <p class="param-desc">{{ field.parameter.description }}</p>
+                    }
+                    <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+                      <input [(ngModel)]="field.value" [id]="'q-' + field.parameter.name" matInput>
+                    </mat-form-field>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (headerFields.length > 0) {
+              <div class="section">
+                <h4>Headers</h4>
+                @for (field of headerFields; track field.parameter.name) {
+                  <div class="param">
+                    <label [attr.for]="'h-' + field.parameter.name">{{ field.parameter.name }}</label>
+                    <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+                      <input [(ngModel)]="field.value" [id]="'h-' + field.parameter.name" matInput>
+                    </mat-form-field>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (hasBody) {
+              <div class="section">
+                <div class="section-head">
+                  <h4>Request body</h4>
+                  <button (click)="prettifyBody()" mat-button>Format JSON</button>
+                </div>
+                <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+                  <textarea [(ngModel)]="bodyField" class="code" matInput rows="10" spellcheck="false"></textarea>
+                </mat-form-field>
+              </div>
+            }
+
+            <div class="send-row">
+              @if (canSend()) {
+                <button (click)="send()" [disabled]="sending" mat-flat-button>
+                  <mat-icon>send</mat-icon>
+                  {{ sending ? 'Sending…' : 'Send request' }}
+                </button>
+              } @else {
+                <button [disabled]="true" mat-flat-button matTooltip="Not reachable from the browser">
+                  <mat-icon>send</mat-icon>
+                  Send request
+                </button>
+              }
+            </div>
+          </div>
+
+          @if (result) {
+            <div class="mgw-card response-card" id="playground-response">
+              <header class="response-head">
+                <span [attr.data-tone]="resultTone()" class="status">
+                  {{ result.status === 0 ? 'no response' : result.status }}
+                  @if (result.statusText) {
+                    <span class="status-text">{{ result.statusText }}</span>
+                  }
+                </span>
+                <span class="duration">{{ result.durationMs }} ms</span>
+              </header>
+
+              @if (result.networkError) {
+                <p class="network-error">{{ result.networkError }}</p>
+              }
+
+              @if (result.body) {
+                <pre class="response-body">{{ formatBody() }}</pre>
+              } @else if (!result.networkError) {
+                <p class="empty-body">The response had no body.</p>
+              }
+
+              @if (responseHeaders().length > 0) {
+                <details class="headers">
+                  <summary>Response headers ({{ responseHeaders().length }})</summary>
+                  @for (header of responseHeaders(); track header.key) {
+                    <div class="header-row">
+                      <span class="header-key">{{ header.key }}</span>
+                      <span class="header-value">{{ header.value }}</span>
+                    </div>
+                  }
+                </details>
+              }
+            </div>
+          }
+        }
+      </section>
+    </div>
+  }
+</div>
