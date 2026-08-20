@@ -29,11 +29,11 @@ jobs:
 
       # gates: build + typecheck (enforce) - tsc runs strict as part of the build
       - name: Build
-        run: npx ng build
+        run: npm run build
 
       # gate: test (enforce)
       - name: Test
-        run: npx ng test --watch=false --browsers=ChromeHeadless
+        run: npm test -- --watch=false --browsers=ChromeHeadless
 
       # gate: vulns (warn until 2026-10-31, then flip continue-on-error to false)
       - name: Audit production dependencies
