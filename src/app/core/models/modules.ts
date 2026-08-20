@@ -48,7 +48,8 @@ export interface ModuleReduced extends ErrorResult {
   version: string;
   name: string;
   description: string;
-  tags: string[];
+  // null when the module declares no tags
+  tags: string[] | null;
   license: string;
   author: string;
   // true if a deployment exists, deployment is only populated if true
@@ -83,7 +84,8 @@ export interface ModuleInfo extends ErrorResult {
   version: string;
   author: string;
   license: string;
-  tags: string[];
+  // null when the module declares no tags
+  tags: string[] | null;
   source: string;
   channel: string;
   added: string;

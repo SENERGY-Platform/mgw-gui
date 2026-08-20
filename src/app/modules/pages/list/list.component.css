@@ -1,7 +1,102 @@
-.update-hint {
-  vertical-align: middle;
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 6px 8px 6px 16px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+.bulk-count {
+  font-size: 13px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.bulk-bar mat-divider {
+  height: 22px;
+  margin-right: 8px;
+}
+
+.col-select {
+  width: 48px;
+  padding-right: 0 !important;
+}
+
+.data-row {
+  cursor: pointer;
+}
+
+.data-row:hover {
+  background: var(--mat-sys-surface-container);
+}
+
+.module-cell {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+}
+
+.module-name {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.module-id {
+  font-size: 12px;
+  color: var(--mat-sys-on-surface-variant);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* module IDs are repository URLs and can be long; the full value is on the
+     detail page, the row only needs enough to tell two modules apart */
+  max-width: 46ch;
+}
+
+.warn-btn {
+  --mat-icon-button-icon-color: var(--mgw-danger);
+  width: 28px;
+  height: 28px;
+  padding: 2px;
+}
+
+.warn-btn mat-icon {
   font-size: 18px;
-  height: 18px;
   width: 18px;
-  margin-left: 4px;
+  height: 18px;
+}
+
+.version-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 0;
+}
+
+.update-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 550;
+  color: var(--mgw-warn);
+}
+
+.update-badge mat-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
+
+/* Symbols default to the outlined axis; the row's primary action reads better
+   filled, matching the status pill next to it. */
+.mgw-row-actions mat-icon {
+  font-variation-settings: 'FILL' 1;
 }

@@ -1,135 +1,209 @@
-<spinner [show]="!ready"></spinner>
+<!--
+~ Copyright (c) 2026 InfAI (CC SES)
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~     http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
 
-@if (ready) {
-  <div class="form-margin">
-    @if (module.has_error) {
-      <p class="error-banner">
-        The module was loaded with errors: {{ module.error_msg }}
-      </p>
-    }
-    <mat-form-field appearance="fill">
-      <mat-label>Module Name</mat-label>
-      <input [readonly]="true" [value]="module.name" matInput>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Module ID</mat-label>
-      <input [readonly]="true" [value]="module.id" matInput>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Author</mat-label>
-      <input [readonly]="true" [value]="module.author" matInput>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Version</mat-label>
-      <input [readonly]="true" [value]="module.version" matInput>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Repository Source</mat-label>
-      <input [readonly]="true" [value]="module.source" matInput>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Repository Channel</mat-label>
-      <input [readonly]="true" [value]="module.channel" matInput>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>License</mat-label>
-      <input [readonly]="true" [value]="module.license" matInput>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Description</mat-label>
-      <input [readonly]="true" [value]="module.description" matInput>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Added</mat-label>
-      <input [readonly]="true" [value]="module.added | date: 'short'" matInput>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Updated</mat-label>
-      <input [readonly]="true" [value]="module.updated | date: 'short'" matInput>
-    </mat-form-field>
-    <mat-chip-listbox aria-label="Tags">
-      @for (tag of module.tags; track tag) {
-        <mat-chip>{{ tag }}</mat-chip>
-      }
-    </mat-chip-listbox>
-    @if (module.is_deployed) {
-      <div>
-        <h3>Deployment</h3>
-        @if (module.deployment.has_error) {
-          <p class="error-banner">
-            The runtime information of the deployment could not be retrieved completely: {{ module.deployment.error_msg }}
-          </p>
+<div class="page">
+  @if (!ready && !module) {
+    <spinner [show]="true" class="global-centered-spinner"></spinner>
+  }
+
+  @if (module) {
+    <mgw-page-header [description]="module.description" [title]="module.name" backTo="/modules">
+      <div pageActions>
+        @if (!module.is_deployed) {
+          <button (click)="deploy()" mat-flat-button>
+            <mat-icon>rocket_launch</mat-icon>
+            Deploy
+          </button>
+        } @else {
+          @if (module.deployment.enabled) {
+            <button (click)="stop()" mat-stroked-button>
+              <mat-icon>stop</mat-icon>
+              Stop
+            </button>
+          } @else {
+            <button (click)="start()" mat-stroked-button>
+              <mat-icon>play_arrow</mat-icon>
+              Start
+            </button>
+          }
+          <button (click)="edit()" mat-flat-button>
+            <mat-icon>tune</mat-icon>
+            Edit deployment
+          </button>
+          <button [matMenuTriggerFor]="menu" mat-icon-button matTooltip="More actions">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button (click)="recreate()" mat-menu-item>
+              <mat-icon>restart_alt</mat-icon>
+              <span>Recreate containers</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button (click)="deleteDeployment()" class="danger" mat-menu-item>
+              <mat-icon>delete</mat-icon>
+              <span>Delete deployment</span>
+            </button>
+          </mat-menu>
         }
-        <h3>Containers</h3>
-        @if (module.deployment.containers) {
-          <table class="containers-table">
-            <tr>
-              <th>Status</th>
-              <th>Service</th>
-              <th>Container</th>
-              <th>Logs</th>
-            </tr>
-            @for (entry of module.deployment.containers | keyvalue; track entry) {
-              <tr>
-                <td>
-                  @if (entry.value.state === 'running' && entry.value.health !== 'unhealthy') {
-                    <div class="circle green"
-                    matTooltip="{{entry.value.state}} {{entry.value.health}}"></div>
-                  }
-                  @if (entry.value.state !== 'running' || entry.value.health === 'unhealthy') {
-                    <div class="circle red"
-                    matTooltip="{{entry.value.state || 'container missing'}} {{entry.value.health}}"></div>
-                  }
-                </td>
-                <td>{{ entry.key }}</td>
-                <td class="container-name">{{ entry.value.name }}</td>
-                <td>
-                  <button [routerLink]="'/containers/' + entry.value.name + '/logs'" color="primary" mat-icon-button
-                    matTooltip="Show logs">
-                    <mat-icon>article</mat-icon>
-                  </button>
-                </td>
-              </tr>
+      </div>
+    </mgw-page-header>
+
+    @if (hasError()) {
+      <div class="banner">
+        <mat-icon>error</mat-icon>
+        <div>
+          <strong>The module was loaded with errors.</strong>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      </div>
+    }
+
+    <div class="summary">
+      <div class="summary-item">
+        <span class="summary-label">Deployment</span>
+        <mgw-status-pill [label]="deploymentStateLabel()" [tone]="deploymentTone()"></mgw-status-pill>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Version</span>
+        <span class="summary-value">{{ module.version }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Repository</span>
+        <span class="summary-value">{{ module.source }} / {{ module.channel }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Containers</span>
+        <span class="summary-value">{{ containerCount() }}</span>
+      </div>
+    </div>
+
+    <mat-tab-group animationDuration="0ms" class="tabs">
+      <mat-tab label="Overview">
+        <div class="tab-body">
+          <section class="card">
+            <h2>Module</h2>
+            <dl class="facts">
+              <dt>ID</dt>
+              <dd class="mono">{{ module.id }}</dd>
+              <dt>Version</dt>
+              <dd>{{ module.version }}</dd>
+              <dt>Author</dt>
+              <dd>{{ module.author || '—' }}</dd>
+              <dt>License</dt>
+              <dd>{{ module.license || '—' }}</dd>
+              <dt>Repository</dt>
+              <dd class="mono">{{ module.source }}</dd>
+              <dt>Channel</dt>
+              <dd>{{ module.channel }}</dd>
+              <dt>Added</dt>
+              <dd>{{ module.added | date: 'short' }}</dd>
+              <dt>Updated</dt>
+              <dd>{{ module.updated | date: 'short' }}</dd>
+            </dl>
+            @if (module.tags?.length) {
+              <mat-chip-set aria-label="Tags" class="tags">
+                @for (tag of module.tags; track tag) {
+                  <mat-chip>{{ tag }}</mat-chip>
+                }
+              </mat-chip-set>
             }
-          </table>
-        }
-        @if (!module.deployment.containers) {
-          <p>No container information available.</p>
-        }
-        <mat-form-field appearance="fill">
-          <mat-label>Deployment ID</mat-label>
-          <input [readonly]="true" [value]="module.deployment.id" matInput>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Status</mat-label>
-          <input [readonly]="true" [value]="deploymentStateLabel()" matInput>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Deployed Module Version</mat-label>
-          <input [readonly]="true" [value]="module.deployment.module_version" matInput>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Deployed From</mat-label>
-          <input [readonly]="true" [value]="module.deployment.module_source + ' / ' + module.deployment.module_channel"
-            matInput>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Created</mat-label>
-          <input [readonly]="true" [value]="module.deployment.created | date: 'short'" matInput>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Updated</mat-label>
-          <input [readonly]="true" [value]="module.deployment.updated | date: 'short'" matInput>
-        </mat-form-field>
-        <h3>Auxiliary Deployments</h3>
-        <aux-deployments-list [deploymentID]="module.deployment.id"></aux-deployments-list>
-      </div>
-    }
-    @if (!module.is_deployed) {
-      <div>
-        <h3>Deployment</h3>
-        <p>This module is not deployed.</p>
-      </div>
-    }
-  </div>
-}
+          </section>
+
+          <section class="card">
+            <h2>Deployment</h2>
+            @if (!module.is_deployed) {
+              <div class="empty-inline">
+                <p>This module has no deployment yet.</p>
+                <button (click)="deploy()" mat-stroked-button>Create deployment</button>
+              </div>
+            } @else {
+              <dl class="facts">
+                <dt>State</dt>
+                <dd>
+                  <mgw-status-pill [label]="deploymentStateLabel()" [tone]="deploymentTone()"></mgw-status-pill>
+                </dd>
+                <dt>ID</dt>
+                <dd class="mono">{{ module.deployment.id }}</dd>
+                <dt>Deployed version</dt>
+                <dd>
+                  {{ module.deployment.module_version }}
+                  @if (module.deployment.module_version !== module.version) {
+                    <span class="drift">installed {{ module.version }} — edit the deployment to apply</span>
+                  }
+                </dd>
+                <dt>Deployed from</dt>
+                <dd class="mono">{{ module.deployment.module_source }} / {{ module.deployment.module_channel }}</dd>
+                <dt>Created</dt>
+                <dd>{{ module.deployment.created | date: 'short' }}</dd>
+                <dt>Updated</dt>
+                <dd>{{ module.deployment.updated | date: 'short' }}</dd>
+              </dl>
+            }
+          </section>
+        </div>
+      </mat-tab>
+
+      <mat-tab [disabled]="!module.is_deployed" label="Containers">
+        <div class="tab-body">
+          <section class="card">
+            @if (!module.is_deployed || !module.deployment.containers) {
+              <p class="muted">No container information available.</p>
+            } @else {
+              <table class="containers">
+                <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Service</th>
+                  <th>Container</th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                  @for (entry of module.deployment.containers | keyvalue; track entry.key) {
+                    <tr>
+                      <td>
+                        <mgw-status-pill [label]="containerLabel(entry.value)"
+                                         [tone]="containerTone(entry.value)"></mgw-status-pill>
+                      </td>
+                      <td>{{ entry.key }}</td>
+                      <td class="mono">{{ entry.value.name }}</td>
+                      <td class="right">
+                        <button [routerLink]="'/containers/' + entry.value.name + '/logs'" mat-icon-button
+                                matTooltip="Show logs">
+                          <mat-icon>article</mat-icon>
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </section>
+        </div>
+      </mat-tab>
+
+      <mat-tab [disabled]="!module.is_deployed" label="Auxiliary deployments">
+        <div class="tab-body">
+          <section class="card">
+            <p class="muted">Extra containers this module spawned at runtime. Read-only — modules manage them
+              themselves.</p>
+            <aux-deployments-list [deploymentID]="module.deployment.id"></aux-deployments-list>
+          </section>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  }
+</div>

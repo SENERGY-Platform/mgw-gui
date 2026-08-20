@@ -1,31 +1,185 @@
-mat-form-field {
-  width: 100%;
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--mgw-gutter);
 }
-.error-banner {
-  border-left: 4px solid #b3372f;
-  background: rgba(179, 55, 47, 0.08);
-  padding: 6px 12px;
+
+.banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  background: var(--mgw-danger-container);
+  color: var(--mgw-on-danger-container);
+}
+
+.banner mat-icon {
+  color: var(--mgw-danger);
+}
+
+.banner div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   font-size: 13px;
 }
 
-.containers-table {
+/* --- summary strip --------------------------------------------------------- */
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1px;
+  margin-bottom: 20px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 14px;
+  background: var(--mat-sys-outline-variant);
+  overflow: hidden;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 18px;
+  background: var(--mat-sys-surface);
+}
+
+.summary-label {
+  font-size: 11px;
+  font-weight: 550;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.summary-value {
+  font-size: 14px;
+  font-weight: 550;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- tabs and cards -------------------------------------------------------- */
+
+.tab-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 16px;
+  padding-top: 16px;
+  align-items: start;
+}
+
+.card {
+  padding: 6px 20px 18px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 14px;
+  background: var(--mat-sys-surface);
+}
+
+.card h2 {
+  margin: 0;
+  padding: 14px 0 10px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.muted {
+  margin: 12px 0;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+/* --- fact list ------------------------------------------------------------- */
+
+.facts {
+  display: grid;
+  grid-template-columns: minmax(120px, auto) minmax(0, 1fr);
+  gap: 0;
+  margin: 0;
+}
+
+.facts dt {
+  padding: 9px 16px 9px 0;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  font-size: 12px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.facts dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 9px 0;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.mono {
+  font-family: ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+  font-size: 12px;
+}
+
+.drift {
+  font-size: 11px;
+  font-weight: 550;
+  color: var(--mgw-warn);
+}
+
+.tags {
+  margin-top: 14px;
+}
+
+.empty-inline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 0 8px;
+}
+
+.empty-inline p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+/* --- container table ------------------------------------------------------- */
+
+.containers {
+  width: 100%;
   border-collapse: collapse;
-  margin-bottom: 8px;
+  margin-top: 4px;
 }
 
-.containers-table th {
+.containers th {
+  padding: 8px 12px 8px 0;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  font-size: 11px;
+  font-weight: 550;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
   text-align: left;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
-  padding: 4px 16px 4px 0;
+  color: var(--mat-sys-on-surface-variant);
 }
 
-.containers-table td {
-  padding: 4px 16px 4px 0;
+.containers td {
+  padding: 8px 12px 8px 0;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  font-size: 13px;
 }
 
-.container-name {
-  font-family: monospace;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+.containers .right {
+  text-align: right;
+  padding-right: 0;
+}
+
+.danger {
+  --mat-menu-item-label-text-color: var(--mgw-danger);
+  --mat-menu-item-icon-color: var(--mgw-danger);
 }
