@@ -27,9 +27,14 @@ const routes: Routes = [
     path: 'deployments',
     children: [
       {path: 'add/:id', component: ModulesComponent},
-      {path: 'edit/:ids', component: ShowModuleComponentComponent},
-      {path: 'endpoints', component: ListEndpointsComponent},
-      {path: 'endpoints/add/:id', component: AddEndpointComponent}
+      {path: 'edit/:ids', component: ShowModuleComponentComponent}
+    ]
+  },
+  {
+    path: 'resources/endpoints',
+    children: [
+      {path: '', component: ListEndpointsComponent},
+      {path: 'add/:id', component: AddEndpointComponent}
     ]
   }
 ];

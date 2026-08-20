@@ -16,7 +16,6 @@ import {HIGHLIGHT_OPTIONS} from 'ngx-highlightjs';
 import {CoreServicesModule} from './system/core-services.module';
 import {AuthModule} from './auth/auth.module';
 import {AuthCheckInterceptor} from './core/services/auth/interceptor/auth.interceptor';
-import {MainNavigationComponent} from "./core/components/main-navigation/main-navigation.component";
 
 @NgModule(/* TODO(standalone-migration): clean up removed NgModule class manually.
 { declarations: [
