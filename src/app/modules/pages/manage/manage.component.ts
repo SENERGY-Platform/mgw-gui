@@ -43,6 +43,10 @@ import {MatIcon} from '@angular/material/icon';
 import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
+import {StatusPillComponent, StatusTone} from 'src/app/core/components/status-pill/status-pill.component';
+import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {RepoModule, Repository} from 'src/app/core/models/repositories';
 import {ChangeRequestItem, ModulesChangeRequest} from 'src/app/core/models/modules';
 import {mapModulesChangeResult, mapRepositoryRefreshResult} from 'src/app/core/models/job-result-view';
@@ -60,16 +64,17 @@ interface VariantOption {
     selector: 'manage-modules',
     templateUrl: './manage.component.html',
     styleUrls: ['./manage.component.css'],
-    imports: [FormsModule, MatCheckbox, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, MatIconButton, MatTooltip, MatIcon, MatFormField, MatLabel, MatSuffix, MatInput, MatSelect, MatOption]
+    imports: [FormsModule, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, MatIconButton, MatTooltip, MatIcon, MatFormField, MatLabel, MatSuffix, MatInput, MatSelect, MatOption, MatMenu, MatMenuItem, MatMenuTrigger, PageHeaderComponent, StatusPillComponent, EmptyStateComponent]
 })
 export class ManageComponent implements OnInit {
   dataSource = new MatTableDataSource<RepoModule>();
   ready: Boolean = false;
   init: Boolean = true;
-  displayColumns = ['status', 'name', 'version', 'variant', 'action']
+  displayColumns = ['name', 'status', 'version', 'variant', 'action']
   nameFilter: string = ''
-  installedOnly: boolean = false
-  updatesOnly: boolean = false
+  // one chip instead of two independent checkboxes: the combination
+  // "installed + updates" is just the updates scope, so it was never useful
+  scope: 'all' | 'installed' | 'updates' = 'all'
   // repository source to restrict the catalog to, empty = all
   repoFilter: string = ''
   repositories: Repository[] = []
@@ -106,8 +111,8 @@ export class ManageComponent implements OnInit {
     this.ready = false
     this.moduleService.loadRepositoryModules({
       name: this.nameFilter || undefined,
-      installed: this.installedOnly || undefined,
-      updateAvailable: this.updatesOnly || undefined,
+      installed: this.scope === 'installed' || undefined,
+      updateAvailable: this.scope === 'updates' || undefined,
       repositories: this.repoFilter ? [this.repoFilter] : undefined,
     }).subscribe({
       next: (modules) => {
@@ -141,6 +146,52 @@ export class ManageComponent implements OnInit {
       next: (request) => this.pendingRequest = request,
       error: (_) => this.pendingRequest = null // 404: none pending
     })
+  }
+
+  setScope(scope: 'all' | 'installed' | 'updates') {
+    this.scope = scope
+    this.load()
+  }
+
+  statusTone(module: RepoModule): StatusTone {
+    if (!module.is_installed) {
+      return 'idle'
+    }
+    return module.installed_variant.next_version ? 'warn' : 'ok'
+  }
+
+  statusLabel(module: RepoModule): string {
+    if (!module.is_installed) {
+      return 'Available'
+    }
+    return module.installed_variant.next_version ? 'Update available' : 'Installed'
+  }
+
+  // label of the button that applies the currently selected intent
+  primaryAction(module: RepoModule): string {
+    if (this.isVariantChange(module)) {
+      return 'switch'
+    }
+    if (!module.is_installed) {
+      return 'install'
+    }
+    if (module.installed_variant.next_version) {
+      return 'update'
+    }
+    return ''
+  }
+
+  // applies whatever primaryAction() reports for this module
+  applyPrimary(module: RepoModule) {
+    switch (this.primaryAction(module)) {
+      case 'install':
+      case 'switch':
+        this.install(module)
+        break
+      case 'update':
+        this.update(module)
+        break
+    }
   }
 
   private computeVariantOptions(module: RepoModule): VariantOption[] {

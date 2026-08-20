@@ -25,6 +25,8 @@ import {
 } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
 import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {StatusPillComponent} from 'src/app/core/components/status-pill/status-pill.component';
 import {ModulesChangeRequest} from 'src/app/core/models/modules';
 
 // Shows the pending modules change request for review. Closes with
@@ -33,7 +35,7 @@ import {ModulesChangeRequest} from 'src/app/core/models/modules';
     selector: 'change-request-dialog',
     templateUrl: './change-request-dialog.component.html',
     styleUrls: ['./change-request-dialog.component.css'],
-    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, DatePipe]
+    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatIcon, StatusPillComponent, DatePipe]
 })
 export class ChangeRequestDialogComponent {
   request!: ModulesChangeRequest

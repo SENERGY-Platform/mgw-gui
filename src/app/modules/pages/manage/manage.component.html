@@ -14,171 +14,198 @@
 ~ limitations under the License.
 -->
 
-<div class="layout-margin">
+<div class="mgw-page has-action-bar">
+  <mgw-page-header description="Modules offered by the configured repositories. Collect what you want to change, then review and apply it in one go."
+                   title="Catalog">
+    <div pageActions>
+      <button (click)="refreshRepositories()" mat-stroked-button matTooltip="Fetch the latest module list">
+        <mat-icon>refresh</mat-icon>
+        Refresh repositories
+      </button>
+      <button (click)="updateAll()" [disabled]="updatesCount === 0" mat-flat-button>
+        <mat-icon>upgrade</mat-icon>
+        Update all@if (updatesCount > 0) {
+          <span>&nbsp;({{ updatesCount }})</span>
+        }
+      </button>
+    </div>
+  </mgw-page-header>
 
-  <div class="toolbar">
-    <mat-form-field appearance="fill" class="name-filter" subscriptSizing="dynamic">
-      <mat-label>Filter by name</mat-label>
+  @if (pendingRequest) {
+    <div class="mgw-notice warn">
+      <mat-icon>pending_actions</mat-icon>
+      <span>A change request is pending on the gateway. It stays there until it is applied or discarded — a
+        repository refresh discards it too.</span>
+      <button (click)="openPendingRequest()" mat-stroked-button>Review</button>
+    </div>
+  }
+
+  <div class="mgw-toolbar">
+    <mat-form-field appearance="outline" class="mgw-search" subscriptSizing="dynamic">
+      <mat-label>Search modules</mat-label>
       <input (keyup.enter)="load()" [(ngModel)]="nameFilter" matInput>
-      <button (click)="load()" mat-icon-button matSuffix matTooltip="Search">
+      <button (click)="load()" aria-label="Search" mat-icon-button matSuffix>
         <mat-icon>search</mat-icon>
       </button>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" class="repo-filter" subscriptSizing="dynamic">
+    <mat-form-field appearance="outline" class="repo" subscriptSizing="dynamic">
       <mat-label>Repository</mat-label>
       <mat-select (selectionChange)="load()" [(ngModel)]="repoFilter">
         <mat-option value="">All repositories</mat-option>
-        @for (repo of repositories; track repo) {
+        @for (repo of repositories; track repo.Source) {
           <mat-option [value]="repo.Source">{{ repo.Source }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
 
-    <mat-checkbox (change)="load()" [(ngModel)]="installedOnly">Installed</mat-checkbox>
-    <mat-checkbox (change)="load()" [(ngModel)]="updatesOnly">Updates</mat-checkbox>
-
-    <span class="spacer"></span>
-
-    @if (updatesCount > 0) {
-      <span class="updates-count">{{ updatesCount }} update(s) available</span>
-    }
-    <button (click)="updateAll()" [disabled]="updatesCount === 0" color="primary" mat-button>
-      <mat-icon>upgrade</mat-icon>
-      Update all
-    </button>
-    <button (click)="refreshRepositories()" color="primary" mat-button matTooltip="Fetch the latest modules">
-      <mat-icon>refresh</mat-icon>
-      Refresh repositories
-    </button>
+    <div class="mgw-chips">
+      <button (click)="setScope('all')" [class.selected]="scope === 'all'" class="mgw-chip" type="button">All</button>
+      <button (click)="setScope('installed')" [class.selected]="scope === 'installed'" class="mgw-chip" type="button">
+        Installed
+      </button>
+      <button (click)="setScope('updates')" [class.selected]="scope === 'updates'" class="mgw-chip" type="button">
+        Updates
+        @if (updatesCount > 0) {
+          <span class="mgw-chip-count">{{ updatesCount }}</span>
+        }
+      </button>
+    </div>
   </div>
 
-  @if (pendingRequest) {
-    <div class="pending-banner">
-      <mat-icon>pending_actions</mat-icon>
-      <span>A change request is pending.</span>
-      <button (click)="openPendingRequest()" color="primary" mat-button>Review</button>
-    </div>
-  }
-
-  @if (dataSource.data.length === 0 && ready) {
-    <div>No modules found. Refresh the repositories to fetch the latest
-      module list.
-    </div>
-  }
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-  <div [hidden]="(!ready && init) || dataSource.data.length === 0" class="mat-elevation-z1">
-    <table [dataSource]="dataSource" mat-table>
-      <ng-container matColumnDef="status">
-        <th *matHeaderCellDef class="button-column" mat-header-cell>Status</th>
-        <td *matCellDef="let module" mat-cell>
-          @if (module.is_installed && module.installed_variant.next_version) {
-            <span class="badge update"
-            matTooltip="Update available: {{module.installed_variant.version}} → {{module.installed_variant.next_version}}">update</span>
-          }
-          @if (module.is_installed && !module.installed_variant.next_version) {
-            <span
-            class="badge installed">installed</span>
-          }
-        </td>
-      </ng-container>
+  @if (ready && dataSource.data.length === 0) {
+    <mgw-empty-state
+      icon="inventory_2"
+      message="Nothing matches the current filter. If the catalog is empty altogether, refresh the repositories to fetch the latest module list."
+      title="No modules found">
+      <button (click)="refreshRepositories()" emptyAction mat-stroked-button>Refresh repositories</button>
+    </mgw-empty-state>
+  } @else if (dataSource.data.length > 0) {
+    <div class="mgw-table-card">
+      <table [dataSource]="dataSource" mat-table>
+        <ng-container matColumnDef="name">
+          <th *matHeaderCellDef mat-header-cell>Module</th>
+          <td *matCellDef="let module" mat-cell>
+            <div class="module-cell">
+              <span class="module-name">{{ module.name }}</span>
+              <span class="module-desc">{{ module.description }}</span>
+            </div>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="name">
-        <th *matHeaderCellDef mat-header-cell>Name</th>
-        <td *matCellDef="let module" mat-cell>
-          <div>{{ module.name }}</div>
-          <div class="description">{{ module.description }}</div>
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="status">
+          <th *matHeaderCellDef mat-header-cell>Status</th>
+          <td *matCellDef="let module" mat-cell>
+            <mgw-status-pill [label]="statusLabel(module)" [tone]="statusTone(module)"></mgw-status-pill>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="version">
-        <th *matHeaderCellDef mat-header-cell>Version</th>
-        <td *matCellDef="let module" mat-cell>
-          @if (!module.is_installed) {
-            <span>{{ module.version }}</span>
-          }
-          @if (module.is_installed) {
-            <span>
-              {{ module.installed_variant.version }}
-              @if (module.installed_variant.next_version) {
-                <span class="next-version">
-                  → {{ module.installed_variant.next_version }}
-                </span>
-              }
-            </span>
-          }
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="variant">
-        <th *matHeaderCellDef mat-header-cell>Repository / Channel</th>
-        <td *matCellDef="let module" mat-cell>
-          <mat-select [(ngModel)]="selectedVariant[module.id]"
-            [disabled]="(variantOptionsById[module.id] || []).length < 2"
-            class="variant-select">
-            @for (option of variantOptionsById[module.id]; track option) {
-              <mat-option [value]="option.key">
-                {{ option.source }} / {{ option.channel }} ({{ option.version }})
-              </mat-option>
+        <ng-container matColumnDef="version">
+          <th *matHeaderCellDef mat-header-cell>Version</th>
+          <td *matCellDef="let module" mat-cell>
+            @if (!module.is_installed) {
+              <span>{{ module.version }}</span>
+            } @else {
+              <span class="version-cell">
+                <span>{{ module.installed_variant.version }}</span>
+                @if (module.installed_variant.next_version) {
+                  <span class="next-version">
+                    <mat-icon>arrow_forward</mat-icon>
+                    {{ module.installed_variant.next_version }}
+                  </span>
+                }
+              </span>
             }
-          </mat-select>
-        </td>
-      </ng-container>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="action">
-        <th *matHeaderCellDef class="action-column" mat-header-cell>Action</th>
-        <td *matCellDef="let module" mat-cell>
-          @if (cartAction(module.id)) {
-            <span class="badge cart">
-              {{ cartAction(module.id) }}
-              <button (click)="undo(module.id)" mat-icon-button matTooltip="Undo">
-                <mat-icon>undo</mat-icon>
-              </button>
-            </span>
-          }
+        <ng-container matColumnDef="variant">
+          <th *matHeaderCellDef mat-header-cell>Repository / channel</th>
+          <td *matCellDef="let module" mat-cell>
+            @if ((variantOptionsById[module.id] || []).length < 2) {
+              <span class="variant-static">
+                {{ (variantOptionsById[module.id] || [])[0]?.source }} /
+                {{ (variantOptionsById[module.id] || [])[0]?.channel }}
+              </span>
+            } @else {
+              <mat-form-field appearance="outline" class="variant-select" subscriptSizing="dynamic">
+                <mat-select [(ngModel)]="selectedVariant[module.id]">
+                  @for (option of variantOptionsById[module.id]; track option.key) {
+                    <mat-option [value]="option.key">
+                      {{ option.source }} / {{ option.channel }} ({{ option.version }})
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            }
+          </td>
+        </ng-container>
 
-          @if (!cartAction(module.id)) {
-            <span>
-              @if (!module.is_installed) {
-                <button (click)="install(module)" color="primary" mat-icon-button
-                  matTooltip="Install">
-                  <mat-icon>add_circle</mat-icon>
+        <ng-container matColumnDef="action">
+          <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
+          <td *matCellDef="let module" class="mgw-col-actions" mat-cell>
+            @if (cartAction(module.id)) {
+              <span class="staged" [attr.data-action]="cartAction(module.id)">
+                <mat-icon>check</mat-icon>
+                {{ cartAction(module.id) }}
+                <button (click)="undo(module.id)" mat-icon-button matTooltip="Undo">
+                  <mat-icon>close</mat-icon>
                 </button>
-              }
-              @if (isVariantChange(module)) {
-                <button (click)="install(module)" color="primary" mat-icon-button
-                  matTooltip="Switch to the selected repository/channel">
-                  <mat-icon>swap_horiz</mat-icon>
-                </button>
-              }
-              @if (module.is_installed && module.installed_variant.next_version && !isVariantChange(module)) {
-                <button (click)="update(module)"
-                  color="primary" mat-icon-button matTooltip="Update to {{module.installed_variant.next_version}}">
-                  <mat-icon>upgrade</mat-icon>
-                </button>
-              }
-              @if (module.is_installed) {
-                <button (click)="remove(module)" color="warn" mat-icon-button
-                  matTooltip="Remove module">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              }
-            </span>
-          }
-        </td>
-      </ng-container>
+              </span>
+            } @else {
+              <div class="mgw-row-actions">
+                @if (primaryAction(module) === 'install') {
+                  <button (click)="applyPrimary(module)" mat-stroked-button>
+                    <mat-icon>add</mat-icon>
+                    Install
+                  </button>
+                } @else if (primaryAction(module) === 'switch') {
+                  <button (click)="applyPrimary(module)" mat-stroked-button
+                          matTooltip="Switch to the selected repository and channel">
+                    <mat-icon>swap_horiz</mat-icon>
+                    Switch
+                  </button>
+                } @else if (primaryAction(module) === 'update') {
+                  <button (click)="applyPrimary(module)" mat-flat-button
+                          matTooltip="Update to {{module.installed_variant.next_version}}">
+                    <mat-icon>upgrade</mat-icon>
+                    Update
+                  </button>
+                }
 
-      <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-      <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
-    </table>
-  </div>
+                @if (module.is_installed) {
+                  <button [matMenuTriggerFor]="rowMenu" mat-icon-button matTooltip="More actions">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #rowMenu="matMenu">
+                    <button (click)="remove(module)" class="mgw-danger" mat-menu-item>
+                      <mat-icon>delete</mat-icon>
+                      <span>Remove module</span>
+                    </button>
+                  </mat-menu>
+                }
+              </div>
+            }
+          </td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
+        <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+      </table>
+    </div>
+  }
 
   @if (cartCount() > 0) {
-    <div class="cart-bar mat-elevation-z3">
-      <span>{{ cartCount() }} pending change(s)</span>
+    <div class="mgw-action-bar">
+      <span class="staged-count">{{ cartCount() }} change{{ cartCount() === 1 ? '' : 's' }} staged</span>
+      <span class="mgw-spacer"></span>
       <button (click)="clearCart()" mat-button>Clear</button>
-      <button (click)="reviewCart()" color="primary" mat-raised-button>Review &amp; apply</button>
+      <button (click)="reviewCart()" mat-flat-button>
+        <mat-icon>fact_check</mat-icon>
+        Review &amp; apply
+      </button>
     </div>
   }
 </div>
