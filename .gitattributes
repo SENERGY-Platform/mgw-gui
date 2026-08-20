@@ -1,5 +1,13 @@
-# Files parsed byte-wise by shell tooling must stay LF, even with
-# core.autocrlf=true on Windows/WSL checkouts.
-.claude/gates.env text eol=lf
-.github/workflows/*.yml text eol=lf
-*.sh text eol=lf
+# core.autocrlf=true rewrites checkouts to CRLF, which breaks every tool that
+# reads a file byte-wise: the gates checker parsing gates.env, shell scripts,
+# and Prettier, which would otherwise report all 182 files as unformatted after
+# a fresh clone. Normalise the whole tree to LF instead of teaching each tool
+# to tolerate both.
+* text=auto eol=lf
+
+# Binary, so no line ending handling at all.
+*.png binary
+*.ico binary
+*.jpg binary
+*.woff binary
+*.woff2 binary
