@@ -17,45 +17,38 @@
 <spinner [show]="!ready"></spinner>
 
 @if (ready && dataSource.data.length === 0) {
-  <div class="empty">
-    No auxiliary deployments. Modules spawn and manage them on their own; the UI only shows their state.
-  </div>
+  <p class="empty">No auxiliary deployments. Modules spawn and manage them on their own; the UI only shows
+    their state.</p>
 }
 
 @if (ready && dataSource.data.length > 0) {
-  <table [dataSource]="dataSource" class="mat-elevation-z1" mat-table>
-    <ng-container matColumnDef="status">
-      <th *matHeaderCellDef class="button-column" mat-header-cell>Status</th>
-      <td *matCellDef="let aux" mat-cell>
-        @if (statusOf(aux) === 'healthy') {
-          <div class="circle green" matTooltip="Running"></div>
-        }
-        @if (statusOf(aux) === 'unhealthy') {
-          <div class="circle red"
-          matTooltip="{{aux.container?.state || 'container missing'}} {{aux.container?.health}}"></div>
-        }
-        @if (statusOf(aux) === 'disabled') {
-          <div class="circle grey" matTooltip="Disabled"></div>
-        }
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="name">
-      <th *matHeaderCellDef mat-header-cell>Name</th>
-      <td *matCellDef="let aux" mat-cell>{{ aux.name }}</td>
-    </ng-container>
-    <ng-container matColumnDef="reference">
-      <th *matHeaderCellDef mat-header-cell>Reference</th>
-      <td *matCellDef="let aux" mat-cell>{{ aux.reference }}</td>
-    </ng-container>
-    <ng-container matColumnDef="image">
-      <th *matHeaderCellDef mat-header-cell>Image</th>
-      <td *matCellDef="let aux" mat-cell>{{ aux.image }}</td>
-    </ng-container>
-    <ng-container matColumnDef="updated">
-      <th *matHeaderCellDef mat-header-cell>Updated</th>
-      <td *matCellDef="let aux" mat-cell>{{ aux.updated | date: 'short' }}</td>
-    </ng-container>
-    <tr *matHeaderRowDef="displayColumns" mat-header-row></tr>
-    <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
-  </table>
+  <div class="mgw-table-card">
+    <table [dataSource]="dataSource" mat-table>
+      <ng-container matColumnDef="status">
+        <th *matHeaderCellDef mat-header-cell>Status</th>
+        <td *matCellDef="let aux" mat-cell>
+          <mgw-status-pill [label]="statusLabel(aux)" [tone]="statusTone(aux)"
+                           [matTooltip]="statusDetail(aux)"></mgw-status-pill>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th *matHeaderCellDef mat-header-cell>Name</th>
+        <td *matCellDef="let aux" mat-cell>{{ aux.name }}</td>
+      </ng-container>
+      <ng-container matColumnDef="reference">
+        <th *matHeaderCellDef mat-header-cell>Reference</th>
+        <td *matCellDef="let aux" mat-cell>{{ aux.reference }}</td>
+      </ng-container>
+      <ng-container matColumnDef="image">
+        <th *matHeaderCellDef mat-header-cell>Image</th>
+        <td *matCellDef="let aux" class="mgw-mono" mat-cell>{{ aux.image }}</td>
+      </ng-container>
+      <ng-container matColumnDef="updated">
+        <th *matHeaderCellDef mat-header-cell>Updated</th>
+        <td *matCellDef="let aux" mat-cell>{{ aux.updated | date: 'short' }}</td>
+      </ng-container>
+      <tr *matHeaderRowDef="displayColumns" mat-header-row></tr>
+      <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+    </table>
+  </div>
 }

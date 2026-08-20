@@ -1,13 +1,13 @@
-<h1 mat-dialog-title>{{ isEdit ? 'Edit global config' : 'New global config' }}</h1>
+<h2 class="title" mat-dialog-title>{{ isEdit ? 'Edit global config' : 'New global config' }}</h2>
 
 <div class="dialog-content" mat-dialog-content>
-  <mat-form-field appearance="fill" class="full-width">
+  <mat-form-field appearance="outline" class="full-width">
     <mat-label>Name</mat-label>
     <input [(ngModel)]="name" matInput>
   </mat-form-field>
 
   <div class="type-row">
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="outline">
       <mat-label>Data type</mat-label>
       <mat-select [(ngModel)]="dataType">
         <mat-option [value]="DATA_TYPE_STRING">string</mat-option>
@@ -26,7 +26,7 @@
   }
 
   @if (isSlice) {
-    <mat-form-field appearance="fill" class="full-width">
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Values</mat-label>
       <textarea [(ngModel)]="rawValue" matInput rows="6"></textarea>
       <mat-hint>One value per line{{ dataType === DATA_TYPE_BOOL ? ' (true or false)' : '' }}</mat-hint>
@@ -34,7 +34,7 @@
   }
 
   @if (!isSlice && dataType !== DATA_TYPE_BOOL) {
-    <mat-form-field appearance="fill" class="full-width">
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Value</mat-label>
       <input [(ngModel)]="rawValue" [step]="dataType === DATA_TYPE_INT ? 1 : 'any'"
         [type]="(dataType === DATA_TYPE_INT || dataType === DATA_TYPE_FLOAT) ? 'number' : 'text'" matInput>
@@ -48,7 +48,7 @@
   }
 
   @if (!isSlice && dataType === DATA_TYPE_BOOL) {
-    <mat-form-field appearance="fill" class="full-width">
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Value</mat-label>
       <mat-select [(ngModel)]="boolValue">
         <mat-option value="true">true</mat-option>
@@ -62,7 +62,8 @@
   }
 </div>
 
-<div mat-dialog-actions>
+<div class="actions" mat-dialog-actions>
+  <span class="mgw-spacer"></span>
   <button [mat-dialog-close]="undefined" mat-button>Cancel</button>
-  <button (click)="save()" color="primary" mat-raised-button>{{ isEdit ? 'Save' : 'Create' }}</button>
+  <button (click)="save()" mat-flat-button>{{ isEdit ? 'Save' : 'Create' }}</button>
 </div>

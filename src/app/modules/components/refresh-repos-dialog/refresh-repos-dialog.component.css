@@ -1,9 +1,61 @@
-.warning {
-  color: #b3372f;
-  font-weight: 500;
+.title {
+  font-size: 18px;
+  font-weight: 650;
 }
 
-.type {
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 12px;
+.dialog-content {
+  min-width: 380px;
+  max-width: 560px;
+}
+
+.warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  background: var(--mgw-warn-container);
+  color: var(--mgw-on-warn-container);
+  font-size: 13px;
+}
+
+.warning mat-icon {
+  color: var(--mgw-warn);
+}
+
+.lead {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.repo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  cursor: pointer;
+}
+
+.repo-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.repo-name {
+  font-size: 13px;
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+
+.repo-type {
+  font-size: 11px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.actions {
+  padding: 8px 16px 16px;
 }

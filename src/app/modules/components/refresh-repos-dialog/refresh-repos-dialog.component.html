@@ -1,25 +1,28 @@
-<h1 mat-dialog-title>Refresh repositories</h1>
+<h2 class="title" mat-dialog-title>Refresh repositories</h2>
 
-<div mat-dialog-content>
+<div class="dialog-content" mat-dialog-content>
   @if (hasPendingChangeRequest) {
-    <p class="warning">
-      Refreshing discards the pending change request.
-    </p>
+    <div class="warning">
+      <mat-icon>warning</mat-icon>
+      <span>Refreshing discards the pending change request.</span>
+    </div>
   }
 
-  <p>Select the repositories to refresh:</p>
-  @for (repo of repositories; track repo) {
-    <div>
-      <mat-checkbox [(ngModel)]="selected[repo.Source]">
-        {{ repo.Source }} <span class="type">({{ repo.Type }})</span>
-      </mat-checkbox>
-    </div>
+  <p class="lead">Select the repositories to fetch the latest module list from.</p>
+
+  @for (repo of repositories; track repo.Source) {
+    <label class="repo">
+      <mat-checkbox [(ngModel)]="selected[repo.Source]"></mat-checkbox>
+      <span class="repo-text">
+        <span class="repo-name">{{ repo.Source }}</span>
+        <span class="repo-type">{{ repo.Type }}</span>
+      </span>
+    </label>
   }
 </div>
 
-<div mat-dialog-actions>
+<div class="actions" mat-dialog-actions>
+  <span class="mgw-spacer"></span>
   <button [mat-dialog-close]="undefined" mat-button>Cancel</button>
-  <button (click)="refresh()" [disabled]="selectedSources().length === 0" color="primary" mat-raised-button>
-    Refresh
-  </button>
+  <button (click)="refresh()" [disabled]="selectedSources().length === 0" mat-flat-button>Refresh</button>
 </div>

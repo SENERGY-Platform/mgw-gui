@@ -1,8 +1,6 @@
 .empty {
-  color: rgba(0, 0, 0, 0.6);
+  margin: 0;
   font-size: 13px;
-}
-
-table {
-  width: 100%;
+  line-height: 1.5;
+  color: var(--mat-sys-on-surface-variant);
 }

@@ -1,18 +1,18 @@
-<h1 mat-dialog-title>{{ title }}</h1>
+<h2 class="title" mat-dialog-title>{{ title }}</h2>
 
 <div class="dialog-content" mat-dialog-content>
   @if (failedCount() > 0) {
-    <p class="summary">{{ failedCount() }} of {{ items.length }} item(s) failed.</p>
+    <div class="summary">
+      <mat-icon>error</mat-icon>
+      <span>{{ failedCount() }} of {{ items.length }} item{{ items.length === 1 ? '' : 's' }} failed.</span>
+    </div>
   }
 
-  @for (item of items; track item) {
+  @for (item of items; track item.label) {
     <div [class.failed]="!item.ok" class="item">
-      @if (item.ok) {
-        <mat-icon class="ok-icon">check_circle</mat-icon>
-      }
-      @if (!item.ok) {
-        <mat-icon class="failed-icon">error</mat-icon>
-      }
+      <mat-icon [class.failed-icon]="!item.ok" [class.ok-icon]="item.ok">
+        {{ item.ok ? 'check_circle' : 'error' }}
+      </mat-icon>
       <div class="item-body">
         <div class="label">{{ item.label }}</div>
         @if (item.message) {
@@ -26,6 +26,7 @@
   }
 </div>
 
-<div mat-dialog-actions>
-  <button [mat-dialog-close]="undefined" color="primary" mat-raised-button>Close</button>
+<div class="actions" mat-dialog-actions>
+  <span class="mgw-spacer"></span>
+  <button [mat-dialog-close]="undefined" mat-flat-button>Close</button>
 </div>

@@ -12,6 +12,15 @@
 }
 
 .error {
-  color: #b3372f;
+  color: var(--mgw-danger);
   font-weight: 500;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.actions {
+  padding: 8px 16px 16px;
 }

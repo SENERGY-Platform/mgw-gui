@@ -1,3 +1,63 @@
-#generated-endpoints-container {
-  margin-bottom: 30px;
+.group {
+  margin-bottom: 16px;
+}
+
+.group h3 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.none {
+  margin: 0;
+  padding: 14px 18px;
+  border: 1px dashed var(--mat-sys-outline-variant);
+  border-radius: 14px;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.url {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.url mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+}
+
+.col-select {
+  width: 48px;
+  padding-right: 0 !important;
+}
+
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px 4px 16px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+.bulk-count {
+  font-size: 13px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.danger-icon {
+  --mat-icon-button-icon-color: var(--mgw-danger);
 }

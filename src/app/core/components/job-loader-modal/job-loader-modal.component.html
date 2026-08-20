@@ -1,8 +1,4 @@
-<div class="modal-outer" id="outer">
-  <div class="loader">
-    <spinner [show]="!jobIsCompleted"></spinner>
-    <span>{{ message }}</span>
-  </div>
-
-  <!--<button mat-raised-button color="primary"  (click)="cancel()">Cancel</button>     -->
+<div class="loader">
+  <spinner [show]="!jobIsCompleted"></spinner>
+  <span class="message">{{ message }}</span>
 </div>

@@ -34,6 +34,7 @@ import {ModuleManagerService} from 'src/app/core/services/module-manager/module-
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {SpinnerComponent} from 'src/app/core/components/spinner/spinner.component';
 import {AuxDeployment} from 'src/app/core/models/aux-deployments';
+import {StatusPillComponent, StatusTone} from 'src/app/core/components/status-pill/status-pill.component';
 
 // Read-only list of the auxiliary deployments a running module has spawned.
 // The management API deliberately has no write operations for them - those
@@ -42,7 +43,7 @@ import {AuxDeployment} from 'src/app/core/models/aux-deployments';
     selector: 'aux-deployments-list',
     templateUrl: './aux-deployments-list.component.html',
     styleUrls: ['./aux-deployments-list.component.css'],
-    imports: [DatePipe, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatTooltip, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
+    imports: [DatePipe, SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatTooltip, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, StatusPillComponent]
 })
 export class AuxDeploymentsListComponent implements OnInit, OnDestroy {
   @Input() deploymentID: string = ""
@@ -80,6 +81,36 @@ export class AuxDeploymentsListComponent implements OnInit, OnDestroy {
         this.ready = true
       }
     })
+  }
+
+  statusTone(aux: AuxDeployment): StatusTone {
+    switch (this.statusOf(aux)) {
+      case 'healthy':
+        return 'ok';
+      case 'unhealthy':
+        return 'danger';
+      default:
+        return 'idle';
+    }
+  }
+
+  statusLabel(aux: AuxDeployment): string {
+    switch (this.statusOf(aux)) {
+      case 'healthy':
+        return 'Running';
+      case 'unhealthy':
+        return 'Unhealthy';
+      default:
+        return 'Disabled';
+    }
+  }
+
+  // the pill carries the coarse state, the tooltip the engine's own wording
+  statusDetail(aux: AuxDeployment): string {
+    if (!aux.enabled) {
+      return 'Disabled';
+    }
+    return [aux.container?.state || 'container missing', aux.container?.health].filter(Boolean).join(' · ');
   }
 
   statusOf(aux: AuxDeployment): string {

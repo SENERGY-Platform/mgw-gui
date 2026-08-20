@@ -35,21 +35,28 @@ import { DatePipe } from '@angular/common';
 import {SpinnerComponent} from '../spinner/spinner.component';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
+import {MatTooltip} from '@angular/material/tooltip';
+import {StatusPillComponent, StatusTone} from '../status-pill/status-pill.component';
 
 @Component({
     selector: 'list-job',
     templateUrl: './list.component.html',
     styleUrls: ['./list.component.css'],
-    imports: [SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, DatePipe, MatCard, MatCardContent, MatCardHeader, MatCardTitle]
+    imports: [SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, DatePipe, MatTooltip, StatusPillComponent]
 })
 export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
+  // human-readable name of the service the jobs belong to
+  readonly sourceLabels: Record<string, string> = {
+    'module-manager': 'Module manager',
+    'core-manager': 'Core manager',
+  };
+
   dataSource = new MatTableDataSource<JobRow>();
   ready: Boolean = false;
   init: Boolean = true;
   interval: any
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['id', 'description', 'created', 'started', 'completed', 'canceled', 'error', 'cancel']
+  displayColumns = ['job', 'status', 'started', 'finished', 'actions']
   @Input() source?: string;
 
   constructor(
@@ -63,6 +70,35 @@ export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
     clearTimeout(this.interval)
   }
 
+
+  sourceLabel(): string {
+    return this.sourceLabels[this.source || ''] || this.source || 'Jobs';
+  }
+
+  statusTone(job: JobRow): StatusTone {
+    if (job.error) {
+      return 'danger';
+    }
+    if (job.canceled) {
+      return 'idle';
+    }
+    return job.done ? 'ok' : 'info';
+  }
+
+  statusLabel(job: JobRow): string {
+    if (job.error) {
+      return 'Failed';
+    }
+    if (job.canceled) {
+      return 'Canceled';
+    }
+    return job.done ? 'Completed' : 'Running';
+  }
+
+  // the finish column shows whichever end state the job reached
+  finishedAt(job: JobRow): string | Date | undefined {
+    return job.completed || job.canceled;
+  }
 
   loadJobs() {
     this.ready = false;
@@ -111,7 +147,7 @@ export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     if (this.source === 'module-manager') {
       // canceled/error columns only exist in the old job model
-      this.displayColumns = ['id', 'description', 'started', 'completed', 'cancel']
+      this.displayColumns = ['job', 'status', 'started', 'finished', 'actions']
     }
     this.setupSorting();
     this.init = false
