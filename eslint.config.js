@@ -6,6 +6,12 @@ const angular = require('angular-eslint');
 
 module.exports = defineConfig([
   {
+    // Build output, not source. The coverage report in particular contains
+    // generated .ts.html files that the Angular template parser chokes on,
+    // and it only exists after a run with --code-coverage.
+    ignores: ['dist/', 'coverage/', '.angular/'],
+  },
+  {
     files: ['**/*.ts'],
     extends: [
       eslint.configs.recommended,
