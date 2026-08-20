@@ -141,7 +141,8 @@
             "tsConfig": "tsconfig.spec.json",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/theme.scss", "src/styles.css"],
-            "scripts": []
+            "scripts": [],
+            "karmaConfig": "karma.conf.js"
           }
         },
         "lint": {
