@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {provideRouter} from '@angular/router';
 
-import { DeveloperComponent } from './developer.component';
+import {DeveloperComponent} from './developer.component';
 
 describe('DeveloperComponent', () => {
   let component: DeveloperComponent;
@@ -10,9 +10,8 @@ describe('DeveloperComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DeveloperComponent],
-      providers: [provideRouter([])]
-    })
-    .compileComponents();
+      providers: [provideRouter([])],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(DeveloperComponent);
     component = fixture.componentInstance;

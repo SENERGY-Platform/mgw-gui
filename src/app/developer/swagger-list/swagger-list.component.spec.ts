@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {provideRouter} from '@angular/router';
 
-import { SwaggerListComponent } from './swagger-list.component';
+import {SwaggerListComponent} from './swagger-list.component';
 
 describe('SwaggerListComponent', () => {
   let component: SwaggerListComponent;
@@ -10,9 +10,8 @@ describe('SwaggerListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SwaggerListComponent],
-      providers: [provideRouter([])]
-    })
-    .compileComponents();
+      providers: [provideRouter([])],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SwaggerListComponent);
     component = fixture.componentInstance;

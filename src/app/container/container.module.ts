@@ -15,10 +15,8 @@ import {FormsModule} from '@angular/forms';
 const routes: Routes = [
   {
     path: 'containers',
-    children: [
-      {path: ':containerId/logs', component: LogsComponent},
-    ]
-  }
+    children: [{path: ':containerId/logs', component: LogsComponent}],
+  },
 ];
 
 @NgModule({
@@ -33,8 +31,7 @@ const routes: Routes = [
     MatTableModule,
     HighlightModule,
     RouterModule.forChild(routes),
-    LogsComponent
-  ]
+    LogsComponent,
+  ],
 })
-export class ContainerModule {
-}
+export class ContainerModule {}

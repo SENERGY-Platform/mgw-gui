@@ -5,40 +5,39 @@ import {ApiService} from '../../../core/services/api/api.service';
 import {InfoResponse} from '../../models/info';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SecretManagerServiceService {
-  secretManagerPath = "/secret-manager"
+  secretManagerPath = '/secret-manager';
 
-  constructor(private http: ApiService) {
-  }
+  constructor(private http: ApiService) {}
 
   getSecrets(): Observable<Secret[]> {
-    return <Observable<Secret[]>>this.http.get(this.secretManagerPath + "/secrets")
+    return <Observable<Secret[]>>this.http.get(this.secretManagerPath + '/secrets');
   }
 
   getSecret(secretID: string): Observable<Secret> {
-    return <Observable<Secret>>this.http.get(this.secretManagerPath + "/secrets/" + secretID)
+    return <Observable<Secret>>this.http.get(this.secretManagerPath + '/secrets/' + secretID);
   }
 
   createSecret(secretRequest: CreateSecret) {
-    return this.http.post(this.secretManagerPath + "/secrets", secretRequest, undefined, "text")
+    return this.http.post(this.secretManagerPath + '/secrets', secretRequest, undefined, 'text');
   }
 
   getSecretTypes(): Observable<SecretType[]> {
-    return <Observable<SecretType[]>>this.http.get(this.secretManagerPath + "/types")
+    return <Observable<SecretType[]>>this.http.get(this.secretManagerPath + '/types');
   }
 
   updateSecret(secretRequest: CreateSecret, id: string): Observable<any> {
-    return <Observable<any>>this.http.put(this.secretManagerPath + "/secrets/" + id, secretRequest)
+    return <Observable<any>>this.http.put(this.secretManagerPath + '/secrets/' + id, secretRequest);
   }
 
   deleteSecret(secretID: string): Observable<any> {
-    return <Observable<any>>this.http.delete(this.secretManagerPath + "/secrets/" + secretID)
+    return <Observable<any>>this.http.delete(this.secretManagerPath + '/secrets/' + secretID);
   }
 
   getInfo(): Observable<InfoResponse> {
-    var url = this.secretManagerPath + "/info"
+    var url = this.secretManagerPath + '/info';
     return <Observable<InfoResponse>>this.http.get(url);
   }
 }

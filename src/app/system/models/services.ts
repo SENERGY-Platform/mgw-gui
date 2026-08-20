@@ -16,5 +16,5 @@ interface Image {
 }
 
 export interface CoreServicesResponse {
-  [serviceID: string]: CoreService
+  [serviceID: string]: CoreService;
 }

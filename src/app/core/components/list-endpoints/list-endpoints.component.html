@@ -23,8 +23,12 @@
           <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
           <td *matCellDef="let endpoint" class="mgw-col-actions" mat-cell>
             <div class="mgw-row-actions">
-              <button [disabled]="endpoint.type == 2" [routerLink]="'/resources/endpoints/add/' + endpoint.id"
-                      mat-stroked-button matTooltip="Give this endpoint a shorter URL">
+              <button
+                [disabled]="endpoint.type == 2"
+                [routerLink]="'/resources/endpoints/add/' + endpoint.id"
+                mat-stroked-button
+                matTooltip="Give this endpoint a shorter URL"
+              >
                 <mat-icon>add_link</mat-icon>
                 Add alias
               </button>
@@ -33,7 +37,7 @@
         </ng-container>
 
         <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-        <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+        <tr *matRowDef="let m; columns: displayColumns" mat-row></tr>
       </table>
     </div>
   </div>
@@ -61,14 +65,20 @@
       <table [dataSource]="dataSourceAlias" mat-table matSort matSortActive="name" matSortDirection="asc">
         <ng-container matColumnDef="select">
           <th *matHeaderCellDef class="col-select" mat-header-cell>
-            <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
-                          [indeterminate]="selection.hasValue() && !isAllSelected()"
-                          aria-label="Select all aliases">
+            <mat-checkbox
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()"
+              aria-label="Select all aliases"
+            >
             </mat-checkbox>
           </th>
           <td *matCellDef="let row" class="col-select" mat-cell>
-            <mat-checkbox (change)="$event ? selection.toggle(row.id) : null" (click)="$event.stopPropagation()"
-                          [checked]="selection.isSelected(row.id)">
+            <mat-checkbox
+              (change)="$event ? selection.toggle(row.id) : null"
+              (click)="$event.stopPropagation()"
+              [checked]="selection.isSelected(row.id)"
+            >
             </mat-checkbox>
           </td>
         </ng-container>
@@ -87,8 +97,13 @@
           <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
           <td *matCellDef="let endpoint" class="mgw-col-actions" mat-cell>
             <div class="mgw-row-actions">
-              <button (click)="deleteEndpoint(endpoint.id)" [disabled]="endpoint.type == 1" class="danger-icon"
-                      mat-icon-button matTooltip="Delete alias">
+              <button
+                (click)="deleteEndpoint(endpoint.id)"
+                [disabled]="endpoint.type == 1"
+                class="danger-icon"
+                mat-icon-button
+                matTooltip="Delete alias"
+              >
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
@@ -96,7 +111,7 @@
         </ng-container>
 
         <tr *matHeaderRowDef="displayColumnsAlias; sticky: true" mat-header-row></tr>
-        <tr *matRowDef="let m; columns: displayColumnsAlias;" mat-row></tr>
+        <tr *matRowDef="let m; columns: displayColumnsAlias" mat-row></tr>
       </table>
     </div>
   </div>

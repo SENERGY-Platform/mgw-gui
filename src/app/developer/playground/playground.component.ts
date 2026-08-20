@@ -53,9 +53,18 @@ const RESTRICTED_PREFIX = '/restricted/';
   templateUrl: './playground.component.html',
   styleUrls: ['./playground.component.css'],
   imports: [
-    FormsModule, MatIcon, MatButton, MatIconButton, MatTooltip, MatFormField, MatInput,
-    SpinnerComponent, PageHeaderComponent, OperationListComponent, MethodChipComponent
-  ]
+    FormsModule,
+    MatIcon,
+    MatButton,
+    MatIconButton,
+    MatTooltip,
+    MatFormField,
+    MatInput,
+    SpinnerComponent,
+    PageHeaderComponent,
+    OperationListComponent,
+    MethodChipComponent,
+  ],
 })
 export class PlaygroundComponent implements OnInit {
   api?: ApiEntry;
@@ -80,12 +89,11 @@ export class PlaygroundComponent implements OnInit {
     private route: ActivatedRoute,
     private swaggerService: SwaggerService,
     private errorService: ErrorService,
-    private utilService: UtilService
-  ) {
-  }
+    private utilService: UtilService,
+  ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.api = findApi(params['scope'], params['service']);
       this.reset();
       if (!this.api) {
@@ -142,9 +150,9 @@ export class PlaygroundComponent implements OnInit {
     if (!this.selected || !this.api?.requestBase || this.sending || !this.canSend()) {
       return;
     }
-    const missing = this.pathFields.filter(field => field.value.trim() === '');
+    const missing = this.pathFields.filter((field) => field.value.trim() === '');
     if (missing.length > 0) {
-      this.loadError = 'Fill in the path parameters first: ' + missing.map(f => f.parameter.name).join(', ');
+      this.loadError = 'Fill in the path parameters first: ' + missing.map((f) => f.parameter.name).join(', ');
       return;
     }
     this.loadError = '';
@@ -153,37 +161,43 @@ export class PlaygroundComponent implements OnInit {
     const confirmation = SAFE_METHODS.includes(method)
       ? of(true)
       : this.utilService.askForConfirmation(
-        method + ' ' + this.displayUrl() + '\n\nThis runs against the gateway for real and can change or delete data.');
+          method +
+            ' ' +
+            this.displayUrl() +
+            '\n\nThis runs against the gateway for real and can change or delete data.',
+        );
 
-    confirmation.pipe(
-      concatMap(confirmed => {
-        if (!confirmed) {
-          return of(null);
-        }
-        this.sending = true;
-        this.result = undefined;
-        return this.swaggerService.execute({
-          method: method,
-          url: this.resolvedUrl(),
-          headers: this.toRecord(this.headerFields),
-          query: this.toRecord(this.queryFields),
-          body: this.hasBody && this.bodyField.trim() !== '' ? this.bodyField : undefined,
-        });
-      })
-    ).subscribe({
-      next: (result) => {
-        this.sending = false;
-        if (result) {
-          this.result = result;
-          // with many parameters the response card starts below the fold
-          setTimeout(() => document.getElementById('playground-response')?.scrollIntoView({block: 'nearest'}), 0);
-        }
-      },
-      error: (err) => {
-        this.sending = false;
-        this.errorService.handleError(PlaygroundComponent.name, 'send', err, 'The request could not be sent');
-      }
-    });
+    confirmation
+      .pipe(
+        concatMap((confirmed) => {
+          if (!confirmed) {
+            return of(null);
+          }
+          this.sending = true;
+          this.result = undefined;
+          return this.swaggerService.execute({
+            method: method,
+            url: this.resolvedUrl(),
+            headers: this.toRecord(this.headerFields),
+            query: this.toRecord(this.queryFields),
+            body: this.hasBody && this.bodyField.trim() !== '' ? this.bodyField : undefined,
+          });
+        }),
+      )
+      .subscribe({
+        next: (result) => {
+          this.sending = false;
+          if (result) {
+            this.result = result;
+            // with many parameters the response card starts below the fold
+            setTimeout(() => document.getElementById('playground-response')?.scrollIntoView({block: 'nearest'}), 0);
+          }
+        },
+        error: (err) => {
+          this.sending = false;
+          this.errorService.handleError(PlaygroundComponent.name, 'send', err, 'The request could not be sent');
+        },
+      });
   }
 
   formatBody(): string {
@@ -211,7 +225,7 @@ export class PlaygroundComponent implements OnInit {
     return this.result.ok ? 'ok' : 'danger';
   }
 
-  responseHeaders(): { key: string, value: string }[] {
+  responseHeaders(): {key: string; value: string}[] {
     return Object.entries(this.result?.headers || {}).map(([key, value]) => ({key, value}));
   }
 
@@ -237,7 +251,7 @@ export class PlaygroundComponent implements OnInit {
       error: (_) => {
         this.loadError = 'The API description could not be loaded from ' + specUrl(api) + '.';
         this.ready = true;
-      }
+      },
     });
   }
 
@@ -256,12 +270,14 @@ export class PlaygroundComponent implements OnInit {
       return [];
     }
     const term = this.filter.trim().toLowerCase();
-    const operations = flattenOperations(this.doc).filter(operation =>
-      !term || (operation.path + ' ' + operation.method + ' ' + operation.summary).toLowerCase().includes(term));
+    const operations = flattenOperations(this.doc).filter(
+      (operation) =>
+        !term || (operation.path + ' ' + operation.method + ' ' + operation.summary).toLowerCase().includes(term),
+    );
 
     const groups: OperationGroup[] = [];
     for (const operation of operations) {
-      let group = groups.find(g => g.tag === operation.tag);
+      let group = groups.find((g) => g.tag === operation.tag);
       if (!group) {
         group = {tag: operation.tag, operations: []};
         groups.push(group);
@@ -269,7 +285,9 @@ export class PlaygroundComponent implements OnInit {
       group.operations.push(operation);
     }
     groups.sort((a, b) => a.tag.localeCompare(b.tag));
-    groups.forEach(group => group.operations.sort((a, b) => a.path.localeCompare(b.path) || a.method.localeCompare(b.method)));
+    groups.forEach((group) =>
+      group.operations.sort((a, b) => a.path.localeCompare(b.path) || a.method.localeCompare(b.method)),
+    );
     return groups;
   }
 
@@ -281,7 +299,10 @@ export class PlaygroundComponent implements OnInit {
     this.hasBody = false;
 
     for (const parameter of operation.parameters) {
-      const field: ParamField = {parameter: parameter, value: parameter.default !== undefined ? String(parameter.default) : ''};
+      const field: ParamField = {
+        parameter: parameter,
+        value: parameter.default !== undefined ? String(parameter.default) : '',
+      };
       switch (parameter.in) {
         case 'path':
           this.pathFields.push(field);
@@ -307,16 +328,18 @@ export class PlaygroundComponent implements OnInit {
     let resolved = path;
     for (const field of this.pathFields) {
       const value = field.value.trim();
-      resolved = resolved.replace('{' + field.parameter.name + '}',
-        value === '' ? '{' + field.parameter.name + '}' : encodeURIComponent(value));
+      resolved = resolved.replace(
+        '{' + field.parameter.name + '}',
+        value === '' ? '{' + field.parameter.name + '}' : encodeURIComponent(value),
+      );
     }
     return resolved;
   }
 
   private queryString(): string {
     const pairs = this.queryFields
-      .filter(field => field.value.trim() !== '')
-      .map(field => encodeURIComponent(field.parameter.name) + '=' + encodeURIComponent(field.value.trim()));
+      .filter((field) => field.value.trim() !== '')
+      .map((field) => encodeURIComponent(field.parameter.name) + '=' + encodeURIComponent(field.value.trim()));
     return pairs.length ? '?' + pairs.join('&') : '';
   }
 

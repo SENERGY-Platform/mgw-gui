@@ -17,8 +17,9 @@
 <spinner [show]="!ready"></spinner>
 
 @if (ready && dataSource.data.length === 0) {
-  <p class="empty">No auxiliary deployments. Modules spawn and manage them on their own; the UI only shows
-    their state.</p>
+  <p class="empty">
+    No auxiliary deployments. Modules spawn and manage them on their own; the UI only shows their state.
+  </p>
 }
 
 @if (ready && dataSource.data.length > 0) {
@@ -27,8 +28,11 @@
       <ng-container matColumnDef="status">
         <th *matHeaderCellDef mat-header-cell>Status</th>
         <td *matCellDef="let aux" mat-cell>
-          <mgw-status-pill [label]="statusLabel(aux)" [tone]="statusTone(aux)"
-                           [matTooltip]="statusDetail(aux)"></mgw-status-pill>
+          <mgw-status-pill
+            [label]="statusLabel(aux)"
+            [tone]="statusTone(aux)"
+            [matTooltip]="statusDetail(aux)"
+          ></mgw-status-pill>
         </td>
       </ng-container>
       <ng-container matColumnDef="name">
@@ -48,7 +52,7 @@
         <td *matCellDef="let aux" mat-cell>{{ aux.updated | date: 'short' }}</td>
       </ng-container>
       <tr *matHeaderRowDef="displayColumns" mat-header-row></tr>
-      <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+      <tr *matRowDef="let m; columns: displayColumns" mat-row></tr>
     </table>
   </div>
 }

@@ -1,14 +1,16 @@
 <div class="mgw-page mgw-page-narrow has-action-bar">
-  <mgw-page-header backTo="/resources/endpoints"
-                   description="Give a generated endpoint a shorter URL. The alias is served under /endpoints/alias/."
-                   title="Add endpoint alias"></mgw-page-header>
+  <mgw-page-header
+    backTo="/resources/endpoints"
+    description="Give a generated endpoint a shorter URL. The alias is served under /endpoints/alias/."
+    title="Add endpoint alias"
+  ></mgw-page-header>
 
   <div [formGroup]="form" class="mgw-card card">
     <div class="field">
       <label for="alias-path">Path</label>
       <p class="desc">The part after /endpoints/alias/, for example <code>dashboard</code>.</p>
       <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-        <input formControlName="path" id="alias-path" matInput type="text">
+        <input formControlName="path" id="alias-path" matInput type="text" />
       </mat-form-field>
     </div>
   </div>

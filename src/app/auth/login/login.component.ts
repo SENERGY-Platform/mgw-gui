@@ -10,28 +10,28 @@ import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css'],
-    imports: [SpinnerComponent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, MatIcon]
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
+  imports: [SpinnerComponent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, MatIcon],
 })
 export class LoginComponent {
-  flowID: string = "";
-  csrf: string = "";
+  flowID: string = '';
+  csrf: string = '';
   waitingForLogin = false;
-  returnTo: string = "";
+  returnTo: string = '';
 
   form = new FormGroup({
     username: new FormControl('', {nonNullable: true, validators: Validators.required}),
     password: new FormControl('', {nonNullable: true, validators: Validators.required}),
-  })
+  });
 
   constructor(
     private authService: AuthService,
     private route: ActivatedRoute,
-    private errorService: ErrorService
+    private errorService: ErrorService,
   ) {
-    this.returnTo = getReturnTo(this.route.snapshot.queryParamMap.get('return_to'), "/core/web-ui")
+    this.returnTo = getReturnTo(this.route.snapshot.queryParamMap.get('return_to'), '/core/web-ui');
   }
 
   login() {
@@ -44,22 +44,24 @@ export class LoginComponent {
       next: (resp: any) => {
         this.flowID = resp.id;
         this.csrf = resp.ui.nodes[0].attributes.value;
-        this.authService.login(this.flowID, this.form.controls.username.value, this.form.controls.password.value, this.csrf).subscribe({
-          next: (_) => {
-            this.waitingForLogin = false;
-            window.location.href = this.returnTo;
-          },
-          error: (err) => {
-            this.waitingForLogin = false;
-            this.errorService.handleError("LoginComponent", "login", err);
-          }
-        });
+        this.authService
+          .login(this.flowID, this.form.controls.username.value, this.form.controls.password.value, this.csrf)
+          .subscribe({
+            next: (_) => {
+              this.waitingForLogin = false;
+              window.location.href = this.returnTo;
+            },
+            error: (err) => {
+              this.waitingForLogin = false;
+              this.errorService.handleError('LoginComponent', 'login', err);
+            },
+          });
       },
       error: (err) => {
         this.waitingForLogin = false;
-        this.errorService.handleError("LoginComponent", "login", err);
-      }
-    })
+        this.errorService.handleError('LoginComponent', 'login', err);
+      },
+    });
   }
 }
 
@@ -70,11 +72,11 @@ function getReturnTo(v: string | null, def: string): string {
     try {
       v = decodeURIComponent(v);
       if (returnToRegex.test(v)) {
-        return v
+        return v;
       }
     } catch (err) {
       console.log(err);
     }
   }
-  return def
+  return def;
 }

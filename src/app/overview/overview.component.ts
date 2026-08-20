@@ -25,7 +25,7 @@ import {
   DEPLOYMENT_STATE_HEALTHY,
   DEPLOYMENT_STATE_UNHEALTHY,
   ModuleReduced,
-  needsDeploymentUpdate
+  needsDeploymentUpdate,
 } from '../core/models/modules';
 import {Job, isJobDone} from '../core/models/jobs';
 import {CoreService} from '../system/models/services';
@@ -46,7 +46,16 @@ interface Attention {
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.css'],
-  imports: [RouterLink, MatIcon, MatButton, MatIconButton, MatTooltip, PageHeaderComponent, StatusPillComponent, SpinnerComponent]
+  imports: [
+    RouterLink,
+    MatIcon,
+    MatButton,
+    MatIconButton,
+    MatTooltip,
+    PageHeaderComponent,
+    StatusPillComponent,
+    SpinnerComponent,
+  ],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   ready = false;
@@ -66,9 +75,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
-    @Inject('CoreManagerService') private coreService: CoreManagerService
-  ) {
-  }
+    @Inject('CoreManagerService') private coreService: CoreManagerService,
+  ) {}
 
   ngOnInit(): void {
     this.load();
@@ -90,23 +98,22 @@ export class OverviewComponent implements OnInit, OnDestroy {
       },
       error: (_) => {
         this.ready = true;
-      }
+      },
     });
     this.moduleService.getAvailableUpdatesCount().subscribe({
       next: (count) => {
         this.updatesAvailable = count || 0;
         this.recount();
       },
-      error: (_) => {
-      }
+      error: (_) => {},
     });
     this.moduleService.getJobs().subscribe({
-      next: (jobs) => this.activeJobs = (jobs || []).filter(job => !isJobDone(job)),
-      error: (_) => this.activeJobs = []
+      next: (jobs) => (this.activeJobs = (jobs || []).filter((job) => !isJobDone(job))),
+      error: (_) => (this.activeJobs = []),
     });
     this.coreService.getServices().subscribe({
-      next: (services) => this.coreServices = Object.values(services || {}),
-      error: (_) => this.coreServices = []
+      next: (services) => (this.coreServices = Object.values(services || {})),
+      error: (_) => (this.coreServices = []),
     });
   }
 
@@ -144,7 +151,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           icon: 'error',
           title: module.name,
           detail: 'The deployment is running but reports an unhealthy state.',
-          route: '/modules/detail/' + encodeURIComponent(module.id)
+          route: '/modules/detail/' + encodeURIComponent(module.id),
         });
       } else {
         this.unknown++;
@@ -156,7 +163,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           icon: 'warning',
           title: module.name,
           detail: module.error_msg || module.deployment?.error_msg || 'The module was loaded with errors.',
-          route: '/modules/detail/' + encodeURIComponent(module.id)
+          route: '/modules/detail/' + encodeURIComponent(module.id),
         });
       }
 
@@ -165,9 +172,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
           tone: 'warn',
           icon: 'upgrade',
           title: module.name,
-          detail: 'Installed ' + module.version + ', deployed ' + module.deployment.module_version
-            + ' — edit the deployment to apply the change.',
-          route: '/deployments/edit/' + encodeURIComponent(module.id)
+          detail:
+            'Installed ' +
+            module.version +
+            ', deployed ' +
+            module.deployment.module_version +
+            ' — edit the deployment to apply the change.',
+          route: '/deployments/edit/' + encodeURIComponent(module.id),
         });
       }
     }
@@ -178,7 +189,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         icon: 'download',
         title: this.updatesAvailable + ' module update' + (this.updatesAvailable === 1 ? '' : 's') + ' available',
         detail: 'New versions were found in the configured repositories.',
-        route: '/modules/catalog'
+        route: '/modules/catalog',
       });
     }
 

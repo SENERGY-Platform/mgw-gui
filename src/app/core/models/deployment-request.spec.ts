@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  decodeFileData,
-  encodeFileData,
-  ModuleConfigValue,
-  parseModuleConfigValue
-} from './deployment-request';
+import {decodeFileData, encodeFileData, ModuleConfigValue, parseModuleConfigValue} from './deployment-request';
 
 function config(overrides: Partial<ModuleConfigValue> = {}): ModuleConfigValue {
   return {

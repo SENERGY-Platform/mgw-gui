@@ -1,5 +1,5 @@
-import {ContainerInfo} from "src/app/container/models/container";
-import {Configs, Labels, Volumes} from "src/app/core/models/base";
+import {ContainerInfo} from 'src/app/container/models/container';
+import {Configs, Labels, Volumes} from 'src/app/core/models/base';
 
 export interface AuxDepRunConfig {
   command: string;

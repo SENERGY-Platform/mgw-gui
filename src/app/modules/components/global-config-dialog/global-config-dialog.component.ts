@@ -21,7 +21,7 @@ import {
   MatDialogClose,
   MatDialogContent,
   MatDialogRef,
-  MatDialogTitle
+  MatDialogTitle,
 } from '@angular/material/dialog';
 
 import {FormsModule} from '@angular/forms';
@@ -38,70 +38,84 @@ import {
   formatConfigValue,
   GlobalConfig,
   GlobalConfigInput,
-  parseConfigValue
+  parseConfigValue,
 } from 'src/app/core/models/global-configs';
 
 // Create or edit a global config. The input field adapts to the selected
 // data type; the value is sent with the matching JSON type. Closes with a
 // GlobalConfigInput or undefined when cancelled.
 @Component({
-    selector: 'global-config-dialog',
-    templateUrl: './global-config-dialog.component.html',
-    styleUrls: ['./global-config-dialog.component.css'],
-    imports: [FormsModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatCheckbox, MatFormField, MatLabel, MatHint, MatInput, MatSelect, MatOption]
+  selector: 'global-config-dialog',
+  templateUrl: './global-config-dialog.component.html',
+  styleUrls: ['./global-config-dialog.component.css'],
+  imports: [
+    FormsModule,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatButton,
+    MatCheckbox,
+    MatFormField,
+    MatLabel,
+    MatHint,
+    MatInput,
+    MatSelect,
+    MatOption,
+  ],
 })
 export class GlobalConfigDialogComponent {
-  DATA_TYPE_STRING = DATA_TYPE_STRING
-  DATA_TYPE_INT = DATA_TYPE_INT
-  DATA_TYPE_FLOAT = DATA_TYPE_FLOAT
-  DATA_TYPE_BOOL = DATA_TYPE_BOOL
+  DATA_TYPE_STRING = DATA_TYPE_STRING;
+  DATA_TYPE_INT = DATA_TYPE_INT;
+  DATA_TYPE_FLOAT = DATA_TYPE_FLOAT;
+  DATA_TYPE_BOOL = DATA_TYPE_BOOL;
 
-  isEdit: boolean = false
-  name: string = ''
-  dataType: number = DATA_TYPE_STRING
-  isSlice: boolean = false
-  rawValue: string = ''
-  boolValue: string = 'true'
-  error: string = ''
+  isEdit: boolean = false;
+  name: string = '';
+  dataType: number = DATA_TYPE_STRING;
+  isSlice: boolean = false;
+  rawValue: string = '';
+  boolValue: string = 'true';
+  error: string = '';
 
   constructor(
     public dialogRef: MatDialogRef<GlobalConfigDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) data: any
+    @Inject(MAT_DIALOG_DATA) data: any,
   ) {
-    var config: GlobalConfig | undefined = data?.config
+    var config: GlobalConfig | undefined = data?.config;
     if (config) {
-      this.isEdit = true
-      this.name = config.name
-      this.dataType = config.data_type
-      this.isSlice = config.is_slice
+      this.isEdit = true;
+      this.name = config.name;
+      this.dataType = config.data_type;
+      this.isSlice = config.is_slice;
       if (config.data_type === DATA_TYPE_BOOL && !config.is_slice) {
-        this.boolValue = String(config.value)
+        this.boolValue = String(config.value);
       } else {
-        this.rawValue = formatConfigValue(config)
+        this.rawValue = formatConfigValue(config);
       }
     }
   }
 
   save() {
-    this.error = ''
+    this.error = '';
     if (!this.name.trim()) {
-      this.error = "Name is required"
-      return
+      this.error = 'Name is required';
+      return;
     }
-    var raw = (this.dataType === DATA_TYPE_BOOL && !this.isSlice) ? this.boolValue : this.rawValue
-    var value: any
+    var raw = this.dataType === DATA_TYPE_BOOL && !this.isSlice ? this.boolValue : this.rawValue;
+    var value: any;
     try {
-      value = parseConfigValue(this.dataType, this.isSlice, raw)
+      value = parseConfigValue(this.dataType, this.isSlice, raw);
     } catch (err: any) {
-      this.error = err.message
-      return
+      this.error = err.message;
+      return;
     }
     var input: GlobalConfigInput = {
       name: this.name.trim(),
       data_type: this.dataType,
       is_slice: this.isSlice,
-      value: value
-    }
-    this.dialogRef.close(input)
+      value: value,
+    };
+    this.dialogRef.close(input);
   }
 }

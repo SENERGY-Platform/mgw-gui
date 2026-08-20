@@ -40,8 +40,11 @@
           <div class="field-head">
             <label [attr.for]="'cfg-' + row.ref">{{ row.input.name }}</label>
             @if (row.matchingGlobals.length > 0) {
-              <mat-slide-toggle [(ngModel)]="row.useGlobal" class="global-toggle"
-                                matTooltip="Reference a global config instead of entering a value here">
+              <mat-slide-toggle
+                [(ngModel)]="row.useGlobal"
+                class="global-toggle"
+                matTooltip="Reference a global config instead of entering a value here"
+              >
                 Global config
               </mat-slide-toggle>
             }
@@ -52,8 +55,7 @@
 
           @if (row.useGlobal) {
             <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-              <mat-select [(ngModel)]="row.globalConfigId" [id]="'cfg-' + row.ref"
-                          placeholder="Select a global config">
+              <mat-select [(ngModel)]="row.globalConfigId" [id]="'cfg-' + row.ref" placeholder="Select a global config">
                 @for (gc of row.matchingGlobals; track gc.id) {
                   <mat-option [value]="gc.id">{{ gc.name }}</mat-option>
                 }
@@ -83,9 +85,13 @@
             </mat-form-field>
           } @else {
             <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-              <input [(ngModel)]="row.raw" [id]="'cfg-' + row.ref"
-                     [step]="row.config.type_opt?.['step'] || (row.config.data_type === 'int' ? 1 : 'any')"
-                     [type]="isNumeric(row) ? 'number' : 'text'" matInput>
+              <input
+                [(ngModel)]="row.raw"
+                [id]="'cfg-' + row.ref"
+                [step]="row.config.type_opt?.['step'] || (row.config.data_type === 'int' ? 1 : 'any')"
+                [type]="isNumeric(row) ? 'number' : 'text'"
+                matInput
+              />
               @if (row.config.options && row.config.options.length > 0) {
                 <mat-hint>Suggested: {{ row.config.options.join(', ') }}</mat-hint>
               }
@@ -186,8 +192,14 @@
             <p class="field-desc">{{ row.input.description }}</p>
           }
           <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-            <textarea [(ngModel)]="row.text" [id]="'file-' + row.ref" class="code" matInput rows="8"
-                      spellcheck="false"></textarea>
+            <textarea
+              [(ngModel)]="row.text"
+              [id]="'file-' + row.ref"
+              class="code"
+              matInput
+              rows="8"
+              spellcheck="false"
+            ></textarea>
           </mat-form-field>
         </div>
       }
@@ -216,10 +228,10 @@
               </div>
               <div class="group-file-meta">
                 <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                  <input [(ngModel)]="file.path" matInput placeholder="Path">
+                  <input [(ngModel)]="file.path" matInput placeholder="Path" />
                 </mat-form-field>
                 <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                  <input [(ngModel)]="file.format" matInput placeholder="Format">
+                  <input [(ngModel)]="file.format" matInput placeholder="Format" />
                 </mat-form-field>
               </div>
               <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">

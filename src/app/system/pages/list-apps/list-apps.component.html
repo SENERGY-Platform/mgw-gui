@@ -15,8 +15,10 @@
 -->
 
 <div class="mgw-page">
-  <mgw-page-header description="Devices and applications paired with this gateway. Each holds its own account."
-                   title="Applications">
+  <mgw-page-header
+    description="Devices and applications paired with this gateway. Each holds its own account."
+    title="Applications"
+  >
     <div pageActions>
       <button (click)="openPairing()" mat-flat-button>
         <mat-icon>add</mat-icon>
@@ -30,9 +32,11 @@
   @if (!ready && dataSource.data.length === 0) {
     <!-- first load: the spinner above is the only feedback -->
   } @else if (dataSource.data.length === 0) {
-    <mgw-empty-state icon="devices_other"
-                     message="Pair an application to give it its own account on this gateway."
-                     title="No applications paired">
+    <mgw-empty-state
+      icon="devices_other"
+      message="Pair an application to give it its own account on this gateway."
+      title="No applications paired"
+    >
       <button (click)="openPairing()" emptyAction mat-flat-button>Pair application</button>
     </mgw-empty-state>
   } @else {
@@ -67,7 +71,7 @@
         </ng-container>
 
         <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-        <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+        <tr *matRowDef="let m; columns: displayColumns" mat-row></tr>
       </table>
     </div>
   }

@@ -16,7 +16,10 @@
 
 import {DeploymentReduced, ModuleReduced, needsDeploymentUpdate} from './modules';
 
-function moduleReduced(overrides: Partial<ModuleReduced> = {}, deployment: Partial<DeploymentReduced> = {}): ModuleReduced {
+function moduleReduced(
+  overrides: Partial<ModuleReduced> = {},
+  deployment: Partial<DeploymentReduced> = {},
+): ModuleReduced {
   return {
     id: 'github.com/acme/mod-a',
     source: 'github.com/acme/repository',

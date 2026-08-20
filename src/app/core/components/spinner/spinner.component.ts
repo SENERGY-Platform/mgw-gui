@@ -19,14 +19,13 @@ import {Component, Input} from '@angular/core';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 
 @Component({
-    selector: 'spinner',
-    templateUrl: './spinner.component.html',
-    styleUrls: ['./spinner.component.css'],
-    imports: [MatProgressSpinner]
+  selector: 'spinner',
+  templateUrl: './spinner.component.html',
+  styleUrls: ['./spinner.component.css'],
+  imports: [MatProgressSpinner],
 })
 export class SpinnerComponent {
   @Input() show = false;
 
-  constructor() {
-  }
+  constructor() {}
 }

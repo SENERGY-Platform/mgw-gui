@@ -76,8 +76,7 @@ export class ThemeService {
       if (stored === 'light' || stored === 'dark' || stored === 'system') {
         return stored;
       }
-    } catch (_) {
-    }
+    } catch (_) {}
     return 'system';
   }
 

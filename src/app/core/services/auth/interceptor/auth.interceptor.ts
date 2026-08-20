@@ -5,24 +5,22 @@ import {environment} from 'src/environments/environment';
 
 @Injectable()
 export class AuthCheckInterceptor implements HttpInterceptor {
-
-  constructor() {
-  }
+  constructor() {}
 
   intercept(httpRequest: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(httpRequest).pipe(
-      map(event => {
+      map((event) => {
         return event;
       }),
-      catchError(err => {
-        console.log("ERRR")
+      catchError((err) => {
+        console.log('ERRR');
         if (err instanceof HttpErrorResponse) {
           if (err.status === 401) {
-            window.location.href = environment.uiBaseUrl + "/login"
+            window.location.href = environment.uiBaseUrl + '/login';
           }
         }
         return throwError(() => err);
-      })
-    )
+      }),
+    );
   }
 }

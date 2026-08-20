@@ -28,7 +28,7 @@ import {
   MatRow,
   MatRowDef,
   MatTable,
-  MatTableDataSource
+  MatTableDataSource,
 } from '@angular/material/table';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
@@ -41,112 +41,143 @@ import {PageHeaderComponent} from 'src/app/core/components/page-header/page-head
 import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatIcon} from '@angular/material/icon';
-import {
-  DATA_TYPE_LABELS,
-  formatConfigValue,
-  GlobalConfig,
-  GlobalConfigInput
-} from 'src/app/core/models/global-configs';
+import {DATA_TYPE_LABELS, formatConfigValue, GlobalConfig, GlobalConfigInput} from 'src/app/core/models/global-configs';
 import {GlobalConfigDialogComponent} from '../../components/global-config-dialog/global-config-dialog.component';
 
 @Component({
-    selector: 'global-configs',
-    templateUrl: './global-configs.component.html',
-    styleUrls: ['./global-configs.component.css'],
-    imports: [SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, PageHeaderComponent, EmptyStateComponent]
+  selector: 'global-configs',
+  templateUrl: './global-configs.component.html',
+  styleUrls: ['./global-configs.component.css'],
+  imports: [
+    SpinnerComponent,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatSortHeader,
+    MatCellDef,
+    MatCell,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatButton,
+    PageHeaderComponent,
+    EmptyStateComponent,
+  ],
 })
 export class GlobalConfigsComponent implements OnInit {
   dataSource = new MatTableDataSource<GlobalConfig>();
   ready: Boolean = false;
   init: Boolean = true;
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['name', 'type', 'value', 'actions']
+  displayColumns = ['name', 'type', 'value', 'actions'];
 
   constructor(
     public dialog: MatDialog,
-    @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
+    @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
     private errorService: ErrorService,
-    private utilService: UtilService
-  ) {
-  }
+    private utilService: UtilService,
+  ) {}
 
   ngOnInit(): void {
-    this.load()
-    this.init = false
+    this.load();
+    this.init = false;
   }
 
   ngAfterViewInit(): void {
     this.dataSource.sortingDataAccessor = (row: GlobalConfig, sortHeaderId: string) => {
       var value = (<any>row)[sortHeaderId];
-      value = (typeof (value) === 'string') ? value.toUpperCase() : value;
-      return value
+      value = typeof value === 'string' ? value.toUpperCase() : value;
+      return value;
     };
     this.dataSource.sort = this.sort;
   }
 
   load() {
-    this.ready = false
+    this.ready = false;
     this.moduleService.getGlobalConfigs().subscribe({
       next: (configs) => {
-        this.dataSource.data = Object.values(configs || {})
-        this.ready = true
+        this.dataSource.data = Object.values(configs || {});
+        this.ready = true;
       },
       error: (err) => {
-        this.errorService.handleError(GlobalConfigsComponent.name, "load", err, "Loading the global configs failed")
-        this.ready = true
-      }
-    })
+        this.errorService.handleError(GlobalConfigsComponent.name, 'load', err, 'Loading the global configs failed');
+        this.ready = true;
+      },
+    });
   }
 
   typeLabel(config: GlobalConfig): string {
-    var label = DATA_TYPE_LABELS[config.data_type] || "unknown"
-    return config.is_slice ? label + " list" : label
+    var label = DATA_TYPE_LABELS[config.data_type] || 'unknown';
+    return config.is_slice ? label + ' list' : label;
   }
 
   valuePreview(config: GlobalConfig): string {
-    var value = formatConfigValue(config).replace(/\n/g, ", ")
-    return value.length > 60 ? value.slice(0, 60) + "…" : value
+    var value = formatConfigValue(config).replace(/\n/g, ', ');
+    return value.length > 60 ? value.slice(0, 60) + '…' : value;
   }
 
   add() {
-    this.dialog.open(GlobalConfigDialogComponent, {data: {}}).afterClosed().subscribe((input: GlobalConfigInput | undefined) => {
-      if (!input) {
-        return
-      }
-      this.moduleService.createGlobalConfig(input).subscribe({
-        next: (_) => this.load(),
-        error: (err) => this.errorService.handleError(GlobalConfigsComponent.name, "add", err, "Creating the global config failed")
-      })
-    })
+    this.dialog
+      .open(GlobalConfigDialogComponent, {data: {}})
+      .afterClosed()
+      .subscribe((input: GlobalConfigInput | undefined) => {
+        if (!input) {
+          return;
+        }
+        this.moduleService.createGlobalConfig(input).subscribe({
+          next: (_) => this.load(),
+          error: (err) =>
+            this.errorService.handleError(GlobalConfigsComponent.name, 'add', err, 'Creating the global config failed'),
+        });
+      });
   }
 
   edit(config: GlobalConfig) {
-    this.dialog.open(GlobalConfigDialogComponent, {data: {config: config}}).afterClosed().subscribe((input: GlobalConfigInput | undefined) => {
-      if (!input) {
-        return
-      }
-      this.moduleService.updateGlobalConfig(config.id, input).subscribe({
-        next: (_) => this.load(),
-        error: (err) => this.errorService.handleError(GlobalConfigsComponent.name, "edit", err, "Saving the global config failed")
-      })
-    })
+    this.dialog
+      .open(GlobalConfigDialogComponent, {data: {config: config}})
+      .afterClosed()
+      .subscribe((input: GlobalConfigInput | undefined) => {
+        if (!input) {
+          return;
+        }
+        this.moduleService.updateGlobalConfig(config.id, input).subscribe({
+          next: (_) => this.load(),
+          error: (err) =>
+            this.errorService.handleError(GlobalConfigsComponent.name, 'edit', err, 'Saving the global config failed'),
+        });
+      });
   }
 
   delete(config: GlobalConfig) {
-    this.utilService.askForConfirmation("Delete global config '" + config.name + "'? Deployments referencing it will lose the value.").pipe(
-      concatMap(confirmed => {
-        if (!confirmed) {
-          return of(null)
-        }
-        return this.moduleService.deleteGlobalConfig(config.id)
-      })
-    ).subscribe({
-      next: (result) => {
-        if (result !== null) {
-          this.load()
-        }
-      },
-      error: (err) => this.errorService.handleError(GlobalConfigsComponent.name, "delete", err, "Deleting the global config failed")
-    })
+    this.utilService
+      .askForConfirmation("Delete global config '" + config.name + "'? Deployments referencing it will lose the value.")
+      .pipe(
+        concatMap((confirmed) => {
+          if (!confirmed) {
+            return of(null);
+          }
+          return this.moduleService.deleteGlobalConfig(config.id);
+        }),
+      )
+      .subscribe({
+        next: (result) => {
+          if (result !== null) {
+            this.load();
+          }
+        },
+        error: (err) =>
+          this.errorService.handleError(
+            GlobalConfigsComponent.name,
+            'delete',
+            err,
+            'Deleting the global config failed',
+          ),
+      });
   }
 }

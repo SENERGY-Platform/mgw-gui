@@ -15,8 +15,10 @@
 -->
 
 <div class="mgw-page">
-  <mgw-page-header description="Sources the gateway fetches installable modules from. A higher priority wins when the same module is offered more than once."
-                   title="Repositories">
+  <mgw-page-header
+    description="Sources the gateway fetches installable modules from. A higher priority wins when the same module is offered more than once."
+    title="Repositories"
+  >
     <div pageActions>
       <button (click)="add()" mat-flat-button>
         <mat-icon>add</mat-icon>
@@ -30,9 +32,11 @@
   @if (!ready && dataSource.data.length === 0) {
     <!-- first load: the spinner above is the only feedback -->
   } @else if (dataSource.data.length === 0) {
-    <mgw-empty-state icon="cloud_download"
-                     message="Without a repository the catalog stays empty. Add a GitHub repository to make modules installable."
-                     title="No repositories configured">
+    <mgw-empty-state
+      icon="cloud_download"
+      message="Without a repository the catalog stays empty. Add a GitHub repository to make modules installable."
+      title="No repositories configured"
+    >
       <button (click)="add()" emptyAction mat-flat-button>Add repository</button>
     </mgw-empty-state>
   } @else {
@@ -74,8 +78,7 @@
                   built in
                 </span>
               } @else {
-                <button (click)="delete(repository)" class="danger-icon" mat-icon-button
-                        matTooltip="Delete repository">
+                <button (click)="delete(repository)" class="danger-icon" mat-icon-button matTooltip="Delete repository">
                   <mat-icon>delete</mat-icon>
                 </button>
               }
@@ -84,7 +87,7 @@
         </ng-container>
 
         <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-        <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+        <tr *matRowDef="let m; columns: displayColumns" mat-row></tr>
       </table>
     </div>
   }

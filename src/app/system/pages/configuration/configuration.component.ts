@@ -1,20 +1,13 @@
-import { Component } from '@angular/core';
-import {HostApplicationsComponent} from "./host-applications/host-applications.component";
-import {HostNetItfBlacklistComponent} from "./host-net-itf-blacklist/host-net-itf-blacklist.component";
-import {HostNetRngBlacklistComponent} from "./host-net-rng-blacklist/host-net-rng-blacklist.component";
-import {PageHeaderComponent} from "../../../core/components/page-header/page-header.component";
+import {Component} from '@angular/core';
+import {HostApplicationsComponent} from './host-applications/host-applications.component';
+import {HostNetItfBlacklistComponent} from './host-net-itf-blacklist/host-net-itf-blacklist.component';
+import {HostNetRngBlacklistComponent} from './host-net-rng-blacklist/host-net-rng-blacklist.component';
+import {PageHeaderComponent} from '../../../core/components/page-header/page-header.component';
 
 @Component({
-    selector: 'app-configuration',
-    imports: [
-        HostApplicationsComponent,
-        HostNetItfBlacklistComponent,
-        HostNetRngBlacklistComponent,
-        PageHeaderComponent
-    ],
-    templateUrl: './configuration.component.html',
-    styleUrl: './configuration.component.css'
+  selector: 'app-configuration',
+  imports: [HostApplicationsComponent, HostNetItfBlacklistComponent, HostNetRngBlacklistComponent, PageHeaderComponent],
+  templateUrl: './configuration.component.html',
+  styleUrl: './configuration.component.css',
 })
-export class ConfigurationComponent {
-
-}
+export class ConfigurationComponent {}

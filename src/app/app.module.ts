@@ -17,7 +17,8 @@ import {CoreServicesModule} from './system/core-services.module';
 import {AuthModule} from './auth/auth.module';
 import {AuthCheckInterceptor} from './core/services/auth/interceptor/auth.interceptor';
 
-@NgModule(/* TODO(standalone-migration): clean up removed NgModule class manually.
+@NgModule(
+  /* TODO(standalone-migration): clean up removed NgModule class manually.
 { declarations: [
         AppComponent
     ],
@@ -73,9 +74,10 @@ import {AuthCheckInterceptor} from './core/services/auth/interceptor/auth.interc
             }
         },
         provideHttpClient(withInterceptorsFromDi())
-    ] } */)
+    ] } */
+)
 export class AppModule {
   constructor() {
-    registerLocaleData(localeDe)
+    registerLocaleData(localeDe);
   }
 }

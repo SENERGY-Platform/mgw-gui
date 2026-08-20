@@ -35,16 +35,16 @@ const routes: Routes = [
   {path: 'overview', component: OverviewComponent},
   ...legacyRedirects,
   {
-    path: 'developer', children: [
+    path: 'developer',
+    children: [
       {path: '', component: DeveloperComponent},
       {path: ':scope/:service', component: PlaygroundComponent},
-    ]
+    ],
   },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

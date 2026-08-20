@@ -11,51 +11,54 @@ import {MatButton} from '@angular/material/button';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 
 @Component({
-    selector: 'app-add-endpoint',
-    templateUrl: './add-endpoint.component.html',
-    styleUrls: ['./add-endpoint.component.css'],
-    imports: [FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatButton, RouterLink, PageHeaderComponent]
+  selector: 'app-add-endpoint',
+  templateUrl: './add-endpoint.component.html',
+  styleUrls: ['./add-endpoint.component.css'],
+  imports: [FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatButton, RouterLink, PageHeaderComponent],
 })
 export class AddEndpointComponent {
   form = new FormGroup({
     parent_id: new FormControl('', {nonNullable: true, validators: Validators.required}),
     path: new FormControl('', {nonNullable: true, validators: Validators.required}),
-  })
+  });
 
   constructor(
     private coreService: CoreManagerService,
     private utilsService: UtilService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {
-    this.route.params.subscribe(params => {
-      this.form.controls.parent_id.patchValue(params['id'])
-    })
+    this.route.params.subscribe((params) => {
+      this.form.controls.parent_id.patchValue(params['id']);
+    });
   }
 
   add() {
     const endpointReq: CoreEndpointAliasReq = {
       parent_id: this.form.controls.parent_id.value,
-      path: this.form.controls.path.value
-    }
-    this.coreService.createEndpointAlias(endpointReq).pipe(
-      concatMap((jobID: string) => {
-        const message = 'Create endpoint'
-        return this.utilsService.checkJobStatus(jobID, message, "core-manager")
-      }),
-      concatMap(result => {
-        if (!result.success) {
-          return throwError(() => new Error(result.error))
-        }
-        return of(true)
-      })
-    ).subscribe({
-      next: (_) => {
-        this.router.navigate(["/resources/endpoints"])
-      },
-      error: (_) => {
-        this.router.navigate(["/resources/endpoints"])
-      }
-    })
+      path: this.form.controls.path.value,
+    };
+    this.coreService
+      .createEndpointAlias(endpointReq)
+      .pipe(
+        concatMap((jobID: string) => {
+          const message = 'Create endpoint';
+          return this.utilsService.checkJobStatus(jobID, message, 'core-manager');
+        }),
+        concatMap((result) => {
+          if (!result.success) {
+            return throwError(() => new Error(result.error));
+          }
+          return of(true);
+        }),
+      )
+      .subscribe({
+        next: (_) => {
+          this.router.navigate(['/resources/endpoints']);
+        },
+        error: (_) => {
+          this.router.navigate(['/resources/endpoints']);
+        },
+      });
   }
 }

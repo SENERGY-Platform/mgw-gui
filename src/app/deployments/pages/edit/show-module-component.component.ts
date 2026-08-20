@@ -40,34 +40,43 @@ import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
 // embedded deployment and submitted via PUT /deployments. Also applies a
 // pending module update to the deployment (deployed version lags installed).
 @Component({
-    selector: 'edit-deployment',
-    templateUrl: './show-module-component.component.html',
-    styleUrls: ['./show-module-component.component.css'],
-    imports: [SpinnerComponent, MatButton, MatIcon, RouterLink, PageHeaderComponent, EmptyStateComponent, DeploymentFormComponent]
+  selector: 'edit-deployment',
+  templateUrl: './show-module-component.component.html',
+  styleUrls: ['./show-module-component.component.css'],
+  imports: [
+    SpinnerComponent,
+    MatButton,
+    MatIcon,
+    RouterLink,
+    PageHeaderComponent,
+    EmptyStateComponent,
+    DeploymentFormComponent,
+  ],
 })
 export class ShowModuleComponentComponent implements OnInit {
-  modules: DeploymentRequestModule[] = []
-  hostResources: HostResource[] = []
-  secrets: Secret[] = []
-  globalConfigs: GlobalConfig[] = []
-  ready: boolean = false
-  submitting: boolean = false
-  @ViewChildren(DeploymentFormComponent) forms!: QueryList<DeploymentFormComponent>
+  modules: DeploymentRequestModule[] = [];
+  hostResources: HostResource[] = [];
+  secrets: Secret[] = [];
+  globalConfigs: GlobalConfig[] = [];
+  ready: boolean = false;
+  submitting: boolean = false;
+  @ViewChildren(DeploymentFormComponent) forms!: QueryList<DeploymentFormComponent>;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
-    @Inject("HostManagerService") private hostService: HostManagerService,
-    @Inject("SecretManagerService") private secretService: SecretManagerServiceService,
+    @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
+    @Inject('HostManagerService') private hostService: HostManagerService,
+    @Inject('SecretManagerService') private secretService: SecretManagerServiceService,
     private errorService: ErrorService,
     private utilService: UtilService,
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     // one or more module IDs, each URI-encoded, joined by commas (batch edit)
-    var moduleIDs = String(this.route.snapshot.params['ids']).split(',').map(id => decodeURIComponent(id))
+    var moduleIDs = String(this.route.snapshot.params['ids'])
+      .split(',')
+      .map((id) => decodeURIComponent(id));
     forkJoin({
       modules: this.moduleService.loadModulesFull(moduleIDs),
       hostResources: this.hostService.getHostResources().pipe(catchError(() => of(<HostResource[]>[]))),
@@ -78,54 +87,73 @@ export class ShowModuleComponentComponent implements OnInit {
         // only deployed modules can be edited; the list endpoint currently
         // reports is_deployed=false despite embedding the deployment, so a
         // populated deployment ID counts as deployed too
-        this.modules = (result.modules || []).filter(module => module.is_deployed || !!module.deployment?.id)
-        this.hostResources = result.hostResources || []
-        this.secrets = result.secrets || []
-        this.globalConfigs = Object.values(result.globalConfigs || {})
-        this.ready = true
+        this.modules = (result.modules || []).filter((module) => module.is_deployed || !!module.deployment?.id);
+        this.hostResources = result.hostResources || [];
+        this.secrets = result.secrets || [];
+        this.globalConfigs = Object.values(result.globalConfigs || {});
+        this.ready = true;
       },
       error: (err) => {
-        this.errorService.handleError(ShowModuleComponentComponent.name, "ngOnInit", err, "Loading the deployment failed")
-        this.ready = true
-      }
-    })
+        this.errorService.handleError(
+          ShowModuleComponentComponent.name,
+          'ngOnInit',
+          err,
+          'Loading the deployment failed',
+        );
+        this.ready = true;
+      },
+    });
   }
 
   submit() {
-    var inputs = []
+    var inputs = [];
     for (const form of this.forms.toArray()) {
-      var input = form.collect()
+      var input = form.collect();
       if (!input) {
-        return // per-field errors are shown inline
+        return; // per-field errors are shown inline
       }
-      inputs.push(input)
+      inputs.push(input);
     }
     if (inputs.length === 0) {
-      this.router.navigateByUrl("/modules")
-      return
+      this.router.navigateByUrl('/modules');
+      return;
     }
-    this.submitting = true
-    this.moduleService.updateDeployments(inputs).pipe(
-      concatMap(job => this.utilService.checkJobStatus(job.id, "Updating deployment", "module-manager", "deployments-update"))
-    ).subscribe({
-      next: (jobResult) => {
-        if (jobResult?.result) {
-          this.utilService.presentJobResult("Update deployments", mapDeploymentResults(jobResult.result), "Deployment(s) updated")
-        }
-        this.router.navigateByUrl("/modules")
-      },
-      error: (err) => {
-        this.errorService.handleError(ShowModuleComponentComponent.name, "submit", err, "Updating the deployment failed")
-        this.submitting = false
-      }
-    })
+    this.submitting = true;
+    this.moduleService
+      .updateDeployments(inputs)
+      .pipe(
+        concatMap((job) =>
+          this.utilService.checkJobStatus(job.id, 'Updating deployment', 'module-manager', 'deployments-update'),
+        ),
+      )
+      .subscribe({
+        next: (jobResult) => {
+          if (jobResult?.result) {
+            this.utilService.presentJobResult(
+              'Update deployments',
+              mapDeploymentResults(jobResult.result),
+              'Deployment(s) updated',
+            );
+          }
+          this.router.navigateByUrl('/modules');
+        },
+        error: (err) => {
+          this.errorService.handleError(
+            ShowModuleComponentComponent.name,
+            'submit',
+            err,
+            'Updating the deployment failed',
+          );
+          this.submitting = false;
+        },
+      });
   }
 
   updatePending(): boolean {
-    return this.modules.some(module => module.deployment.module_version !== module.version)
+    return this.modules.some((module) => module.deployment.module_version !== module.version);
   }
 
   cancel() {
-    this.router.navigateByUrl("/modules")
+    this.router.navigateByUrl('/modules');
   }
 }

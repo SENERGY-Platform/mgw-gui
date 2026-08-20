@@ -27,7 +27,7 @@ import {
   MatRow,
   MatRowDef,
   MatTable,
-  MatTableDataSource
+  MatTableDataSource,
 } from '@angular/material/table';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
@@ -44,87 +44,127 @@ import {Repository} from 'src/app/core/models/repositories';
 import {AddRepositoryDialogComponent} from '../../components/add-repository-dialog/add-repository-dialog.component';
 
 @Component({
-    selector: 'repositories',
-    templateUrl: './repositories.component.html',
-    styleUrls: ['./repositories.component.css'],
-    imports: [SpinnerComponent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, PageHeaderComponent, EmptyStateComponent]
+  selector: 'repositories',
+  templateUrl: './repositories.component.html',
+  styleUrls: ['./repositories.component.css'],
+  imports: [
+    SpinnerComponent,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatButton,
+    PageHeaderComponent,
+    EmptyStateComponent,
+  ],
 })
 export class RepositoriesComponent implements OnInit {
   dataSource = new MatTableDataSource<Repository>();
   ready: Boolean = false;
   init: Boolean = true;
-  displayColumns = ['source', 'priority', 'channels', 'actions']
+  displayColumns = ['source', 'priority', 'channels', 'actions'];
 
   constructor(
     public dialog: MatDialog,
-    @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
+    @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
     private errorService: ErrorService,
-    private utilService: UtilService
-  ) {
-  }
+    private utilService: UtilService,
+  ) {}
 
   ngOnInit(): void {
-    this.load()
-    this.init = false
+    this.load();
+    this.init = false;
   }
 
   load() {
-    this.ready = false
+    this.ready = false;
     this.moduleService.getRepositories().subscribe({
       next: (repositories) => {
-        this.dataSource.data = repositories || []
-        this.ready = true
+        this.dataSource.data = repositories || [];
+        this.ready = true;
       },
       error: (err) => {
-        this.errorService.handleError(RepositoriesComponent.name, "load", err, "Loading the repositories failed")
-        this.ready = true
-      }
-    })
+        this.errorService.handleError(RepositoriesComponent.name, 'load', err, 'Loading the repositories failed');
+        this.ready = true;
+      },
+    });
   }
 
   channelNames(repository: Repository): string {
-    return (repository.Channels || []).map(channel => channel.Name).join(", ")
+    return (repository.Channels || []).map((channel) => channel.Name).join(', ');
   }
 
   add() {
-    this.dialog.open(AddRepositoryDialogComponent, {data: {}}).afterClosed().subscribe(result => {
-      if (!result) {
-        return
-      }
-      this.ready = false
-      this.moduleService.createRepository(result.type, result.definition).pipe(
-        // fetch the new repository's modules right away, otherwise it stays empty
-        concatMap((_) => this.moduleService.refreshRepositories()),
-        concatMap(job => this.utilService.checkJobStatus(job.id, "Fetching repository modules", "module-manager", "repositories-refresh"))
-      ).subscribe({
-        next: (_) => this.load(),
-        error: (err) => {
-          this.errorService.handleError(RepositoriesComponent.name, "add", err, "Adding the repository failed")
-          this.load()
+    this.dialog
+      .open(AddRepositoryDialogComponent, {data: {}})
+      .afterClosed()
+      .subscribe((result) => {
+        if (!result) {
+          return;
         }
-      })
-    })
+        this.ready = false;
+        this.moduleService
+          .createRepository(result.type, result.definition)
+          .pipe(
+            // fetch the new repository's modules right away, otherwise it stays empty
+            concatMap((_) => this.moduleService.refreshRepositories()),
+            concatMap((job) =>
+              this.utilService.checkJobStatus(
+                job.id,
+                'Fetching repository modules',
+                'module-manager',
+                'repositories-refresh',
+              ),
+            ),
+          )
+          .subscribe({
+            next: (_) => this.load(),
+            error: (err) => {
+              this.errorService.handleError(RepositoriesComponent.name, 'add', err, 'Adding the repository failed');
+              this.load();
+            },
+          });
+      });
   }
 
   delete(repository: Repository) {
-    if (repository.Type === "host-dir") {
-      this.errorService.handleError(RepositoriesComponent.name, "delete", new Error("The host directory repository is part of the core installation and cannot be removed."))
-      return
+    if (repository.Type === 'host-dir') {
+      this.errorService.handleError(
+        RepositoriesComponent.name,
+        'delete',
+        new Error('The host directory repository is part of the core installation and cannot be removed.'),
+      );
+      return;
     }
-    this.utilService.askForConfirmation("Delete repository '" + repository.Source + "'? Its modules can no longer be installed or updated.").pipe(
-      concatMap(confirmed => {
-        if (!confirmed) {
-          return of(null)
-        }
-        return this.moduleService.deleteRepository(repository.Source)
-      })
-    ).subscribe({
-      next: (result) => {
-        if (result !== null) {
-          this.load()
-        }
-      },
-      error: (err) => this.errorService.handleError(RepositoriesComponent.name, "delete", err, "Deleting the repository failed")
-    })
+    this.utilService
+      .askForConfirmation(
+        "Delete repository '" + repository.Source + "'? Its modules can no longer be installed or updated.",
+      )
+      .pipe(
+        concatMap((confirmed) => {
+          if (!confirmed) {
+            return of(null);
+          }
+          return this.moduleService.deleteRepository(repository.Source);
+        }),
+      )
+      .subscribe({
+        next: (result) => {
+          if (result !== null) {
+            this.load();
+          }
+        },
+        error: (err) =>
+          this.errorService.handleError(RepositoriesComponent.name, 'delete', err, 'Deleting the repository failed'),
+      });
   }
 }

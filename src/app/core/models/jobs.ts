@@ -20,7 +20,7 @@
 // the JSON tags of the Go structs.
 
 // Zero value of Go time.Time, sent while a job is still running.
-const GO_ZERO_TIME_PREFIX = "0001-01-01T00:00:00";
+const GO_ZERO_TIME_PREFIX = '0001-01-01T00:00:00';
 
 export interface Job {
   id: string;

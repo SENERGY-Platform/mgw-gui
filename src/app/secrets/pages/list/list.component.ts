@@ -11,7 +11,7 @@ import {
   MatRow,
   MatRowDef,
   MatTable,
-  MatTableDataSource
+  MatTableDataSource,
 } from '@angular/material/table';
 import {SecretManagerServiceService} from 'src/app/core/services/secret-manager/secret-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
@@ -27,26 +27,47 @@ import {RouterLink} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
-    selector: 'app-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.css'],
-    imports: [SpinnerComponent, MatTable, MatSort, MatSortHeader, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatButton, MatTooltip, RouterLink, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, PageHeaderComponent, EmptyStateComponent]
+  selector: 'app-list',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.css'],
+  imports: [
+    SpinnerComponent,
+    MatTable,
+    MatSort,
+    MatSortHeader,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatIconButton,
+    MatButton,
+    MatTooltip,
+    RouterLink,
+    MatIcon,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    PageHeaderComponent,
+    EmptyStateComponent,
+  ],
 })
 export class ListComponent {
   dataSource = new MatTableDataSource<Secret>();
   ready: Boolean = false;
   init: Boolean = true;
-  interval: any
+  interval: any;
   secretTypesDisplayNames: Record<any, string> = SecretTypesDisplayNames; // any type because elements in matCellDef are not typed
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['name', 'type', 'actions']
+  displayColumns = ['name', 'type', 'actions'];
 
   constructor(
-    @Inject("SecretManagerService") private secretService: SecretManagerServiceService,
+    @Inject('SecretManagerService') private secretService: SecretManagerServiceService,
     private errorService: ErrorService,
   ) {
-    this.loadSecrets()
-    this.init = false
+    this.loadSecrets();
+    this.init = false;
   }
 
   ngAfterViewInit(): void {
@@ -56,26 +77,26 @@ export class ListComponent {
   loadSecrets() {
     this.secretService.getSecrets().subscribe({
       next: (secrets) => {
-        this.dataSource.data = secrets
-        this.ready = true
+        this.dataSource.data = secrets;
+        this.ready = true;
       },
       error: (err) => {
-        this.errorService.handleError(ListComponent.name, "loadSecrets", err)
-        this.ready = true
-      }
-    })
+        this.errorService.handleError(ListComponent.name, 'loadSecrets', err);
+        this.ready = true;
+      },
+    });
   }
 
   delete(secretID: string) {
     this.secretService.deleteSecret(secretID).subscribe({
       next: (_) => {
-        this.ready = false
-        this.loadSecrets()
+        this.ready = false;
+        this.loadSecrets();
       },
       error: (err) => {
-        this.errorService.handleError(ListComponent.name, "delete", err)
-        this.ready = true
-      }
-    })
+        this.errorService.handleError(ListComponent.name, 'delete', err);
+        this.ready = true;
+      },
+    });
   }
 }

@@ -26,7 +26,7 @@ import {
   MatRow,
   MatRowDef,
   MatTable,
-  MatTableDataSource
+  MatTableDataSource,
 } from '@angular/material/table';
 import {MatIcon} from '@angular/material/icon';
 import {MatButton} from '@angular/material/button';
@@ -38,11 +38,24 @@ import {ApiEntry, hasPlayground, isExecutable} from '../api-registry';
 @Component({
   selector: 'app-swagger-list',
   imports: [
-    MatCell, MatCellDef, MatColumnDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef,
-    MatRow, MatRowDef, MatTable, MatIcon, MatButton, MatTooltip, RouterLink, StatusPillComponent
+    MatCell,
+    MatCellDef,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRow,
+    MatRowDef,
+    MatTable,
+    MatIcon,
+    MatButton,
+    MatTooltip,
+    RouterLink,
+    StatusPillComponent,
   ],
   templateUrl: './swagger-list.component.html',
-  styleUrl: './swagger-list.component.css'
+  styleUrl: './swagger-list.component.css',
 })
 export class SwaggerListComponent implements OnInit {
   @Input() items: ApiEntry[] = [];

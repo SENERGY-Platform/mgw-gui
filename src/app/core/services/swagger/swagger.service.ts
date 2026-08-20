@@ -48,8 +48,7 @@ export interface ApiCallResult {
  */
 @Injectable({providedIn: 'root'})
 export class SwaggerService {
-  constructor(private httpClient: HttpClient) {
-  }
+  constructor(private httpClient: HttpClient) {}
 
   loadDocument(url: string): Observable<SwaggerDocument> {
     return this.httpClient.get<SwaggerDocument>(url, {withCredentials: true});
@@ -76,17 +75,19 @@ export class SwaggerService {
     const started = performance.now();
     // responseType text: the playground shows the payload as it came in, and a
     // non-JSON error body would otherwise fail to parse and hide the status
-    return this.httpClient.request(request.method, request.url, {
-      body: request.body,
-      headers: headers,
-      params: params,
-      observe: 'response',
-      responseType: 'text',
-      withCredentials: true,
-    }).pipe(
-      map(response => this.toResult(<HttpResponse<string>>response, started)),
-      catchError(error => of(this.errorToResult(error, started)))
-    );
+    return this.httpClient
+      .request(request.method, request.url, {
+        body: request.body,
+        headers: headers,
+        params: params,
+        observe: 'response',
+        responseType: 'text',
+        withCredentials: true,
+      })
+      .pipe(
+        map((response) => this.toResult(<HttpResponse<string>>response, started)),
+        catchError((error) => of(this.errorToResult(error, started))),
+      );
   }
 
   private toResult(response: HttpResponse<string>, started: number): ApiCallResult {

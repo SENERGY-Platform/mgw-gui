@@ -20,7 +20,7 @@ import {
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
-  MatDialogTitle
+  MatDialogTitle,
 } from '@angular/material/dialog';
 
 import {MatButton} from '@angular/material/button';
@@ -30,21 +30,21 @@ import {JobResultItem} from 'src/app/core/models/job-result-view';
 // Presents the outcome of a job per item: what succeeded, what failed with
 // which error, and - where the cause is known - how to resolve it.
 @Component({
-    selector: 'job-result-dialog',
-    templateUrl: './job-result-dialog.component.html',
-    styleUrls: ['./job-result-dialog.component.css'],
-    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatIcon]
+  selector: 'job-result-dialog',
+  templateUrl: './job-result-dialog.component.html',
+  styleUrls: ['./job-result-dialog.component.css'],
+  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatIcon],
 })
 export class JobResultDialogComponent {
-  title: string
-  items: JobResultItem[]
+  title: string;
+  items: JobResultItem[];
 
   constructor(@Inject(MAT_DIALOG_DATA) data: any) {
-    this.title = data.title || "Result"
-    this.items = data.items || []
+    this.title = data.title || 'Result';
+    this.items = data.items || [];
   }
 
   failedCount(): number {
-    return this.items.filter(item => !item.ok).length
+    return this.items.filter((item) => !item.ok).length;
   }
 }

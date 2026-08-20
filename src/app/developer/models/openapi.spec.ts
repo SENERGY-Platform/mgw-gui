@@ -28,25 +28,32 @@ function doc(overrides: Partial<SwaggerDocument> = {}): SwaggerDocument {
 
 describe('flattenOperations', () => {
   it('returns one entry per path and method', () => {
-    const operations = flattenOperations(doc({
-      paths: {
-        '/secrets': {
-          get: {summary: 'Get secrets', tags: ['Secrets']},
-          post: {summary: 'Create secret', tags: ['Secrets']},
+    const operations = flattenOperations(
+      doc({
+        paths: {
+          '/secrets': {
+            get: {summary: 'Get secrets', tags: ['Secrets']},
+            post: {summary: 'Create secret', tags: ['Secrets']},
+          },
+          '/info': {get: {summary: 'Get info', tags: ['Info']}},
         },
-        '/info': {get: {summary: 'Get info', tags: ['Info']}},
-      },
-    }));
+      }),
+    );
 
     expect(operations.length).toBe(3);
-    expect(operations.map(o => o.method + ' ' + o.path).sort())
-      .toEqual(['GET /info', 'GET /secrets', 'POST /secrets']);
+    expect(operations.map((o) => o.method + ' ' + o.path).sort()).toEqual([
+      'GET /info',
+      'GET /secrets',
+      'POST /secrets',
+    ]);
   });
 
   it('ignores keys that are not http methods', () => {
-    const operations = flattenOperations(doc({
-      paths: {'/secrets': {get: {summary: 'Get'}, parameters: <any>[]}},
-    }));
+    const operations = flattenOperations(
+      doc({
+        paths: {'/secrets': {get: {summary: 'Get'}, parameters: <any>[]}},
+      }),
+    );
 
     expect(operations.length).toBe(1);
   });
@@ -61,10 +68,13 @@ describe('flattenOperations', () => {
 
 describe('sampleFor', () => {
   it('builds an object from the declared properties', () => {
-    const sample = sampleFor({
-      type: 'object',
-      properties: {name: {type: 'string'}, port: {type: 'integer'}, enabled: {type: 'boolean'}},
-    }, doc());
+    const sample = sampleFor(
+      {
+        type: 'object',
+        properties: {name: {type: 'string'}, port: {type: 'integer'}, enabled: {type: 'boolean'}},
+      },
+      doc(),
+    );
 
     expect(sample).toEqual({name: '', port: 0, enabled: false});
   });

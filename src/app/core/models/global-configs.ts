@@ -24,10 +24,10 @@ export const DATA_TYPE_FLOAT = 3;
 export const DATA_TYPE_BOOL = 4;
 
 export const DATA_TYPE_LABELS: Record<number, string> = {
-  [DATA_TYPE_STRING]: "string",
-  [DATA_TYPE_INT]: "int",
-  [DATA_TYPE_FLOAT]: "float",
-  [DATA_TYPE_BOOL]: "bool",
+  [DATA_TYPE_STRING]: 'string',
+  [DATA_TYPE_INT]: 'int',
+  [DATA_TYPE_FLOAT]: 'float',
+  [DATA_TYPE_BOOL]: 'bool',
 };
 
 // DataType and IsSlice describe how Value is to be interpreted, they must
@@ -50,33 +50,33 @@ export interface GlobalConfigInput extends InterfaceValue {
 // Parses one raw input string into the JSON type the module-manager expects
 // for the data type. Throws on invalid input so forms can surface the error.
 export function parseConfigItem(dataType: number, raw: string): string | number | boolean {
-  raw = raw.trim()
+  raw = raw.trim();
   switch (dataType) {
     case DATA_TYPE_STRING:
-      return raw
+      return raw;
     case DATA_TYPE_INT: {
       if (!/^[+-]?\d+$/.test(raw)) {
-        throw new Error("'" + raw + "' is not an integer")
+        throw new Error("'" + raw + "' is not an integer");
       }
-      return Number(raw)
+      return Number(raw);
     }
     case DATA_TYPE_FLOAT: {
-      if (raw === "" || isNaN(Number(raw))) {
-        throw new Error("'" + raw + "' is not a number")
+      if (raw === '' || isNaN(Number(raw))) {
+        throw new Error("'" + raw + "' is not a number");
       }
-      return Number(raw)
+      return Number(raw);
     }
     case DATA_TYPE_BOOL: {
-      if (raw === "true") {
-        return true
+      if (raw === 'true') {
+        return true;
       }
-      if (raw === "false") {
-        return false
+      if (raw === 'false') {
+        return false;
       }
-      throw new Error("'" + raw + "' is not a boolean (use true or false)")
+      throw new Error("'" + raw + "' is not a boolean (use true or false)");
     }
     default:
-      throw new Error("unknown data type " + dataType)
+      throw new Error('unknown data type ' + dataType);
   }
 }
 
@@ -84,23 +84,26 @@ export function parseConfigItem(dataType: number, raw: string): string | number 
 // for a GlobalConfigInput. Throws on invalid input.
 export function parseConfigValue(dataType: number, isSlice: boolean, raw: string): any {
   if (!isSlice) {
-    return parseConfigItem(dataType, raw)
+    return parseConfigItem(dataType, raw);
   }
-  var items = raw.split("\n").map(line => line.trim()).filter(line => line !== "")
+  var items = raw
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line !== '');
   if (items.length === 0) {
-    throw new Error("a list needs at least one value (one per line)")
+    throw new Error('a list needs at least one value (one per line)');
   }
-  return items.map(item => parseConfigItem(dataType, item))
+  return items.map((item) => parseConfigItem(dataType, item));
 }
 
 // Renders a stored value back into the form representation
 // (one line per item for slices).
 export function formatConfigValue(config: InterfaceValue): string {
   if (config.value === null || config.value === undefined) {
-    return ""
+    return '';
   }
   if (config.is_slice && Array.isArray(config.value)) {
-    return config.value.join("\n")
+    return config.value.join('\n');
   }
-  return String(config.value)
+  return String(config.value);
 }

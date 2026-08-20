@@ -2,21 +2,24 @@
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
   @if (ready) {
-    <mgw-page-header backTo="/system/accounts/users" description="Set a new password for this account."
-                     title="Change password"></mgw-page-header>
+    <mgw-page-header
+      backTo="/system/accounts/users"
+      description="Set a new password for this account."
+      title="Change password"
+    ></mgw-page-header>
 
     <div [formGroup]="form" class="mgw-card card">
       <div class="field">
         <label for="acc-password">New password</label>
         <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-          <input formControlName="password" id="acc-password" matInput type="password">
+          <input formControlName="password" id="acc-password" matInput type="password" />
         </mat-form-field>
       </div>
 
       <div class="field">
         <label for="acc-confirm">Confirm password</label>
         <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-          <input formControlName="confirmation" id="acc-confirm" matInput type="password">
+          <input formControlName="confirmation" id="acc-confirm" matInput type="password" />
         </mat-form-field>
         @if (form.errors?.['match'] && (form.touched || form.dirty)) {
           <p class="field-error">

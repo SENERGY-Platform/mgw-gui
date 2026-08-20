@@ -132,7 +132,9 @@ export function needsDeploymentUpdate(module: ModuleReduced): boolean {
   if (!module.is_deployed) {
     return false;
   }
-  return module.deployment.module_version !== module.version
-    || module.deployment.module_source !== module.source
-    || module.deployment.module_channel !== module.channel;
+  return (
+    module.deployment.module_version !== module.version ||
+    module.deployment.module_source !== module.source ||
+    module.deployment.module_channel !== module.channel
+  );
 }

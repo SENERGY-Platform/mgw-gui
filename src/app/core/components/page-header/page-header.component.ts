@@ -47,55 +47,57 @@ import {RouterLink} from '@angular/router';
       </div>
     </header>
   `,
-  styles: [`
-    .head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
+  styles: [
+    `
+      .head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
 
-    .lead {
-      display: flex;
-      align-items: flex-start;
-      gap: 4px;
-      min-width: 0;
-    }
+      .lead {
+        display: flex;
+        align-items: flex-start;
+        gap: 4px;
+        min-width: 0;
+      }
 
-    .back {
-      margin: -4px 4px 0 -8px;
-    }
+      .back {
+        margin: -4px 4px 0 -8px;
+      }
 
-    .titles {
-      min-width: 0;
-    }
+      .titles {
+        min-width: 0;
+      }
 
-    h1 {
-      margin: 0;
-      font-size: 24px;
-      font-weight: 650;
-      letter-spacing: -0.01em;
-      line-height: 1.25;
-      color: var(--mat-sys-on-surface);
-    }
+      h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 650;
+        letter-spacing: -0.01em;
+        line-height: 1.25;
+        color: var(--mat-sys-on-surface);
+      }
 
-    p {
-      margin: 4px 0 0;
-      font-size: 13px;
-      line-height: 1.45;
-      max-width: 68ch;
-      color: var(--mat-sys-on-surface-variant);
-    }
+      p {
+        margin: 4px 0 0;
+        font-size: 13px;
+        line-height: 1.45;
+        max-width: 68ch;
+        color: var(--mat-sys-on-surface-variant);
+      }
 
-    .actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-  `]
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+    `,
+  ],
 })
 export class PageHeaderComponent {
   @Input({required: true}) title!: string;

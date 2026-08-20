@@ -23,7 +23,7 @@ import {
   DeploymentJobResult,
   DeploymentUpdateJobResult,
   ModulesChangeJobResult,
-  RepositoryJobResult
+  RepositoryJobResult,
 } from './jobs';
 
 export interface JobResultItem {
@@ -36,44 +36,46 @@ export interface JobResultItem {
 // Treatment hints for known error causes.
 export function hintForError(errorMsg: string): string | undefined {
   if (!errorMsg) {
-    return undefined
+    return undefined;
   }
-  if (errorMsg.includes("deployment exists")) {
-    return "A module can only be removed while it has no deployment. Delete its deployment on the Modules page first."
+  if (errorMsg.includes('deployment exists')) {
+    return 'A module can only be removed while it has no deployment. Delete its deployment on the Modules page first.';
   }
-  if (errorMsg.includes("not found")) {
-    return "The item may have been changed or removed in the meantime. Reload the page and try again."
+  if (errorMsg.includes('not found')) {
+    return 'The item may have been changed or removed in the meantime. Reload the page and try again.';
   }
-  return undefined
+  return undefined;
 }
 
 export function hasFailures(items: JobResultItem[]): boolean {
-  return items.some(item => !item.ok)
+  return items.some((item) => !item.ok);
 }
 
 export function mapModulesChangeResult(result: ModulesChangeJobResult): JobResultItem[] {
-  var items: JobResultItem[] = []
+  var items: JobResultItem[] = [];
   if (result.has_error) {
-    items.push({label: "Change request", ok: false, message: result.error_msg, hint: hintForError(result.error_msg)})
+    items.push({label: 'Change request', ok: false, message: result.error_msg, hint: hintForError(result.error_msg)});
   }
   for (const entry of result.success || []) {
-    items.push({label: entry.id + " (" + entry.action + ")", ok: true})
+    items.push({label: entry.id + ' (' + entry.action + ')', ok: true});
   }
   for (const entry of result.failed || []) {
     items.push({
-      label: entry.id + " (" + entry.action + ")",
+      label: entry.id + ' (' + entry.action + ')',
       ok: false,
       message: entry.error,
       hint: hintForError(entry.error),
-    })
+    });
   }
-  return items
+  return items;
 }
 
-export function mapDeploymentResults(result: DeploymentJobResult | DeploymentUpdateJobResult | DeploymentDeleteJobResult): JobResultItem[] {
-  var items: JobResultItem[] = []
+export function mapDeploymentResults(
+  result: DeploymentJobResult | DeploymentUpdateJobResult | DeploymentDeleteJobResult,
+): JobResultItem[] {
+  var items: JobResultItem[] = [];
   if (result.has_error) {
-    items.push({label: "Job", ok: false, message: result.error_msg, hint: hintForError(result.error_msg)})
+    items.push({label: 'Job', ok: false, message: result.error_msg, hint: hintForError(result.error_msg)});
   }
   for (const entry of result.results || []) {
     items.push({
@@ -81,25 +83,25 @@ export function mapDeploymentResults(result: DeploymentJobResult | DeploymentUpd
       ok: !entry.has_error,
       message: entry.has_error ? entry.error_msg : undefined,
       hint: entry.has_error ? hintForError(entry.error_msg) : undefined,
-    })
+    });
   }
-  return items
+  return items;
 }
 
 export function mapRepositoryRefreshResult(result: RepositoryJobResult): JobResultItem[] {
-  var items: JobResultItem[] = []
+  var items: JobResultItem[] = [];
   if (result.has_error) {
-    items.push({label: "Refresh", ok: false, message: result.error_msg, hint: hintForError(result.error_msg)})
+    items.push({label: 'Refresh', ok: false, message: result.error_msg, hint: hintForError(result.error_msg)});
   }
   // upstream struct field has no json tag, hence the capital R
   for (const entry of result.Results || []) {
-    var channelErrors = (entry.channel_errors || []).map(c => c.channel + ": " + c.error_msg)
-    var failed = entry.has_error || channelErrors.length > 0
+    var channelErrors = (entry.channel_errors || []).map((c) => c.channel + ': ' + c.error_msg);
+    var failed = entry.has_error || channelErrors.length > 0;
     items.push({
-      label: entry.source + (entry.refresh ? "" : " (skipped)"),
+      label: entry.source + (entry.refresh ? '' : ' (skipped)'),
       ok: !failed,
-      message: failed ? [entry.error_msg, ...channelErrors].filter(m => !!m).join("; ") : undefined,
-    })
+      message: failed ? [entry.error_msg, ...channelErrors].filter((m) => !!m).join('; ') : undefined,
+    });
   }
-  return items
+  return items;
 }

@@ -42,10 +42,26 @@ import {StatusPillComponent, StatusTone} from 'src/app/core/components/status-pi
   templateUrl: './info.component.html',
   styleUrls: ['./info.component.css'],
   imports: [
-    SpinnerComponent, DatePipe, KeyValuePipe, RouterLink, MatButton, MatIconButton, MatIcon, MatTooltip,
-    MatChipSet, MatChip, MatTabGroup, MatTab, MatMenu, MatMenuItem, MatMenuTrigger, MatDivider,
-    AuxDeploymentsListComponent, PageHeaderComponent, StatusPillComponent
-  ]
+    SpinnerComponent,
+    DatePipe,
+    KeyValuePipe,
+    RouterLink,
+    MatButton,
+    MatIconButton,
+    MatIcon,
+    MatTooltip,
+    MatChipSet,
+    MatChip,
+    MatTabGroup,
+    MatTab,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
+    MatDivider,
+    AuxDeploymentsListComponent,
+    PageHeaderComponent,
+    StatusPillComponent,
+  ],
 })
 export class InfoComponent implements OnInit, OnDestroy {
   module!: ModuleInfo;
@@ -57,14 +73,13 @@ export class InfoComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
+    @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
     private errorService: ErrorService,
-    private utilService: UtilService
-  ) {
-  }
+    private utilService: UtilService,
+  ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.moduleID = params['id'];
       this.ready = false;
       this.load(false);
@@ -88,10 +103,10 @@ export class InfoComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         if (!background) {
-          this.errorService.handleError(InfoComponent.name, "load", err, "Loading the module failed");
+          this.errorService.handleError(InfoComponent.name, 'load', err, 'Loading the module failed');
         }
         this.ready = true;
-      }
+      },
     });
   }
 
@@ -116,18 +131,18 @@ export class InfoComponent implements OnInit, OnDestroy {
 
   deploymentStateLabel(): string {
     if (!this.module.is_deployed) {
-      return "Not deployed";
+      return 'Not deployed';
     }
     if (!this.module.deployment.enabled) {
-      return "Stopped";
+      return 'Stopped';
     }
     switch (this.module.deployment.state) {
       case DEPLOYMENT_STATE_HEALTHY:
-        return "Running";
+        return 'Running';
       case DEPLOYMENT_STATE_UNHEALTHY:
-        return "Unhealthy";
+        return 'Unhealthy';
       default:
-        return "Unknown";
+        return 'Unknown';
     }
   }
 
@@ -163,37 +178,54 @@ export class InfoComponent implements OnInit, OnDestroy {
   // --- actions -------------------------------------------------------------
 
   deploy() {
-    this.router.navigateByUrl("/deployments/add/" + encodeURIComponent(this.moduleID));
+    this.router.navigateByUrl('/deployments/add/' + encodeURIComponent(this.moduleID));
   }
 
   edit() {
-    this.router.navigateByUrl("/deployments/edit/" + encodeURIComponent(this.moduleID));
+    this.router.navigateByUrl('/deployments/edit/' + encodeURIComponent(this.moduleID));
   }
 
   start() {
-    this.runSync(this.moduleService.enableDeployments([this.moduleID]), "start", "Starting the deployment failed");
+    this.runSync(this.moduleService.enableDeployments([this.moduleID]), 'start', 'Starting the deployment failed');
   }
 
   stop() {
-    this.runSync(this.moduleService.disableDeployments([this.moduleID]), "stop", "Stopping the deployment failed");
+    this.runSync(this.moduleService.disableDeployments([this.moduleID]), 'stop', 'Stopping the deployment failed');
   }
 
   recreate() {
-    this.runJob(this.moduleService.recreateDeployments([this.moduleID]), "Deployment is recreating", "deployments",
-      "recreate", "Recreate containers", "Containers recreated", "Recreating the containers failed");
+    this.runJob(
+      this.moduleService.recreateDeployments([this.moduleID]),
+      'Deployment is recreating',
+      'deployments',
+      'recreate',
+      'Recreate containers',
+      'Containers recreated',
+      'Recreating the containers failed',
+    );
   }
 
   deleteDeployment() {
-    this.utilService.askForConfirmation("Delete the deployment of " + this.module.name + "? Data stored in volumes will be removed.").pipe(
-      concatMap(confirmed => {
-        if (!confirmed) {
-          return of(null);
-        }
-        this.runJob(this.moduleService.removeDeployments([this.moduleID]), "Deployment is being deleted",
-          "deployments-delete", "delete", "Delete deployment", "Deployment deleted", "Deleting the deployment failed");
-        return of(true);
-      })
-    ).subscribe();
+    this.utilService
+      .askForConfirmation('Delete the deployment of ' + this.module.name + '? Data stored in volumes will be removed.')
+      .pipe(
+        concatMap((confirmed) => {
+          if (!confirmed) {
+            return of(null);
+          }
+          this.runJob(
+            this.moduleService.removeDeployments([this.moduleID]),
+            'Deployment is being deleted',
+            'deployments-delete',
+            'delete',
+            'Delete deployment',
+            'Deployment deleted',
+            'Deleting the deployment failed',
+          );
+          return of(true);
+        }),
+      )
+      .subscribe();
   }
 
   private runSync(obs: Observable<string[]>, method: string, errorContext: string) {
@@ -203,30 +235,38 @@ export class InfoComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.errorService.handleError(InfoComponent.name, method, err, errorContext);
         this.ready = true;
-      }
+      },
     });
   }
 
-  private runJob(obs: Observable<any>, message: string, resultKind: JobResultKind, method: string, resultTitle: string, successMessage: string, errorContext: string) {
+  private runJob(
+    obs: Observable<any>,
+    message: string,
+    resultKind: JobResultKind,
+    method: string,
+    resultTitle: string,
+    successMessage: string,
+    errorContext: string,
+  ) {
     this.ready = false;
-    obs.pipe(
-      concatMap(job => this.utilService.checkJobStatus(job.id, message, "module-manager", resultKind))
-    ).subscribe({
-      next: (jobResult) => {
-        if (jobResult?.result) {
-          this.utilService.presentJobResult(resultTitle, mapDeploymentResults(jobResult.result), successMessage);
-        }
-        // the deployment is gone after a delete, so go back to the list
-        if (method === 'delete') {
-          this.router.navigateByUrl('/modules');
-          return;
-        }
-        this.load(false);
-      },
-      error: (err) => {
-        this.errorService.handleError(InfoComponent.name, method, err, errorContext);
-        this.ready = true;
-      }
-    });
+    obs
+      .pipe(concatMap((job) => this.utilService.checkJobStatus(job.id, message, 'module-manager', resultKind)))
+      .subscribe({
+        next: (jobResult) => {
+          if (jobResult?.result) {
+            this.utilService.presentJobResult(resultTitle, mapDeploymentResults(jobResult.result), successMessage);
+          }
+          // the deployment is gone after a delete, so go back to the list
+          if (method === 'delete') {
+            this.router.navigateByUrl('/modules');
+            return;
+          }
+          this.load(false);
+        },
+        error: (err) => {
+          this.errorService.handleError(InfoComponent.name, method, err, errorContext);
+          this.ready = true;
+        },
+      });
   }
 }

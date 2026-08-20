@@ -15,8 +15,7 @@
 -->
 
 <div class="mgw-page">
-  <mgw-page-header description="Modules installed on this gateway and the state of their deployments."
-                   title="Modules">
+  <mgw-page-header description="Modules installed on this gateway and the state of their deployments." title="Modules">
     <div pageActions>
       <button (click)="loadModules(false)" mat-icon-button matTooltip="Refresh">
         <mat-icon>refresh</mat-icon>
@@ -31,14 +30,18 @@
   <div class="mgw-toolbar">
     <mat-form-field appearance="outline" class="mgw-search" subscriptSizing="dynamic">
       <mat-label>Search modules</mat-label>
-      <input (ngModelChange)="applyFilters()" [(ngModel)]="search" matInput>
+      <input (ngModelChange)="applyFilters()" [(ngModel)]="search" matInput />
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
 
     <div class="mgw-chips">
       @for (filter of statusFilters; track filter.key) {
-        <button (click)="setStatusFilter(filter.key)" [class.selected]="statusFilter === filter.key"
-                class="mgw-chip" type="button">
+        <button
+          (click)="setStatusFilter(filter.key)"
+          [class.selected]="statusFilter === filter.key"
+          class="mgw-chip"
+          type="button"
+        >
           {{ filter.label }}
           <span class="mgw-chip-count">{{ countFor(filter.key) }}</span>
         </button>
@@ -82,13 +85,19 @@
   @if (!ready && dataSource.data.length === 0) {
     <!-- first load: the spinner above is the only feedback -->
   } @else if (dataSource.data.length === 0) {
-    <mgw-empty-state icon="extension" message="Install a module from a configured repository to get started."
-                     title="No modules installed">
+    <mgw-empty-state
+      icon="extension"
+      message="Install a module from a configured repository to get started."
+      title="No modules installed"
+    >
       <button [routerLink]="'/modules/catalog'" emptyAction mat-flat-button>Open catalog</button>
     </mgw-empty-state>
   } @else if (filteredCount() === 0) {
-    <mgw-empty-state icon="search_off" message="No installed module matches the current search and filter."
-                     title="No module matches">
+    <mgw-empty-state
+      icon="search_off"
+      message="No installed module matches the current search and filter."
+      title="No module matches"
+    >
       <button (click)="clearFilters()" emptyAction mat-stroked-button>Clear filters</button>
     </mgw-empty-state>
   } @else {
@@ -96,14 +105,20 @@
       <table [dataSource]="dataSource" mat-table matSort matSortActive="module" matSortDirection="asc">
         <ng-container matColumnDef="select">
           <th *matHeaderCellDef class="col-select" mat-header-cell>
-            <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
-                          [indeterminate]="selection.hasValue() && !isAllSelected()"
-                          aria-label="Select all modules">
+            <mat-checkbox
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()"
+              aria-label="Select all modules"
+            >
             </mat-checkbox>
           </th>
           <td *matCellDef="let row" class="col-select" mat-cell>
-            <mat-checkbox (change)="$event ? selection.toggle(row.id) : null" (click)="$event.stopPropagation()"
-                          [checked]="selection.isSelected(row.id)">
+            <mat-checkbox
+              (change)="$event ? selection.toggle(row.id) : null"
+              (click)="$event.stopPropagation()"
+              [checked]="selection.isSelected(row.id)"
+            >
             </mat-checkbox>
           </td>
         </ng-container>
@@ -115,8 +130,12 @@
               <span class="module-name">
                 {{ module.name }}
                 @if (moduleHasError(module)) {
-                  <button (click)="showModuleError(module); $event.stopPropagation()" class="warn-btn" mat-icon-button
-                          matTooltip="Loaded with errors — click for details">
+                  <button
+                    (click)="showModuleError(module); $event.stopPropagation()"
+                    class="warn-btn"
+                    mat-icon-button
+                    matTooltip="Loaded with errors — click for details"
+                  >
                     <mat-icon>warning</mat-icon>
                   </button>
                 }
@@ -139,8 +158,14 @@
             <div class="version-cell">
               <span>{{ module.version }}</span>
               @if (needsDeploymentUpdate(module)) {
-                <span class="update-badge"
-                      matTooltip="The installed module changed (installed: {{module.version}} / {{module.channel}}, deployed: {{module.deployment.module_version}} / {{module.deployment.module_channel}}). Edit the deployment to apply the change.">
+                <span
+                  class="update-badge"
+                  matTooltip="The installed module changed (installed: {{ module.version }} / {{
+                    module.channel
+                  }}, deployed: {{ module.deployment.module_version }} / {{
+                    module.deployment.module_channel
+                  }}). Edit the deployment to apply the change."
+                >
                   <mat-icon>upgrade</mat-icon>
                   deployed {{ module.deployment.module_version }}
                 </span>
@@ -168,8 +193,12 @@
                 </button>
               }
 
-              <button [matMenuTriggerFor]="rowMenu" (click)="$event.stopPropagation()" mat-icon-button
-                      matTooltip="More actions">
+              <button
+                [matMenuTriggerFor]="rowMenu"
+                (click)="$event.stopPropagation()"
+                mat-icon-button
+                matTooltip="More actions"
+              >
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #rowMenu="matMenu">
@@ -186,8 +215,12 @@
                   <span>Recreate containers</span>
                 </button>
                 <mat-divider></mat-divider>
-                <button (click)="deleteDeployment(module.id)" [disabled]="!module.is_deployed" class="mgw-danger"
-                        mat-menu-item>
+                <button
+                  (click)="deleteDeployment(module.id)"
+                  [disabled]="!module.is_deployed"
+                  class="mgw-danger"
+                  mat-menu-item
+                >
                   <mat-icon>delete</mat-icon>
                   <span>Delete deployment</span>
                 </button>
@@ -197,8 +230,7 @@
         </ng-container>
 
         <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-        <tr (click)="showModuleInfo(m.id)" *matRowDef="let m; columns: displayColumns;" class="data-row"
-            mat-row></tr>
+        <tr (click)="showModuleInfo(m.id)" *matRowDef="let m; columns: displayColumns" class="data-row" mat-row></tr>
       </table>
     </div>
   }

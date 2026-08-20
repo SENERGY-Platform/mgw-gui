@@ -20,7 +20,7 @@ import {
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
-  MatDialogTitle
+  MatDialogTitle,
 } from '@angular/material/dialog';
 
 import {MatButton} from '@angular/material/button';
@@ -29,19 +29,19 @@ import {MatIcon} from '@angular/material/icon';
 // Shows the full error behind a short notification: what failed (context),
 // where it happened technically, and the raw response for diagnosis.
 @Component({
-    selector: 'error-dialog',
-    templateUrl: './error-dialog.component.html',
-    styleUrls: ['./error-dialog.component.css'],
-    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatIcon]
+  selector: 'error-dialog',
+  templateUrl: './error-dialog.component.html',
+  styleUrls: ['./error-dialog.component.css'],
+  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatIcon],
 })
 export class ErrorDialogComponent {
-  context: string
-  source: string
-  detail: string
+  context: string;
+  source: string;
+  detail: string;
 
   constructor(@Inject(MAT_DIALOG_DATA) data: any) {
-    this.context = data.context || "The last action failed"
-    this.source = data.source || ""
-    this.detail = data.detail || ""
+    this.context = data.context || 'The last action failed';
+    this.source = data.source || '';
+    this.detail = data.detail || '';
   }
 }

@@ -11,7 +11,7 @@ import {
   MatRow,
   MatRowDef,
   MatTable,
-  MatTableDataSource
+  MatTableDataSource,
 } from '@angular/material/table';
 import {HumanUser, HumanUsersResponse} from '../../models/users';
 import {SelectionModel} from '@angular/cdk/collections';
@@ -29,56 +29,77 @@ import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-sta
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
-    selector: 'app-list-users',
-    templateUrl: './list-users.component.html',
-    styleUrls: ['./list-users.component.css'],
-    imports: [SpinnerComponent, MatTable, MatSort, MatSortHeader, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, RouterLink, PageHeaderComponent, EmptyStateComponent]
+  selector: 'app-list-users',
+  templateUrl: './list-users.component.html',
+  styleUrls: ['./list-users.component.css'],
+  imports: [
+    SpinnerComponent,
+    MatTable,
+    MatSort,
+    MatSortHeader,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatIconButton,
+    MatButton,
+    MatTooltip,
+    MatIcon,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    RouterLink,
+    PageHeaderComponent,
+    EmptyStateComponent,
+  ],
 })
 export class ListUsersComponent implements OnInit {
   dataSource = new MatTableDataSource<HumanUser>();
   ready: Boolean = false;
   init: Boolean = true;
-  interval: any
+  interval: any;
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['username', 'actions']
+  displayColumns = ['username', 'actions'];
   selection = new SelectionModel<string>(true, []);
 
   constructor(
     private userService: UserService,
     private errorService: ErrorService,
-    private router: Router
-  ) {
-  }
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.loadUsers();
   }
 
   loadUsers(): void {
-    this.userService.listHumanUsers().pipe(
-      map((usersResponse: HumanUsersResponse) => {
-        const users: HumanUser[] = []
-        for (const [key, value] of Object.entries(usersResponse)) {
-          users.push(value)
-        }
-        return users
-      })
-    ).subscribe(
-      {
+    this.userService
+      .listHumanUsers()
+      .pipe(
+        map((usersResponse: HumanUsersResponse) => {
+          const users: HumanUser[] = [];
+          for (const [key, value] of Object.entries(usersResponse)) {
+            users.push(value);
+          }
+          return users;
+        }),
+      )
+      .subscribe({
         next: (users: HumanUser[]) => {
           if (!users) {
-            this.dataSource.data = []
+            this.dataSource.data = [];
           } else {
-            this.dataSource.data = users
+            this.dataSource.data = users;
           }
-          this.ready = true
+          this.ready = true;
         },
         error: (err) => {
-          this.errorService.handleError(ListUsersComponent.name, "loadUsers", err)
-          this.ready = true
-        }
-      }
-    )
+          this.errorService.handleError(ListUsersComponent.name, 'loadUsers', err);
+          this.ready = true;
+        },
+      });
   }
 
   isAllSelected() {
@@ -103,15 +124,15 @@ export class ListUsersComponent implements OnInit {
   deleteUser(userID: string) {
     this.userService.deleteUser(userID).subscribe({
       next: (_) => {
-        this.loadUsers()
+        this.loadUsers();
       },
       error: (err) => {
-        this.errorService.handleError(ListUsersComponent.name, "deleteUser", err)
-      }
-    })
+        this.errorService.handleError(ListUsersComponent.name, 'deleteUser', err);
+      },
+    });
   }
 
   editUser(user: HumanUser) {
-    this.router.navigate(['/system/accounts/users/' + user.id + "/edit"])
+    this.router.navigate(['/system/accounts/users/' + user.id + '/edit']);
   }
 }

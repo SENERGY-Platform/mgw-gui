@@ -25,20 +25,32 @@ html {
   // with a single value when the user picks a mode explicitly.
   color-scheme: light dark;
 
-  @include mat.theme((
-    color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$violet-palette,
-    ),
-    typography: (
-      plain-family: (Inter, Roboto, 'Helvetica Neue', sans-serif),
-      brand-family: (Inter, Roboto, 'Helvetica Neue', sans-serif),
-      bold-weight: 650,
-      medium-weight: 550,
-      regular-weight: 400,
-    ),
-    density: 0,
-  ));
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$violet-palette,
+      ),
+      typography: (
+        plain-family: (
+          Inter,
+          Roboto,
+          'Helvetica Neue',
+          sans-serif,
+        ),
+        brand-family: (
+          Inter,
+          Roboto,
+          'Helvetica Neue',
+          sans-serif,
+        ),
+        bold-weight: 650,
+        medium-weight: 550,
+        regular-weight: 400,
+      ),
+      density: 0,
+    )
+  );
 
   // Tables and dialogs carry a lot of rows; a denser scale there keeps the
   // page readable without shrinking touch targets everywhere else.

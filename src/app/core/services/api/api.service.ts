@@ -21,23 +21,27 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from 'src/environments/environment';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
   public baseUrl: string = environment.coreApiUrl; // '/core/api'
 
-  constructor(private httpClient: HttpClient) {
-  }
+  constructor(private httpClient: HttpClient) {}
 
-  public get<T>(path: string, queryParams?: HttpParams, responseType?: string, withHeaders?: boolean, headers?: HttpHeaders): Observable<unknown> {
-    var options: any = {params: queryParams}
+  public get<T>(
+    path: string,
+    queryParams?: HttpParams,
+    responseType?: string,
+    withHeaders?: boolean,
+    headers?: HttpHeaders,
+  ): Observable<unknown> {
+    var options: any = {params: queryParams};
     if (responseType) {
-      options['responseType'] = responseType
+      options['responseType'] = responseType;
     }
     if (withHeaders) {
-      options["observe"] = "response"
+      options['observe'] = 'response';
     }
     options.withCredentials = true;
     if (headers) {
@@ -47,14 +51,20 @@ export class ApiService {
     return this.httpClient.get<T>(this.baseUrl + path, options);
   }
 
-  public post<T>(path: string, payload?: any, queryParams?: HttpParams, responseType?: string, headers?: HttpHeaders): Observable<unknown> {
-    var options: any = {params: queryParams}
+  public post<T>(
+    path: string,
+    payload?: any,
+    queryParams?: HttpParams,
+    responseType?: string,
+    headers?: HttpHeaders,
+  ): Observable<unknown> {
+    var options: any = {params: queryParams};
     if (responseType) {
-      options['responseType'] = responseType
+      options['responseType'] = responseType;
     }
 
     if (headers) {
-      options.headers = headers
+      options.headers = headers;
     }
     options.withCredentials = true;
 
@@ -63,18 +73,24 @@ export class ApiService {
 
   public put(path: string, payload: any): Observable<unknown> {
     var options: any = {
-      withCredentials: true
-    }
+      withCredentials: true,
+    };
     return this.httpClient.put(this.baseUrl + path, payload, options);
   }
 
-  public delete(path: string, payload?: any, queryParams?: HttpParams, responseType?: string, headers?: HttpHeaders): Observable<unknown> {
+  public delete(
+    path: string,
+    payload?: any,
+    queryParams?: HttpParams,
+    responseType?: string,
+    headers?: HttpHeaders,
+  ): Observable<unknown> {
     var options: any = {
       params: queryParams,
-      body: payload
-    }
+      body: payload,
+    };
     if (responseType) {
-      options['responseType'] = responseType
+      options['responseType'] = responseType;
     }
     if (headers) {
       options.headers = headers;
@@ -84,10 +100,16 @@ export class ApiService {
     return this.httpClient.delete(this.baseUrl + path, options);
   }
 
-  public patch(path: string, payload?: any, queryParams?: HttpParams, responseType?: string, headers?: HttpHeaders): Observable<unknown> {
-    var options: any = {params: queryParams}
+  public patch(
+    path: string,
+    payload?: any,
+    queryParams?: HttpParams,
+    responseType?: string,
+    headers?: HttpHeaders,
+  ): Observable<unknown> {
+    var options: any = {params: queryParams};
     if (responseType) {
-      options['responseType'] = responseType
+      options['responseType'] = responseType;
     }
     options.withCredentials = true;
     if (headers) {

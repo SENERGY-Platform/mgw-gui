@@ -39,33 +39,40 @@ import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
 // Create deployments: /deployment-request resolves the requested module plus
 // its dependencies, one form per module, submitted together as a batch.
 @Component({
-    selector: 'add-deployment',
-    templateUrl: './modules.component.html',
-    styleUrls: ['./modules.component.css'],
-    imports: [SpinnerComponent, MatButton, MatIcon, RouterLink, PageHeaderComponent, EmptyStateComponent, DeploymentFormComponent]
+  selector: 'add-deployment',
+  templateUrl: './modules.component.html',
+  styleUrls: ['./modules.component.css'],
+  imports: [
+    SpinnerComponent,
+    MatButton,
+    MatIcon,
+    RouterLink,
+    PageHeaderComponent,
+    EmptyStateComponent,
+    DeploymentFormComponent,
+  ],
 })
 export class ModulesComponent implements OnInit {
-  modules: DeploymentRequestModule[] = []
-  hostResources: HostResource[] = []
-  secrets: Secret[] = []
-  globalConfigs: GlobalConfig[] = []
-  ready: boolean = false
-  submitting: boolean = false
-  @ViewChildren(DeploymentFormComponent) forms!: QueryList<DeploymentFormComponent>
+  modules: DeploymentRequestModule[] = [];
+  hostResources: HostResource[] = [];
+  secrets: Secret[] = [];
+  globalConfigs: GlobalConfig[] = [];
+  ready: boolean = false;
+  submitting: boolean = false;
+  @ViewChildren(DeploymentFormComponent) forms!: QueryList<DeploymentFormComponent>;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
-    @Inject("HostManagerService") private hostService: HostManagerService,
-    @Inject("SecretManagerService") private secretService: SecretManagerServiceService,
+    @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
+    @Inject('HostManagerService') private hostService: HostManagerService,
+    @Inject('SecretManagerService') private secretService: SecretManagerServiceService,
     private errorService: ErrorService,
     private utilService: UtilService,
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    var moduleID = decodeURIComponent(this.route.snapshot.params['id'])
+    var moduleID = decodeURIComponent(this.route.snapshot.params['id']);
     forkJoin({
       modules: this.moduleService.loadDeploymentRequest([moduleID]),
       hostResources: this.hostService.getHostResources().pipe(catchError(() => of(<HostResource[]>[]))),
@@ -74,50 +81,59 @@ export class ModulesComponent implements OnInit {
     }).subscribe({
       next: (result) => {
         // already deployed dependencies need no new deployment
-        this.modules = (result.modules || []).filter(module => !module.is_deployed)
-        this.hostResources = result.hostResources || []
-        this.secrets = result.secrets || []
-        this.globalConfigs = Object.values(result.globalConfigs || {})
-        this.ready = true
+        this.modules = (result.modules || []).filter((module) => !module.is_deployed);
+        this.hostResources = result.hostResources || [];
+        this.secrets = result.secrets || [];
+        this.globalConfigs = Object.values(result.globalConfigs || {});
+        this.ready = true;
       },
       error: (err) => {
-        this.errorService.handleError(ModulesComponent.name, "ngOnInit", err, "Loading the deployment form failed")
-        this.ready = true
-      }
-    })
+        this.errorService.handleError(ModulesComponent.name, 'ngOnInit', err, 'Loading the deployment form failed');
+        this.ready = true;
+      },
+    });
   }
 
   submit() {
-    var inputs: DeploymentUserInput[] = []
+    var inputs: DeploymentUserInput[] = [];
     for (const form of this.forms.toArray()) {
-      var input = form.collect()
+      var input = form.collect();
       if (!input) {
-        return // per-field errors are shown inline
+        return; // per-field errors are shown inline
       }
-      inputs.push(input)
+      inputs.push(input);
     }
     if (inputs.length === 0) {
-      this.router.navigateByUrl("/modules")
-      return
+      this.router.navigateByUrl('/modules');
+      return;
     }
-    this.submitting = true
-    this.moduleService.createDeployments(inputs).pipe(
-      concatMap(job => this.utilService.checkJobStatus(job.id, "Creating deployments", "module-manager", "deployments"))
-    ).subscribe({
-      next: (jobResult) => {
-        if (jobResult?.result) {
-          this.utilService.presentJobResult("Create deployments", mapDeploymentResults(jobResult.result), "Deployment created")
-        }
-        this.router.navigateByUrl("/modules")
-      },
-      error: (err) => {
-        this.errorService.handleError(ModulesComponent.name, "submit", err, "Creating the deployment failed")
-        this.submitting = false
-      }
-    })
+    this.submitting = true;
+    this.moduleService
+      .createDeployments(inputs)
+      .pipe(
+        concatMap((job) =>
+          this.utilService.checkJobStatus(job.id, 'Creating deployments', 'module-manager', 'deployments'),
+        ),
+      )
+      .subscribe({
+        next: (jobResult) => {
+          if (jobResult?.result) {
+            this.utilService.presentJobResult(
+              'Create deployments',
+              mapDeploymentResults(jobResult.result),
+              'Deployment created',
+            );
+          }
+          this.router.navigateByUrl('/modules');
+        },
+        error: (err) => {
+          this.errorService.handleError(ModulesComponent.name, 'submit', err, 'Creating the deployment failed');
+          this.submitting = false;
+        },
+      });
   }
 
   cancel() {
-    this.router.navigateByUrl("/modules")
+    this.router.navigateByUrl('/modules');
   }
 }

@@ -24,10 +24,10 @@ import {InterfaceValue} from './global-configs';
 
 // mgw-module-lib uses string data types, the global config API numeric ones
 export const MODULE_DATA_TYPE_TO_NUMERIC: Record<string, number> = {
-  "string": 1,
-  "int": 2,
-  "float": 3,
-  "bool": 4,
+  string: 1,
+  int: 2,
+  float: 3,
+  bool: 4,
 };
 
 export interface ModuleInput {
@@ -142,31 +142,31 @@ export interface DeploymentUserInput {
 
 // Parses one raw string into the module-lib data type. Throws on invalid input.
 export function parseModuleConfigItem(dataType: string, raw: string): any {
-  raw = raw.trim()
+  raw = raw.trim();
   switch (dataType) {
-    case "int": {
+    case 'int': {
       if (!/^[+-]?\d+$/.test(raw)) {
-        throw new Error("'" + raw + "' is not an integer")
+        throw new Error("'" + raw + "' is not an integer");
       }
-      return Number(raw)
+      return Number(raw);
     }
-    case "float": {
-      if (raw === "" || isNaN(Number(raw))) {
-        throw new Error("'" + raw + "' is not a number")
+    case 'float': {
+      if (raw === '' || isNaN(Number(raw))) {
+        throw new Error("'" + raw + "' is not a number");
       }
-      return Number(raw)
+      return Number(raw);
     }
-    case "bool": {
-      if (raw === "true") {
-        return true
+    case 'bool': {
+      if (raw === 'true') {
+        return true;
       }
-      if (raw === "false") {
-        return false
+      if (raw === 'false') {
+        return false;
       }
-      throw new Error("'" + raw + "' is not a boolean (use true or false)")
+      throw new Error("'" + raw + "' is not a boolean (use true or false)");
     }
     default:
-      return raw
+      return raw;
   }
 }
 
@@ -175,28 +175,28 @@ export function parseModuleConfigItem(dataType: string, raw: string): any {
 // min_len, max_len, plus the options restriction. The module-manager
 // validates again server-side; this only surfaces errors early.
 export function validateModuleConfigItem(config: ModuleConfigValue, value: any): void {
-  var opt = config.type_opt || {}
-  if (typeof value === "number") {
-    if (opt["min"] !== undefined && opt["min"] !== null && value < opt["min"]) {
-      throw new Error(value + " is below the minimum of " + opt["min"])
+  var opt = config.type_opt || {};
+  if (typeof value === 'number') {
+    if (opt['min'] !== undefined && opt['min'] !== null && value < opt['min']) {
+      throw new Error(value + ' is below the minimum of ' + opt['min']);
     }
-    if (opt["max"] !== undefined && opt["max"] !== null && value > opt["max"]) {
-      throw new Error(value + " is above the maximum of " + opt["max"])
+    if (opt['max'] !== undefined && opt['max'] !== null && value > opt['max']) {
+      throw new Error(value + ' is above the maximum of ' + opt['max']);
     }
   }
-  if (typeof value === "string") {
-    if (opt["min_len"] && value.length < opt["min_len"]) {
-      throw new Error("must be at least " + opt["min_len"] + " characters long")
+  if (typeof value === 'string') {
+    if (opt['min_len'] && value.length < opt['min_len']) {
+      throw new Error('must be at least ' + opt['min_len'] + ' characters long');
     }
-    if (opt["max_len"] && value.length > opt["max_len"]) {
-      throw new Error("must be at most " + opt["max_len"] + " characters long")
+    if (opt['max_len'] && value.length > opt['max_len']) {
+      throw new Error('must be at most ' + opt['max_len'] + ' characters long');
     }
-    if (opt["regex"] && !new RegExp(opt["regex"]).test(value)) {
-      throw new Error("'" + value + "' does not match " + opt["regex"])
+    if (opt['regex'] && !new RegExp(opt['regex']).test(value)) {
+      throw new Error("'" + value + "' does not match " + opt['regex']);
     }
   }
   if (config.options && config.options.length > 0 && !config.opt_ext && !config.options.includes(value)) {
-    throw new Error("'" + value + "' is not one of the allowed values")
+    throw new Error("'" + value + "' is not one of the allowed values");
   }
 }
 
@@ -204,29 +204,32 @@ export function validateModuleConfigItem(config: ModuleConfigValue, value: any):
 // item for slices). Returns the typed value or throws.
 export function parseModuleConfigValue(config: ModuleConfigValue, raw: string): any {
   if (!config.is_slice) {
-    var value = parseModuleConfigItem(config.data_type, raw)
-    validateModuleConfigItem(config, value)
-    return value
+    var value = parseModuleConfigItem(config.data_type, raw);
+    validateModuleConfigItem(config, value);
+    return value;
   }
-  var items = raw.split("\n").map(line => line.trim()).filter(line => line !== "")
+  var items = raw
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line !== '');
   if (items.length === 0) {
-    throw new Error("a list needs at least one value (one per line)")
+    throw new Error('a list needs at least one value (one per line)');
   }
-  return items.map(item => {
-    var value = parseModuleConfigItem(config.data_type, item)
-    validateModuleConfigItem(config, value)
-    return value
-  })
+  return items.map((item) => {
+    var value = parseModuleConfigItem(config.data_type, item);
+    validateModuleConfigItem(config, value);
+    return value;
+  });
 }
 
 // base64 helpers for file contents (UTF-8 safe)
 export function encodeFileData(text: string): string {
-  return btoa(String.fromCharCode(...new TextEncoder().encode(text)))
+  return btoa(String.fromCharCode(...new TextEncoder().encode(text)));
 }
 
 export function decodeFileData(data: string): string {
   if (!data) {
-    return ""
+    return '';
   }
-  return new TextDecoder().decode(Uint8Array.from(atob(data), c => c.charCodeAt(0)))
+  return new TextDecoder().decode(Uint8Array.from(atob(data), (c) => c.charCodeAt(0)));
 }

@@ -64,19 +64,18 @@ Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lo
 Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo
 
 
-`
+`;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ContainerEngineManagerMockService {
-  logPath = "/logs"
+  logPath = '/logs';
 
-  constructor() {
-  }
+  constructor() {}
 
   getContainerLogs(containerID: string, since: Date): Observable<string> {
-    var logs = LOG
-    return of(logs).pipe(delay(500))
+    var logs = LOG;
+    return of(logs).pipe(delay(500));
   }
 }

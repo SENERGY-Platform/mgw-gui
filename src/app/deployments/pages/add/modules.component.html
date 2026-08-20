@@ -18,28 +18,39 @@
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
   @if (ready) {
-    <mgw-page-header backTo="/modules"
-                     description="Set the values this module needs before its containers are created."
-                     title="Create deployment"></mgw-page-header>
+    <mgw-page-header
+      backTo="/modules"
+      description="Set the values this module needs before its containers are created."
+      title="Create deployment"
+    ></mgw-page-header>
 
     @if (modules.length > 1) {
       <div class="mgw-notice">
         <mat-icon>account_tree</mat-icon>
-        <span>This module pulls in dependencies. All {{ modules.length }} modules are deployed together — one
-          section per module.</span>
+        <span
+          >This module pulls in dependencies. All {{ modules.length }} modules are deployed together — one section per
+          module.</span
+        >
       </div>
     }
 
     @if (modules.length === 0) {
-      <mgw-empty-state icon="check_circle" message="The module and all its dependencies already have a deployment."
-                       title="Nothing to deploy">
+      <mgw-empty-state
+        icon="check_circle"
+        message="The module and all its dependencies already have a deployment."
+        title="Nothing to deploy"
+      >
         <button [routerLink]="'/modules'" emptyAction mat-stroked-button>Back to modules</button>
       </mgw-empty-state>
     }
 
     @for (module of modules; track module.id) {
-      <deployment-form [globalConfigs]="globalConfigs" [hostResources]="hostResources"
-                       [module]="module" [secrets]="secrets"></deployment-form>
+      <deployment-form
+        [globalConfigs]="globalConfigs"
+        [hostResources]="hostResources"
+        [module]="module"
+        [secrets]="secrets"
+      ></deployment-form>
     }
 
     @if (modules.length > 0) {

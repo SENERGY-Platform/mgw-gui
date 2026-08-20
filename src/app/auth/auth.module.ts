@@ -7,11 +7,11 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 
-
 const routes: Routes = [
   {
-    path: 'login', component: LoginComponent
-  }
+    path: 'login',
+    component: LoginComponent,
+  },
 ];
 
 @NgModule({
@@ -24,7 +24,6 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatButtonModule,
     LoginComponent,
-  ]
+  ],
 })
-export class AuthModule {
-}
+export class AuthModule {}

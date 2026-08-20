@@ -15,8 +15,10 @@
 -->
 
 <div class="mgw-page has-action-bar">
-  <mgw-page-header description="Modules offered by the configured repositories. Collect what you want to change, then review and apply it in one go."
-                   title="Catalog">
+  <mgw-page-header
+    description="Modules offered by the configured repositories. Collect what you want to change, then review and apply it in one go."
+    title="Catalog"
+  >
     <div pageActions>
       <button (click)="refreshRepositories()" mat-stroked-button matTooltip="Fetch the latest module list">
         <mat-icon>refresh</mat-icon>
@@ -24,7 +26,8 @@
       </button>
       <button (click)="updateAll()" [disabled]="updatesCount === 0" mat-flat-button>
         <mat-icon>upgrade</mat-icon>
-        Update all@if (updatesCount > 0) {
+        Update all
+        @if (updatesCount > 0) {
           <span>&nbsp;({{ updatesCount }})</span>
         }
       </button>
@@ -34,8 +37,10 @@
   @if (pendingRequest) {
     <div class="mgw-notice warn">
       <mat-icon>pending_actions</mat-icon>
-      <span>A change request is pending on the gateway. It stays there until it is applied or discarded — a
-        repository refresh discards it too.</span>
+      <span
+        >A change request is pending on the gateway. It stays there until it is applied or discarded — a repository
+        refresh discards it too.</span
+      >
       <button (click)="openPendingRequest()" mat-stroked-button>Review</button>
     </div>
   }
@@ -43,7 +48,7 @@
   <div class="mgw-toolbar">
     <mat-form-field appearance="outline" class="mgw-search" subscriptSizing="dynamic">
       <mat-label>Search modules</mat-label>
-      <input (keyup.enter)="load()" [(ngModel)]="nameFilter" matInput>
+      <input (keyup.enter)="load()" [(ngModel)]="nameFilter" matInput />
       <button (click)="load()" aria-label="Search" mat-icon-button matSuffix>
         <mat-icon>search</mat-icon>
       </button>
@@ -79,7 +84,8 @@
     <mgw-empty-state
       icon="inventory_2"
       message="Nothing matches the current filter. If the catalog is empty altogether, refresh the repositories to fetch the latest module list."
-      title="No modules found">
+      title="No modules found"
+    >
       <button (click)="refreshRepositories()" emptyAction mat-stroked-button>Refresh repositories</button>
     </mgw-empty-state>
   } @else if (dataSource.data.length > 0) {
@@ -162,14 +168,20 @@
                     Install
                   </button>
                 } @else if (primaryAction(module) === 'switch') {
-                  <button (click)="applyPrimary(module)" mat-stroked-button
-                          matTooltip="Switch to the selected repository and channel">
+                  <button
+                    (click)="applyPrimary(module)"
+                    mat-stroked-button
+                    matTooltip="Switch to the selected repository and channel"
+                  >
                     <mat-icon>swap_horiz</mat-icon>
                     Switch
                   </button>
                 } @else if (primaryAction(module) === 'update') {
-                  <button (click)="applyPrimary(module)" mat-flat-button
-                          matTooltip="Update to {{module.installed_variant.next_version}}">
+                  <button
+                    (click)="applyPrimary(module)"
+                    mat-flat-button
+                    matTooltip="Update to {{ module.installed_variant.next_version }}"
+                  >
                     <mat-icon>upgrade</mat-icon>
                     Update
                   </button>
@@ -192,7 +204,7 @@
         </ng-container>
 
         <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-        <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+        <tr *matRowDef="let m; columns: displayColumns" mat-row></tr>
       </table>
     </div>
   }

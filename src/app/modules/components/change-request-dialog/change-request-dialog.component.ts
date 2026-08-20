@@ -21,9 +21,9 @@ import {
   MatDialogClose,
   MatDialogContent,
   MatDialogRef,
-  MatDialogTitle
+  MatDialogTitle,
 } from '@angular/material/dialog';
-import { DatePipe } from '@angular/common';
+import {DatePipe} from '@angular/common';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {StatusPillComponent} from 'src/app/core/components/status-pill/status-pill.component';
@@ -32,30 +32,39 @@ import {ModulesChangeRequest} from 'src/app/core/models/modules';
 // Shows the pending modules change request for review. Closes with
 // 'execute', 'discard' or undefined (keep the request pending).
 @Component({
-    selector: 'change-request-dialog',
-    templateUrl: './change-request-dialog.component.html',
-    styleUrls: ['./change-request-dialog.component.css'],
-    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatIcon, StatusPillComponent, DatePipe]
+  selector: 'change-request-dialog',
+  templateUrl: './change-request-dialog.component.html',
+  styleUrls: ['./change-request-dialog.component.css'],
+  imports: [
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatButton,
+    MatIcon,
+    StatusPillComponent,
+    DatePipe,
+  ],
 })
 export class ChangeRequestDialogComponent {
-  request!: ModulesChangeRequest
+  request!: ModulesChangeRequest;
 
   constructor(
     public dialogRef: MatDialogRef<ChangeRequestDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) data: any
+    @Inject(MAT_DIALOG_DATA) data: any,
   ) {
-    this.request = data.request
+    this.request = data.request;
   }
 
   isEmpty(): boolean {
-    return !this.request.install?.length && !this.request.change?.length && !this.request.remove?.length
+    return !this.request.install?.length && !this.request.change?.length && !this.request.remove?.length;
   }
 
   execute() {
-    this.dialogRef.close('execute')
+    this.dialogRef.close('execute');
   }
 
   discard() {
-    this.dialogRef.close('discard')
+    this.dialogRef.close('discard');
   }
 }

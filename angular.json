@@ -20,18 +20,10 @@
               "base": "dist/mgw-gui"
             },
             "index": "src/index.html",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/theme.scss",
-              "src/styles.css"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/theme.scss", "src/styles.css"],
             "scripts": [],
             "browser": "src/main.ts"
           },
@@ -145,20 +137,10 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing",
-              "src/testing/init-environment.ts"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing", "src/testing/init-environment.ts"],
             "tsConfig": "tsconfig.spec.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/theme.scss",
-              "src/styles.css"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/theme.scss", "src/styles.css"],
             "scripts": []
           }
         }

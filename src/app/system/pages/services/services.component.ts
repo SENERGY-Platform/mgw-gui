@@ -1,14 +1,12 @@
-import { Component } from '@angular/core';
-import {ContainerListComponent} from "./container-list/container-list.component";
-import {NativeListComponent} from "./native-list/native-list.component";
-import {PageHeaderComponent} from "../../../core/components/page-header/page-header.component";
+import {Component} from '@angular/core';
+import {ContainerListComponent} from './container-list/container-list.component';
+import {NativeListComponent} from './native-list/native-list.component';
+import {PageHeaderComponent} from '../../../core/components/page-header/page-header.component';
 
 @Component({
-    selector: 'app-services',
-    imports: [ContainerListComponent, NativeListComponent, PageHeaderComponent],
-    templateUrl: './services.component.html',
-    styleUrl: './services.component.css'
+  selector: 'app-services',
+  imports: [ContainerListComponent, NativeListComponent, PageHeaderComponent],
+  templateUrl: './services.component.html',
+  styleUrl: './services.component.css',
 })
-export class ServicesComponent {
-
-}
+export class ServicesComponent {}

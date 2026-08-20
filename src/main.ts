@@ -21,57 +21,68 @@ import {CoreServicesModule} from './app/system/core-services.module';
 import {AuthModule} from './app/auth/auth.module';
 import {AppComponent} from './app/app.component';
 
-
 bootstrapApplication(AppComponent, {
   providers: [
-    provideZoneChangeDetection(),importProvidersFrom(BrowserModule, MatIconModule, AppRoutingModule, DeploymentsModule, ContainerModule, ModulesModule, SecretsModule, CoreServicesModule, AuthModule),
+    provideZoneChangeDetection(),
+    importProvidersFrom(
+      BrowserModule,
+      MatIconModule,
+      AppRoutingModule,
+      DeploymentsModule,
+      ContainerModule,
+      ModulesModule,
+      SecretsModule,
+      CoreServicesModule,
+      AuthModule,
+    ),
     {
-      provide: HTTP_INTERCEPTORS, useClass: AuthCheckInterceptor, multi: true
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthCheckInterceptor,
+      multi: true,
     },
     {
-      'provide': 'ModuleManagerService',
-      'useClass': environment.moduleManagerService
+      provide: 'ModuleManagerService',
+      useClass: environment.moduleManagerService,
     },
     {
-      'provide': 'SecretManagerService',
-      'useClass': environment.secretManagerService
+      provide: 'SecretManagerService',
+      useClass: environment.secretManagerService,
     },
     {
-      'provide': 'HostManagerService',
-      'useClass': environment.hostManagerService
+      provide: 'HostManagerService',
+      useClass: environment.hostManagerService,
     },
     {
-      'provide': 'CoreManagerService',
-      'useClass': environment.coreManagerService
+      provide: 'CoreManagerService',
+      useClass: environment.coreManagerService,
     },
     {
-      'provide': 'ContainerEngineManagerService',
-      'useClass': environment.containerEngineManagerService
+      provide: 'ContainerEngineManagerService',
+      useClass: environment.containerEngineManagerService,
     },
     {
-      'provide': LOCALE_ID,
-      'useValue': 'de'
+      provide: LOCALE_ID,
+      useValue: 'de',
     },
     {
       // Material Symbols carries the same ligature names as the legacy
       // Material Icons font, so every existing <mat-icon> keeps working.
       provide: MAT_ICON_DEFAULT_OPTIONS,
-      useValue: {fontSet: 'material-symbols-rounded'}
+      useValue: {fontSet: 'material-symbols-rounded'},
     },
     {
-      'provide': HIGHLIGHT_OPTIONS,
-      'useValue': {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: {
         coreLibraryLoader: () => import('highlight.js/lib/core'),
         lineNumbersLoader: () => import('ngx-highlightjs/line-numbers'),
         lineNumbers: true,
         languages: {
           //typescript: () => import('highlight.js/lib/languages/typescript'),
         },
-        themePath: "assets/styles/code-themes/github-dark.css"
-      }
+        themePath: 'assets/styles/code-themes/github-dark.css',
+      },
     },
     provideHttpClient(withInterceptorsFromDi()),
-    provideAnimations()
-  ]
-})
-  .catch(err => console.error(err));
+    provideAnimations(),
+  ],
+}).catch((err) => console.error(err));

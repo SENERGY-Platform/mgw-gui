@@ -11,7 +11,7 @@ import {
   MatRow,
   MatRowDef,
   MatTable,
-  MatTableDataSource
+  MatTableDataSource,
 } from '@angular/material/table';
 import {Observable, of} from 'rxjs';
 import {CoreManagerService} from 'src/app/core/services/core-manager/core-manager.service';
@@ -28,10 +28,10 @@ interface JobRow {
   started?: string | Date;
   completed?: string | Date;
   canceled?: string | Date;
-  error?: { message: string, code: number } | null;
+  error?: {message: string; code: number} | null;
   done: boolean;
 }
-import { DatePipe } from '@angular/common';
+import {DatePipe} from '@angular/common';
 import {SpinnerComponent} from '../spinner/spinner.component';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -39,10 +39,29 @@ import {MatTooltip} from '@angular/material/tooltip';
 import {StatusPillComponent, StatusTone} from '../status-pill/status-pill.component';
 
 @Component({
-    selector: 'list-job',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.css'],
-    imports: [SpinnerComponent, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatIconButton, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, DatePipe, MatTooltip, StatusPillComponent]
+  selector: 'list-job',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.css'],
+  imports: [
+    SpinnerComponent,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatSortHeader,
+    MatCellDef,
+    MatCell,
+    MatIconButton,
+    MatIcon,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    DatePipe,
+    MatTooltip,
+    StatusPillComponent,
+  ],
 })
 export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
   // human-readable name of the service the jobs belong to
@@ -54,22 +73,20 @@ export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
   dataSource = new MatTableDataSource<JobRow>();
   ready: Boolean = false;
   init: Boolean = true;
-  interval: any
+  interval: any;
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['job', 'status', 'started', 'finished', 'actions']
+  displayColumns = ['job', 'status', 'started', 'finished', 'actions'];
   @Input() source?: string;
 
   constructor(
-    @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
-    @Inject("CoreManagerService") private coreService: CoreManagerService,
+    @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
+    @Inject('CoreManagerService') private coreService: CoreManagerService,
     private errorService: ErrorService,
-  ) {
-  }
+  ) {}
 
   ngOnDestroy(): void {
-    clearTimeout(this.interval)
+    clearTimeout(this.interval);
   }
-
 
   sourceLabel(): string {
     return this.sourceLabels[this.source || ''] || this.source || 'Jobs';
@@ -106,7 +123,7 @@ export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
       // next-gen job model: only start/end, results live in /results endpoints
       this.moduleService.getJobs().subscribe({
         next: (jobs) => {
-          this.dataSource.data = jobs.map(job => ({
+          this.dataSource.data = jobs.map((job) => ({
             id: job.id,
             description: job.description,
             created: job.start,
@@ -117,41 +134,41 @@ export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
           this.ready = true;
         },
         error: (err) => {
-          this.errorService.handleError(ListJobTable.name, "loadJobs", err)
-          this.ready = true
-        }
-      })
-      return
+          this.errorService.handleError(ListJobTable.name, 'loadJobs', err);
+          this.ready = true;
+        },
+      });
+      return;
     }
 
-    let obs: Observable<Job[]> = of()
+    let obs: Observable<Job[]> = of();
     if (this.source === 'core-manager') {
-      obs = this.coreService.getJobs()
+      obs = this.coreService.getJobs();
     }
 
     obs.subscribe({
       next: (jobs) => {
-        this.dataSource.data = jobs.map(job => ({
+        this.dataSource.data = jobs.map((job) => ({
           ...job,
           done: !!job.completed || !!job.canceled,
         }));
         this.ready = true;
       },
       error: (err) => {
-        this.errorService.handleError(ListJobTable.name, "loadJobs", err)
-        this.ready = true
-      }
-    })
+        this.errorService.handleError(ListJobTable.name, 'loadJobs', err);
+        this.ready = true;
+      },
+    });
   }
 
   ngOnInit(): void {
     if (this.source === 'module-manager') {
       // canceled/error columns only exist in the old job model
-      this.displayColumns = ['job', 'status', 'started', 'finished', 'actions']
+      this.displayColumns = ['job', 'status', 'started', 'finished', 'actions'];
     }
     this.setupSorting();
-    this.init = false
-    this.loadJobs()
+    this.init = false;
+    this.loadJobs();
     this.interval = setInterval(() => {
       this.loadJobs();
     }, 1000);
@@ -168,21 +185,18 @@ export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
     };
   }
 
-  ngAfterViewInit(): void {
-
-  }
+  ngAfterViewInit(): void {}
 
   cancelJob(jobID: string) {
-    var obs = this.source === 'core-manager' ? this.coreService.stopJob(jobID) : this.moduleService.stopJob(jobID)
+    var obs = this.source === 'core-manager' ? this.coreService.stopJob(jobID) : this.moduleService.stopJob(jobID);
     obs.subscribe({
       next: (_) => {
-        this.loadJobs()
+        this.loadJobs();
       },
       error: (err) => {
-        this.errorService.handleError(ListJobTable.name, "cancelJob", err)
-        this.loadJobs()
-      }
-    })
+        this.errorService.handleError(ListJobTable.name, 'cancelJob', err);
+        this.loadJobs();
+      },
+    });
   }
-
 }

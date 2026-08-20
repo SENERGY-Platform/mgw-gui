@@ -1,5 +1,5 @@
-import {Container} from "src/app/container/models/container";
-import {BaseRequest} from "src/app/core/models/base";
+import {Container} from 'src/app/container/models/container';
+import {BaseRequest} from 'src/app/core/models/base';
 
 // Create a new Deployment
 export interface DeploymentRequest extends BaseRequest {
@@ -76,7 +76,7 @@ export interface ConfigTemplate {
   required: boolean;
   group?: string;
   default: any;
-  options: any,
+  options: any;
   opt_ext: boolean;
   type: string;
   type_opt: any;
@@ -104,13 +104,10 @@ export interface InputGroups {
   [id: string]: InputGroup;
 }
 
-export interface DeploymentTemplate extends DeploymentTemplateBase {
-}
+export interface DeploymentTemplate extends DeploymentTemplateBase {}
 
 export interface DeploymentUpdateTemplate extends DeploymentTemplateBase {
   name: string;
 }
 
-export interface ModuleUpdateTemplate extends DeploymentTemplate {
-}
-
+export interface ModuleUpdateTemplate extends DeploymentTemplate {}

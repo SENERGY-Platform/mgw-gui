@@ -15,8 +15,7 @@
 -->
 
 <header class="app-bar">
-  <button (click)="toggleDrawer()" aria-label="Toggle navigation" mat-icon-button
-          matTooltip="Toggle navigation">
+  <button (click)="toggleDrawer()" aria-label="Toggle navigation" mat-icon-button matTooltip="Toggle navigation">
     <mat-icon>menu</mat-icon>
   </button>
 
@@ -50,15 +49,25 @@
 </header>
 
 <mat-sidenav-container [class.collapsed]="collapsed() && !compact()" class="shell">
-  <mat-sidenav [mode]="compact() ? 'over' : 'side'" [opened]="drawerOpen()"
-               (closedStart)="drawerOpen.set(false)" class="nav-drawer">
+  <mat-sidenav
+    [mode]="compact() ? 'over' : 'side'"
+    [opened]="drawerOpen()"
+    (closedStart)="drawerOpen.set(false)"
+    class="nav-drawer"
+  >
     <div class="drawer-inner">
       <nav class="nav">
         @for (item of navItems; track item.route) {
           @if (item.children?.length) {
-            <button (click)="toggleSection(item)" [class.active]="isSectionActive(item)"
-                    [matTooltipDisabled]="!collapsed() || compact()" [matTooltip]="item.label"
-                    class="nav-item" matTooltipPosition="right" type="button">
+            <button
+              (click)="toggleSection(item)"
+              [class.active]="isSectionActive(item)"
+              [matTooltipDisabled]="!collapsed() || compact()"
+              [matTooltip]="item.label"
+              class="nav-item"
+              matTooltipPosition="right"
+              type="button"
+            >
               <mat-icon>{{ item.icon }}</mat-icon>
               <span class="nav-label">{{ item.label }}</span>
               <mat-icon [class.rotated]="isSectionExpanded(item)" class="chevron">expand_more</mat-icon>
@@ -66,8 +75,12 @@
             <div [class.expanded]="isSectionExpanded(item) && !(collapsed() && !compact())" class="nav-children">
               <div class="nav-children-inner">
                 @for (child of item.children; track child.route) {
-                  <a [routerLinkActiveOptions]="{exact: !!child.exact}" [routerLink]="child.route"
-                     class="nav-item nav-child" routerLinkActive="active">
+                  <a
+                    [routerLinkActiveOptions]="{exact: !!child.exact}"
+                    [routerLink]="child.route"
+                    class="nav-item nav-child"
+                    routerLinkActive="active"
+                  >
                     <mat-icon>{{ child.icon }}</mat-icon>
                     <span class="nav-label">{{ child.label }}</span>
                   </a>
@@ -75,9 +88,15 @@
               </div>
             </div>
           } @else {
-            <a [matTooltipDisabled]="!collapsed() || compact()" [matTooltip]="item.label"
-               [routerLinkActiveOptions]="{exact: !!item.exact}" [routerLink]="item.route" class="nav-item"
-               matTooltipPosition="right" routerLinkActive="active">
+            <a
+              [matTooltipDisabled]="!collapsed() || compact()"
+              [matTooltip]="item.label"
+              [routerLinkActiveOptions]="{exact: !!item.exact}"
+              [routerLink]="item.route"
+              class="nav-item"
+              matTooltipPosition="right"
+              routerLinkActive="active"
+            >
               <mat-icon>{{ item.icon }}</mat-icon>
               <span class="nav-label">{{ item.label }}</span>
             </a>

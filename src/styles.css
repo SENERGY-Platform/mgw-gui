@@ -84,7 +84,8 @@ html[data-mgw-theme='light'] {
   --mgw-on-idle-container: #1f1f22;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -108,8 +109,13 @@ a:hover {
 /* Material Symbols replaces the legacy Material Icons font: same ligature
    names, rounded shapes, and a variable axis so icons can be optically
    aligned with the type weight. */
-.material-symbols-rounded, mat-icon.mat-icon {
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+.material-symbols-rounded,
+mat-icon.mat-icon {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
 }
 
 /* The spinner is positioned by the page it belongs to; every other global

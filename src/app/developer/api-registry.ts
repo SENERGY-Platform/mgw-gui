@@ -48,7 +48,11 @@ const publicDisplayBase = location.protocol + '//' + location.host + environment
 const gatewayBase = 'http://core-api';
 const docBase = environment.coreSwaggerUrl;
 
-function publicApi(id: string, name: string, options: { requiresAuth?: boolean, path?: string, doc?: string } = {}): ApiEntry {
+function publicApi(
+  id: string,
+  name: string,
+  options: {requiresAuth?: boolean; path?: string; doc?: string} = {},
+): ApiEntry {
   const path = options.path ?? '/' + id;
   return {
     scope: 'public',
@@ -107,7 +111,7 @@ export const INTERNAL_APIS: ApiEntry[] = [
 export const ALL_APIS: ApiEntry[] = [...PUBLIC_APIS, ...MODULE_APIS, ...INTERNAL_APIS];
 
 export function findApi(scope: string, id: string): ApiEntry | undefined {
-  return ALL_APIS.find(api => api.scope === scope && api.id === id);
+  return ALL_APIS.find((api) => api.scope === scope && api.id === id);
 }
 
 /** The document the playground reads; index.html sits next to it. */

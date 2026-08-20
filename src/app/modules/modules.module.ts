@@ -24,17 +24,19 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 
 const routes: Routes = [
   {
-    path: 'resources/global-configs', component: GlobalConfigsComponent
+    path: 'resources/global-configs',
+    component: GlobalConfigsComponent,
   },
   {
-    path: 'modules', children: [
+    path: 'modules',
+    children: [
       {path: '', component: ListComponent},
       {path: 'catalog', component: ManageComponent},
       {path: 'repositories', component: RepositoriesComponent},
       {path: 'detail/:id', component: InfoComponent},
       // the detail page used to live under /info
       {path: 'info/:id', redirectTo: 'detail/:id'},
-    ]
+    ],
   },
 ];
 
@@ -62,9 +64,8 @@ const routes: Routes = [
     InfoComponent,
     ManageComponent,
     GlobalConfigsComponent,
-    RepositoriesComponent
+    RepositoriesComponent,
   ],
-  exports: []
+  exports: [],
 })
-export class ModulesModule {
-}
+export class ModulesModule {}

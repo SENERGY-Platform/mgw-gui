@@ -20,7 +20,7 @@ import {
   DATA_TYPE_INT,
   DATA_TYPE_STRING,
   formatConfigValue,
-  parseConfigValue
+  parseConfigValue,
 } from './global-configs';
 
 describe('parseConfigValue', () => {

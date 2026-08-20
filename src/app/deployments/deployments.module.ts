@@ -27,16 +27,16 @@ const routes: Routes = [
     path: 'deployments',
     children: [
       {path: 'add/:id', component: ModulesComponent},
-      {path: 'edit/:ids', component: ShowModuleComponentComponent}
-    ]
+      {path: 'edit/:ids', component: ShowModuleComponentComponent},
+    ],
   },
   {
     path: 'resources/endpoints',
     children: [
       {path: '', component: ListEndpointsComponent},
-      {path: 'add/:id', component: AddEndpointComponent}
-    ]
-  }
+      {path: 'add/:id', component: AddEndpointComponent},
+    ],
+  },
 ];
 
 @NgModule({
@@ -64,9 +64,8 @@ const routes: Routes = [
     ShowModuleComponentComponent,
     JobLoaderModalComponent,
     ListEndpointsComponent,
-    AddEndpointComponent
+    AddEndpointComponent,
   ],
-  exports: []
+  exports: [],
 })
-export class DeploymentsModule {
-}
+export class DeploymentsModule {}

@@ -67,8 +67,7 @@
           <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
           <td *matCellDef="let job" class="mgw-col-actions" mat-cell>
             <div class="mgw-row-actions">
-              <button (click)="cancelJob(job.id)" [disabled]="job.done" mat-icon-button
-                      matTooltip="Cancel this job">
+              <button (click)="cancelJob(job.id)" [disabled]="job.done" mat-icon-button matTooltip="Cancel this job">
                 <mat-icon>cancel</mat-icon>
               </button>
             </div>
@@ -76,7 +75,7 @@
         </ng-container>
 
         <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-        <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+        <tr *matRowDef="let m; columns: displayColumns" mat-row></tr>
       </table>
     </div>
   }

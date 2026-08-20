@@ -30,71 +30,73 @@ export type StatusTone = 'ok' | 'warn' | 'danger' | 'idle' | 'info';
       <span class="text">{{ label }}</span>
     </span>
   `,
-  styles: [`
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 10px 3px 8px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 550;
-      line-height: 18px;
-      white-space: nowrap;
-    }
+  styles: [
+    `
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 10px 3px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 550;
+        line-height: 18px;
+        white-space: nowrap;
+      }
 
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      flex: 0 0 auto;
-    }
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex: 0 0 auto;
+      }
 
-    .pill[data-tone='ok'] {
-      background: var(--mgw-ok-container);
-      color: var(--mgw-on-ok-container);
-    }
+      .pill[data-tone='ok'] {
+        background: var(--mgw-ok-container);
+        color: var(--mgw-on-ok-container);
+      }
 
-    .pill[data-tone='ok'] .dot {
-      background: var(--mgw-ok);
-    }
+      .pill[data-tone='ok'] .dot {
+        background: var(--mgw-ok);
+      }
 
-    .pill[data-tone='warn'] {
-      background: var(--mgw-warn-container);
-      color: var(--mgw-on-warn-container);
-    }
+      .pill[data-tone='warn'] {
+        background: var(--mgw-warn-container);
+        color: var(--mgw-on-warn-container);
+      }
 
-    .pill[data-tone='warn'] .dot {
-      background: var(--mgw-warn);
-    }
+      .pill[data-tone='warn'] .dot {
+        background: var(--mgw-warn);
+      }
 
-    .pill[data-tone='danger'] {
-      background: var(--mgw-danger-container);
-      color: var(--mgw-on-danger-container);
-    }
+      .pill[data-tone='danger'] {
+        background: var(--mgw-danger-container);
+        color: var(--mgw-on-danger-container);
+      }
 
-    .pill[data-tone='danger'] .dot {
-      background: var(--mgw-danger);
-    }
+      .pill[data-tone='danger'] .dot {
+        background: var(--mgw-danger);
+      }
 
-    .pill[data-tone='idle'] {
-      background: var(--mgw-idle-container);
-      color: var(--mgw-on-idle-container);
-    }
+      .pill[data-tone='idle'] {
+        background: var(--mgw-idle-container);
+        color: var(--mgw-on-idle-container);
+      }
 
-    .pill[data-tone='idle'] .dot {
-      background: var(--mgw-idle);
-    }
+      .pill[data-tone='idle'] .dot {
+        background: var(--mgw-idle);
+      }
 
-    .pill[data-tone='info'] {
-      background: var(--mat-sys-primary-container);
-      color: var(--mat-sys-on-primary-container);
-    }
+      .pill[data-tone='info'] {
+        background: var(--mat-sys-primary-container);
+        color: var(--mat-sys-on-primary-container);
+      }
 
-    .pill[data-tone='info'] .dot {
-      background: var(--mat-sys-primary);
-    }
-  `]
+      .pill[data-tone='info'] .dot {
+        background: var(--mat-sys-primary);
+      }
+    `,
+  ],
 })
 export class StatusPillComponent {
   @Input({required: true}) tone!: StatusTone;

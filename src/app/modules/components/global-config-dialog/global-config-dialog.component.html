@@ -3,7 +3,7 @@
 <div class="dialog-content" mat-dialog-content>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Name</mat-label>
-    <input [(ngModel)]="name" matInput>
+    <input [(ngModel)]="name" matInput />
   </mat-form-field>
 
   <div class="type-row">
@@ -21,8 +21,10 @@
   </div>
 
   @if (isEdit) {
-    <p class="hint">Deployments referencing this config use the value as declared by their module
-    config — changing the data type can break them.</p>
+    <p class="hint">
+      Deployments referencing this config use the value as declared by their module config — changing the data type can
+      break them.
+    </p>
   }
 
   @if (isSlice) {
@@ -36,8 +38,12 @@
   @if (!isSlice && dataType !== DATA_TYPE_BOOL) {
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Value</mat-label>
-      <input [(ngModel)]="rawValue" [step]="dataType === DATA_TYPE_INT ? 1 : 'any'"
-        [type]="(dataType === DATA_TYPE_INT || dataType === DATA_TYPE_FLOAT) ? 'number' : 'text'" matInput>
+      <input
+        [(ngModel)]="rawValue"
+        [step]="dataType === DATA_TYPE_INT ? 1 : 'any'"
+        [type]="dataType === DATA_TYPE_INT || dataType === DATA_TYPE_FLOAT ? 'number' : 'text'"
+        matInput
+      />
       @if (dataType === DATA_TYPE_INT) {
         <mat-hint>Whole number</mat-hint>
       }

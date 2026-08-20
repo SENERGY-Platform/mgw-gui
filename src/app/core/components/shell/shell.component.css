@@ -151,7 +151,9 @@
 }
 
 .nav-item.active mat-icon {
-  font-variation-settings: 'FILL' 1, 'wght' 500;
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 500;
 }
 
 .nav-label {

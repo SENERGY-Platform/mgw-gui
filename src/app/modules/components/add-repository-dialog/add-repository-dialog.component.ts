@@ -20,7 +20,7 @@ import {
   MatDialogClose,
   MatDialogContent,
   MatDialogRef,
-  MatDialogTitle
+  MatDialogTitle,
 } from '@angular/material/dialog';
 
 import {FormsModule} from '@angular/forms';
@@ -33,40 +33,48 @@ import {MatOption, MatSelect} from '@angular/material/select';
 // so the dialog takes it as JSON (deliberately simple, see SNRGY-4587).
 // Closes with {type, definition} or undefined when cancelled.
 const GITHUB_TEMPLATE = {
-  owner: "SENERGY-Platform",
-  repository: "mgw-module-repository",
-  reference: "refs/heads/main",
+  owner: 'SENERGY-Platform',
+  repository: 'mgw-module-repository',
+  reference: 'refs/heads/main',
   priority: 1,
-  channels: [
-    {name: "main", priority: 1, blacklist: []}
-  ]
+  channels: [{name: 'main', priority: 1, blacklist: []}],
 };
 
 @Component({
-    selector: 'add-repository-dialog',
-    templateUrl: './add-repository-dialog.component.html',
-    styleUrls: ['./add-repository-dialog.component.css'],
-    imports: [FormsModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatFormField, MatLabel, MatHint, MatInput, MatSelect, MatOption]
+  selector: 'add-repository-dialog',
+  templateUrl: './add-repository-dialog.component.html',
+  styleUrls: ['./add-repository-dialog.component.css'],
+  imports: [
+    FormsModule,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatButton,
+    MatFormField,
+    MatLabel,
+    MatHint,
+    MatInput,
+    MatSelect,
+    MatOption,
+  ],
 })
 export class AddRepositoryDialogComponent {
-  repositoryType: string = 'github.com'
-  definitionJson: string = JSON.stringify(GITHUB_TEMPLATE, null, 2)
-  error: string = ''
+  repositoryType: string = 'github.com';
+  definitionJson: string = JSON.stringify(GITHUB_TEMPLATE, null, 2);
+  error: string = '';
 
-  constructor(
-    public dialogRef: MatDialogRef<AddRepositoryDialogComponent>,
-  ) {
-  }
+  constructor(public dialogRef: MatDialogRef<AddRepositoryDialogComponent>) {}
 
   save() {
-    this.error = ''
-    var definition: any
+    this.error = '';
+    var definition: any;
     try {
-      definition = JSON.parse(this.definitionJson)
+      definition = JSON.parse(this.definitionJson);
     } catch (err: any) {
-      this.error = "Invalid JSON: " + err.message
-      return
+      this.error = 'Invalid JSON: ' + err.message;
+      return;
     }
-    this.dialogRef.close({type: this.repositoryType, definition: definition})
+    this.dialogRef.close({type: this.repositoryType, definition: definition});
   }
 }

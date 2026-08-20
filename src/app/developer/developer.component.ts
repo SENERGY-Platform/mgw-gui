@@ -23,7 +23,7 @@ import {ApiEntry, INTERNAL_APIS, MODULE_APIS, PUBLIC_APIS} from './api-registry'
   selector: 'app-developer',
   imports: [PageHeaderComponent, SwaggerListComponent],
   templateUrl: './developer.component.html',
-  styleUrl: './developer.component.css'
+  styleUrl: './developer.component.css',
 })
 export class DeveloperComponent {
   publicApis: ApiEntry[] = PUBLIC_APIS;

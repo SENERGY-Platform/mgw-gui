@@ -14,6 +14,4 @@ export interface Container extends ContainerBase {
   srv_ref: string;
 }
 
-export interface SubDeploymentContainer extends ContainerBase {
-
-}
+export interface SubDeploymentContainer extends ContainerBase {}

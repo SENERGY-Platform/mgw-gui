@@ -15,163 +15,166 @@ import {MatButton} from '@angular/material/button';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 
 @Component({
-    selector: 'secret-form',
-    templateUrl: './form.component.html',
-    styleUrls: ['./form.component.css'],
-    imports: [SpinnerComponent, MatFormField, MatSelect, FormsModule, MatOption, ReactiveFormsModule, MatInput, CdkTextareaAutosize, MatButton, RouterLink, PageHeaderComponent]
+  selector: 'secret-form',
+  templateUrl: './form.component.html',
+  styleUrls: ['./form.component.css'],
+  imports: [
+    SpinnerComponent,
+    MatFormField,
+    MatSelect,
+    FormsModule,
+    MatOption,
+    ReactiveFormsModule,
+    MatInput,
+    CdkTextareaAutosize,
+    MatButton,
+    RouterLink,
+    PageHeaderComponent,
+  ],
 })
 export class FormComponent implements OnChanges, OnInit {
-  @Input() mode: string = "add"
-  @Input() secretID!: string
-  form: any
-  SecretTypesConst = SecretTypes
-  ready: boolean = false
-  secretTypes: SecretType[] = []
-  selectedSecretType!: string
+  @Input() mode: string = 'add';
+  @Input() secretID!: string;
+  form: any;
+  SecretTypesConst = SecretTypes;
+  ready: boolean = false;
+  secretTypes: SecretType[] = [];
+  selectedSecretType!: string;
 
   constructor(
     private fb: FormBuilder,
-    @Inject("SecretManagerService") private secretService: SecretManagerServiceService,
+    @Inject('SecretManagerService') private secretService: SecretManagerServiceService,
     private errorService: ErrorService,
     private router: Router,
-  ) {
-
-  }
+  ) {}
 
   ngOnInit(): void {
-    if (this.mode == "add") {
-      this.loadSecretTypes()
+    if (this.mode == 'add') {
+      this.loadSecretTypes();
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    var attribute = "secretID"
+    var attribute = 'secretID';
     if (changes[attribute] && changes[attribute].currentValue) {
-      this.secretID = changes[attribute].currentValue
-      this.ready = false
+      this.secretID = changes[attribute].currentValue;
+      this.ready = false;
 
-      this.secretService.getSecret(this.secretID).subscribe(
-        {
-          next: (secret) => {
-            this.selectedSecretType = secret.type
-            this.setupForm(secret)
-            this.ready = true
-          },
-          error: (err) => {
-            this.errorService.handleError(FormComponent.name, "ngOnChanges", err)
-            this.ready = true
-          }
-        }
-      )
+      this.secretService.getSecret(this.secretID).subscribe({
+        next: (secret) => {
+          this.selectedSecretType = secret.type;
+          this.setupForm(secret);
+          this.ready = true;
+        },
+        error: (err) => {
+          this.errorService.handleError(FormComponent.name, 'ngOnChanges', err);
+          this.ready = true;
+        },
+      });
     }
   }
 
   loadSecretTypes() {
     this.secretService.getSecretTypes().subscribe({
       next: (secretTypes) => {
-        this.secretTypes = secretTypes
-        this.ready = true
+        this.secretTypes = secretTypes;
+        this.ready = true;
       },
       error: (err) => {
-        this.errorService.handleError(FormComponent.name, "loadSecretTypes", err)
-        this.ready = true
-      }
-    })
+        this.errorService.handleError(FormComponent.name, 'loadSecretTypes', err);
+        this.ready = true;
+      },
+    });
   }
 
-
   setupForm(secret: Secret | null = null) {
-    var secretName = ""
-    var secretType = this.selectedSecretType
-    var secretValue = ""
+    var secretName = '';
+    var secretType = this.selectedSecretType;
+    var secretValue = '';
 
     if (!!secret) {
-      secretName = secret.name
-      secretType = secret.type
+      secretName = secret.name;
+      secretType = secret.type;
     }
 
     if (this.selectedSecretType == this.SecretTypesConst.BasicAuth) {
-      var username = ""
-      var password = ""
+      var username = '';
+      var password = '';
 
       this.form = this.fb.group({
-        "name": this.fb.control(secretName),
-        "username": this.fb.control(username),
-        "password": this.fb.control(password),
-        "type": this.fb.control(secretType)
-      })
+        name: this.fb.control(secretName),
+        username: this.fb.control(username),
+        password: this.fb.control(password),
+        type: this.fb.control(secretType),
+      });
     } else {
       this.form = this.fb.group({
-        "value": this.fb.control(secretValue),
-        "name": this.fb.control(secretName),
-        "type": this.fb.control(secretType)
-      })
+        value: this.fb.control(secretValue),
+        name: this.fb.control(secretName),
+        type: this.fb.control(secretType),
+      });
     }
   }
 
   selectSecretType() {
-    this.setupForm()
+    this.setupForm();
   }
 
   parseSecretRequest(): CreateSecret {
-    var secretRequest: CreateSecret
+    var secretRequest: CreateSecret;
 
     if (this.selectedSecretType == this.SecretTypesConst.BasicAuth) {
       secretRequest = {
-        "name": this.form.get("name").value,
-        "type": this.form.get("type").value,
-        "value": JSON.stringify({
-          "username": this.form.get("username").value,
-          "password": this.form.get("password").value
-        })
-      }
+        name: this.form.get('name').value,
+        type: this.form.get('type').value,
+        value: JSON.stringify({
+          username: this.form.get('username').value,
+          password: this.form.get('password').value,
+        }),
+      };
     } else {
-      secretRequest = this.form.value
+      secretRequest = this.form.value;
     }
 
-    return secretRequest
+    return secretRequest;
   }
 
   createSecret() {
     if (this.form.valid) {
-      var secretRequest = this.parseSecretRequest()
+      var secretRequest = this.parseSecretRequest();
 
       if (!!secretRequest) {
-        this.ready = false
-        this.secretService.createSecret(secretRequest).subscribe(
-          {
-            next: (_) => {
-              this.ready = true
-              this.router.navigate(["/resources/secrets"])
-            },
-            error: (err) => {
-              this.errorService.handleError(FormComponent.name, "createSecret", err)
-              this.ready = true
-            }
-          }
-        )
+        this.ready = false;
+        this.secretService.createSecret(secretRequest).subscribe({
+          next: (_) => {
+            this.ready = true;
+            this.router.navigate(['/resources/secrets']);
+          },
+          error: (err) => {
+            this.errorService.handleError(FormComponent.name, 'createSecret', err);
+            this.ready = true;
+          },
+        });
       }
     }
   }
 
   updateSecret() {
     if (this.form.valid) {
-      var secretRequest = this.parseSecretRequest()
+      var secretRequest = this.parseSecretRequest();
 
       if (!!secretRequest) {
-        this.ready = false
-        this.secretService.updateSecret(secretRequest, this.secretID).subscribe(
-          {
-            next: (_) => {
-              this.ready = true
-              this.router.navigate(["/resources/secrets"])
-            },
-            error: (err) => {
-              this.errorService.handleError(FormComponent.name, "updateSecret", err)
-              this.ready = true
-            }
-          }
-        )
+        this.ready = false;
+        this.secretService.updateSecret(secretRequest, this.secretID).subscribe({
+          next: (_) => {
+            this.ready = true;
+            this.router.navigate(['/resources/secrets']);
+          },
+          error: (err) => {
+            this.errorService.handleError(FormComponent.name, 'updateSecret', err);
+            this.ready = true;
+          },
+        });
       }
     }
   }

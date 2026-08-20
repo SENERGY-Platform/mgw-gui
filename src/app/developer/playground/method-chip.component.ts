@@ -20,42 +20,44 @@ import {Component, Input} from '@angular/core';
 @Component({
   selector: 'api-method-chip',
   template: `<span [attr.data-method]="method" class="method">{{ method }}</span>`,
-  styles: [`
-    .method {
-      display: inline-block;
-      min-width: 52px;
-      padding: 2px 6px;
-      border-radius: 6px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-align: center;
-      line-height: 16px;
-      background: var(--mgw-idle-container);
-      color: var(--mgw-on-idle-container);
-    }
+  styles: [
+    `
+      .method {
+        display: inline-block;
+        min-width: 52px;
+        padding: 2px 6px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-align: center;
+        line-height: 16px;
+        background: var(--mgw-idle-container);
+        color: var(--mgw-on-idle-container);
+      }
 
-    .method[data-method='GET'] {
-      background: var(--mat-sys-primary-container);
-      color: var(--mat-sys-on-primary-container);
-    }
+      .method[data-method='GET'] {
+        background: var(--mat-sys-primary-container);
+        color: var(--mat-sys-on-primary-container);
+      }
 
-    .method[data-method='POST'] {
-      background: var(--mgw-ok-container);
-      color: var(--mgw-on-ok-container);
-    }
+      .method[data-method='POST'] {
+        background: var(--mgw-ok-container);
+        color: var(--mgw-on-ok-container);
+      }
 
-    .method[data-method='PUT'],
-    .method[data-method='PATCH'] {
-      background: var(--mgw-warn-container);
-      color: var(--mgw-on-warn-container);
-    }
+      .method[data-method='PUT'],
+      .method[data-method='PATCH'] {
+        background: var(--mgw-warn-container);
+        color: var(--mgw-on-warn-container);
+      }
 
-    .method[data-method='DELETE'] {
-      background: var(--mgw-danger-container);
-      color: var(--mgw-on-danger-container);
-    }
-  `]
+      .method[data-method='DELETE'] {
+        background: var(--mgw-danger-container);
+        color: var(--mgw-on-danger-container);
+      }
+    `,
+  ],
 })
 export class MethodChipComponent {
   @Input({required: true}) method!: string;

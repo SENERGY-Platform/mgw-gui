@@ -16,44 +16,51 @@ import {MatButton} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
 import {PageHeaderComponent} from '../../../core/components/page-header/page-header.component';
 import {EmptyStateComponent} from '../../../core/components/empty-state/empty-state.component';
-import {
-  ListEndpointsComponent as ListEndpointsComponent_1
-} from '../../../core/components/list-endpoints/list-endpoints.component';
+import {ListEndpointsComponent as ListEndpointsComponent_1} from '../../../core/components/list-endpoints/list-endpoints.component';
 
 @Component({
-    selector: 'app-list',
-    templateUrl: './list-endpoints.component.html',
-    styleUrls: ['./list-endpoints.component.css'],
-    imports: [SpinnerComponent, MatIcon, MatButton, RouterLink, PageHeaderComponent, EmptyStateComponent, ListEndpointsComponent_1]
+  selector: 'app-list',
+  templateUrl: './list-endpoints.component.html',
+  styleUrls: ['./list-endpoints.component.css'],
+  imports: [
+    SpinnerComponent,
+    MatIcon,
+    MatButton,
+    RouterLink,
+    PageHeaderComponent,
+    EmptyStateComponent,
+    ListEndpointsComponent_1,
+  ],
 })
 export class ListEndpointsComponent implements OnInit {
-  deploymentIDs: string[] = []
+  deploymentIDs: string[] = [];
   ready = false;
 
   constructor(
     private coreService: CoreManagerService,
     private errorService: ErrorService,
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.loadDeploymentsWithEndpoints()
+    this.loadDeploymentsWithEndpoints();
   }
 
   loadDeploymentsWithEndpoints() {
-    this.coreService.getEndpoints().pipe(
-      map((endpointsResponse: CoreEndpointsResponse) => {
-        const services: CoreEndpoint[] = []
-        for (const [key, value] of Object.entries(endpointsResponse)) {
-          services.push(value)
-        }
-        return services
-      })
-    ).subscribe(
-      {
+    this.coreService
+      .getEndpoints()
+      .pipe(
+        map((endpointsResponse: CoreEndpointsResponse) => {
+          const services: CoreEndpoint[] = [];
+          for (const [key, value] of Object.entries(endpointsResponse)) {
+            services.push(value);
+          }
+          return services;
+        }),
+      )
+      .subscribe({
         next: (endpoints: CoreEndpoint[]) => {
           if (endpoints) {
-            endpoints.forEach(endpoint => {
+            endpoints.forEach((endpoint) => {
               if (this.deploymentIDs.indexOf(endpoint.ref) === -1) {
                 this.deploymentIDs.push(endpoint.ref);
               }
@@ -62,10 +69,9 @@ export class ListEndpointsComponent implements OnInit {
           this.ready = true;
         },
         error: (err) => {
-          this.errorService.handleError(ListEndpointsComponent.name, "loadDeploymentsWithEndpoints", err)
+          this.errorService.handleError(ListEndpointsComponent.name, 'loadDeploymentsWithEndpoints', err);
           this.ready = true;
-        }
-      }
-    )
+        },
+      });
   }
 }

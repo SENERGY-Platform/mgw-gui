@@ -13,14 +13,23 @@ import {RouterLink} from '@angular/router';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 
 @Component({
-    selector: 'app-register',
-    templateUrl: './register.component.html',
-    styleUrls: ['./register.component.css'],
-    imports: [SpinnerComponent, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatButton, RouterLink, PageHeaderComponent]
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css'],
+  imports: [
+    SpinnerComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatInput,
+    MatButton,
+    RouterLink,
+    PageHeaderComponent,
+  ],
 })
 export class RegisterComponent {
-  flowID: string = "";
-  csrf: string = "";
+  flowID: string = '';
+  csrf: string = '';
   waitingForRegister = false;
 
   form = new FormGroup({
@@ -28,15 +37,14 @@ export class RegisterComponent {
     password: new FormControl('', {nonNullable: true, validators: Validators.required}),
     firstName: new FormControl(undefined, {nonNullable: true}),
     lastName: new FormControl(undefined, {nonNullable: true}),
-  })
+  });
 
   constructor(
     private authService: AuthService,
     private errorService: ErrorService,
     private userService: UserService,
-    private router: Router
-  ) {
-  }
+    private router: Router,
+  ) {}
 
   getControls() {
     return this.form.controls;
@@ -47,22 +55,22 @@ export class RegisterComponent {
     const user: UserRequest = {
       username: this.getControls().username.value,
       meta: {
-        first_name: this.getControls().firstName.value || "",
-        last_name: this.getControls().lastName.value || ""
+        first_name: this.getControls().firstName.value || '',
+        last_name: this.getControls().lastName.value || '',
       },
       secret: this.getControls().password.value,
-      type: "human"
-    }
+      type: 'human',
+    };
 
     this.userService.addUser(user).subscribe({
       next: (_: any) => {
         this.waitingForRegister = false;
-        this.router.navigate(['/system/accounts/users'])
+        this.router.navigate(['/system/accounts/users']);
       },
       error: (err) => {
         this.waitingForRegister = false;
-        this.errorService.handleError("RegisterComponent", "register", err);
-      }
-    })
+        this.errorService.handleError('RegisterComponent', 'register', err);
+      },
+    });
   }
 }

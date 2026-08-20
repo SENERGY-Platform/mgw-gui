@@ -11,7 +11,7 @@ import {
   MatRow,
   MatRowDef,
   MatTable,
-  MatTableDataSource
+  MatTableDataSource,
 } from '@angular/material/table';
 import {map} from 'rxjs';
 import {UserService} from 'src/app/core/services/user/user.service';
@@ -29,56 +29,76 @@ import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-sta
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
-    selector: 'app-list-apps',
-    templateUrl: './list-apps.component.html',
-    styleUrls: ['./list-apps.component.css'],
-    imports: [SpinnerComponent, MatTable, MatSort, MatSortHeader, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatIconButton, MatButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, PageHeaderComponent, EmptyStateComponent]
+  selector: 'app-list-apps',
+  templateUrl: './list-apps.component.html',
+  styleUrls: ['./list-apps.component.css'],
+  imports: [
+    SpinnerComponent,
+    MatTable,
+    MatSort,
+    MatSortHeader,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatIconButton,
+    MatButton,
+    MatTooltip,
+    MatIcon,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    PageHeaderComponent,
+    EmptyStateComponent,
+  ],
 })
 export class ListAppsComponent {
   dataSource = new MatTableDataSource<DeviceUser>();
   ready: Boolean = false;
   init: Boolean = true;
-  interval: any
+  interval: any;
   @ViewChild(MatSort) sort!: MatSort;
-  displayColumns = ['username', 'model', 'manufacturer', 'actions']
+  displayColumns = ['username', 'model', 'manufacturer', 'actions'];
   selection = new SelectionModel<string>(true, []);
 
   constructor(
     private userService: UserService,
     private notifierService: NotificationService,
-    private errorService: ErrorService
-  ) {
-  }
+    private errorService: ErrorService,
+  ) {}
 
   ngOnInit() {
     this.loadUsers();
   }
 
   loadUsers(): void {
-    this.userService.listDeviceUsers().pipe(
-      map((usersResponse: DeviceUsersResponse) => {
-        const users: DeviceUser[] = []
-        for (const [key, value] of Object.entries(usersResponse)) {
-          users.push(value)
-        }
-        return users
-      })
-    ).subscribe(
-      {
+    this.userService
+      .listDeviceUsers()
+      .pipe(
+        map((usersResponse: DeviceUsersResponse) => {
+          const users: DeviceUser[] = [];
+          for (const [key, value] of Object.entries(usersResponse)) {
+            users.push(value);
+          }
+          return users;
+        }),
+      )
+      .subscribe({
         next: (users: DeviceUser[]) => {
           if (!users) {
-            this.dataSource.data = []
+            this.dataSource.data = [];
           } else {
-            this.dataSource.data = users
+            this.dataSource.data = users;
           }
-          this.ready = true
+          this.ready = true;
         },
         error: (err) => {
-          this.errorService.handleError(ListAppsComponent.name, "loadUsers", err)
-          this.ready = true
-        }
-      }
-    )
+          this.errorService.handleError(ListAppsComponent.name, 'loadUsers', err);
+          this.ready = true;
+        },
+      });
   }
 
   isAllSelected() {
@@ -103,22 +123,22 @@ export class ListAppsComponent {
   deleteUser(userID: string) {
     this.userService.deleteUser(userID).subscribe({
       next: (_) => {
-        this.loadUsers()
+        this.loadUsers();
       },
       error: (err) => {
-        this.errorService.handleError(ListAppsComponent.name, "deleteUser", err)
-      }
-    })
+        this.errorService.handleError(ListAppsComponent.name, 'deleteUser', err);
+      },
+    });
   }
 
   openPairing() {
     this.userService.openPairingMode().subscribe({
       next: (_) => {
-        this.notifierService.showError("MGW open for pairing!");
+        this.notifierService.showError('MGW open for pairing!');
       },
       error: (err) => {
-        this.errorService.handleError(ListAppsComponent.name, "openPairing", err);
-      }
-    })
+        this.errorService.handleError(ListAppsComponent.name, 'openPairing', err);
+      },
+    });
   }
 }

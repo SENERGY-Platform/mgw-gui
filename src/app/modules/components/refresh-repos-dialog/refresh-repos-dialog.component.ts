@@ -21,7 +21,7 @@ import {
   MatDialogClose,
   MatDialogContent,
   MatDialogRef,
-  MatDialogTitle
+  MatDialogTitle,
 } from '@angular/material/dialog';
 
 import {FormsModule} from '@angular/forms';
@@ -34,35 +34,44 @@ import {Repository} from 'src/app/core/models/repositories';
 // sources (empty array = all) or undefined when cancelled. Refreshing only
 // some repositories avoids GitHub rate limits during local development.
 @Component({
-    selector: 'refresh-repos-dialog',
-    templateUrl: './refresh-repos-dialog.component.html',
-    styleUrls: ['./refresh-repos-dialog.component.css'],
-    imports: [FormsModule, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatCheckbox, MatIcon]
+  selector: 'refresh-repos-dialog',
+  templateUrl: './refresh-repos-dialog.component.html',
+  styleUrls: ['./refresh-repos-dialog.component.css'],
+  imports: [
+    FormsModule,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatButton,
+    MatCheckbox,
+    MatIcon,
+  ],
 })
 export class RefreshReposDialogComponent {
-  repositories: Repository[] = []
-  selected: Record<string, boolean> = {}
-  hasPendingChangeRequest: boolean = false
+  repositories: Repository[] = [];
+  selected: Record<string, boolean> = {};
+  hasPendingChangeRequest: boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<RefreshReposDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) data: any
+    @Inject(MAT_DIALOG_DATA) data: any,
   ) {
-    this.repositories = data.repositories || []
-    this.hasPendingChangeRequest = !!data.hasPendingChangeRequest
-    this.repositories.forEach(repo => this.selected[repo.Source] = true)
+    this.repositories = data.repositories || [];
+    this.hasPendingChangeRequest = !!data.hasPendingChangeRequest;
+    this.repositories.forEach((repo) => (this.selected[repo.Source] = true));
   }
 
   selectedSources(): string[] {
-    return this.repositories.map(repo => repo.Source).filter(source => this.selected[source])
+    return this.repositories.map((repo) => repo.Source).filter((source) => this.selected[source]);
   }
 
   allSelected(): boolean {
-    return this.selectedSources().length === this.repositories.length
+    return this.selectedSources().length === this.repositories.length;
   }
 
   refresh() {
     // no filter when everything is selected
-    this.dialogRef.close(this.allSelected() ? [] : this.selectedSources())
+    this.dialogRef.close(this.allSelected() ? [] : this.selectedSources());
   }
 }

@@ -31,8 +31,12 @@
           <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
           <td *matCellDef="let element" class="mgw-col-actions" mat-cell>
             <div class="mgw-row-actions">
-              <button (click)="removeApplication(element.id)" class="danger-icon" mat-icon-button
-                      matTooltip="Remove application">
+              <button
+                (click)="removeApplication(element.id)"
+                class="danger-icon"
+                mat-icon-button
+                matTooltip="Remove application"
+              >
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
@@ -40,7 +44,7 @@
         </ng-container>
 
         <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
-        <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
+        <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
       </table>
     </div>
   }

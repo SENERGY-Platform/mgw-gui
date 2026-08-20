@@ -1,22 +1,24 @@
 <div class="mgw-page mgw-page-narrow has-action-bar">
   <spinner [show]="waitingForRegister" class="global-centered-spinner"></spinner>
 
-  <mgw-page-header backTo="/system/accounts/users"
-                   description="Create a user account that can sign in to this gateway."
-                   title="Add user"></mgw-page-header>
+  <mgw-page-header
+    backTo="/system/accounts/users"
+    description="Create a user account that can sign in to this gateway."
+    title="Add user"
+  ></mgw-page-header>
 
   <div [formGroup]="form" class="mgw-card card">
     <div class="row">
       <div class="field">
         <label for="reg-first">First name</label>
         <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-          <input formControlName="firstName" id="reg-first" matInput type="text">
+          <input formControlName="firstName" id="reg-first" matInput type="text" />
         </mat-form-field>
       </div>
       <div class="field">
         <label for="reg-last">Last name</label>
         <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-          <input formControlName="lastName" id="reg-last" matInput type="text">
+          <input formControlName="lastName" id="reg-last" matInput type="text" />
         </mat-form-field>
       </div>
     </div>
@@ -25,14 +27,14 @@
       <label for="reg-username">Username</label>
       <p class="desc">Used to sign in.</p>
       <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-        <input formControlName="username" id="reg-username" matInput type="text">
+        <input formControlName="username" id="reg-username" matInput type="text" />
       </mat-form-field>
     </div>
 
     <div class="field">
       <label for="reg-password">Password</label>
       <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-        <input formControlName="password" id="reg-password" matInput type="password">
+        <input formControlName="password" id="reg-password" matInput type="password" />
       </mat-form-field>
     </div>
   </div>

@@ -1,15 +1,15 @@
-import {ConfigTemplate, HostResourcesTemplate, SecretTemplate} from "./deployment_models"
+import {ConfigTemplate, HostResourcesTemplate, SecretTemplate} from './deployment_models';
 
 export interface Template {
   secrets: {
-    [id: string]: SecretTemplate
-  },
+    [id: string]: SecretTemplate;
+  };
   configs: {
-    [id: string]: ConfigTemplate
-  },
+    [id: string]: ConfigTemplate;
+  };
   hostResources: {
-    [id: string]: HostResourcesTemplate
-  }
+    [id: string]: HostResourcesTemplate;
+  };
 }
 
 export interface FormTemplate {

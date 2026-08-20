@@ -39,9 +39,20 @@ const HANDSET = '(max-width: 1023px)';
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.css'],
   imports: [
-    MatSidenavContainer, MatSidenav, MatSidenavContent, RouterOutlet, RouterLink, RouterLinkActive,
-    MatIcon, MatIconButton, MatMenu, MatMenuItem, MatMenuTrigger, MatTooltip, MatDivider
-  ]
+    MatSidenavContainer,
+    MatSidenav,
+    MatSidenavContent,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    MatIcon,
+    MatIconButton,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
+    MatTooltip,
+    MatDivider,
+  ],
 })
 export class ShellComponent implements OnInit, OnDestroy {
   readonly navItems = NAV_ITEMS;
@@ -61,31 +72,33 @@ export class ShellComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private errorService: ErrorService,
     private breakpointObserver: BreakpointObserver,
-    public theme: ThemeService
-  ) {
-  }
+    public theme: ThemeService,
+  ) {}
 
   ngOnInit(): void {
     try {
       this.collapsed.set(localStorage.getItem(COLLAPSE_KEY) === '1');
-    } catch (_) {
-    }
+    } catch (_) {}
 
-    this.subscriptions.add(this.breakpointObserver.observe(HANDSET).subscribe(state => {
-      this.compact.set(state.matches);
-      this.drawerOpen.set(!state.matches);
-    }));
+    this.subscriptions.add(
+      this.breakpointObserver.observe(HANDSET).subscribe((state) => {
+        this.compact.set(state.matches);
+        this.drawerOpen.set(!state.matches);
+      }),
+    );
 
     this.syncExpandedSection(this.router.url);
-    this.subscriptions.add(this.router.events.pipe(
-      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
-    ).subscribe(event => {
-      this.syncExpandedSection(event.urlAfterRedirects);
-      // an overlay drawer would otherwise stay open on top of the new page
-      if (this.compact()) {
-        this.drawerOpen.set(false);
-      }
-    }));
+    this.subscriptions.add(
+      this.router.events
+        .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+        .subscribe((event) => {
+          this.syncExpandedSection(event.urlAfterRedirects);
+          // an overlay drawer would otherwise stay open on top of the new page
+          if (this.compact()) {
+            this.drawerOpen.set(false);
+          }
+        }),
+    );
   }
 
   ngOnDestroy(): void {
@@ -94,15 +107,14 @@ export class ShellComponent implements OnInit, OnDestroy {
 
   toggleDrawer() {
     if (this.compact()) {
-      this.drawerOpen.update(open => !open);
+      this.drawerOpen.update((open) => !open);
       return;
     }
-    this.collapsed.update(collapsed => {
+    this.collapsed.update((collapsed) => {
       const next = !collapsed;
       try {
         localStorage.setItem(COLLAPSE_KEY, next ? '1' : '0');
-      } catch (_) {
-      }
+      } catch (_) {}
       return next;
     });
   }
@@ -113,7 +125,7 @@ export class ShellComponent implements OnInit, OnDestroy {
       this.router.navigateByUrl(item.route);
       return;
     }
-    this.expandedSection.update(current => current === item.route ? null : item.route);
+    this.expandedSection.update((current) => (current === item.route ? null : item.route));
   }
 
   isSectionExpanded(item: NavItem): boolean {
@@ -125,20 +137,23 @@ export class ShellComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.authService.initLogout().pipe(
-      concatMap(logoutInit => this.authService.logout(logoutInit.logout_token))
-    ).subscribe({
-      next: (_) => {
-        window.location.href = environment.uiBaseUrl + '/login';
-      },
-      error: (err) => {
-        this.errorService.handleError('ShellComponent', 'logout', err);
-      }
-    });
+    this.authService
+      .initLogout()
+      .pipe(concatMap((logoutInit) => this.authService.logout(logoutInit.logout_token)))
+      .subscribe({
+        next: (_) => {
+          window.location.href = environment.uiBaseUrl + '/login';
+        },
+        error: (err) => {
+          this.errorService.handleError('ShellComponent', 'logout', err);
+        },
+      });
   }
 
   private syncExpandedSection(url: string) {
-    const section = this.navItems.find(item => item.children?.length && (url === item.route || url.startsWith(item.route + '/')));
+    const section = this.navItems.find(
+      (item) => item.children?.length && (url === item.route || url.startsWith(item.route + '/')),
+    );
     this.expandedSection.set(section ? section.route : null);
   }
 }

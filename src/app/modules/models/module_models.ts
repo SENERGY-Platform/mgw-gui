@@ -1,4 +1,4 @@
-import {BaseRequest} from "src/app/core/models/base";
+import {BaseRequest} from 'src/app/core/models/base';
 
 export interface Module {
   id: string;
@@ -35,11 +35,9 @@ export interface ModuleUpdates {
 }
 
 export interface ModuleUpdatePrepare {
-  version: string
+  version: string;
 }
 
 export interface ModuleUpdateRequest extends BaseRequest {
   dependencies: Record<string, BaseRequest> | null;
-
 }
-

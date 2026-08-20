@@ -28,7 +28,7 @@ import {
   MatRow,
   MatRowDef,
   MatTable,
-  MatTableDataSource
+  MatTableDataSource,
 } from '@angular/material/table';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
@@ -51,7 +51,7 @@ import {
   DEPLOYMENT_STATE_HEALTHY,
   DEPLOYMENT_STATE_UNHEALTHY,
   ModuleReduced,
-  needsDeploymentUpdate
+  needsDeploymentUpdate,
 } from 'src/app/core/models/modules';
 import {JobResultKind} from 'src/app/core/components/job-loader-modal/job-loader-modal.component';
 import {ErrorDialogComponent} from 'src/app/core/components/error-dialog/error-dialog.component';
@@ -73,11 +73,38 @@ interface StatusFilter {
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css'],
   imports: [
-    SpinnerComponent, FormsModule, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader,
-    MatCellDef, MatCell, MatCheckbox, MatIconButton, MatButton, MatTooltip, MatIcon, MatHeaderRowDef, MatHeaderRow,
-    MatRowDef, MatRow, RouterLink, MatMenu, MatMenuItem, MatMenuTrigger, MatFormField, MatLabel, MatInput, MatSuffix,
-    MatDivider, PageHeaderComponent, StatusPillComponent, EmptyStateComponent
-  ]
+    SpinnerComponent,
+    FormsModule,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatSortHeader,
+    MatCellDef,
+    MatCell,
+    MatCheckbox,
+    MatIconButton,
+    MatButton,
+    MatTooltip,
+    MatIcon,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    RouterLink,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatSuffix,
+    MatDivider,
+    PageHeaderComponent,
+    StatusPillComponent,
+    EmptyStateComponent,
+  ],
 })
 export class ListComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<ModuleReduced>();
@@ -104,12 +131,11 @@ export class ListComponent implements OnInit, OnDestroy {
 
   constructor(
     public dialog: MatDialog,
-    @Inject("ModuleManagerService") private moduleService: ModuleManagerService,
+    @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
     private errorService: ErrorService,
     private router: Router,
-    private utilService: UtilService
-  ) {
-  }
+    private utilService: UtilService,
+  ) {}
 
   ngOnInit(): void {
     this.dataSource.filterPredicate = (module, _) => this.matchesFilters(module);
@@ -143,7 +169,7 @@ export class ListComponent implements OnInit, OnDestroy {
           return this.statusOf(row);
         default:
           var value = (<any>row)[sortHeaderId];
-          return (typeof (value) === 'string') ? value.toUpperCase() : value;
+          return typeof value === 'string' ? value.toUpperCase() : value;
       }
     };
     this.dataSource.sort = this.sort;
@@ -154,17 +180,17 @@ export class ListComponent implements OnInit, OnDestroy {
       next: (modules) => {
         modules = modules || [];
         this.modulesById = {};
-        modules.forEach(module => this.modulesById[module.id] = module);
+        modules.forEach((module) => (this.modulesById[module.id] = module));
         this.dataSource.data = modules;
         this.applyFilters();
         this.ready = true;
       },
       error: (err) => {
         if (!background) {
-          this.errorService.handleError(ListComponent.name, "loadModules", err, "Loading the modules failed");
+          this.errorService.handleError(ListComponent.name, 'loadModules', err, 'Loading the modules failed');
         }
         this.ready = true;
-      }
+      },
     });
   }
 
@@ -180,7 +206,7 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   countFor(key: StatusFilter['key']): number {
-    return this.dataSource.data.filter(module => this.matchesStatus(module, key)).length;
+    return this.dataSource.data.filter((module) => this.matchesStatus(module, key)).length;
   }
 
   filteredCount(): number {
@@ -200,18 +226,18 @@ export class ListComponent implements OnInit, OnDestroy {
   // disabled deployments have state 0, same as deployments with undetermined state
   statusOf(module: ModuleReduced): ModuleStatus {
     if (!module.is_deployed) {
-      return "none";
+      return 'none';
     }
     if (!module.deployment.enabled) {
-      return "disabled";
+      return 'disabled';
     }
     switch (module.deployment.state) {
       case DEPLOYMENT_STATE_HEALTHY:
-        return "healthy";
+        return 'healthy';
       case DEPLOYMENT_STATE_UNHEALTHY:
-        return "unhealthy";
+        return 'unhealthy';
       default:
-        return "unknown";
+        return 'unknown';
     }
   }
 
@@ -258,7 +284,7 @@ export class ListComponent implements OnInit, OnDestroy {
     if (moduleIDs.length === 0) {
       return;
     }
-    this.runSync(this.moduleService.enableDeployments(moduleIDs), "start");
+    this.runSync(this.moduleService.enableDeployments(moduleIDs), 'start');
   }
 
   stop(moduleID: string) {
@@ -273,7 +299,7 @@ export class ListComponent implements OnInit, OnDestroy {
     if (moduleIDs.length === 0) {
       return;
     }
-    this.runSync(this.moduleService.disableDeployments(moduleIDs), "stop");
+    this.runSync(this.moduleService.disableDeployments(moduleIDs), 'stop');
   }
 
   private runSync(obs: Observable<string[]>, method: string) {
@@ -286,10 +312,15 @@ export class ListComponent implements OnInit, OnDestroy {
         this.startPeriodicRefresh();
       },
       error: (err) => {
-        this.errorService.handleError(ListComponent.name, method, err, method === "start" ? "Starting the deployments failed" : "Stopping the deployments failed");
+        this.errorService.handleError(
+          ListComponent.name,
+          method,
+          err,
+          method === 'start' ? 'Starting the deployments failed' : 'Stopping the deployments failed',
+        );
         this.ready = true;
         this.startPeriodicRefresh();
-      }
+      },
     });
   }
 
@@ -305,7 +336,15 @@ export class ListComponent implements OnInit, OnDestroy {
     if (moduleIDs.length === 0) {
       return;
     }
-    this.runJob(this.moduleService.recreateDeployments(moduleIDs), "Deployments are recreating", "deployments", "recreate", "Recreate containers", "Containers recreated", "Recreating the containers failed");
+    this.runJob(
+      this.moduleService.recreateDeployments(moduleIDs),
+      'Deployments are recreating',
+      'deployments',
+      'recreate',
+      'Recreate containers',
+      'Containers recreated',
+      'Recreating the containers failed',
+    );
   }
 
   deleteDeployment(moduleID: string) {
@@ -320,40 +359,63 @@ export class ListComponent implements OnInit, OnDestroy {
     if (moduleIDs.length === 0) {
       return;
     }
-    this.utilService.askForConfirmation("Delete the deployment(s) of " + moduleIDs.length + " module(s)? Data stored in volumes will be removed.").pipe(
-      concatMap(confirmed => {
-        if (!confirmed) {
-          return of(null);
-        }
-        this.runJob(this.moduleService.removeDeployments(moduleIDs), "Deployments are being deleted", "deployments-delete", "delete", "Delete deployments", "Deployments deleted", "Deleting the deployments failed");
-        return of(true);
-      })
-    ).subscribe();
+    this.utilService
+      .askForConfirmation(
+        'Delete the deployment(s) of ' + moduleIDs.length + ' module(s)? Data stored in volumes will be removed.',
+      )
+      .pipe(
+        concatMap((confirmed) => {
+          if (!confirmed) {
+            return of(null);
+          }
+          this.runJob(
+            this.moduleService.removeDeployments(moduleIDs),
+            'Deployments are being deleted',
+            'deployments-delete',
+            'delete',
+            'Delete deployments',
+            'Deployments deleted',
+            'Deleting the deployments failed',
+          );
+          return of(true);
+        }),
+      )
+      .subscribe();
   }
 
-  private runJob(obs: Observable<any>, message: string, resultKind: JobResultKind, method: string, resultTitle: string, successMessage: string, errorContext: string) {
+  private runJob(
+    obs: Observable<any>,
+    message: string,
+    resultKind: JobResultKind,
+    method: string,
+    resultTitle: string,
+    successMessage: string,
+    errorContext: string,
+  ) {
     this.ready = false;
     this.stopPeriodicRefresh();
-    obs.pipe(
-      concatMap(job => {
-        return this.utilService.checkJobStatus(job.id, message, "module-manager", resultKind);
-      })
-    ).subscribe({
-      next: (jobResult) => {
-        // the job succeeds even if single modules failed, per-module errors are in the result
-        if (jobResult?.result) {
-          this.utilService.presentJobResult(resultTitle, mapDeploymentResults(jobResult.result), successMessage);
-        }
-        this.selectionClear();
-        this.loadModules(false);
-        this.startPeriodicRefresh();
-      },
-      error: (err) => {
-        this.errorService.handleError(ListComponent.name, method, err, errorContext);
-        this.ready = true;
-        this.startPeriodicRefresh();
-      }
-    });
+    obs
+      .pipe(
+        concatMap((job) => {
+          return this.utilService.checkJobStatus(job.id, message, 'module-manager', resultKind);
+        }),
+      )
+      .subscribe({
+        next: (jobResult) => {
+          // the job succeeds even if single modules failed, per-module errors are in the result
+          if (jobResult?.result) {
+            this.utilService.presentJobResult(resultTitle, mapDeploymentResults(jobResult.result), successMessage);
+          }
+          this.selectionClear();
+          this.loadModules(false);
+          this.startPeriodicRefresh();
+        },
+        error: (err) => {
+          this.errorService.handleError(ListComponent.name, method, err, errorContext);
+          this.ready = true;
+          this.startPeriodicRefresh();
+        },
+      });
   }
 
   // some models carry a partial error, e.g. when the deployment of a module
@@ -361,10 +423,10 @@ export class ListComponent implements OnInit, OnDestroy {
   showModuleError(module: ModuleReduced) {
     this.dialog.open(ErrorDialogComponent, {
       data: {
-        context: "The module was loaded with errors",
+        context: 'The module was loaded with errors',
         source: module.id,
-        detail: module.error_msg || module.deployment?.error_msg || "",
-      }
+        detail: module.error_msg || module.deployment?.error_msg || '',
+      },
     });
   }
 
@@ -373,11 +435,11 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   deploy(moduleID: string) {
-    this.router.navigateByUrl("/deployments/add/" + encodeURIComponent(moduleID));
+    this.router.navigateByUrl('/deployments/add/' + encodeURIComponent(moduleID));
   }
 
   edit(moduleID: string) {
-    this.router.navigateByUrl("/deployments/edit/" + encodeURIComponent(moduleID));
+    this.router.navigateByUrl('/deployments/edit/' + encodeURIComponent(moduleID));
   }
 
   // batch edit: one form per selected deployed module, saved as one job
@@ -386,15 +448,15 @@ export class ListComponent implements OnInit, OnDestroy {
     if (ids.length === 0) {
       return;
     }
-    this.router.navigateByUrl("/deployments/edit/" + ids.map(id => encodeURIComponent(id)).join(","));
+    this.router.navigateByUrl('/deployments/edit/' + ids.map((id) => encodeURIComponent(id)).join(','));
   }
 
   showModuleInfo(moduleID: string) {
-    this.router.navigateByUrl("/modules/detail/" + encodeURIComponent(moduleID));
+    this.router.navigateByUrl('/modules/detail/' + encodeURIComponent(moduleID));
   }
 
   selectedDeployedIds(): string[] {
-    return this.selection.selected.filter(id => this.modulesById[id]?.is_deployed);
+    return this.selection.selected.filter((id) => this.modulesById[id]?.is_deployed);
   }
 
   isAllSelected() {

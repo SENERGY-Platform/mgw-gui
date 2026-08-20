@@ -19,13 +19,15 @@ import {
   hintForError,
   mapDeploymentResults,
   mapModulesChangeResult,
-  mapRepositoryRefreshResult
+  mapRepositoryRefreshResult,
 } from './job-result-view';
 
 describe('mapModulesChangeResult', () => {
   it('maps successes and failures with a hint for known causes', () => {
     const items = mapModulesChangeResult({
-      job_id: 'j', has_error: false, error_msg: '',
+      job_id: 'j',
+      has_error: false,
+      error_msg: '',
       success: [{id: 'mod-a', action: 'install'}],
       failed: [{id: 'mod-b', action: 'remove', error: 'deployment exists'}],
     });
@@ -38,7 +40,11 @@ describe('mapModulesChangeResult', () => {
 
   it('reports an aborted job as its own failed row', () => {
     const items = mapModulesChangeResult({
-      job_id: 'j', has_error: true, error_msg: 'boom', success: null as any, failed: null as any,
+      job_id: 'j',
+      has_error: true,
+      error_msg: 'boom',
+      success: null as any,
+      failed: null as any,
     });
     expect(items.length).toBe(1);
     expect(items[0].ok).toBeFalse();
@@ -49,7 +55,9 @@ describe('mapModulesChangeResult', () => {
 describe('mapDeploymentResults', () => {
   it('maps per-module outcomes', () => {
     const items = mapDeploymentResults(<any>{
-      job_id: 'j', has_error: false, error_msg: '',
+      job_id: 'j',
+      has_error: false,
+      error_msg: '',
       results: [
         {module_id: 'mod-a', id: 'dep-1', has_error: false, error_msg: ''},
         {module_id: 'mod-b', id: '', has_error: true, error_msg: 'image pull failed'},
@@ -65,10 +73,19 @@ describe('mapDeploymentResults', () => {
 describe('mapRepositoryRefreshResult', () => {
   it('flags repositories with channel errors even when the repo itself refreshed', () => {
     const items = mapRepositoryRefreshResult(<any>{
-      job_id: 'j', has_error: false, error_msg: '',
+      job_id: 'j',
+      has_error: false,
+      error_msg: '',
       Results: [
         {type: 'host-dir', source: 'localhost', refresh: true, channel_errors: null, has_error: false, error_msg: ''},
-        {type: 'github.com', source: 'gh/repo', refresh: true, channel_errors: [{channel: 'main', has_error: true, error_msg: 'rate limited'}], has_error: false, error_msg: ''},
+        {
+          type: 'github.com',
+          source: 'gh/repo',
+          refresh: true,
+          channel_errors: [{channel: 'main', has_error: true, error_msg: 'rate limited'}],
+          has_error: false,
+          error_msg: '',
+        },
       ],
       results_err_num: 0,
     });
@@ -79,8 +96,12 @@ describe('mapRepositoryRefreshResult', () => {
 
   it('marks skipped repositories', () => {
     const items = mapRepositoryRefreshResult(<any>{
-      job_id: 'j', has_error: false, error_msg: '',
-      Results: [{type: 'github.com', source: 'gh/repo', refresh: false, channel_errors: null, has_error: false, error_msg: ''}],
+      job_id: 'j',
+      has_error: false,
+      error_msg: '',
+      Results: [
+        {type: 'github.com', source: 'gh/repo', refresh: false, channel_errors: null, has_error: false, error_msg: ''},
+      ],
       results_err_num: 0,
     });
     expect(items[0].label).toContain('skipped');

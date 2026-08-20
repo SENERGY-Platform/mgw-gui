@@ -25,39 +25,36 @@ import {JobResultDialogComponent} from '../../components/job-result-dialog/job-r
 import {hasFailures, JobResultItem} from '../../models/job-result-view';
 import {NotificationService} from './notifications.service';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UtilService {
   constructor(
     public dialog: MatDialog,
     private notificationService: NotificationService,
-  ) {
-  }
+  ) {}
 
   // Presents a job outcome: failures open the result dialog with per-item
   // errors and hints, a clean run only shows a short success notification.
   presentJobResult(title: string, items: JobResultItem[], successMessage?: string) {
     if (hasFailures(items)) {
-      this.dialog.open(JobResultDialogComponent, {data: {title: title, items: items}})
+      this.dialog.open(JobResultDialogComponent, {data: {title: title, items: items}});
     } else if (successMessage) {
-      this.notificationService.showSuccess(successMessage)
+      this.notificationService.showSuccess(successMessage);
     }
   }
 
   dateIsToday(dateTime: string | number): Boolean {
-    var today = new Date()
-    today.setHours(0, 0, 0, 0)
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    var date = new Date(dateTime)
-    if (typeof (dateTime) == 'number') {
-      date = new Date(dateTime)
+    var date = new Date(dateTime);
+    if (typeof dateTime == 'number') {
+      date = new Date(dateTime);
     }
-    date.setHours(0, 0, 0, 0)
-    return date.getTime() === today.getTime()
+    date.setHours(0, 0, 0, 0);
+    return date.getTime() === today.getTime();
   }
-
 
   checkJobStatus(jobID: string, message: string, service: string, resultKind?: JobResultKind): Observable<any> {
     /*
@@ -73,12 +70,12 @@ export class UtilService {
         jobID: jobID,
         message: message,
         service: service,
-        resultKind: resultKind
-      }
+        resultKind: resultKind,
+      },
     });
 
     // TODO pipe and throw error when
-    return dialogRef?.afterClosed()
+    return dialogRef?.afterClosed();
   }
 
   objectIsEmptyOrNull(obj: any) {
@@ -88,6 +85,6 @@ export class UtilService {
   askForConfirmation(message: string): Observable<boolean> {
     var dialogRef = this.dialog.open(ConfirmDialogComponent, {data: {message: message}});
 
-    return dialogRef?.afterClosed()
+    return dialogRef?.afterClosed();
   }
 }

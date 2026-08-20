@@ -35,40 +35,42 @@ import {MatIcon} from '@angular/material/icon';
       <ng-content select="[emptyAction]"></ng-content>
     </div>
   `,
-  styles: [`
-    .empty {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 56px 24px;
-      border: 1px dashed var(--mat-sys-outline-variant);
-      border-radius: 14px;
-      background: var(--mat-sys-surface);
-      text-align: center;
-    }
+  styles: [
+    `
+      .empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 56px 24px;
+        border: 1px dashed var(--mat-sys-outline-variant);
+        border-radius: 14px;
+        background: var(--mat-sys-surface);
+        text-align: center;
+      }
 
-    mat-icon {
-      font-size: 34px;
-      width: 34px;
-      height: 34px;
-      color: var(--mat-sys-on-surface-variant);
-    }
+      mat-icon {
+        font-size: 34px;
+        width: 34px;
+        height: 34px;
+        color: var(--mat-sys-on-surface-variant);
+      }
 
-    h2 {
-      margin: 4px 0 0;
-      font-size: 16px;
-      font-weight: 650;
-    }
+      h2 {
+        margin: 4px 0 0;
+        font-size: 16px;
+        font-weight: 650;
+      }
 
-    p {
-      margin: 0 0 10px;
-      max-width: 56ch;
-      font-size: 13px;
-      line-height: 1.5;
-      color: var(--mat-sys-on-surface-variant);
-    }
-  `]
+      p {
+        margin: 0 0 10px;
+        max-width: 56ch;
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--mat-sys-on-surface-variant);
+      }
+    `,
+  ],
 })
 export class EmptyStateComponent {
   @Input() icon = 'inbox';

@@ -32,7 +32,7 @@ import {
   MODULE_DATA_TYPE_TO_NUMERIC,
   ModuleConfigValue,
   ModuleInput,
-  parseModuleConfigValue
+  parseModuleConfigValue,
 } from 'src/app/core/models/deployment-request';
 import {formatConfigValue, GlobalConfig} from 'src/app/core/models/global-configs';
 import {Secret} from 'src/app/secrets/models/secret_models';
@@ -97,42 +97,55 @@ interface ConfigGroup {
 // (deployment-request or the installed module for edits) and the selectable
 // options, then collects a DeploymentUserInput per form on submit.
 @Component({
-    selector: 'deployment-form',
-    templateUrl: './deployment-form.component.html',
-    styleUrls: ['./deployment-form.component.css'],
-    imports: [FormsModule, MatFormField, MatHint, MatInput, MatSelect, MatOption, MatSlideToggle, MatButton, MatIconButton, MatIcon, MatTooltip]
+  selector: 'deployment-form',
+  templateUrl: './deployment-form.component.html',
+  styleUrls: ['./deployment-form.component.css'],
+  imports: [
+    FormsModule,
+    MatFormField,
+    MatHint,
+    MatInput,
+    MatSelect,
+    MatOption,
+    MatSlideToggle,
+    MatButton,
+    MatIconButton,
+    MatIcon,
+    MatTooltip,
+  ],
 })
 export class DeploymentFormComponent implements OnInit {
-  @Input() module!: DeploymentRequestModule
-  @Input() hostResources: HostResource[] = []
-  @Input() secrets: Secret[] = []
-  @Input() globalConfigs: GlobalConfig[] = []
+  @Input() module!: DeploymentRequestModule;
+  @Input() hostResources: HostResource[] = [];
+  @Input() secrets: Secret[] = [];
+  @Input() globalConfigs: GlobalConfig[] = [];
   // prefill from the existing deployment (edit mode)
-  @Input() prefill: boolean = false
+  @Input() prefill: boolean = false;
 
-  configRows: ConfigRow[] = []
-  configGroups: ConfigGroup[] = []
-  resourceRows: ResourceRow[] = []
-  secretRows: SecretRow[] = []
-  fileRows: FileRow[] = []
-  fileGroupRows: FileGroupRow[] = []
+  configRows: ConfigRow[] = [];
+  configGroups: ConfigGroup[] = [];
+  resourceRows: ResourceRow[] = [];
+  secretRows: SecretRow[] = [];
+  fileRows: FileRow[] = [];
+  fileGroupRows: FileGroupRow[] = [];
 
   ngOnInit(): void {
-    this.buildRows()
+    this.buildRows();
   }
 
   private buildRows() {
-    var inputs = this.module.inputs || <any>{}
+    var inputs = this.module.inputs || <any>{};
     // deployment.id check: see the is_deployed workaround in the edit page
-    var deployment = (this.prefill && (this.module.is_deployed || this.module.deployment?.id)) ? this.module.deployment : undefined
+    var deployment =
+      this.prefill && (this.module.is_deployed || this.module.deployment?.id) ? this.module.deployment : undefined;
 
     for (const [ref, input] of Object.entries(inputs.configs || {})) {
-      var config = (this.module.configs || {})[ref]
+      var config = (this.module.configs || {})[ref];
       if (!config) {
-        continue
+        continue;
       }
-      var globalId = deployment?.global_configs?.[ref] || ""
-      var existing = deployment?.configs?.[ref]
+      var globalId = deployment?.global_configs?.[ref] || '';
+      var existing = deployment?.configs?.[ref];
       this.configRows.push({
         ref: ref,
         input: <ModuleInput>input,
@@ -140,137 +153,148 @@ export class DeploymentFormComponent implements OnInit {
         raw: existing ? formatConfigValue(existing) : this.defaultRaw(config),
         useGlobal: !!globalId,
         globalConfigId: globalId,
-        matchingGlobals: this.globalConfigs.filter(gc =>
-          gc.data_type === MODULE_DATA_TYPE_TO_NUMERIC[config.data_type] && gc.is_slice === config.is_slice),
-        error: "",
-      })
+        matchingGlobals: this.globalConfigs.filter(
+          (gc) => gc.data_type === MODULE_DATA_TYPE_TO_NUMERIC[config.data_type] && gc.is_slice === config.is_slice,
+        ),
+        error: '',
+      });
     }
 
     for (const [ref, input] of Object.entries(inputs.resources || {})) {
       this.resourceRows.push({
         ref: ref,
         input: <ModuleInput>input,
-        selectedId: deployment?.host_resources?.[ref] || "",
-        error: "",
-      })
+        selectedId: deployment?.host_resources?.[ref] || '',
+        error: '',
+      });
     }
 
     for (const [ref, input] of Object.entries(inputs.secrets || {})) {
       this.secretRows.push({
         ref: ref,
         input: <ModuleInput>input,
-        type: (this.module.secrets || {})[ref]?.type || "",
-        selectedId: deployment?.secrets?.[ref]?.id || "",
-        error: "",
-      })
+        type: (this.module.secrets || {})[ref]?.type || '',
+        selectedId: deployment?.secrets?.[ref]?.id || '',
+        error: '',
+      });
     }
 
     for (const [ref, input] of Object.entries(inputs.files || {})) {
-      var file = (this.module.files || {})[ref]
-      var existingData = deployment?.files?.[ref]
+      var file = (this.module.files || {})[ref];
+      var existingData = deployment?.files?.[ref];
       this.fileRows.push({
         ref: ref,
         input: <ModuleInput>input,
         required: file?.required || false,
-        text: decodeFileData(existingData !== undefined ? existingData : (file?.default_data || "")),
+        text: decodeFileData(existingData !== undefined ? existingData : file?.default_data || ''),
         hasDefault: !!file?.default_data,
-      })
+      });
     }
 
     for (const [ref, input] of Object.entries(inputs.file_groups || {})) {
-      var existingGroup = deployment?.file_groups?.[ref]
+      var existingGroup = deployment?.file_groups?.[ref];
       this.fileGroupRows.push({
         ref: ref,
         input: <ModuleInput>input,
-        files: (existingGroup?.files || []).map(f => ({path: f.path, format: f.format, text: decodeFileData(f.data)})),
-        error: "",
-      })
+        files: (existingGroup?.files || []).map((f) => ({
+          path: f.path,
+          format: f.format,
+          text: decodeFileData(f.data),
+        })),
+        error: '',
+      });
     }
 
-    var byGroup = (a: { input: ModuleInput }, b: { input: ModuleInput }) =>
-      this.groupLabel(a.input.group).localeCompare(this.groupLabel(b.input.group)) || a.input.name.localeCompare(b.input.name)
-    this.configRows.sort(byGroup)
-    this.resourceRows.sort(byGroup)
-    this.secretRows.sort(byGroup)
-    this.configGroups = this.groupConfigRows()
+    var byGroup = (a: {input: ModuleInput}, b: {input: ModuleInput}) =>
+      this.groupLabel(a.input.group).localeCompare(this.groupLabel(b.input.group)) ||
+      a.input.name.localeCompare(b.input.name);
+    this.configRows.sort(byGroup);
+    this.resourceRows.sort(byGroup);
+    this.secretRows.sort(byGroup);
+    this.configGroups = this.groupConfigRows();
   }
 
   // Preserves the sort order established above: rows are already ordered by
   // group label, so groups come out in the same order without a second sort.
   private groupConfigRows(): ConfigGroup[] {
-    var groups: ConfigGroup[] = []
+    var groups: ConfigGroup[] = [];
     for (const row of this.configRows) {
-      var label = this.groupLabel(row.input.group)
-      var group = groups.find(g => g.label === label)
+      var label = this.groupLabel(row.input.group);
+      var group = groups.find((g) => g.label === label);
       if (!group) {
-        group = {label: label, rows: []}
-        groups.push(group)
+        group = {label: label, rows: []};
+        groups.push(group);
       }
-      group.rows.push(row)
+      group.rows.push(row);
     }
-    return groups
+    return groups;
   }
 
   hasInputs(): boolean {
-    return this.configRows.length > 0 || this.resourceRows.length > 0 || this.secretRows.length > 0
-      || this.fileRows.length > 0 || this.fileGroupRows.length > 0
+    return (
+      this.configRows.length > 0 ||
+      this.resourceRows.length > 0 ||
+      this.secretRows.length > 0 ||
+      this.fileRows.length > 0 ||
+      this.fileGroupRows.length > 0
+    );
   }
 
   // true when the control is a plain text/number input rather than a select
   isFreeText(row: ConfigRow): boolean {
     if (row.config.is_slice || row.config.data_type === 'bool') {
-      return false
+      return false;
     }
-    return !(row.config.options && row.config.options.length > 0 && !row.config.opt_ext)
+    return !(row.config.options && row.config.options.length > 0 && !row.config.opt_ext);
   }
 
   isNumeric(row: ConfigRow): boolean {
-    return row.config.data_type === 'int' || row.config.data_type === 'float'
+    return row.config.data_type === 'int' || row.config.data_type === 'float';
   }
 
   private defaultRaw(config: ModuleConfigValue): string {
     if (config.default === null || config.default === undefined) {
-      return ""
+      return '';
     }
     if (config.is_slice && Array.isArray(config.default)) {
-      return config.default.join("\n")
+      return config.default.join('\n');
     }
-    return String(config.default)
+    return String(config.default);
   }
 
   // flattened path of the nested input groups, e.g. "Broker / Advanced"
   groupLabel(groupRef: string): string {
-    var groups = this.module.inputs?.groups || {}
-    var parts: string[] = []
-    var ref = groupRef
-    var guard = 0
+    var groups = this.module.inputs?.groups || {};
+    var parts: string[] = [];
+    var ref = groupRef;
+    var guard = 0;
     while (ref && groups[ref] && guard < 10) {
-      parts.unshift(groups[ref].name || ref)
-      ref = groups[ref].group
-      guard++
+      parts.unshift(groups[ref].name || ref);
+      ref = groups[ref].group;
+      guard++;
     }
-    return parts.join(" / ")
+    return parts.join(' / ');
   }
 
   secretOptionsFor(row: SecretRow): Secret[] {
     if (!row.type) {
-      return this.secrets
+      return this.secrets;
     }
-    return this.secrets.filter(secret => secret.type === row.type)
+    return this.secrets.filter((secret) => secret.type === row.type);
   }
 
   addGroupFile(row: FileGroupRow) {
-    row.files.push({path: "", format: "", text: ""})
+    row.files.push({path: '', format: '', text: ''});
   }
 
   removeGroupFile(row: FileGroupRow, index: number) {
-    row.files.splice(index, 1)
+    row.files.splice(index, 1);
   }
 
   // Collects the user input for this module. Returns undefined and marks the
   // offending fields when validation fails.
   collect(): DeploymentUserInput | undefined {
-    var valid = true
+    var valid = true;
     var result: DeploymentUserInput = {
       module_id: this.module.id,
       host_resources: {},
@@ -279,67 +303,67 @@ export class DeploymentFormComponent implements OnInit {
       global_configs: {},
       files: {},
       file_groups: {},
-    }
+    };
 
     for (const row of this.configRows) {
-      row.error = ""
+      row.error = '';
       if (row.useGlobal) {
         if (!row.globalConfigId) {
-          row.error = "Select a global config or switch back to a direct value"
-          valid = false
-          continue
+          row.error = 'Select a global config or switch back to a direct value';
+          valid = false;
+          continue;
         }
-        result.global_configs[row.ref] = row.globalConfigId
-        continue
+        result.global_configs[row.ref] = row.globalConfigId;
+        continue;
       }
-      if (row.raw.trim() === "") {
+      if (row.raw.trim() === '') {
         // no input: fall back to the module default
-        continue
+        continue;
       }
       try {
-        result.configs[row.ref] = parseModuleConfigValue(row.config, row.raw)
+        result.configs[row.ref] = parseModuleConfigValue(row.config, row.raw);
       } catch (err: any) {
-        row.error = err.message
-        valid = false
+        row.error = err.message;
+        valid = false;
       }
     }
 
     for (const row of this.resourceRows) {
-      row.error = ""
+      row.error = '';
       if (row.selectedId) {
-        result.host_resources[row.ref] = row.selectedId
+        result.host_resources[row.ref] = row.selectedId;
       }
     }
 
     for (const row of this.secretRows) {
-      row.error = ""
+      row.error = '';
       if (row.selectedId) {
-        result.secrets[row.ref] = row.selectedId
+        result.secrets[row.ref] = row.selectedId;
       }
     }
 
     for (const row of this.fileRows) {
-      if (row.text !== "" || row.required) {
-        result.files[row.ref] = encodeFileData(row.text)
+      if (row.text !== '' || row.required) {
+        result.files[row.ref] = encodeFileData(row.text);
       }
     }
 
     for (const row of this.fileGroupRows) {
-      row.error = ""
-      var files: Record<string, any> = {}
+      row.error = '';
+      var files: Record<string, any> = {};
       for (const file of row.files) {
         if (!file.path.trim()) {
-          row.error = "Every file of the group needs a path"
-          valid = false
-          continue
+          row.error = 'Every file of the group needs a path';
+          valid = false;
+          continue;
         }
-        files[file.path.trim()] = {format: file.format, data: encodeFileData(file.text)}
+        files[file.path.trim()] = {format: file.format, data: encodeFileData(file.text)};
       }
       if (Object.keys(files).length > 0) {
-        result.file_groups[row.ref] = files
+        result.file_groups[row.ref] = files;
       }
     }
 
-    return valid ? result : undefined
+    return valid ? result : undefined;
   }
 }

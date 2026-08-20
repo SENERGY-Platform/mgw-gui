@@ -15,8 +15,10 @@
 -->
 
 <div class="mgw-page">
-  <mgw-page-header description="Values that several deployments can reference instead of each setting them separately."
-                   title="Global configs">
+  <mgw-page-header
+    description="Values that several deployments can reference instead of each setting them separately."
+    title="Global configs"
+  >
     <div pageActions>
       <button (click)="add()" mat-flat-button>
         <mat-icon>add</mat-icon>
@@ -30,9 +32,11 @@
   @if (!ready && dataSource.data.length === 0) {
     <!-- first load: the spinner above is the only feedback -->
   } @else if (dataSource.data.length === 0) {
-    <mgw-empty-state icon="tune"
-                     message="A global config holds one value centrally. In a deployment form, switch a field to “Global config” to point at it instead of typing the value again."
-                     title="No global configs defined">
+    <mgw-empty-state
+      icon="tune"
+      message="A global config holds one value centrally. In a deployment form, switch a field to “Global config” to point at it instead of typing the value again."
+      title="No global configs defined"
+    >
       <button (click)="add()" emptyAction mat-flat-button>Add global config</button>
     </mgw-empty-state>
   } @else {
@@ -77,7 +81,7 @@
         </ng-container>
 
         <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-        <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+        <tr *matRowDef="let m; columns: displayColumns" mat-row></tr>
       </table>
     </div>
   }

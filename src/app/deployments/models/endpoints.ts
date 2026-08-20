@@ -11,7 +11,7 @@ export interface CoreEndpoint {
 }
 
 export interface CoreEndpointsResponse {
-  [endpointID: string]: CoreEndpoint
+  [endpointID: string]: CoreEndpoint;
 }
 
 export interface CoreEndpointAliasReq {

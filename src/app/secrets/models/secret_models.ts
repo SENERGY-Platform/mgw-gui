@@ -21,18 +21,16 @@ export enum SecretTypes {
   BasicAuth = 'basic-auth',
   APIKey = 'api-key',
   ClientID = 'client-id',
-  PrivateKey = 'private-key'
+  PrivateKey = 'private-key',
 }
 
-
-export var SecretTypesDisplayNames: { [key in SecretTypes]: string } = {
-  [SecretTypes.Certificate]: "Certificate",
-  [SecretTypes.BasicAuth]: "Credentials",
-  [SecretTypes.APIKey]: "API Key",
-  [SecretTypes.ClientID]: "Client ID",
-  [SecretTypes.PrivateKey]: "Private Key",
-
-}
+export var SecretTypesDisplayNames: {[key in SecretTypes]: string} = {
+  [SecretTypes.Certificate]: 'Certificate',
+  [SecretTypes.BasicAuth]: 'Credentials',
+  [SecretTypes.APIKey]: 'API Key',
+  [SecretTypes.ClientID]: 'Client ID',
+  [SecretTypes.PrivateKey]: 'Private Key',
+};
 
 export interface SecretRequest {
   id: string;

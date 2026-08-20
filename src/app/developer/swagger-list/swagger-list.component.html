@@ -10,8 +10,10 @@
     <ng-container matColumnDef="auth">
       <th *matHeaderCellDef mat-header-cell>Authentication</th>
       <td *matCellDef="let item" mat-cell>
-        <mgw-status-pill [label]="item.requiresAuth ? 'session' : 'none'"
-                         [tone]="item.requiresAuth ? 'info' : 'idle'"></mgw-status-pill>
+        <mgw-status-pill
+          [label]="item.requiresAuth ? 'session' : 'none'"
+          [tone]="item.requiresAuth ? 'info' : 'idle'"
+        ></mgw-status-pill>
       </td>
     </ng-container>
 
@@ -32,8 +34,11 @@
       <td *matCellDef="let item" class="mgw-col-actions" mat-cell>
         <div class="mgw-row-actions">
           @if (hasPlayground(item)) {
-            <button [routerLink]="['/developer', item.scope, item.id]" mat-flat-button
-                    matTooltip="Browse and call the endpoints of this service">
+            <button
+              [routerLink]="['/developer', item.scope, item.id]"
+              mat-flat-button
+              matTooltip="Browse and call the endpoints of this service"
+            >
               <mat-icon>api</mat-icon>
               Playground
             </button>
@@ -47,6 +52,6 @@
     </ng-container>
 
     <tr *matHeaderRowDef="displayColumns; sticky: true" mat-header-row></tr>
-    <tr *matRowDef="let m; columns: displayColumns;" mat-row></tr>
+    <tr *matRowDef="let m; columns: displayColumns" mat-row></tr>
   </table>
 </div>

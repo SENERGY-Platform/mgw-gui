@@ -17,12 +17,12 @@
     <div (keydown.enter)="login()" [formGroup]="form" class="form">
       <mat-form-field appearance="outline">
         <mat-label>Username</mat-label>
-        <input autocomplete="username" formControlName="username" matInput type="text">
+        <input autocomplete="username" formControlName="username" matInput type="text" />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
-        <input autocomplete="current-password" formControlName="password" matInput type="password">
+        <input autocomplete="current-password" formControlName="password" matInput type="password" />
       </mat-form-field>
 
       <button (click)="login()" [disabled]="!form.valid" mat-flat-button type="submit">Sign in</button>
