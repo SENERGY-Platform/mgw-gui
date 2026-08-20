@@ -1,0 +1,697 @@
+{
+  "src/app/app.module.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 18
+    }
+  },
+  "src/app/auth/login/login.component.html": {
+    "@angular-eslint/template/interactive-supports-focus": {
+      "count": 1
+    }
+  },
+  "src/app/auth/login/login.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/container/models/container.ts": {
+    "@typescript-eslint/no-empty-object-type": {
+      "count": 1
+    }
+  },
+  "src/app/container/pages/logs/logs.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/core/components/confirm-dialog/confirm-dialog.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/components/error-dialog/error-dialog.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/components/job-loader-modal/job-loader-modal.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/core/components/job-result-dialog/job-result-dialog.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/components/list-endpoints/list-endpoints.component.html": {
+    "@angular-eslint/template/eqeqeq": {
+      "count": 2
+    }
+  },
+  "src/app/core/components/list-endpoints/list-endpoints.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    }
+  },
+  "src/app/core/components/list-jobs/list.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/no-empty-lifecycle-method": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/core/components/shell/shell.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "no-empty": {
+      "count": 2
+    }
+  },
+  "src/app/core/components/spinner/spinner.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    }
+  },
+  "src/app/core/models/base.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/models/deployment-request.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 7
+    }
+  },
+  "src/app/core/models/global-configs.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/core/models/job-result-view.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 5
+    }
+  },
+  "src/app/core/services/api/api.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 9
+    }
+  },
+  "src/app/core/services/auth/auth.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/services/auth/interceptor/auth.interceptor.ts": {
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/core/services/container-engine-manager/container-engine-manager-mock.service.ts": {
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/core/services/container-engine-manager/container-engine-manager.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/services/core-manager/core-manager.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 8
+    }
+  },
+  "src/app/core/services/host-manager/host-manager-mock.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/services/host-manager/host-manager.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 12
+    }
+  },
+  "src/app/core/services/module-manager/module-manager-mock.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 14
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 12
+    }
+  },
+  "src/app/core/services/module-manager/module-manager-service.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 11
+    }
+  },
+  "src/app/core/services/secret-manager/secret-manager-mock-service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    }
+  },
+  "src/app/core/services/secret-manager/secret-manager-service.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/core/services/swagger/swagger.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/services/theme/theme.service.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "no-empty": {
+      "count": 1
+    }
+  },
+  "src/app/core/services/user/user.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/services/util/error.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/core/services/util/notifications.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/core/services/util/util.service.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/deployments/components/aux-deployments-list/aux-deployments-list.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/deployments/components/deployment-form/deployment-form.component.html": {
+    "@angular-eslint/template/label-has-associated-control": {
+      "count": 1
+    }
+  },
+  "src/app/deployments/components/deployment-form/deployment-form.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "no-var": {
+      "count": 2
+    }
+  },
+  "src/app/deployments/models/deployment_models.ts": {
+    "@typescript-eslint/no-empty-object-type": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 8
+    }
+  },
+  "src/app/deployments/pages/add-endpoint/add-endpoint.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/deployments/pages/add/modules.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 7
+    }
+  },
+  "src/app/deployments/pages/edit/show-module-component.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 7
+    }
+  },
+  "src/app/deployments/pages/list-endpoints/list-endpoints.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 14
+    }
+  },
+  "src/app/developer/models/openapi.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/developer/models/openapi.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 5
+    }
+  },
+  "src/app/developer/playground/method-chip.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    }
+  },
+  "src/app/developer/playground/operation-list.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/no-output-native": {
+      "count": 1
+    }
+  },
+  "src/app/developer/playground/playground.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    }
+  },
+  "src/app/modules/components/add-repository-dialog/add-repository-dialog.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  "src/app/modules/components/change-request-dialog/change-request-dialog.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/modules/components/global-config-dialog/global-config-dialog.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    }
+  },
+  "src/app/modules/components/refresh-repos-dialog/refresh-repos-dialog.component.html": {
+    "@angular-eslint/template/label-has-associated-control": {
+      "count": 1
+    }
+  },
+  "src/app/modules/components/refresh-repos-dialog/refresh-repos-dialog.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  "src/app/modules/pages/global-configs/global-configs.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/modules/pages/info/info.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/modules/pages/list/list.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "no-var": {
+      "count": 1
+    }
+  },
+  "src/app/modules/pages/manage/manage.component.spec.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/app/modules/pages/manage/manage.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 5
+    }
+  },
+  "src/app/modules/pages/repositories/repositories.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/overview/overview.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    }
+  },
+  "src/app/secrets/components/form/form.component.html": {
+    "@angular-eslint/template/eqeqeq": {
+      "count": 5
+    }
+  },
+  "src/app/secrets/components/form/form.component.ts": {
+    "@angular-eslint/component-selector": {
+      "count": 1
+    },
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/secrets/models/secret_models.ts": {
+    "no-var": {
+      "count": 1
+    }
+  },
+  "src/app/secrets/pages/add/add.component.ts": {
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    }
+  },
+  "src/app/secrets/pages/edit/edit.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 1
+    }
+  },
+  "src/app/secrets/pages/list/list.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/system/pages/add-account/register.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/app/system/pages/configuration/host-applications/add-dialog/add-dialog.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    }
+  },
+  "src/app/system/pages/configuration/host-applications/host-applications.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    }
+  },
+  "src/app/system/pages/configuration/host-net-itf-blacklist/add-dialog/add-dialog.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    }
+  },
+  "src/app/system/pages/configuration/host-net-itf-blacklist/host-net-itf-blacklist.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/system/pages/configuration/host-net-rng-blacklist/add-dialog/add-dialog.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 2
+    }
+  },
+  "src/app/system/pages/configuration/host-net-rng-blacklist/host-net-rng-blacklist.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/system/pages/edit-account/edit-account.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    }
+  },
+  "src/app/system/pages/list-apps/list-apps.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    }
+  },
+  "src/app/system/pages/list-users/list-users.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 3
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/system/pages/services/container-list/container-list.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-empty-function": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/app/system/pages/services/native-list/native-list.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 5
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "no-self-assign": {
+      "count": 1
+    }
+  },
+  "src/app/system/pages/services/native-log/native-log.component.ts": {
+    "@angular-eslint/prefer-inject": {
+      "count": 4
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/environments/environment.mock.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/main.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  }
+}
