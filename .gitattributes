@@ -1,0 +1,5 @@
+# Files parsed byte-wise by shell tooling must stay LF, even with
+# core.autocrlf=true on Windows/WSL checkouts.
+.claude/gates.env text eol=lf
+.github/workflows/*.yml text eol=lf
+*.sh text eol=lf
