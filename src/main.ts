@@ -7,6 +7,7 @@ import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@ang
 import {AuthCheckInterceptor} from './app/core/services/auth/interceptor/auth.interceptor';
 import {environment} from './environments/environment';
 import {LOCALE_ID, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
+import {MAT_ICON_DEFAULT_OPTIONS} from '@angular/material/icon';
 import {HIGHLIGHT_OPTIONS} from 'ngx-highlightjs';
 import {BrowserModule, bootstrapApplication} from '@angular/platform-browser';
 import {MatIconModule} from '@angular/material/icon';
@@ -50,6 +51,12 @@ bootstrapApplication(AppComponent, {
     {
       'provide': LOCALE_ID,
       'useValue': 'de'
+    },
+    {
+      // Material Symbols carries the same ligature names as the legacy
+      // Material Icons font, so every existing <mat-icon> keeps working.
+      provide: MAT_ICON_DEFAULT_OPTIONS,
+      useValue: {fontSet: 'material-symbols-rounded'}
     },
     {
       'provide': HIGHLIGHT_OPTIONS,
