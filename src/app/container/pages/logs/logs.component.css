@@ -9,15 +9,6 @@
   overflow: hidden;
 }
 
-.log-card pre {
-  margin: 0;
-  padding: 14px 16px;
-  max-height: calc(100vh - 240px);
-  overflow: auto;
-  font-size: 12px;
-  line-height: 1.55;
-}
-
 .loading {
   margin: 0;
   padding: 20px;

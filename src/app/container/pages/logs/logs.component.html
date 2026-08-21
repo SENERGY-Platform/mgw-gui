@@ -17,7 +17,7 @@
 
   <div class="log-card">
     @if (ready && !init) {
-      <pre><code [highlight]="logs" [lineNumbers]="true"></code></pre>
+      <mgw-log-viewer [logs]="logs" />
     } @else {
       <p class="loading">Loading log…</p>
     }

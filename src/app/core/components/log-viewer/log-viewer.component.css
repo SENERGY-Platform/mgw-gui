@@ -1,0 +1,64 @@
+:host {
+  display: block;
+
+  /* The gutter and the log text are two separate columns that have to sit on
+     the same baseline grid. They therefore share one definition of the type:
+     a different font or line height on either side makes the numbers drift
+     against the lines they point at, further with every line. */
+  --log-font-family: ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+  --log-font-size: 12px;
+  --log-line-height: 1.55;
+}
+
+.log-body {
+  display: flex;
+  align-items: flex-start;
+  margin: 0;
+  padding: 14px 0;
+  max-height: calc(100vh - 240px);
+  overflow: auto;
+  font-family: var(--log-font-family);
+  font-size: var(--log-font-size);
+  line-height: var(--log-line-height);
+  color: #c9d1d9;
+  background: #0d1117;
+}
+
+.gutter {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  flex: none;
+  padding: 0 12px 0 16px;
+  font-family: var(--log-font-family);
+  font-size: var(--log-font-size);
+  line-height: var(--log-line-height);
+  text-align: right;
+  /* opaque, so log text scrolled sideways passes behind the numbers */
+  background: #0d1117;
+  color: #8b949e;
+  user-select: none;
+}
+
+.line-number {
+  min-width: 2.5em;
+  font-variant-numeric: tabular-nums;
+}
+
+.log-text {
+  flex: 1 0 auto;
+  margin: 0;
+  padding: 0 16px 0 0;
+  /* pre, not pre-wrap: a wrapped line takes two rows in this column and one
+     number in the other, and every number below it would be off by one. */
+  white-space: pre;
+  /* a pre would otherwise fall back to the user agent's monospace font */
+  font: inherit;
+}
+
+code {
+  display: block;
+  /* the user agent gives code a monospace family of its own, which would
+     put this column on different type than the gutter */
+  font: inherit;
+}

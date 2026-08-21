@@ -1,0 +1,8 @@
+<div class="log-body">
+  <div aria-hidden="true" class="gutter">
+    @for (lineNumber of lineNumbers; track lineNumber) {
+      <div class="line-number">{{ lineNumber }}</div>
+    }
+  </div>
+  <pre class="log-text"><code [innerHTML]="html"></code></pre>
+</div>

@@ -127,21 +127,6 @@ mat-icon.mat-icon {
   left: 50%;
 }
 
-/* --- code and log highlighting --------------------------------------------- */
-
-td.hljs-ln-numbers {
-  user-select: none;
-  text-align: center;
-  border-right: 1px solid var(--mat-sys-outline-variant);
-  vertical-align: top;
-  padding-right: 8px !important;
-  padding-left: 8px !important;
-}
-
-td.hljs-ln-code {
-  padding-left: 8px !important;
-}
-
 /* --- app layout primitives -------------------------------------------------
    Every list page repeats the same shell: a centred page, a card around the
    table, a filter toolbar, chips, a sticky action bar. Defining that once here

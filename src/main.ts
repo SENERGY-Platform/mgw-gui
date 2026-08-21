@@ -8,7 +8,6 @@ import {AuthCheckInterceptor} from './app/core/services/auth/interceptor/auth.in
 import {environment} from './environments/environment';
 import {LOCALE_ID, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
 import {MAT_ICON_DEFAULT_OPTIONS} from '@angular/material/icon';
-import {HIGHLIGHT_OPTIONS} from 'ngx-highlightjs';
 import {BrowserModule, bootstrapApplication} from '@angular/platform-browser';
 import {MatIconModule} from '@angular/material/icon';
 import {AppRoutingModule} from './app/app-routing.module';
@@ -69,18 +68,6 @@ bootstrapApplication(AppComponent, {
       // Material Icons font, so every existing <mat-icon> keeps working.
       provide: MAT_ICON_DEFAULT_OPTIONS,
       useValue: {fontSet: 'material-symbols-rounded'},
-    },
-    {
-      provide: HIGHLIGHT_OPTIONS,
-      useValue: {
-        coreLibraryLoader: () => import('highlight.js/lib/core'),
-        lineNumbersLoader: () => import('ngx-highlightjs/line-numbers'),
-        lineNumbers: true,
-        languages: {
-          //typescript: () => import('highlight.js/lib/languages/typescript'),
-        },
-        themePath: 'assets/styles/code-themes/github-dark.css',
-      },
     },
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),

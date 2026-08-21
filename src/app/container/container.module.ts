@@ -6,7 +6,6 @@ import {MatTableModule} from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {LogsComponent} from './pages/logs/logs.component';
-import {HighlightModule} from 'ngx-highlightjs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
@@ -29,7 +28,6 @@ const routes: Routes = [
     MatInputModule,
     MatButtonModule,
     MatTableModule,
-    HighlightModule,
     RouterModule.forChild(routes),
     LogsComponent,
   ],
