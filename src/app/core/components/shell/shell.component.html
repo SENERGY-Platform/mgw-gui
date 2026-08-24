@@ -31,6 +31,10 @@
 
   <span class="spacer"></span>
 
+  <button (click)="openFeedback()" aria-label="Send feedback" mat-icon-button matTooltip="Send feedback">
+    <mat-icon>feedback</mat-icon>
+  </button>
+
   <button (click)="theme.next()" [matTooltip]="theme.label()" aria-label="Switch theme" mat-icon-button>
     <mat-icon>{{ theme.icon() }}</mat-icon>
   </button>
@@ -40,6 +44,11 @@
   </button>
   <mat-menu #userMenu="matMenu" [overlapTrigger]="false">
     <div class="menu-caption">Signed in</div>
+    <mat-divider></mat-divider>
+    <button (click)="openTelemetryConsent()" mat-menu-item>
+      <mat-icon>bug_report</mat-icon>
+      <span>Error reporting</span>
+    </button>
     <mat-divider></mat-divider>
     <button (click)="logout()" mat-menu-item>
       <mat-icon>logout</mat-icon>

@@ -19,4 +19,6 @@ export const environment = {
   authApiUrl: CORE_PREFIX + '/auth',
   uiBaseUrl: CORE_PREFIX + '/web-ui',
   endpointsUrl: '/endpoints',
+  sentryDsn: 'https://148d7751bb16908222e9e3f267d940a9@sentry.dev.senergy.infai.org/3',
+  sentryEnvironment: 'debug',
 };

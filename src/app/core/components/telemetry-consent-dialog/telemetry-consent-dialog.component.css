@@ -1,0 +1,40 @@
+.title {
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.dialog-content {
+  min-width: 340px;
+  max-width: 520px;
+}
+
+.message {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.option-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.option-description {
+  display: block;
+  font-size: 12px;
+  line-height: 1.4;
+  /* the label sets its own weight, the explanation stays quiet */
+  color: var(--mat-sys-on-surface-variant);
+  white-space: normal;
+}
+
+.actions {
+  padding: 8px 16px 16px;
+}

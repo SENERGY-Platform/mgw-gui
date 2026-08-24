@@ -1,0 +1,121 @@
+<!--
+~ Copyright (c) 2026 InfAI (CC SES)
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~     http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
+
+<div class="toolbar">
+  <mat-button-toggle-group [value]="tool" (change)="setTool($event.value)" aria-label="Redaction tool">
+    <mat-button-toggle value="hide" aria-label="Hide a region">
+      <mat-icon>visibility_off</mat-icon>
+      Hide
+    </mat-button-toggle>
+    <mat-button-toggle value="highlight" aria-label="Highlight a region">
+      <mat-icon>highlight</mat-icon>
+      Highlight
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <mat-button-toggle-group [value]="mode" (change)="setMode($event.value)" aria-label="Interaction mode">
+    <mat-button-toggle value="draw" aria-label="Draw a region" matTooltip="Draw">
+      <mat-icon>edit</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle [disabled]="!canPan()" value="move" aria-label="Move the image" matTooltip="Move the image">
+      <mat-icon>pan_tool</mat-icon>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <span class="mgw-spacer"></span>
+
+  <div aria-label="Zoom" class="zoom-controls" role="group">
+    <button (click)="zoomToFit()" aria-label="Fit to window" mat-icon-button matTooltip="Fit to window" type="button">
+      <mat-icon>fit_screen</mat-icon>
+    </button>
+    <button (click)="zoomTo100()" aria-label="Zoom to 100 percent" mat-button matTooltip="Actual size" type="button">
+      100%
+    </button>
+    <button
+      (click)="zoomOut()"
+      [disabled]="!canZoomOut()"
+      aria-label="Zoom out"
+      mat-icon-button
+      matTooltip="Zoom out"
+      type="button"
+    >
+      <mat-icon>zoom_out</mat-icon>
+    </button>
+    <button
+      (click)="zoomIn()"
+      [disabled]="!canZoomIn()"
+      aria-label="Zoom in"
+      mat-icon-button
+      matTooltip="Zoom in"
+      type="button"
+    >
+      <mat-icon>zoom_in</mat-icon>
+    </button>
+  </div>
+
+  <button
+    (click)="reset()"
+    [disabled]="redactions.length === 0"
+    aria-label="Remove all regions"
+    mat-icon-button
+    matTooltip="Remove all regions"
+  >
+    <mat-icon>delete_sweep</mat-icon>
+  </button>
+</div>
+
+<div #wrapper class="canvas-wrapper">
+  <canvas
+    #canvas
+    [class.tool-hide]="mode === 'draw' && tool === 'hide'"
+    [class.tool-highlight]="mode === 'draw' && tool === 'highlight'"
+    [class.tool-move]="mode === 'move'"
+    (lostpointercapture)="onPointerCancel()"
+    (pointercancel)="onPointerCancel()"
+    (pointerdown)="onPointerDown($event)"
+    (pointermove)="onPointerMove($event)"
+    (pointerup)="onPointerUp($event)"
+    aria-label="Screenshot preview, drag to draw a region"
+    class="capture"
+  ></canvas>
+
+  <!-- Always in the DOM rather than added and removed with the drag, so its
+       ViewChild reference is stable the instant a drag starts - creating it
+       through an @if would race the very first paint against a change
+       detection cycle that has not run yet. -->
+  <canvas
+    #magnifier
+    [class.corner-bottom-left]="magnifierCorner() === 'bottom-left'"
+    [hidden]="!drag"
+    aria-hidden="true"
+    class="magnifier"
+  ></canvas>
+</div>
+
+@if (discardedDrag) {
+  <p class="hint" role="alert">That region was too small to keep, so nothing was covered. Drag a larger box.</p>
+}
+
+@if (redactions.length > 0) {
+  <mat-chip-set aria-label="Drawn regions" class="regions">
+    @for (redaction of redactions; track $index) {
+      <mat-chip (removed)="remove($index)" [removable]="true">
+        {{ redaction.kind === 'hide' ? 'Hide' : 'Highlight' }} {{ $index + 1 }}
+        <mat-icon aria-label="Remove this region" matChipRemove>cancel</mat-icon>
+      </mat-chip>
+    }
+  </mat-chip-set>
+}

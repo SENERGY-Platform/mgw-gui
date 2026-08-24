@@ -6,7 +6,9 @@ import {AppModule} from './app/app.module';
 import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {AuthCheckInterceptor} from './app/core/services/auth/interceptor/auth.interceptor';
 import {environment} from './environments/environment';
-import {LOCALE_ID, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
+import {ErrorHandler, LOCALE_ID, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
+import {createErrorHandler} from '@sentry/angular';
+import {initTelemetry} from './app/core/services/telemetry/telemetry';
 import {MAT_ICON_DEFAULT_OPTIONS} from '@angular/material/icon';
 import {BrowserModule, bootstrapApplication} from '@angular/platform-browser';
 import {MatIconModule} from '@angular/material/icon';
@@ -20,9 +22,23 @@ import {CoreServicesModule} from './app/system/core-services.module';
 import {AuthModule} from './app/auth/auth.module';
 import {AppComponent} from './app/app.component';
 
+// Before bootstrap, so an error thrown while the application starts is still
+// seen. Does nothing at all when the environment carries no DSN, and sends
+// nothing until the consent level allows it.
+initTelemetry();
+
 bootstrapApplication(AppComponent, {
   providers: [
     provideZoneChangeDetection(),
+    {
+      // Displaces nothing: the application's ErrorService is not an
+      // ErrorHandler but a service the pages call themselves for failed
+      // requests, and it keeps running unchanged. What this replaces is
+      // Angular's stock handler for uncaught errors, whose console output it
+      // reproduces (logErrors defaults to true) before reporting them.
+      provide: ErrorHandler,
+      useValue: createErrorHandler(),
+    },
     importProvidersFrom(
       BrowserModule,
       MatIconModule,

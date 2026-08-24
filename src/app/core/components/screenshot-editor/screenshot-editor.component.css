@@ -1,0 +1,96 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* Lets the wrapper below shrink inside a flex parent that gives this
+     component a fixed height (the feedback dialog does, once a screenshot
+     is open) instead of forcing that parent to grow to the image's size. */
+  min-height: 0;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* The border lives on the wrapper, not the canvas: the wrapper's rect is
+   what pointer coordinates are measured against, and a border directly on
+   the canvas would make that rect a couple of pixels wider than the bitmap
+   painted inside it - enough to put every region a pixel off from the
+   cursor. */
+.canvas-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.capture {
+  display: block;
+  flex: none;
+  /* Pointer events instead of mouse events so a touch also draws a region
+     or moves the view; touch-action: none stops the browser from treating
+     that drag as a page scroll or a pinch-zoom before pointer events even
+     fire. */
+  touch-action: none;
+}
+
+.tool-hide {
+  cursor: cell;
+}
+
+.tool-highlight {
+  cursor: crosshair;
+}
+
+.tool-move {
+  cursor: grab;
+}
+
+.magnifier {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 140px;
+  height: 140px;
+  border: 2px solid var(--mat-sys-outline, #79747e);
+  border-radius: 8px;
+  background: #000;
+  /* Never the drag's own hit target - it only ever displays a crop, and
+     sitting in the pointer's way would make it fight the drag it is meant
+     to help with. */
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.magnifier.corner-bottom-left {
+  top: auto;
+  right: auto;
+  bottom: 8px;
+  left: 8px;
+}
+
+.regions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.hint {
+  margin: 0.5rem 0 0;
+  color: var(--mat-sys-error, #b3261e);
+  font-size: 0.875rem;
+}

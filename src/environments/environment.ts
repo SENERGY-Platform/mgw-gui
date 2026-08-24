@@ -19,4 +19,6 @@ export const environment = {
   authApiUrl: CORE_PREFIX + '/core/auth',
   uiBaseUrl: CORE_PREFIX + '/web-ui',
   endpointsUrl: '/endpoints',
+  sentryDsn: '',
+  sentryEnvironment: '',
 };
