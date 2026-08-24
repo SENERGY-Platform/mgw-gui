@@ -37,6 +37,11 @@ yarn-error.log
 testem.log
 /typings
 
+# Vitest browser mode: failure screenshots and attachments it saves next to
+# the spec that produced them.
+/.vitest-attachments
+__screenshots__/
+
 # System files
 .DS_Store
 Thumbs.db

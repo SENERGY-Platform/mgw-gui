@@ -10,7 +10,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "test": "ng test --watch=false",
     "lint": "eslint .",
     "check:icons": "node scripts/check-icon-subset.mjs",
     "icons:list": "node -e \"import('./scripts/icon-usage.mjs').then(m=>{const r=m.findIcons();console.log([...new Set([...r.certain.keys(),...r.possible.keys()])].sort().join('\\n'))})\""
@@ -39,18 +39,15 @@
     "@angular/compiler-cli": "^21.2.20",
     "@angular/localize": "^21.2.20",
     "@eslint/js": "^10.0.1",
-    "@types/jasmine": "~4.3.0",
     "@types/semver": "^7.5.6",
+    "@vitest/browser-playwright": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.11",
     "angular-eslint": "21.4.0",
     "eslint": "^10.3.0",
-    "jasmine-core": "~4.5.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.1.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.0.0",
+    "playwright": "^1.62.1",
     "prettier": "3.9.6",
     "typescript": "~5.9.3",
-    "typescript-eslint": "8.59.2"
+    "typescript-eslint": "8.59.2",
+    "vitest": "^4.1.11"
   }
 }

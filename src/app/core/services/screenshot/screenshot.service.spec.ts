@@ -68,7 +68,7 @@ describe('ScreenshotService', () => {
     it('rejects with a ScreenshotCaptureError when the API is not available at all', async () => {
       stubMediaDevices(undefined);
 
-      await expectAsync(service.captureScreen()).toBeRejectedWithError(ScreenshotCaptureError);
+      await expect(service.captureScreen()).rejects.toThrow(ScreenshotCaptureError);
     });
 
     it('resolves to null when the person dismisses the picker - that is not an error', async () => {
@@ -78,7 +78,7 @@ describe('ScreenshotService', () => {
         },
       });
 
-      await expectAsync(service.captureScreen()).toBeResolvedTo(null);
+      await expect(service.captureScreen()).resolves.toBeNull();
     });
 
     it('resolves to null for AbortError, the other name a dismissed picker can use', async () => {
@@ -88,7 +88,7 @@ describe('ScreenshotService', () => {
         },
       });
 
-      await expectAsync(service.captureScreen()).toBeResolvedTo(null);
+      await expect(service.captureScreen()).resolves.toBeNull();
     });
 
     it('rejects instead of swallowing an actual failure', async () => {
@@ -99,14 +99,14 @@ describe('ScreenshotService', () => {
         },
       });
 
-      await expectAsync(service.captureScreen()).toBeRejectedWith(failure);
+      await expect(service.captureScreen()).rejects.toEqual(failure);
     });
 
     it('asks the picker to prefer the current tab', async () => {
       // The dismissal path is the simplest way to get a resolved call without
       // building a whole fake MediaStream - the constraints passed in are
       // what this test cares about, not what comes back.
-      const getDisplayMedia = jasmine.createSpy('getDisplayMedia').and.callFake(async () => {
+      const getDisplayMedia = vi.fn().mockImplementation(async () => {
         throw new DOMException('The user did not select a display surface.', 'NotAllowedError');
       });
       stubMediaDevices({getDisplayMedia});
@@ -114,8 +114,8 @@ describe('ScreenshotService', () => {
       await service.captureScreen();
 
       expect(getDisplayMedia).toHaveBeenCalledWith(
-        jasmine.objectContaining({
-          video: jasmine.objectContaining({displaySurface: 'browser'}),
+        expect.objectContaining({
+          video: expect.objectContaining({displaySurface: 'browser'}),
           preferCurrentTab: true,
         }),
       );

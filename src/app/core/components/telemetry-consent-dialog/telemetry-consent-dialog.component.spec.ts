@@ -70,8 +70,8 @@ describe('TelemetryConsentDialogComponent', () => {
 
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
     for (const option of TELEMETRY_LEVEL_OPTIONS) {
-      expect(text).withContext(option.id).toContain(option.label);
-      expect(text).withContext(option.id).toContain(option.description);
+      expect(text, option.id).toContain(option.label);
+      expect(text, option.id).toContain(option.description);
     }
   });
 
@@ -96,7 +96,7 @@ describe('TelemetryConsentDialogComponent', () => {
     service.set(closed as TelemetryLevel);
     expect(localStorage.getItem(STORAGE_KEY)).toBe('1');
     expect(service.level()).toBe(1);
-    expect(service.answered()).toBeTrue();
+    expect(service.answered()).toBe(true);
   });
 
   it('closes with level 0 when that is what was chosen', () => {

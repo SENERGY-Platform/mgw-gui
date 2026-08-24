@@ -19,6 +19,7 @@ import {TestBed, fakeAsync, tick} from '@angular/core/testing';
 import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {EMPTY, Subject, of} from 'rxjs';
+import type {Mock} from 'vitest';
 import {AuthService} from '../../services/auth/auth.service';
 import {telemetryConsent} from '../../services/telemetry/telemetry-consent';
 import {ThemeService} from '../../services/theme/theme.service';
@@ -29,13 +30,13 @@ import {ShellComponent} from './shell.component';
 
 describe('ShellComponent', () => {
   let shell: ShellComponent;
-  let dialog: {open: jasmine.Spy};
+  let dialog: {open: Mock};
   let closed: Subject<unknown>;
 
   beforeEach(() => {
     closed = new Subject<unknown>();
     dialog = {
-      open: jasmine.createSpy('open').and.returnValue({afterClosed: () => closed.asObservable()}),
+      open: vi.fn().mockReturnValue({afterClosed: () => closed.asObservable()}),
     };
 
     TestBed.configureTestingModule({

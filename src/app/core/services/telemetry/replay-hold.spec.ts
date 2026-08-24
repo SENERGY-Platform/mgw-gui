@@ -149,7 +149,7 @@ describe('heldReplayTransport', () => {
     const failure = new Error('network down');
     sendResult = () => Promise.reject(failure);
 
-    await expectAsync(sendHeldReplay(hold)).toBeRejectedWith(failure);
+    await expect(sendHeldReplay(hold)).rejects.toEqual(failure);
   });
 
   it('refuses to release a recording once consent has dropped below level 2', async () => {
@@ -179,7 +179,7 @@ describe('heldReplayTransport', () => {
     dropHeldReplay(first);
 
     expect(sent).toEqual([]);
-    expect(ownsReplayHold(second)).toBeTrue();
+    expect(ownsReplayHold(second)).toBe(true);
     expect(heldReplayCount()).toBe(1);
   });
 

@@ -21,13 +21,16 @@ const STORAGE_KEY = 'mgw-telemetry-consent';
 describe('TelemetryConsent', () => {
   afterEach(() => {
     localStorage.removeItem(STORAGE_KEY);
+    // Storage.prototype is a shared global that outlives the spec that
+    // patched it - unlike a Jasmine spy, vi.spyOn does not undo itself.
+    vi.restoreAllMocks();
   });
 
   it('starts at level 0 and unanswered when nothing is stored', () => {
     const consent = new TelemetryConsent();
 
     expect(consent.level()).toBe(0);
-    expect(consent.answered()).toBeFalse();
+    expect(consent.answered()).toBe(false);
   });
 
   it('reads back every level that was stored', () => {
@@ -36,7 +39,7 @@ describe('TelemetryConsent', () => {
 
       const consent = new TelemetryConsent();
       expect(consent.level()).toBe(level);
-      expect(consent.answered()).toBeTrue();
+      expect(consent.answered()).toBe(true);
     }
   });
 
@@ -46,7 +49,7 @@ describe('TelemetryConsent', () => {
     const consent = new TelemetryConsent();
     consent.set(0);
 
-    expect(new TelemetryConsent().answered()).toBeTrue();
+    expect(new TelemetryConsent().answered()).toBe(true);
     expect(new TelemetryConsent().level()).toBe(0);
   });
 
@@ -64,31 +67,31 @@ describe('TelemetryConsent', () => {
       localStorage.setItem(STORAGE_KEY, stored);
 
       const consent = new TelemetryConsent();
-      expect(consent.level())
-        .withContext(`stored ${JSON.stringify(stored)}`)
-        .toBe(0);
-      expect(consent.answered())
-        .withContext(`stored ${JSON.stringify(stored)}`)
-        .toBeFalse();
+      expect(consent.level(), `stored ${JSON.stringify(stored)}`).toBe(0);
+      expect(consent.answered(), `stored ${JSON.stringify(stored)}`).toBe(false);
     }
   });
 
   it('falls back to level 0 when reading storage throws', () => {
-    spyOn(Storage.prototype, 'getItem').and.throwError('SecurityError');
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('SecurityError');
+    });
 
     const consent = new TelemetryConsent();
 
     expect(consent.level()).toBe(0);
-    expect(consent.answered()).toBeFalse();
+    expect(consent.answered()).toBe(false);
   });
 
   it('keeps the chosen level for this session when writing storage throws', () => {
-    spyOn(Storage.prototype, 'setItem').and.throwError('QuotaExceededError');
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('QuotaExceededError');
+    });
     const consent = new TelemetryConsent();
 
     expect(() => consent.set(1)).not.toThrow();
     expect(consent.level()).toBe(1);
-    expect(consent.answered()).toBeTrue();
+    expect(consent.answered()).toBe(true);
   });
 
   it('notifies listeners of a change and stops after they unsubscribe', () => {
@@ -105,7 +108,9 @@ describe('TelemetryConsent', () => {
   });
 
   it('still notifies listeners when the write failed', () => {
-    spyOn(Storage.prototype, 'setItem').and.throwError('QuotaExceededError');
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('QuotaExceededError');
+    });
     const consent = new TelemetryConsent();
     const seen: number[] = [];
     consent.onChange((level) => seen.push(level));

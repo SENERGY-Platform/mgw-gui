@@ -50,7 +50,7 @@ describe('ManageComponent.load', () => {
     const component = makeComponent([repoModule('mod-a', false), repoModule('mod-b', true)]);
     component.load();
     expect(component.dataSource.data.length).toBe(2);
-    expect(component.ready).toBeTrue();
+    expect(component.ready).toBe(true);
   });
 
   it('keeps variant option identities stable across loads so change detection terminates', () => {
@@ -73,8 +73,8 @@ describe('ManageComponent.load', () => {
   it('turns selecting a different variant of an installed module into a change intent', () => {
     const component = makeComponent([repoModule('mod-a', true)]);
     component.load();
-    expect(component.isVariantChange(component.dataSource.data[0])).toBeFalse();
+    expect(component.isVariantChange(component.dataSource.data[0])).toBe(false);
     component.selectedVariant['mod-a'] = 'src-b|dev';
-    expect(component.isVariantChange(component.dataSource.data[0])).toBeTrue();
+    expect(component.isVariantChange(component.dataSource.data[0])).toBe(true);
   });
 });

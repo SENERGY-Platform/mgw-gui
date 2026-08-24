@@ -17,6 +17,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialogRef} from '@angular/material/dialog';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
+import type {Mock} from 'vitest';
 import {ScreenshotService} from '../../services/screenshot/screenshot.service';
 import {ReplayCapture} from '../../services/telemetry/telemetry';
 import {NotificationService} from '../../services/util/notifications.service';
@@ -48,8 +49,8 @@ function makeCapture(width = 10, height = 10): HTMLCanvasElement {
 describe('FeedbackDialogComponent', () => {
   let fixture: ComponentFixture<FeedbackDialogComponent>;
   let component: FeedbackDialogComponent;
-  let sdk: {[K in keyof FeedbackSdk]: jasmine.Spy};
-  let dialogRef: {close: jasmine.Spy; disableClose: boolean; updateSize: jasmine.Spy};
+  let sdk: {[K in keyof FeedbackSdk]: Mock};
+  let dialogRef: {close: Mock; disableClose: boolean; updateSize: Mock};
   let processors: EventProcessor[];
   let screenshotService: ScreenshotService;
   let notifications: NotificationService;
@@ -85,15 +86,15 @@ describe('FeedbackDialogComponent', () => {
 
   beforeEach(async () => {
     dialogRef = {
-      close: jasmine.createSpy('close'),
+      close: vi.fn(),
       disableClose: false,
-      updateSize: jasmine.createSpy('updateSize'),
+      updateSize: vi.fn(),
     };
     processors = [];
     sdk = {
-      captureFeedback: jasmine.createSpy('captureFeedback').and.returnValue('event-id'),
-      flush: jasmine.createSpy('flush').and.resolveTo(true),
-      withScope: jasmine.createSpy('withScope').and.callFake((run: (scope: unknown) => unknown) => {
+      captureFeedback: vi.fn().mockReturnValue('event-id'),
+      flush: vi.fn().mockResolvedValue(true),
+      withScope: vi.fn().mockImplementation((run: (scope: unknown) => unknown) => {
         const scope = {
           addEventProcessor: (processor: EventProcessor) => {
             processors.push(processor);
@@ -102,14 +103,12 @@ describe('FeedbackDialogComponent', () => {
         };
         return run(scope);
       }),
-      watchFeedbackDelivery: jasmine
-        .createSpy('watchFeedbackDelivery')
-        .and.callFake(async (send: () => PromiseLike<unknown>) => {
-          await send();
-          return true;
-        }),
-      beginReplayCapture: jasmine.createSpy('beginReplayCapture').and.resolveTo(nothingCaptured),
-      endReplayCapture: jasmine.createSpy('endReplayCapture').and.resolveTo(undefined),
+      watchFeedbackDelivery: vi.fn().mockImplementation(async (send: () => PromiseLike<unknown>) => {
+        await send();
+        return true;
+      }),
+      beginReplayCapture: vi.fn().mockResolvedValue(nothingCaptured),
+      endReplayCapture: vi.fn().mockResolvedValue(undefined),
     };
 
     await TestBed.configureTestingModule({
@@ -140,20 +139,20 @@ describe('FeedbackDialogComponent', () => {
     setMessage('Something is broken');
     component.name = 'A user';
     component.email = 'user@example.invalid';
-    spyOn(notifications, 'showSuccess');
+    vi.spyOn(notifications, 'showSuccess');
 
     await component.submit();
 
     expect(sdk.captureFeedback).toHaveBeenCalledWith(
-      jasmine.objectContaining({
+      expect.objectContaining({
         message: 'Something is broken',
         name: 'A user',
         email: 'user@example.invalid',
         url: window.location.href,
         source: 'feedback-dialog',
       }),
-      jasmine.anything(),
-      jasmine.anything(),
+      expect.anything(),
+      expect.anything(),
     );
     expect(notifications.showSuccess).toHaveBeenCalled();
     expect(dialogRef.close).toHaveBeenCalled();
@@ -162,11 +161,11 @@ describe('FeedbackDialogComponent', () => {
   it('reports failure and keeps the inputs when delivery is refused', async () => {
     await createComponent();
     setMessage('Something is broken');
-    sdk.watchFeedbackDelivery.and.callFake(async (send: () => PromiseLike<unknown>) => {
+    sdk.watchFeedbackDelivery.mockImplementation(async (send: () => PromiseLike<unknown>) => {
       await send();
       return false;
     });
-    spyOn(notifications, 'showSuccess');
+    vi.spyOn(notifications, 'showSuccess');
 
     await component.submit();
     fixture.detectChanges();
@@ -180,12 +179,12 @@ describe('FeedbackDialogComponent', () => {
   it('treats an unconfirmed delivery as sent, not as an error', async () => {
     await createComponent();
     setMessage('Something is broken');
-    sdk.watchFeedbackDelivery.and.callFake(async (send: () => PromiseLike<unknown>) => {
+    sdk.watchFeedbackDelivery.mockImplementation(async (send: () => PromiseLike<unknown>) => {
       await send();
       return undefined;
     });
-    spyOn(notifications, 'showSuccess');
-    spyOn(notifications, 'showError');
+    vi.spyOn(notifications, 'showSuccess');
+    vi.spyOn(notifications, 'showError');
 
     await component.submit();
     fixture.detectChanges();
@@ -198,7 +197,7 @@ describe('FeedbackDialogComponent', () => {
 
   it('sends the held recording when the checkbox was ticked', async () => {
     const capture = captured();
-    sdk.beginReplayCapture.and.resolveTo(capture);
+    sdk.beginReplayCapture.mockResolvedValue(capture);
     await createComponent();
     setMessage('Something is broken');
     component.includeReplay = true;
@@ -210,7 +209,7 @@ describe('FeedbackDialogComponent', () => {
 
   it('drops the held recording when the checkbox was left unticked', async () => {
     const capture = captured();
-    sdk.beginReplayCapture.and.resolveTo(capture);
+    sdk.beginReplayCapture.mockResolvedValue(capture);
     await createComponent();
     setMessage('Something is broken');
 
@@ -221,11 +220,13 @@ describe('FeedbackDialogComponent', () => {
 
   it('still settles the held recording when the send throws', async () => {
     const capture = captured();
-    sdk.beginReplayCapture.and.resolveTo(capture);
+    sdk.beginReplayCapture.mockResolvedValue(capture);
     await createComponent();
     setMessage('Something is broken');
     component.includeReplay = true;
-    sdk.watchFeedbackDelivery.and.throwError('boom');
+    sdk.watchFeedbackDelivery.mockImplementation(() => {
+      throw new Error('boom');
+    });
 
     await component.submit();
 
@@ -241,11 +242,11 @@ describe('FeedbackDialogComponent', () => {
     // for, uploaded for a message that never got there - and the retry the
     // form invites would upload a second copy of it.
     const capture = captured();
-    sdk.beginReplayCapture.and.resolveTo(capture);
+    sdk.beginReplayCapture.mockResolvedValue(capture);
     await createComponent();
     setMessage('Something is broken');
     component.includeReplay = true;
-    sdk.watchFeedbackDelivery.and.callFake(async (send: () => PromiseLike<unknown>) => {
+    sdk.watchFeedbackDelivery.mockImplementation(async (send: () => PromiseLike<unknown>) => {
       await send();
       return false;
     });
@@ -258,7 +259,7 @@ describe('FeedbackDialogComponent', () => {
   it('stamps the recording id onto the report, so Sentry shows the two together', async () => {
     // The SDK will not do it here: both paths that would start by checking
     // that the recorder is enabled, and taking the recording disabled it.
-    sdk.beginReplayCapture.and.resolveTo(captured('replay-7'));
+    sdk.beginReplayCapture.mockResolvedValue(captured('replay-7'));
     await createComponent();
     setMessage('Something is broken');
     component.includeReplay = true;
@@ -266,7 +267,7 @@ describe('FeedbackDialogComponent', () => {
     await component.submit();
 
     // The scope has to reach captureFeedback, or the processor never runs.
-    expect(sdk.captureFeedback.calls.mostRecent().args[2]).toBeDefined();
+    expect(sdk.captureFeedback.mock.lastCall?.[2]).toBeDefined();
     expect(processors.length).toBe(1);
     const event: StampedEvent = {type: 'feedback', contexts: {feedback: {}}};
     processors[0](event);
@@ -274,7 +275,7 @@ describe('FeedbackDialogComponent', () => {
   });
 
   it('leaves the report unlinked when no recording travels with it', async () => {
-    sdk.beginReplayCapture.and.resolveTo(captured('replay-7'));
+    sdk.beginReplayCapture.mockResolvedValue(captured('replay-7'));
     await createComponent();
     setMessage('Something is broken');
 
@@ -288,23 +289,23 @@ describe('FeedbackDialogComponent', () => {
     // the teardown they trigger drops the recording the report has already
     // announced it is bringing.
     let closableDuringSend: boolean | undefined;
-    sdk.beginReplayCapture.and.resolveTo(captured());
+    sdk.beginReplayCapture.mockResolvedValue(captured());
     await createComponent();
     setMessage('Something is broken');
-    sdk.flush.and.callFake(async () => {
+    sdk.flush.mockImplementation(async () => {
       closableDuringSend = dialogRef.disableClose;
       return true;
     });
 
     await component.submit();
 
-    expect(closableDuringSend).toBeTrue();
+    expect(closableDuringSend).toBe(true);
     // And handed back afterwards, so a failed report can still be abandoned.
-    expect(dialogRef.disableClose).toBeFalse();
+    expect(dialogRef.disableClose).toBe(false);
   });
 
   it('offers no checkbox when no recording could be held', async () => {
-    sdk.beginReplayCapture.and.resolveTo(nothingCaptured);
+    sdk.beginReplayCapture.mockResolvedValue(nothingCaptured);
     await createComponent();
 
     expect(fixture.nativeElement.querySelector('mat-checkbox')).toBeNull();
@@ -315,7 +316,7 @@ describe('FeedbackDialogComponent', () => {
     // window used to skip settling, and the transport then kept every later
     // recording instead of sending it.
     let answer: (capture: ReplayCapture) => void = () => undefined;
-    sdk.beginReplayCapture.and.returnValue(
+    sdk.beginReplayCapture.mockReturnValue(
       new Promise<ReplayCapture>((resolve) => {
         answer = resolve;
       }),
@@ -330,12 +331,12 @@ describe('FeedbackDialogComponent', () => {
     // the microtasks behind the settle drain on their own.
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(sdk.endReplayCapture).toHaveBeenCalledWith(jasmine.anything(), false);
+    expect(sdk.endReplayCapture).toHaveBeenCalledWith(expect.anything(), false);
   });
 
   it('drops an unsent recording when the dialog is closed without submitting', async () => {
     const capture = captured();
-    sdk.beginReplayCapture.and.resolveTo(capture);
+    sdk.beginReplayCapture.mockResolvedValue(capture);
     await createComponent();
 
     fixture.destroy();
@@ -348,15 +349,15 @@ describe('FeedbackDialogComponent', () => {
 
   describe('screenshots', () => {
     it('offers no screenshot button when the browser cannot capture one', async () => {
-      spyOn(screenshotService, 'isSupported').and.returnValue(false);
+      vi.spyOn(screenshotService, 'isSupported').mockReturnValue(false);
       await createComponent();
 
       expect(fixture.nativeElement.textContent).not.toContain('Add screenshot');
     });
 
     it('does not report an error when the screenshot picker is dismissed', async () => {
-      spyOn(screenshotService, 'isSupported').and.returnValue(true);
-      spyOn(screenshotService, 'captureScreen').and.resolveTo(null);
+      vi.spyOn(screenshotService, 'isSupported').mockReturnValue(true);
+      vi.spyOn(screenshotService, 'captureScreen').mockResolvedValue(null);
       await createComponent();
 
       await component.takeScreenshot();
@@ -367,8 +368,8 @@ describe('FeedbackDialogComponent', () => {
     });
 
     it('attaches the composed screenshot when one was taken', async () => {
-      spyOn(screenshotService, 'isSupported').and.returnValue(true);
-      spyOn(screenshotService, 'captureScreen').and.resolveTo(makeCapture());
+      vi.spyOn(screenshotService, 'isSupported').mockReturnValue(true);
+      vi.spyOn(screenshotService, 'captureScreen').mockResolvedValue(makeCapture());
       await createComponent();
       setMessage('Something is broken');
 
@@ -376,20 +377,20 @@ describe('FeedbackDialogComponent', () => {
       fixture.detectChanges();
 
       const attachment = {data: new Uint8Array([1, 2, 3]), filename: 'screenshot.png', contentType: 'image/png'};
-      spyOn(screenshotService, 'toAttachment').and.resolveTo(attachment);
+      vi.spyOn(screenshotService, 'toAttachment').mockResolvedValue(attachment);
 
       await component.submit();
 
       expect(sdk.captureFeedback).toHaveBeenCalledWith(
-        jasmine.anything(),
-        jasmine.objectContaining({attachments: [attachment]}),
-        jasmine.anything(),
+        expect.anything(),
+        expect.objectContaining({attachments: [attachment]}),
+        expect.anything(),
       );
     });
 
     it('grows the dialog once a screenshot is taken, and hands it back once removed', async () => {
-      spyOn(screenshotService, 'isSupported').and.returnValue(true);
-      spyOn(screenshotService, 'captureScreen').and.resolveTo(makeCapture());
+      vi.spyOn(screenshotService, 'isSupported').mockReturnValue(true);
+      vi.spyOn(screenshotService, 'captureScreen').mockResolvedValue(makeCapture());
       await createComponent();
 
       expect(dialogRef.updateSize).not.toHaveBeenCalled();
@@ -398,7 +399,7 @@ describe('FeedbackDialogComponent', () => {
       fixture.detectChanges();
 
       expect(dialogRef.updateSize).toHaveBeenCalledTimes(1);
-      const [width, height] = dialogRef.updateSize.calls.argsFor(0) as [string, string];
+      const [width, height] = dialogRef.updateSize.mock.calls[0] as [string, string];
       // Not pinned to an exact figure - just that this is a viewport-relative
       // size dwarfing the ~560px form, which is the whole point of the change.
       expect(width).toMatch(/vw$/);
@@ -410,7 +411,7 @@ describe('FeedbackDialogComponent', () => {
       // No arguments: that is what hands the panel back to its plain,
       // form-sized default - see updateSize() in the component.
       expect(dialogRef.updateSize).toHaveBeenCalledTimes(2);
-      expect(dialogRef.updateSize.calls.argsFor(1)).toEqual([]);
+      expect(dialogRef.updateSize.mock.calls[1]).toEqual([]);
     });
   });
 });

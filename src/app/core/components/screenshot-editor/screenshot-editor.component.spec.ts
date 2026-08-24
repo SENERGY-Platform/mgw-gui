@@ -227,7 +227,7 @@ describe('ScreenshotEditorComponent', () => {
     component.setMode('move');
     for (let i = 0; i < 12; i++) component.zoomIn();
     fixture.detectChanges();
-    expect(component.canPan()).toBeTrue();
+    expect(component.canPan()).toBe(true);
 
     const canvas = canvasElement();
     canvas.dispatchEvent(new PointerEvent('pointerdown', {clientX: 0, clientY: 0, pointerId: 7, bubbles: true}));

@@ -48,7 +48,7 @@ describe('watchedFeedbackTransport', () => {
   });
 
   afterEach(() => {
-    expect(isWatchingFeedbackDelivery()).withContext('the watch must never be left armed').toBeFalse();
+    expect(isWatchingFeedbackDelivery(), 'the watch must never be left armed').toBe(false);
   });
 
   it('reports a 2xx as delivered', async () => {
@@ -56,7 +56,7 @@ describe('watchedFeedbackTransport', () => {
 
     const delivered = await watchFeedbackDelivery(() => transport().send(feedback));
 
-    expect(delivered).toBeTrue();
+    expect(delivered).toBe(true);
     expect(sent).toEqual([feedback]);
   });
 
@@ -76,7 +76,7 @@ describe('watchedFeedbackTransport', () => {
 
       const delivered = await watchFeedbackDelivery(() => transport().send(envelopeOf('feedback')));
 
-      expect(delivered).withContext(`HTTP ${statusCode}`).toBe(expected);
+      expect(delivered, `HTTP ${statusCode}`).toBe(expected);
     }
   });
 
@@ -87,7 +87,7 @@ describe('watchedFeedbackTransport', () => {
 
     const delivered = await watchFeedbackDelivery(() => transport().send(envelopeOf('feedback')));
 
-    expect(delivered).toBeFalse();
+    expect(delivered).toBe(false);
   });
 
   it('reports a rejected send as not delivered and lets the rejection through', async () => {
@@ -95,17 +95,17 @@ describe('watchedFeedbackTransport', () => {
     respond = () => Promise.reject(failure);
 
     const delivered = await watchFeedbackDelivery(async () => {
-      await expectAsync(transport().send(envelopeOf('feedback'))).toBeRejectedWith(failure);
+      await expect(transport().send(envelopeOf('feedback'))).rejects.toEqual(failure);
     });
 
-    expect(delivered).toBeFalse();
+    expect(delivered).toBe(false);
   });
 
   it('puts the watch back even when the send throws out of the watched block', async () => {
     const failure = new Error('network down');
     respond = () => Promise.reject(failure);
 
-    await expectAsync(watchFeedbackDelivery(() => transport().send(envelopeOf('feedback')))).toBeRejectedWith(failure);
+    await expect(watchFeedbackDelivery(() => transport().send(envelopeOf('feedback')))).rejects.toEqual(failure);
   });
 
   it('answers undefined when no feedback envelope went past', async () => {
@@ -137,7 +137,7 @@ describe('watchedFeedbackTransport', () => {
       await Promise.all([one, two]);
     });
 
-    expect(delivered).toBeTrue();
+    expect(delivered).toBe(true);
   });
 
   it('sends without watching when nothing asked for an answer', async () => {
@@ -154,6 +154,6 @@ describe('watchedFeedbackTransport', () => {
 
     const delivered = await watchFeedbackDelivery(() => transport().send(withScreenshot));
 
-    expect(delivered).toBeTrue();
+    expect(delivered).toBe(true);
   });
 });

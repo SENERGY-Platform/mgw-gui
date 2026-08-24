@@ -20,19 +20,19 @@ describe('isJobDone', () => {
   const base: Job = {id: 'j1', description: 'test', start: '2026-08-18T10:00:00Z', end: ''};
 
   it('should be false while the job is running (zero value end, UTC)', () => {
-    expect(isJobDone({...base, end: '0001-01-01T00:00:00Z'})).toBeFalse();
+    expect(isJobDone({...base, end: '0001-01-01T00:00:00Z'})).toBe(false);
   });
 
   it('should be false while the job is running (zero value end, with offset)', () => {
-    expect(isJobDone({...base, end: '0001-01-01T00:00:00+00:00'})).toBeFalse();
+    expect(isJobDone({...base, end: '0001-01-01T00:00:00+00:00'})).toBe(false);
   });
 
   it('should be false when end is empty or missing', () => {
-    expect(isJobDone({...base, end: ''})).toBeFalse();
-    expect(isJobDone({...base, end: undefined as unknown as string})).toBeFalse();
+    expect(isJobDone({...base, end: ''})).toBe(false);
+    expect(isJobDone({...base, end: undefined as unknown as string})).toBe(false);
   });
 
   it('should be true once end carries a real timestamp', () => {
-    expect(isJobDone({...base, end: '2026-08-18T10:00:05.123456789Z'})).toBeTrue();
+    expect(isJobDone({...base, end: '2026-08-18T10:00:05.123456789Z'})).toBe(true);
   });
 });

@@ -179,8 +179,8 @@ describe('telemetry', () => {
     });
 
     it('collects nothing about the person at the keyboard', () => {
-      expect(options.sendDefaultPii).toBeFalse();
-      expect(options.sendClientReports).toBeFalse();
+      expect(options.sendDefaultPii).toBe(false);
+      expect(options.sendClientReports).toBe(false);
     });
 
     it('never samples a replay by itself', () => {
@@ -314,13 +314,13 @@ describe('telemetry', () => {
       // No SDK is started here, so there is no replay integration to ask.
       telemetryConsent.set(2);
 
-      expect(isReplayAvailable()).toBeFalse();
+      expect(isReplayAvailable()).toBe(false);
     });
 
     it('is false at level 1', () => {
       telemetryConsent.set(1);
 
-      expect(isReplayAvailable()).toBeFalse();
+      expect(isReplayAvailable()).toBe(false);
     });
   });
 
@@ -368,7 +368,7 @@ describe('telemetry', () => {
     it('takes the recording and keeps it back rather than sending it', async () => {
       const capture = await beginReplayCapture();
 
-      expect(capture.offered).toBeTrue();
+      expect(capture.offered).toBe(true);
       expect(sent).toEqual([]);
       expect(recorder.getRecordingMode()).toBeUndefined();
     });
@@ -390,7 +390,7 @@ describe('telemetry', () => {
 
       const capture = await beginReplayCapture();
 
-      expect(capture.offered).toBeFalse();
+      expect(capture.offered).toBe(false);
       // Still released, though: the hold was armed and must not stay armed.
       expect(capture.hold).not.toBeNull();
     });
@@ -420,10 +420,10 @@ describe('telemetry', () => {
       slow.releaseFlush?.();
       const capture = await capturing;
 
-      expect(swallowed).toBeFalse();
+      expect(swallowed).toBe(false);
       // And once the cycle is out of the way the capture gets its own flush.
       expect(slow.flushes).toBe(2);
-      expect(capture.offered).toBeTrue();
+      expect(capture.offered).toBe(true);
     });
 
     it('lets a second capture neither settle nor disturb the first one', async () => {
@@ -437,7 +437,7 @@ describe('telemetry', () => {
 
       await endReplayCapture(second, false);
 
-      expect(ownsReplayHold(first.hold as number)).toBeTrue();
+      expect(ownsReplayHold(first.hold as number)).toBe(true);
       expect(recorder.buffered).toBe(0);
       expect(recorder.getRecordingMode()).toBeUndefined();
     });

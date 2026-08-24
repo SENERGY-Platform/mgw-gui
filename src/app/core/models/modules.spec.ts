@@ -52,22 +52,22 @@ function moduleReduced(
 
 describe('needsDeploymentUpdate', () => {
   it('should be false when the deployment matches the installed variant', () => {
-    expect(needsDeploymentUpdate(moduleReduced())).toBeFalse();
+    expect(needsDeploymentUpdate(moduleReduced())).toBe(false);
   });
 
   it('should be false for modules without a deployment', () => {
-    expect(needsDeploymentUpdate(moduleReduced({is_deployed: false}))).toBeFalse();
+    expect(needsDeploymentUpdate(moduleReduced({is_deployed: false}))).toBe(false);
   });
 
   it('should be true when the installed version is newer', () => {
-    expect(needsDeploymentUpdate(moduleReduced({version: 'v1.1.0'}))).toBeTrue();
+    expect(needsDeploymentUpdate(moduleReduced({version: 'v1.1.0'}))).toBe(true);
   });
 
   it('should be true when the source changed', () => {
-    expect(needsDeploymentUpdate(moduleReduced({source: 'github.com/other/repository'}))).toBeTrue();
+    expect(needsDeploymentUpdate(moduleReduced({source: 'github.com/other/repository'}))).toBe(true);
   });
 
   it('should be true when the channel changed', () => {
-    expect(needsDeploymentUpdate(moduleReduced({channel: 'beta'}))).toBeTrue();
+    expect(needsDeploymentUpdate(moduleReduced({channel: 'beta'}))).toBe(true);
   });
 });

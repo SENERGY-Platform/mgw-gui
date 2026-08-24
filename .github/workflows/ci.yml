@@ -30,6 +30,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # The test runner drives a real Chromium through Playwright (needed for
+      # the layout- and canvas-dependent specs); npm ci installs the package
+      # but not the browser binary itself.
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
       # gate: format (enforce)
       - name: Check formatting
         run: npm run format:check
@@ -46,7 +52,7 @@ jobs:
       # gate: test (enforce) - instrumented so coverage_delta below can read the
       # report instead of running the suite a second time
       - name: Test
-        run: npm test -- --watch=false --browsers=ChromeHeadless --code-coverage
+        run: npm test -- --watch=false --browsers=ChromiumHeadless --coverage
 
       # gate: coverage_delta (observe until 2026-11-30) - only a pull request has
       # a base branch to measure the changed lines against

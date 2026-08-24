@@ -32,10 +32,10 @@ describe('mapModulesChangeResult', () => {
       failed: [{id: 'mod-b', action: 'remove', error: 'deployment exists'}],
     });
     expect(items.length).toBe(2);
-    expect(items[0].ok).toBeTrue();
-    expect(items[1].ok).toBeFalse();
+    expect(items[0].ok).toBe(true);
+    expect(items[1].ok).toBe(false);
     expect(items[1].hint).toContain('Delete its deployment');
-    expect(hasFailures(items)).toBeTrue();
+    expect(hasFailures(items)).toBe(true);
   });
 
   it('reports an aborted job as its own failed row', () => {
@@ -47,7 +47,7 @@ describe('mapModulesChangeResult', () => {
       failed: null as any,
     });
     expect(items.length).toBe(1);
-    expect(items[0].ok).toBeFalse();
+    expect(items[0].ok).toBe(false);
     expect(items[0].message).toBe('boom');
   });
 });
@@ -65,7 +65,7 @@ describe('mapDeploymentResults', () => {
       results_err_num: 1,
     } as any);
     expect(items.length).toBe(2);
-    expect(hasFailures(items)).toBeTrue();
+    expect(hasFailures(items)).toBe(true);
     expect(items[1].message).toBe('image pull failed');
   });
 });
@@ -89,8 +89,8 @@ describe('mapRepositoryRefreshResult', () => {
       ],
       results_err_num: 0,
     } as any);
-    expect(items[0].ok).toBeTrue();
-    expect(items[1].ok).toBeFalse();
+    expect(items[0].ok).toBe(true);
+    expect(items[1].ok).toBe(false);
     expect(items[1].message).toContain('rate limited');
   });
 

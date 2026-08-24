@@ -18,6 +18,7 @@ import {Component} from '@angular/core';
 import {ComponentFixture, TestBed, fakeAsync, tick, discardPeriodicTasks} from '@angular/core/testing';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
+import type {Mock} from 'vitest';
 
 import {AuxDeploymentsListComponent} from './aux-deployments-list.component';
 
@@ -31,10 +32,10 @@ class HostComponent {
 
 describe('AuxDeploymentsListComponent', () => {
   let fixture: ComponentFixture<HostComponent>;
-  let moduleService: {getAuxDeployments: jasmine.Spy};
+  let moduleService: {getAuxDeployments: Mock};
 
   beforeEach(async () => {
-    moduleService = {getAuxDeployments: jasmine.createSpy('getAuxDeployments').and.returnValue(of({}))};
+    moduleService = {getAuxDeployments: vi.fn().mockReturnValue(of({}))};
 
     await TestBed.configureTestingModule({
       imports: [HostComponent],
@@ -72,7 +73,7 @@ describe('AuxDeploymentsListComponent', () => {
     expect(moduleService.getAuxDeployments).toHaveBeenCalledWith('dep-1');
 
     tick(5000);
-    expect(moduleService.getAuxDeployments.calls.count()).toBe(2);
+    expect(moduleService.getAuxDeployments.mock.calls.length).toBe(2);
 
     discardPeriodicTasks();
     fixture.destroy();
