@@ -1,0 +1,97 @@
+/*
+ * Copyright (c) 2026 InfAI (CC SES)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * The two typefaces the interface is built on, served from the gateway itself.
+ * They used to come from fonts.googleapis.com, which meant a gateway without
+ * internet access rendered the whole UI in a fallback font and every icon as
+ * its own ligature name in plain text. The files next to this one are the
+ * upstream releases, unmodified. They live here rather than under assets/ so
+ * the bundler emits them once with a hashed name; their licences ship under
+ * assets/fonts/, and the provenance is recorded in THIRD-PARTY.md.
+ */
+
+/*
+ * One variable file per unicode range, covering 400 to 700. The range is what
+ * keeps latin-ext off the wire until a character actually needs it, which for
+ * an English interface is only ever a module or container name.
+ */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('./inter-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC,
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('./inter-latin-ext.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+    U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/*
+ * Cut down to the icons the templates actually name - the full face carries
+ * thousands and runs to several megabytes. assets/fonts/icon-names.txt lists what is in
+ * here, and `npm run check:icons` fails when a template asks for one that is
+ * not; see THIRD-PARTY.md for how to regenerate the file.
+ *
+ * `block` rather than `swap`: there is no sensible fallback for an icon font.
+ * Swapping would show the ligature name as words until the file lands.
+ */
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: block;
+  src: url('./material-symbols-rounded.woff2') format('woff2');
+}
+
+/*
+ * The class the icon elements carry. It came with the stylesheet Google used
+ * to serve, and had to be written out here when that link went: without a
+ * font-family the elements keep the body font and show each icon's name as
+ * the word it is, which is exactly what the page looked like before this
+ * block existed. The face forms its icons through `rlig`, a required feature
+ * that is on regardless; the declaration below is the conventional one and
+ * costs nothing.
+ *
+ * Deliberately no font-size: mat-icon sizes itself, and a size here would
+ * fight it. The variation axes stay in styles.css next to the rest of the
+ * theming.
+ */
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}

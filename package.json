@@ -11,7 +11,8 @@
     "format:check": "prettier --check .",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "check:icons": "node scripts/check-icon-subset.mjs"
   },
   "private": true,
   "dependencies": {
