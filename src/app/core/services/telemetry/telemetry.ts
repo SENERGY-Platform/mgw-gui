@@ -68,8 +68,21 @@ export function initTelemetry(sdk: TelemetrySdk = SENTRY_SDK): void {
 
   sdk.init(buildTelemetryOptions());
 
-  telemetryConsent.onChange(applyReplayMode);
+  // Dropped first so a second call replaces its predecessor's listener rather
+  // than adding to it. Production calls this once, from main.ts; a test suite
+  // calls it repeatedly, and a listener left behind by an earlier spec goes on
+  // reacting to consent changes made by a later one.
+  stopWatchingConsent?.();
+  stopWatchingConsent = telemetryConsent.onChange(applyReplayMode);
   applyReplayMode(telemetryConsent.level());
+}
+
+let stopWatchingConsent: (() => void) | null = null;
+
+/** Undoes what initTelemetry registered. For tests; nothing in the app shuts telemetry down. */
+export function stopTelemetry(): void {
+  stopWatchingConsent?.();
+  stopWatchingConsent = null;
 }
 
 export function buildTelemetryOptions(): BrowserOptions {
@@ -135,6 +148,37 @@ export function buildTelemetryOptions(): BrowserOptions {
       return telemetryConsent.level() >= 1 ? log : null;
     },
   };
+}
+
+/**
+ * How long a replay flush may take before the report stops waiting for it.
+ * The recording is the part nobody typed; a flush that never settles must not
+ * hold the feedback panel, and it must not leave the next capture waiting on a
+ * cycle that never ends.
+ */
+const FlushTimeoutMs = 10_000;
+
+/**
+ * Resolves with the promise or on the deadline, whichever comes first. The
+ * promise is not cancelled - nothing here can cancel it - it is only stopped
+ * being waited for, and its own failure is absorbed so it cannot surface later
+ * as an unhandled rejection.
+ */
+function within(work: Promise<unknown>, ms: number): Promise<void> {
+  work.catch(() => undefined);
+  return new Promise((resolve) => {
+    const timer = setTimeout(resolve, ms);
+    void work.then(
+      () => {
+        clearTimeout(timer);
+        resolve();
+      },
+      () => {
+        clearTimeout(timer);
+        resolve();
+      },
+    );
+  });
 }
 
 // --- replay ----------------------------------------------------------------
@@ -267,7 +311,7 @@ async function runReplayCycle(options: CycleOptions): Promise<CycleResult> {
   let replayId: string | undefined;
 
   try {
-    await replay.flush({continueRecording: false});
+    await within(replay.flush({continueRecording: false}), FlushTimeoutMs);
     // Read here because this is the only moment it exists: the flush leaves
     // the recorder enabled but the stop below does not, and getReplayId
     // answers nothing once it is disabled. Without the id the recording

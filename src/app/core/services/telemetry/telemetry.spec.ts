@@ -28,6 +28,7 @@ import {
   endReplayCapture,
   initTelemetry,
   isReplayAvailable,
+  stopTelemetry,
   useReplayRecorder,
 } from './telemetry';
 
@@ -113,6 +114,9 @@ describe('telemetry', () => {
   afterEach(() => {
     environment.sentryDsn = configuredDsn;
     environment.uiVersion = configuredVersion;
+    // Drops the consent listener initTelemetry registers. Without this it
+    // outlives its spec and goes on reacting to levels a later one sets.
+    stopTelemetry();
     // Put back to never-asked, not merely to level 0. Leaving the question
     // answered decides for whichever spec Jasmine happens to run next whether
     // the consent dialog is still due.
@@ -127,6 +131,32 @@ describe('telemetry', () => {
       initTelemetry(sdk);
 
       expect(sdk.captured.length).toBe(0);
+    });
+
+    it('stops reacting to consent once it is shut down', () => {
+      environment.sentryDsn = A_DSN;
+      const recorder = new FakeRecorder(
+        heldReplayTransport(() => ({send: () => Promise.resolve({}), flush: () => Promise.resolve(true)}))(
+          {} as TransportOptions,
+        ),
+      );
+      const restore = useReplayRecorder(() => recorder);
+
+      try {
+        initTelemetry(recordingSdk());
+        stopTelemetry();
+        recorder.reset();
+
+        telemetryConsent.set(2);
+
+        // The listener is the only thing that would start a buffer here.
+        // Left registered it outlives whatever registered it: in a suite it
+        // reacts to levels a later spec sets, and the counters that spec
+        // reads then depend on the order Jasmine picked.
+        expect(recorder.buffered).toBe(0);
+      } finally {
+        restore();
+      }
     });
 
     it('starts the SDK once a DSN is configured', () => {

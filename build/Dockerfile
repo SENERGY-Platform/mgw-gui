@@ -12,10 +12,19 @@ RUN npm ci --quiet
 #COPY tsconfig.app.json .
 COPY . .
 
+# The environments ship 'UI-VERSION' as a placeholder so a source build has
+# something to compile. Substituting it here, before ng build, is what makes
+# the shell's version display and Sentry's release tag say the version this
+# image actually is; without it both report the placeholder. Kept out of the
+# builder stage so the two build stages do not share a cache entry keyed on it.
 FROM builder AS prod_builder
+ARG VERSION="missing-version"
+RUN sed -i "s/'UI-VERSION'/'${VERSION}'/" src/environments/*.ts
 RUN npx ng build -c production --base-href="/core/web-ui/"
 
 FROM builder AS dev_builder
+ARG VERSION="missing-version"
+RUN sed -i "s/'UI-VERSION'/'${VERSION}'/" src/environments/*.ts
 RUN npx ng build -c debug --base-href="/core/web-ui/"
 
 FROM nginx:1.27.2-alpine-slim AS serve

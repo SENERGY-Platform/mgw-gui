@@ -315,11 +315,30 @@ export class ScreenshotEditorComponent implements OnChanges, AfterViewInit, OnDe
    */
   private applyPan(event: PointerEvent): void {
     if (!this.panDrag) return;
-    this.pan = {
+    this.pan = this.boundPan({
       x: this.panDrag.originPan.x + (event.clientX - this.panDrag.originClient.x),
       y: this.panDrag.originPan.y + (event.clientY - this.panDrag.originClient.y),
-    };
+    });
     this.applyViewport();
+  }
+
+  /**
+   * Keeps the image reachable. The canvas is what the pointer grabs, so an
+   * unbounded offset can push it out of the wrapper entirely and leave
+   * nothing under the cursor to drag back with. Bounded to the overhang -
+   * how far the scaled image sticks out past the wrapper on each axis - so
+   * an edge can be brought to the wrapper's edge but no further.
+   */
+  private boundPan(pan: Point): Point {
+    const wrapper = this.wrapperRef?.nativeElement;
+    if (!wrapper || !this.capture) return pan;
+
+    const limitX = Math.max(0, (this.capture.width * this.scale - wrapper.clientWidth) / 2);
+    const limitY = Math.max(0, (this.capture.height * this.scale - wrapper.clientHeight) / 2);
+    return {
+      x: Math.min(limitX, Math.max(-limitX, pan.x)),
+      y: Math.min(limitY, Math.max(-limitY, pan.y)),
+    };
   }
 
   /**

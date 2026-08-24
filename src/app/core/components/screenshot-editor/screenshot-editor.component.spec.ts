@@ -218,4 +218,37 @@ describe('ScreenshotEditorComponent', () => {
     expect(attachment.contentType).toBe('image/png');
     expect(attachment.data.length).toBeGreaterThan(0);
   });
+
+  it('never lets a pan push the image out of reach', () => {
+    const component = editor();
+    const wrapper = fixture.nativeElement.querySelector('.canvas-wrapper') as HTMLElement;
+
+    // Zoomed in far enough that panning means something at all.
+    component.setMode('move');
+    for (let i = 0; i < 12; i++) component.zoomIn();
+    fixture.detectChanges();
+    expect(component.canPan()).toBeTrue();
+
+    const canvas = canvasElement();
+    canvas.dispatchEvent(new PointerEvent('pointerdown', {clientX: 0, clientY: 0, pointerId: 7, bubbles: true}));
+    // Far beyond anything the image could justify.
+    canvas.dispatchEvent(
+      new PointerEvent('pointermove', {clientX: 99999, clientY: 99999, pointerId: 7, bubbles: true}),
+    );
+    canvas.dispatchEvent(new PointerEvent('pointerup', {clientX: 99999, clientY: 99999, pointerId: 7, bubbles: true}));
+    fixture.detectChanges();
+
+    // The bound is the overhang: how far the scaled image sticks out past the
+    // wrapper on each side. Held to it, an edge reaches the wrapper's edge and
+    // stops, so the canvas always keeps some of itself under the pointer.
+    const limitX = Math.max(0, (host.capture.width * component.scale - wrapper.clientWidth) / 2);
+    const limitY = Math.max(0, (host.capture.height * component.scale - wrapper.clientHeight) / 2);
+    expect(component.pan.x).toBeLessThanOrEqual(limitX + 0.001);
+    expect(component.pan.y).toBeLessThanOrEqual(limitY + 0.001);
+
+    const box = canvas.getBoundingClientRect();
+    const wrapperBox = wrapper.getBoundingClientRect();
+    expect(box.right).toBeGreaterThan(wrapperBox.left);
+    expect(box.bottom).toBeGreaterThan(wrapperBox.top);
+  });
 });
