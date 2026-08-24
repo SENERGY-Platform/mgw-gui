@@ -52,7 +52,7 @@ jobs:
       # a base branch to measure the changed lines against
       - name: Coverage of changed lines
         if: github.event_name == 'pull_request'
-        run: python3 scripts/coverage-delta.py --base "origin/${{ github.base_ref }}" --min 30
+        run: python3 scripts/coverage-delta.py --base "origin/${{ github.base_ref }}" --min 50
         continue-on-error: true
 
       # gate: deps_license (warn until 2026-10-31, then flip continue-on-error)
@@ -63,7 +63,7 @@ jobs:
           license-checker --production --excludePrivatePackages --onlyAllow "$ALLOWED_NPM"
         continue-on-error: true
 
-      # gate: vulns (warn until 2026-10-31, then flip continue-on-error to false)
+      # gate: vulns (enforcing since 2026-08-24 - the audit scope is production
+      # dependencies only, and those have been clean since the Angular 21 upgrade)
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high
-        continue-on-error: true

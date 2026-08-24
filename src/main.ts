@@ -2,7 +2,7 @@
 
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 
-import {AppModule} from './app/app.module';
+import {registerAppLocale} from './app/core/locale';
 import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {AuthCheckInterceptor} from './app/core/services/auth/interceptor/auth.interceptor';
 import {environment} from './environments/environment';
@@ -25,6 +25,10 @@ import {AppComponent} from './app/app.component';
 // Before bootstrap, so an error thrown while the application starts is still
 // seen. Does nothing at all when the environment carries no DSN, and sends
 // nothing until the consent level allows it.
+// Before anything renders: LOCALE_ID below is 'de', and only en-US is
+// compiled in. A date pipe reached without this throws NG0701.
+registerAppLocale();
+
 initTelemetry();
 
 bootstrapApplication(AppComponent, {
