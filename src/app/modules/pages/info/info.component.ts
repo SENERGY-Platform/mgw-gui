@@ -22,7 +22,7 @@ import {UtilService} from 'src/app/core/services/util/util.service';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
 import {DatePipe, KeyValuePipe} from '@angular/common';
 import {MatChip, MatChipSet} from '@angular/material/chips';
-import {MatTabGroup, MatTab} from '@angular/material/tabs';
+import {MatTabGroup, MatTab, MatTabContent} from '@angular/material/tabs';
 import {AuxDeploymentsListComponent} from 'src/app/deployments/components/aux-deployments-list/aux-deployments-list.component';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
@@ -54,6 +54,7 @@ import {StatusPillComponent, StatusTone} from 'src/app/core/components/status-pi
     MatChip,
     MatTabGroup,
     MatTab,
+    MatTabContent,
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,

@@ -201,14 +201,20 @@
       </mat-tab>
 
       <mat-tab [disabled]="!module.is_deployed" label="Auxiliary deployments">
-        <div class="tab-body">
-          <section class="card">
-            <p class="muted">
-              Extra containers this module spawned at runtime. Read-only — modules manage them themselves.
-            </p>
-            <aux-deployments-list [deploymentID]="module.deployment.id"></aux-deployments-list>
-          </section>
-        </div>
+        <!-- Lazily, so the list is built when the tab is opened rather than
+             with the page. Without this a disabled tab's body is created all
+             the same, and the list underneath starts polling for a module
+             that has no deployment to poll about. -->
+        <ng-template matTabContent>
+          <div class="tab-body">
+            <section class="card">
+              <p class="muted">
+                Extra containers this module spawned at runtime. Read-only — modules manage them themselves.
+              </p>
+              <aux-deployments-list [deploymentID]="module.deployment.id"></aux-deployments-list>
+            </section>
+          </div>
+        </ng-template>
       </mat-tab>
     </mat-tab-group>
   }

@@ -74,6 +74,14 @@ export class AuxDeploymentsListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // A module that was never deployed carries an empty deployment id, and
+    // the request would ask the gateway for /deployments//auxiliary/... -
+    // a 404, repeated every five seconds. There is nothing to list either
+    // way, so say so and stay quiet.
+    if (!this.deploymentID) {
+      this.ready = true;
+      return;
+    }
     this.load(false);
     this.interval = setInterval(() => this.load(true), 5000);
   }
