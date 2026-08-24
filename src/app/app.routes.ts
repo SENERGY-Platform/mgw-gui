@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {DeveloperComponent} from './developer/developer.component';
-import {PlaygroundComponent} from './developer/playground/playground.component';
-import {OverviewComponent} from './overview/overview.component';
+import {Routes} from '@angular/router';
 
 // Routes moved when the navigation was reorganised around what the user
 // manages. The redirects keep older bookmarks and in-module links working;
@@ -30,21 +26,20 @@ const legacyRedirects: Routes = [
   {path: 'deployments/endpoints', redirectTo: 'resources/endpoints'},
 ];
 
-const routes: Routes = [
+// Every feature keeps its routes in its own file and is loaded only once one
+// of its paths is visited. The empty path on each entry is a pass-through:
+// it adds no segment of its own, so the feature's routes end up mounted
+// exactly where they used to be, just fetched lazily instead of bundled into
+// the start-up chunk.
+export const routes: Routes = [
   {path: '', redirectTo: '/overview', pathMatch: 'full'},
-  {path: 'overview', component: OverviewComponent},
   ...legacyRedirects,
-  {
-    path: 'developer',
-    children: [
-      {path: '', component: DeveloperComponent},
-      {path: ':scope/:service', component: PlaygroundComponent},
-    ],
-  },
+  {path: '', loadChildren: () => import('./overview/overview.routes').then((m) => m.routes)},
+  {path: '', loadChildren: () => import('./developer/developer.routes').then((m) => m.routes)},
+  {path: '', loadChildren: () => import('./auth/auth.routes').then((m) => m.routes)},
+  {path: '', loadChildren: () => import('./deployments/deployments.routes').then((m) => m.routes)},
+  {path: '', loadChildren: () => import('./container/container.routes').then((m) => m.routes)},
+  {path: '', loadChildren: () => import('./modules/modules.routes').then((m) => m.routes)},
+  {path: '', loadChildren: () => import('./secrets/secrets.routes').then((m) => m.routes)},
+  {path: '', loadChildren: () => import('./system/system.routes').then((m) => m.routes)},
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}

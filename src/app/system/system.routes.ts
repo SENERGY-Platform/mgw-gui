@@ -1,15 +1,20 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {RouterModule, Routes} from '@angular/router';
-import {MatIconModule} from '@angular/material/icon';
-import {MatTableModule} from '@angular/material/table';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+/*
+ * Copyright (c) 2026 InfAI (CC SES)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import {MatButtonModule} from '@angular/material/button';
-import {MatInputModule} from '@angular/material/input';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatCardModule} from '@angular/material/card';
+import {Routes} from '@angular/router';
 import {ListUsersComponent} from './pages/list-users/list-users.component';
 import {RegisterComponent} from './pages/add-account/register.component';
 import {EditAccountComponent} from './pages/edit-account/edit-account.component';
@@ -20,7 +25,7 @@ import {LogsComponent} from '../container/pages/logs/logs.component';
 import {JobsComponent} from './pages/jobs/jobs.component';
 import {ConfigurationComponent} from './pages/configuration/configuration.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: 'system',
     children: [
@@ -52,26 +57,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-@NgModule({
-  imports: [
-    CommonModule,
-    MatIconModule,
-    MatInputModule,
-    FormsModule,
-    MatCardModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatTableModule,
-    RouterModule.forChild(routes),
-    ListUsersComponent,
-    RegisterComponent,
-    EditAccountComponent,
-    ListAppsComponent,
-    JobsComponent,
-    ConfigurationComponent,
-  ],
-})
-export class CoreServicesModule {}

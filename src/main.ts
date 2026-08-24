@@ -12,14 +12,9 @@ import {initTelemetry} from './app/core/services/telemetry/telemetry';
 import {MAT_ICON_DEFAULT_OPTIONS} from '@angular/material/icon';
 import {BrowserModule, bootstrapApplication} from '@angular/platform-browser';
 import {MatIconModule} from '@angular/material/icon';
-import {AppRoutingModule} from './app/app-routing.module';
+import {provideRouter} from '@angular/router';
+import {routes} from './app/app.routes';
 import {provideAnimations} from '@angular/platform-browser/animations';
-import {DeploymentsModule} from './app/deployments/deployments.module';
-import {ContainerModule} from './app/container/container.module';
-import {ModulesModule} from './app/modules/modules.module';
-import {SecretsModule} from './app/secrets/secrets.module';
-import {CoreServicesModule} from './app/system/core-services.module';
-import {AuthModule} from './app/auth/auth.module';
 import {AppComponent} from './app/app.component';
 
 // Before bootstrap, so an error thrown while the application starts is still
@@ -43,17 +38,8 @@ bootstrapApplication(AppComponent, {
       provide: ErrorHandler,
       useValue: createErrorHandler(),
     },
-    importProvidersFrom(
-      BrowserModule,
-      MatIconModule,
-      AppRoutingModule,
-      DeploymentsModule,
-      ContainerModule,
-      ModulesModule,
-      SecretsModule,
-      CoreServicesModule,
-      AuthModule,
-    ),
+    importProvidersFrom(BrowserModule, MatIconModule),
+    provideRouter(routes),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthCheckInterceptor,
