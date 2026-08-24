@@ -15,56 +15,41 @@
  */
 
 /*
- * The icon font is cut down to the icons the templates name, because the full
- * face runs to several megabytes. That trade has one failure mode: an icon
- * added to a template later is simply not in the file, and renders as its own
- * ligature name in words. Nothing else notices - the build passes, the tests
- * pass, and it is only visible by looking at the page.
+ * The icon font is cut down to the icons this application asks for, because
+ * the full face is 5.3 MB. That trade has one failure mode: an icon added
+ * later is not in the file and renders as its own name in words. Nothing else
+ * notices - the build passes, the tests pass, and it is visible only by
+ * looking at the page. It is how the navigation lost all of its icons once.
  *
- * So compare the two here. Names present in the subset but no longer used are
- * only waste, and reported without failing.
+ * A name the syntax marks as an icon and that is missing fails here. A string
+ * literal that merely happens to be a valid icon name is reported and does
+ * not, because 'password' and 'input' are icon names as well as ordinary
+ * words, and failing on those would make this unusable.
  */
-import {readdirSync, readFileSync, statSync} from 'node:fs';
-import {join} from 'node:path';
+import {findIcons, readList, SUBSET_LIST} from './icon-usage.mjs';
 
-const SUBSET = 'src/assets/fonts/icon-names.txt';
-const ICON_IN_TEMPLATE = />([a-z_]{3,})<\/mat-icon>/g;
+const shipped = readList(SUBSET_LIST);
+const {certain, possible} = findIcons();
 
-function templates(dir) {
-  return readdirSync(dir).flatMap((entry) => {
-    const path = join(dir, entry);
-    if (statSync(path).isDirectory()) return templates(path);
-    return path.endsWith('.html') ? [path] : [];
-  });
-}
-
-const shipped = new Set(
-  readFileSync(SUBSET, 'utf8')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean),
-);
-
-const used = new Map();
-for (const path of templates('src/app')) {
-  const html = readFileSync(path, 'utf8');
-  for (const [, name] of html.matchAll(ICON_IN_TEMPLATE)) {
-    if (!used.has(name)) used.set(name, path);
-  }
-}
-
-const missing = [...used.keys()].filter((name) => !shipped.has(name)).sort();
-const unused = [...shipped].filter((name) => !used.has(name)).sort();
+const missing = [...certain].filter(([name]) => !shipped.has(name));
+const unlisted = [...possible].filter(([name]) => !shipped.has(name));
+const unused = [...shipped].filter((name) => !certain.has(name) && !possible.has(name)).sort();
 
 if (unused.length) {
-  console.log(`${unused.length} icon(s) in the subset that no template uses: ${unused.join(', ')}`);
+  console.log(`${unused.length} icon(s) in the subset that nothing asks for: ${unused.join(', ')}`);
+}
+
+if (unlisted.length) {
+  console.log(`\n${unlisted.length} string(s) that are valid icon names but are not in the subset.`);
+  console.log('Ordinary strings look like this too - check whether any is really used as an icon:');
+  for (const [name, path] of unlisted) console.log(`  ${name}  (${path})`);
 }
 
 if (missing.length) {
   console.error(`\n${missing.length} icon(s) used but not in the font subset:\n`);
-  for (const name of missing) console.error(`  ${name}  (${used.get(name)})`);
-  console.error(`\nRegenerate the subset - see THIRD-PARTY.md - and update ${SUBSET}.`);
+  for (const [name, path] of missing) console.error(`  ${name}  (${path})`);
+  console.error(`\nRegenerate the subset - see THIRD-PARTY.md - and update ${SUBSET_LIST}.`);
   process.exit(1);
 }
 
-console.log(`All ${used.size} icons used by the templates are in the subset.`);
+console.log(`\nAll ${certain.size} icons the syntax marks as icons are in the subset.`);

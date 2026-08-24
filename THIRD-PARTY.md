@@ -30,20 +30,26 @@ and every icon as its own ligature name in plain text.
 
 #### Regenerating the icon subset
 
-The font files sit in `src/fonts/` so the bundler emits them once, hashed;
-their licences and the icon list stay under `src/assets/fonts/`, which is
-copied verbatim.
+The font holds the icons listed in `src/assets/fonts/icon-names.txt`, and
+`npm run check:icons` fails when something the syntax marks as an icon is not
+among them. `scripts/icon-usage.mjs` decides what counts as used, and
+`scripts/material-symbols-names.txt` lists every name the full face knows,
+extracted from its ligature table - which is what makes it possible to tell an
+icon name from an ordinary string.
 
-`src/assets/fonts/icon-names.txt` is the list of icons in the file, and
-`npm run check:icons` fails when a template asks for one that is not in it.
-When that happens, or when an icon is no longer used and the file may shrink:
+That distinction matters more than it looks. Icon names arrive from three
+places: the content of a `<mat-icon>`, an `icon:` property in TypeScript, and
+occasionally a method that just returns one. Only the first two are
+recognisable as icons from their syntax; the theme toggle's `light_mode` is a
+string like any other. Cutting the font from templates alone once cost the
+navigation every one of its icons, with nothing failing anywhere.
 
 ```sh
-# 1. the icons the templates currently name
-grep -rhoE ">[a-z_]{3,}</mat-icon>" src/app --include='*.html' \
-  | sed 's/>//;s/<\/mat-icon>//' | sort -u > src/assets/fonts/icon-names.txt
+# 1. what the application asks for: the certain ones, plus the literals that
+#    are real icon names
+npm run icons:list > src/assets/fonts/icon-names.txt
 
-# 2. a font cut to exactly those, via the icon_names parameter
+# 2. a font cut to exactly those
 ICONS=$(tr '\n' ',' < src/assets/fonts/icon-names.txt | sed 's/,$//')
 curl -sS -A "Mozilla/5.0 Chrome/151.0" -G "https://fonts.googleapis.com/css2" \
   --data-urlencode "family=Material Symbols Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" \
@@ -53,11 +59,18 @@ curl -sS -A "Mozilla/5.0 Chrome/151.0" -G "https://fonts.googleapis.com/css2" \
 curl -sS -A "Mozilla/5.0 Chrome/151.0" \
   -o src/fonts/material-symbols-rounded.woff2 \
   "$(grep -oE 'https://fonts.gstatic.com/l/font\?[^)]+' /tmp/symbols.css)"
+
+# 4. look at a page afterwards. A missing icon shows as its own name in words
+#    and no test catches it.
 ```
 
 A browser-like user agent matters: Google Fonts serves `woff2` only to clients
 it believes support it, and an unrecognised agent gets `ttf` instead.
 
-The `@font-face` rules themselves live in `src/fonts/fonts.css` and are
-written here rather than taken over, so the stylesheet Google serves is not
-part of this repository.
+`scripts/material-symbols-names.txt` only needs regenerating when the upstream
+face gains icons. It comes from the ligature table of the full `woff2`, read
+with `fonttools`.
+
+The `@font-face` rules themselves live in `src/fonts/fonts.css` and are written
+here rather than taken over, so the stylesheet Google serves is not part of this
+repository.
