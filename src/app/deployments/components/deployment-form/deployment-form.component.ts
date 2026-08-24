@@ -42,6 +42,9 @@ interface ConfigRow {
   ref: string;
   input: ModuleInput;
   config: ModuleConfigValue;
+  // mirrors config.required; kept as its own field so the template can read
+  // it the same way for configs, secrets, resources and files
+  required: boolean;
   raw: string;
   useGlobal: boolean;
   globalConfigId: string;
@@ -52,6 +55,7 @@ interface ConfigRow {
 interface ResourceRow {
   ref: string;
   input: ModuleInput;
+  required: boolean;
   selectedId: string;
   error: string;
 }
@@ -60,6 +64,7 @@ interface SecretRow {
   ref: string;
   input: ModuleInput;
   type: string;
+  required: boolean;
   selectedId: string;
   error: string;
 }
@@ -150,6 +155,7 @@ export class DeploymentFormComponent implements OnInit {
         ref: ref,
         input: input as ModuleInput,
         config: config,
+        required: config.required,
         raw: existing ? formatConfigValue(existing) : this.defaultRaw(config),
         useGlobal: !!globalId,
         globalConfigId: globalId,
@@ -164,6 +170,7 @@ export class DeploymentFormComponent implements OnInit {
       this.resourceRows.push({
         ref: ref,
         input: input as ModuleInput,
+        required: (this.module.host_resources || {})[ref]?.required || false,
         selectedId: deployment?.host_resources?.[ref] || '',
         error: '',
       });
@@ -174,6 +181,7 @@ export class DeploymentFormComponent implements OnInit {
         ref: ref,
         input: input as ModuleInput,
         type: (this.module.secrets || {})[ref]?.type || '',
+        required: (this.module.secrets || {})[ref]?.required || false,
         selectedId: deployment?.secrets?.[ref]?.id || '',
         error: '',
       });
@@ -317,7 +325,12 @@ export class DeploymentFormComponent implements OnInit {
         continue;
       }
       if (row.raw.trim() === '') {
-        // no input: fall back to the module default
+        // no input: fall back to the module default, unless there is none
+        // to fall back to and the module needs a value regardless
+        if (row.required && (row.config.default === null || row.config.default === undefined)) {
+          row.error = 'A value is required';
+          valid = false;
+        }
         continue;
       }
       try {
@@ -332,6 +345,9 @@ export class DeploymentFormComponent implements OnInit {
       row.error = '';
       if (row.selectedId) {
         result.host_resources[row.ref] = row.selectedId;
+      } else if (row.required) {
+        row.error = 'Select a host resource';
+        valid = false;
       }
     }
 
@@ -339,6 +355,9 @@ export class DeploymentFormComponent implements OnInit {
       row.error = '';
       if (row.selectedId) {
         result.secrets[row.ref] = row.selectedId;
+      } else if (row.required) {
+        row.error = 'Select a secret';
+        valid = false;
       }
     }
 

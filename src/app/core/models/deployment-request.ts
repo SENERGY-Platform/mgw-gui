@@ -66,11 +66,17 @@ export interface ModuleConfigValue {
   // string data type: string, int, float, bool
   data_type: string;
   is_slice: boolean;
+  required: boolean;
 }
 
 export interface ModuleSecretDef {
   // secret type as defined by the secret manager, e.g. certificate, basic-auth
   type: string;
+  required: boolean;
+}
+
+export interface ModuleHostResourceDef {
+  required: boolean;
 }
 
 export interface ModuleFileDef {
@@ -91,6 +97,7 @@ export interface DeploymentRequestModule extends ErrorResult {
   inputs: ModuleInputs;
   configs: Record<string, ModuleConfigValue> | null;
   secrets: Record<string, ModuleSecretDef> | null;
+  host_resources: Record<string, ModuleHostResourceDef> | null;
   files: Record<string, ModuleFileDef> | null;
   is_deployed: boolean;
   deployment: DeploymentDetails;

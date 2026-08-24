@@ -30,6 +30,8 @@
       <mat-icon>check_circle</mat-icon>
       This module needs no configuration.
     </p>
+  } @else {
+    <p class="required-legend"><span class="required" title="Required">*</span> Required</p>
   }
 
   @for (group of configGroups; track group.label) {
@@ -38,7 +40,12 @@
       @for (row of group.rows; track row.ref) {
         <div class="field">
           <div class="field-head">
-            <label [attr.for]="'cfg-' + row.ref">{{ row.input.name }}</label>
+            <label [attr.for]="'cfg-' + row.ref">
+              {{ row.input.name }}
+              @if (row.required) {
+                <span class="required" title="Required">*</span>
+              }
+            </label>
             @if (row.matchingGlobals.length > 0) {
               <mat-slide-toggle
                 [(ngModel)]="row.useGlobal"
@@ -115,7 +122,12 @@
       @for (row of resourceRows; track row.ref) {
         <div class="field">
           <div class="field-head">
-            <label [attr.for]="'res-' + row.ref">{{ row.input.name }}</label>
+            <label [attr.for]="'res-' + row.ref">
+              {{ row.input.name }}
+              @if (row.required) {
+                <span class="required" title="Required">*</span>
+              }
+            </label>
           </div>
           @if (row.input.description) {
             <p class="field-desc">{{ row.input.description }}</p>
@@ -145,7 +157,12 @@
       @for (row of secretRows; track row.ref) {
         <div class="field">
           <div class="field-head">
-            <label [attr.for]="'sec-' + row.ref">{{ row.input.name }}</label>
+            <label [attr.for]="'sec-' + row.ref">
+              {{ row.input.name }}
+              @if (row.required) {
+                <span class="required" title="Required">*</span>
+              }
+            </label>
             @if (row.type) {
               <span class="type-tag">{{ row.type }}</span>
             }

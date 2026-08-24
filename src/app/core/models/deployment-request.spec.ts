@@ -25,6 +25,7 @@ function config(overrides: Partial<ModuleConfigValue> = {}): ModuleConfigValue {
     type_opt: null,
     data_type: 'string',
     is_slice: false,
+    required: false,
     ...overrides,
   };
 }

@@ -92,6 +92,7 @@ export class ModuleManagerMockService {
           type_opt: {max_len: 20},
           data_type: 'string',
           is_slice: false,
+          required: true,
         },
         port: {
           default: 8080,
@@ -101,6 +102,7 @@ export class ModuleManagerMockService {
           type_opt: {min: 1024, max: 65535},
           data_type: 'int',
           is_slice: false,
+          required: true,
         },
         hosts: {
           default: null,
@@ -110,9 +112,11 @@ export class ModuleManagerMockService {
           type_opt: null,
           data_type: 'string',
           is_slice: true,
+          required: false,
         },
       },
-      secrets: {cert: {type: 'certificate'}},
+      secrets: {cert: {type: 'certificate', required: true}},
+      host_resources: {serial: {required: true}},
       files: {conf: {type: 'generic', required: false, default_data: 'bW9jaz10cnVl'}},
     };
   }
