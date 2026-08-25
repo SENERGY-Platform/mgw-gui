@@ -1,3 +1,15 @@
+# mgw-gui
+
+The web interface of the MGW ("multi gateway") edge-gateway stack: an Angular
+application through which users install and manage modules, control their
+deployments, and maintain secrets, global configs and endpoints.
+
+It is a client only. On the `next-gen` branch it talks exclusively to the
+[mgw-module-manager](https://github.com/SENERGY-Platform/mgw-module-manager)
+API — the TypeScript models mirror its wire format — and fetches container logs
+through the container-engine wrapper. `master` remains the legacy UI for the old
+core.
+
 # Development
 
 See `https://v17.angular.io/guide/setup-local` for installing the needed tools like NPM.
@@ -131,3 +143,9 @@ Add its code to `AVAILABLE_LANGS` in `src/app/core/services/language/language.se
 JSON file next to `en.json` in every scope that has translations ready. `LanguageSwitchComponent` (in the
 shell's toolbar) only renders once `AVAILABLE_LANGS` holds more than one entry - nothing else has to change to
 turn the switch on.
+
+## Further documentation
+
+`docs/` holds knowledge about this app that the code does not show: the structure and
+conventions of the `next-gen` UI, and the fact that configuration here is compile-time
+only — with what that rules out.
