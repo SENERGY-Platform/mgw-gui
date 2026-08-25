@@ -18,19 +18,17 @@
 // Mirrors mgw-module-manager/lib/models/repositories.go; field names follow
 // the JSON tags of the Go structs.
 
-// Repository and RepositoryChannel have no json tags upstream and therefore
-// serialize with Go-style capitalized field names (see SNRGY-4601).
 export interface RepositoryChannel {
-  Name: string;
-  Priority: number;
+  name: string;
+  priority: number;
 }
 
 export interface Repository {
   // values: github.com, host-dir
-  Type: string;
-  Source: string;
-  Priority: number;
-  Channels: RepositoryChannel[];
+  type: string;
+  source: string;
+  priority: number;
+  channels: RepositoryChannel[];
 }
 
 export interface RepoModuleVariantChannel {

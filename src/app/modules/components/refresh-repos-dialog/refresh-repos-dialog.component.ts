@@ -62,11 +62,11 @@ export class RefreshReposDialogComponent {
   ) {
     this.repositories = data.repositories || [];
     this.hasPendingChangeRequest = !!data.hasPendingChangeRequest;
-    this.repositories.forEach((repo) => (this.selected[repo.Source] = true));
+    this.repositories.forEach((repo) => (this.selected[repo.source] = true));
   }
 
   selectedSources(): string[] {
-    return this.repositories.map((repo) => repo.Source).filter((source) => this.selected[source]);
+    return this.repositories.map((repo) => repo.source).filter((source) => this.selected[source]);
   }
 
   allSelected(): boolean {

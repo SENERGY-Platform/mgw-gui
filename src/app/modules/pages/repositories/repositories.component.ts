@@ -116,7 +116,7 @@ export class RepositoriesComponent implements OnInit {
   }
 
   channelNames(repository: Repository): string {
-    return (repository.Channels || []).map((channel) => channel.Name).join(', ');
+    return (repository.channels || []).map((channel) => channel.name).join(', ');
   }
 
   add() {
@@ -158,7 +158,7 @@ export class RepositoriesComponent implements OnInit {
   }
 
   delete(repository: Repository) {
-    if (repository.Type === 'host-dir') {
+    if (repository.type === 'host-dir') {
       this.errorService.handleError(
         RepositoriesComponent.name,
         'delete',
@@ -167,13 +167,13 @@ export class RepositoriesComponent implements OnInit {
       return;
     }
     this.utilService
-      .askForConfirmation(this.translate('modules.repositories.confirmDelete', {source: repository.Source}))
+      .askForConfirmation(this.translate('modules.repositories.confirmDelete', {source: repository.source}))
       .pipe(
         concatMap((confirmed) => {
           if (!confirmed) {
             return of(null);
           }
-          return this.moduleService.deleteRepository(repository.Source);
+          return this.moduleService.deleteRepository(repository.source);
         }),
       )
       .subscribe({

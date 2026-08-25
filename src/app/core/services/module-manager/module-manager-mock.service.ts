@@ -236,18 +236,18 @@ export class ModuleManagerMockService {
   getRepositories(): Observable<Repository[]> {
     return of([
       {
-        Type: 'host-dir',
-        Source: 'localhost',
-        Priority: 0,
-        Channels: [{Name: 'default', Priority: 0}],
+        type: 'host-dir',
+        source: 'localhost',
+        priority: 0,
+        channels: [{name: 'default', priority: 0}],
       },
       {
-        Type: 'github.com',
-        Source: 'github.com/SENERGY-Platform/mgw-module-repository',
-        Priority: 1,
-        Channels: [
-          {Name: 'main', Priority: 1},
-          {Name: 'beta', Priority: 0},
+        type: 'github.com',
+        source: 'github.com/SENERGY-Platform/mgw-module-repository',
+        priority: 1,
+        channels: [
+          {name: 'main', priority: 1},
+          {name: 'beta', priority: 0},
         ],
       },
     ]);
@@ -563,7 +563,7 @@ export class ModuleManagerMockService {
   }
 
   getRepositoriesRefreshResult(jobID: string): Observable<RepositoryJobResult> {
-    return of({job_id: jobID, has_error: false, error_msg: '', Results: [], results_err_num: 0});
+    return of({job_id: jobID, has_error: false, error_msg: '', results: [], results_err_num: 0});
   }
 
   stopJob(jobId: string): Observable<any> {

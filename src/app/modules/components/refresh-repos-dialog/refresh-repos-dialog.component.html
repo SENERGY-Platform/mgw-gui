@@ -10,12 +10,12 @@
 
   <p class="lead">{{ 'modules.refreshReposDialog.lead' | transloco }}</p>
 
-  @for (repo of repositories; track repo.Source) {
+  @for (repo of repositories; track repo.source) {
     <label class="repo">
-      <mat-checkbox [(ngModel)]="selected[repo.Source]"></mat-checkbox>
+      <mat-checkbox [(ngModel)]="selected[repo.source]"></mat-checkbox>
       <span class="repo-text">
-        <span class="repo-name">{{ repo.Source }}</span>
-        <span class="repo-type">{{ repo.Type }}</span>
+        <span class="repo-name">{{ repo.source }}</span>
+        <span class="repo-type">{{ repo.type }}</span>
       </span>
     </label>
   }

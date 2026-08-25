@@ -127,7 +127,6 @@ export interface RepositoryResult extends ErrorResult {
 }
 
 export interface RepositoryJobResult extends JobResult {
-  // upstream struct field has no json tag, so it serializes with a capital R
-  Results: RepositoryResult[];
+  results: RepositoryResult[];
   results_err_num: number;
 }

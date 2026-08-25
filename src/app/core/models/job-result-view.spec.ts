@@ -77,7 +77,7 @@ describe('mapRepositoryRefreshResult', () => {
       job_id: 'j',
       has_error: false,
       error_msg: '',
-      Results: [
+      results: [
         {type: 'host-dir', source: 'localhost', refresh: true, channel_errors: null, has_error: false, error_msg: ''},
         {
           type: 'github.com',
@@ -100,7 +100,7 @@ describe('mapRepositoryRefreshResult', () => {
       job_id: 'j',
       has_error: false,
       error_msg: '',
-      Results: [
+      results: [
         {type: 'github.com', source: 'gh/repo', refresh: false, channel_errors: null, has_error: false, error_msg: ''},
       ],
       results_err_num: 0,

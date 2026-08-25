@@ -59,8 +59,8 @@
       <mat-label>{{ 'modules.manage.repository' | transloco }}</mat-label>
       <mat-select (selectionChange)="load()" [(ngModel)]="repoFilter">
         <mat-option value="">{{ 'modules.manage.allRepositories' | transloco }}</mat-option>
-        @for (repo of repositories; track repo.Source) {
-          <mat-option [value]="repo.Source">{{ repo.Source }}</mat-option>
+        @for (repo of repositories; track repo.source) {
+          <mat-option [value]="repo.source">{{ repo.source }}</mat-option>
         }
       </mat-select>
     </mat-form-field>

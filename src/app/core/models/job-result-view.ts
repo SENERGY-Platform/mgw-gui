@@ -98,7 +98,7 @@ export function mapRepositoryRefreshResult(result: RepositoryJobResult): JobResu
     items.push({label: 'Refresh', ok: false, message: result.error_msg, hint: hintForError(result.error_msg)});
   }
   // upstream struct field has no json tag, hence the capital R
-  for (const entry of result.Results || []) {
+  for (const entry of result.results || []) {
     const channelErrors = (entry.channel_errors || []).map((c) => c.channel + ': ' + c.error_msg);
     const failed = entry.has_error || channelErrors.length > 0;
     items.push({

@@ -48,15 +48,15 @@
           <th *matHeaderCellDef mat-header-cell>{{ 'modules.repositories.columns.source' | transloco }}</th>
           <td *matCellDef="let repository" mat-cell>
             <div class="mgw-cell-stack">
-              <span class="mgw-cell-primary">{{ repository.Source }}</span>
-              <span class="mgw-cell-secondary">{{ repository.Type }}</span>
+              <span class="mgw-cell-primary">{{ repository.source }}</span>
+              <span class="mgw-cell-secondary">{{ repository.type }}</span>
             </div>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="priority">
           <th *matHeaderCellDef mat-header-cell>{{ 'modules.repositories.columns.priority' | transloco }}</th>
-          <td *matCellDef="let repository" mat-cell>{{ repository.Priority }}</td>
+          <td *matCellDef="let repository" mat-cell>{{ repository.priority }}</td>
         </ng-container>
 
         <ng-container matColumnDef="channels">
@@ -74,7 +74,7 @@
           <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
           <td *matCellDef="let repository" class="mgw-col-actions" mat-cell>
             <div class="mgw-row-actions">
-              @if (repository.Type === 'host-dir') {
+              @if (repository.type === 'host-dir') {
                 <span class="locked" [matTooltip]="'modules.repositories.builtInHint' | transloco">
                   <mat-icon>lock</mat-icon>
                   {{ 'modules.repositories.builtIn' | transloco }}
