@@ -3,7 +3,13 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": ["@angular/localize"]
+    // Without an explicit list TypeScript pulls in every @types/* package it
+    // finds in node_modules - including devDependencies like @types/eslint,
+    // whose ambient types then clash with unrelated ones (@types/eslint-scope)
+    // that happen to sit in the same node_modules tree. An empty array keeps
+    // this compilation unit to the ambient types it actually references
+    // (none, now that @angular/localize is gone) instead of everything installed.
+    "types": []
   },
   "files": ["src/main.ts"],
   "include": ["src/**/*.d.ts"]

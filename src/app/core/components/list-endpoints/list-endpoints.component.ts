@@ -27,6 +27,8 @@ import {MatIcon} from '@angular/material/icon';
 import {MatCheckbox} from '@angular/material/checkbox';
 import {MatButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
+import {safeInjectTransloco} from '../../services/language/safe-transloco';
 
 @Component({
   selector: 'list-endpoints',
@@ -52,7 +54,9 @@ import {MatTooltip} from '@angular/material/tooltip';
     MatCheckbox,
     MatButton,
     MatTooltip,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('core')],
 })
 export class ListEndpointsComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<CoreEndpoint>();
@@ -68,12 +72,21 @@ export class ListEndpointsComponent implements OnInit, OnDestroy {
   location = location;
   @Input() deploymentID?: string;
 
+  // The job-loader modal this feeds (see UtilService.checkJobStatus) takes a
+  // plain string, not a template binding a `transloco` pipe could sit on -
+  // so, like ErrorService, this resolves the two messages directly.
+  private readonly transloco = safeInjectTransloco();
+
   constructor(
     private coreService: CoreManagerService,
     private utilsService: UtilService,
     private errorService: ErrorService,
     private router: Router,
   ) {}
+
+  private translate(key: string): string {
+    return this.transloco?.translate<string>(key) ?? key;
+  }
 
   ngOnInit(): void {
     this.loadEndpoints(false);
@@ -160,7 +173,7 @@ export class ListEndpointsComponent implements OnInit, OnDestroy {
       .deleteEndpoint(endpointID)
       .pipe(
         concatMap((jobID: string) => {
-          const message = 'Delete endpoint';
+          const message = this.translate('core.listEndpoints.deleteEndpointJob');
           return this.utilsService.checkJobStatus(jobID, message, 'core-manager');
         }),
         concatMap((result) => {
@@ -196,7 +209,7 @@ export class ListEndpointsComponent implements OnInit, OnDestroy {
       .deleteEndpoints(ids)
       .pipe(
         concatMap((jobID: string) => {
-          const message = 'Delete endpoints';
+          const message = this.translate('core.listEndpoints.deleteEndpointsJob');
           return this.utilsService.checkJobStatus(jobID, message, 'core-manager');
         }),
         concatMap((result) => {

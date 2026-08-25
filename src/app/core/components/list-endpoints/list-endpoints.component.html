@@ -1,16 +1,16 @@
 <spinner [show]="!ready && init"></spinner>
 
 @if (ready && dataSource.data.length === 0 && dataSourceAlias.data.length === 0) {
-  <p class="none">This deployment exposes no endpoints.</p>
+  <p class="none">{{ 'core.listEndpoints.empty' | transloco }}</p>
 }
 
 @if (dataSource.data.length > 0) {
   <div class="group">
-    <h3>Generated</h3>
+    <h3>{{ 'core.listEndpoints.generated' | transloco }}</h3>
     <div class="mgw-table-card">
       <table [dataSource]="dataSource" mat-table matSort matSortActive="name" matSortDirection="asc">
         <ng-container matColumnDef="url">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header>URL</th>
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'core.listEndpoints.url' | transloco }}</th>
           <td *matCellDef="let endpoint" mat-cell>
             <a [href]="'/endpoints/deployment/' + endpoint.ref + '/' + endpoint.ext_path" class="url" target="_blank">
               {{ location.origin + '/endpoints/deployment/' + endpoint.ref + '/' + endpoint.ext_path }}
@@ -26,11 +26,11 @@
               <button
                 [disabled]="endpoint.type == 2"
                 [routerLink]="'/resources/endpoints/add/' + endpoint.id"
+                [matTooltip]="'core.listEndpoints.addAliasHint' | transloco"
                 mat-stroked-button
-                matTooltip="Give this endpoint a shorter URL"
               >
                 <mat-icon>add_link</mat-icon>
-                Add alias
+                {{ 'core.listEndpoints.addAlias' | transloco }}
               </button>
             </div>
           </td>
@@ -45,17 +45,23 @@
 
 @if (dataSourceAlias.data.length > 0) {
   <div class="group">
-    <h3>Aliases</h3>
+    <h3>{{ 'core.listEndpoints.aliases' | transloco }}</h3>
 
     @if (selection.selected.length > 0) {
       <div class="bulk-bar">
-        <span class="bulk-count">{{ selection.selected.length }} selected</span>
+        <span class="bulk-count">{{
+          'core.listEndpoints.selected' | transloco: {count: selection.selected.length}
+        }}</span>
         <button (click)="deleteMultiple()" class="mgw-danger" mat-button>
           <mat-icon>delete</mat-icon>
-          Delete
+          {{ 'core.listEndpoints.delete' | transloco }}
         </button>
         <span class="mgw-spacer"></span>
-        <button (click)="selection.clear()" mat-icon-button matTooltip="Clear selection">
+        <button
+          (click)="selection.clear()"
+          [matTooltip]="'core.listEndpoints.clearSelection' | transloco"
+          mat-icon-button
+        >
           <mat-icon>close</mat-icon>
         </button>
       </div>
@@ -69,7 +75,7 @@
               (change)="$event ? masterToggle() : null"
               [checked]="selection.hasValue() && isAllSelected()"
               [indeterminate]="selection.hasValue() && !isAllSelected()"
-              aria-label="Select all aliases"
+              [attr.aria-label]="'core.listEndpoints.selectAllAliases' | transloco"
             >
             </mat-checkbox>
           </th>
@@ -84,7 +90,7 @@
         </ng-container>
 
         <ng-container matColumnDef="url">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header>URL</th>
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'core.listEndpoints.url' | transloco }}</th>
           <td *matCellDef="let endpoint" mat-cell>
             <a [href]="'/endpoints/alias/' + endpoint.ext_path" class="url" target="_blank">
               {{ location.origin + '/endpoints/alias/' + endpoint.ext_path }}
@@ -100,9 +106,9 @@
               <button
                 (click)="deleteEndpoint(endpoint.id)"
                 [disabled]="endpoint.type == 1"
+                [matTooltip]="'core.listEndpoints.deleteAlias' | transloco"
                 class="danger-icon"
                 mat-icon-button
-                matTooltip="Delete alias"
               >
                 <mat-icon>delete</mat-icon>
               </button>

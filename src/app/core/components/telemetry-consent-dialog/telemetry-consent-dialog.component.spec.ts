@@ -17,6 +17,8 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialogRef} from '@angular/material/dialog';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
+import {TranslocoService} from '@jsverse/transloco';
+import {provideTranslocoTesting} from 'src/testing/transloco-testing';
 import {TELEMETRY_LEVEL_OPTIONS, TelemetryLevel, telemetryConsent} from '../../services/telemetry/telemetry-consent';
 import {TelemetryConsentService} from '../../services/telemetry/telemetry-consent.service';
 import {TelemetryConsentDialogComponent} from './telemetry-consent-dialog.component';
@@ -37,7 +39,7 @@ describe('TelemetryConsentDialogComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [TelemetryConsentDialogComponent],
+      imports: [TelemetryConsentDialogComponent, provideTranslocoTesting('core')],
       providers: [provideNoopAnimations(), {provide: MatDialogRef, useValue: dialogRef}],
     }).compileComponents();
 
@@ -68,10 +70,13 @@ describe('TelemetryConsentDialogComponent', () => {
   it('offers one option per level, each with its explanation', () => {
     expect(radios().length).toBe(3);
 
+    // option.label/description are translation keys, not display text (see
+    // TELEMETRY_LEVEL_OPTIONS) - resolved the same way the template does.
+    const transloco = TestBed.inject(TranslocoService);
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
     for (const option of TELEMETRY_LEVEL_OPTIONS) {
-      expect(text, option.id).toContain(option.label);
-      expect(text, option.id).toContain(option.description);
+      expect(text, option.id).toContain(transloco.translate(option.label));
+      expect(text, option.id).toContain(transloco.translate(option.description));
     }
   });
 

@@ -9,9 +9,6 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
-      "i18n": {
-        "sourceLocale": "de"
-      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
@@ -128,12 +125,6 @@
             }
           },
           "defaultConfiguration": "development_mock"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "mgw-gui:build"
-          }
         },
         "test": {
           "builder": "@angular/build:unit-test",

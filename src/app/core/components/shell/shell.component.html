@@ -15,7 +15,12 @@
 -->
 
 <header class="app-bar">
-  <button (click)="toggleDrawer()" aria-label="Toggle navigation" mat-icon-button matTooltip="Toggle navigation">
+  <button
+    (click)="toggleDrawer()"
+    [attr.aria-label]="'core.shell.toggleNav' | transloco"
+    [matTooltip]="'core.shell.toggleNav' | transloco"
+    mat-icon-button
+  >
     <mat-icon>menu</mat-icon>
   </button>
 
@@ -24,35 +29,52 @@
       <mat-icon>hub</mat-icon>
     </span>
     <span class="brand-text">
-      <span class="brand-name">MGW</span>
-      <span class="brand-sub">Module Gateway</span>
+      <span class="brand-name">{{ 'core.shell.brandName' | transloco }}</span>
+      <span class="brand-sub">{{ 'core.shell.brandSub' | transloco }}</span>
     </span>
   </a>
 
   <span class="spacer"></span>
 
-  <button (click)="openFeedback()" aria-label="Send feedback" mat-icon-button matTooltip="Send feedback">
+  <button
+    (click)="openFeedback()"
+    [attr.aria-label]="'core.shell.sendFeedback' | transloco"
+    [matTooltip]="'core.shell.sendFeedback' | transloco"
+    mat-icon-button
+  >
     <mat-icon>feedback</mat-icon>
   </button>
 
-  <button (click)="theme.next()" [matTooltip]="theme.label()" aria-label="Switch theme" mat-icon-button>
+  <mgw-language-switch></mgw-language-switch>
+
+  <button
+    (click)="theme.next()"
+    [attr.aria-label]="'core.shell.switchTheme' | transloco"
+    [matTooltip]="theme.label() | transloco"
+    mat-icon-button
+  >
     <mat-icon>{{ theme.icon() }}</mat-icon>
   </button>
 
-  <button [matMenuTriggerFor]="userMenu" aria-label="Account" mat-icon-button matTooltip="Account">
+  <button
+    [attr.aria-label]="'core.shell.account' | transloco"
+    [matMenuTriggerFor]="userMenu"
+    [matTooltip]="'core.shell.account' | transloco"
+    mat-icon-button
+  >
     <mat-icon>account_circle</mat-icon>
   </button>
   <mat-menu #userMenu="matMenu" [overlapTrigger]="false">
-    <div class="menu-caption">Signed in</div>
+    <div class="menu-caption">{{ 'core.shell.signedIn' | transloco }}</div>
     <mat-divider></mat-divider>
     <button (click)="openTelemetryConsent()" mat-menu-item>
       <mat-icon>bug_report</mat-icon>
-      <span>Error reporting</span>
+      <span>{{ 'core.shell.errorReporting' | transloco }}</span>
     </button>
     <mat-divider></mat-divider>
     <button (click)="logout()" mat-menu-item>
       <mat-icon>logout</mat-icon>
-      <span>Log out</span>
+      <span>{{ 'core.shell.logOut' | transloco }}</span>
     </button>
   </mat-menu>
 </header>
@@ -72,13 +94,13 @@
               (click)="toggleSection(item)"
               [class.active]="isSectionActive(item)"
               [matTooltipDisabled]="!collapsed() || compact()"
-              [matTooltip]="item.label"
+              [matTooltip]="item.label | transloco"
               class="nav-item"
               matTooltipPosition="right"
               type="button"
             >
               <mat-icon>{{ item.icon }}</mat-icon>
-              <span class="nav-label">{{ item.label }}</span>
+              <span class="nav-label">{{ item.label | transloco }}</span>
               <mat-icon [class.rotated]="isSectionExpanded(item)" class="chevron">expand_more</mat-icon>
             </button>
             <div [class.expanded]="isSectionExpanded(item) && !(collapsed() && !compact())" class="nav-children">
@@ -91,7 +113,7 @@
                     routerLinkActive="active"
                   >
                     <mat-icon>{{ child.icon }}</mat-icon>
-                    <span class="nav-label">{{ child.label }}</span>
+                    <span class="nav-label">{{ child.label | transloco }}</span>
                   </a>
                 }
               </div>
@@ -99,7 +121,7 @@
           } @else {
             <a
               [matTooltipDisabled]="!collapsed() || compact()"
-              [matTooltip]="item.label"
+              [matTooltip]="item.label | transloco"
               [routerLinkActiveOptions]="{exact: !!item.exact}"
               [routerLink]="item.route"
               class="nav-item"
@@ -107,14 +129,14 @@
               routerLinkActive="active"
             >
               <mat-icon>{{ item.icon }}</mat-icon>
-              <span class="nav-label">{{ item.label }}</span>
+              <span class="nav-label">{{ item.label | transloco }}</span>
             </a>
           }
         }
       </nav>
 
       <div class="nav-footer">
-        <span class="nav-label">Version {{ uiVersion }}</span>
+        <span class="nav-label">{{ 'core.shell.version' | transloco: {version: uiVersion} }}</span>
       </div>
     </div>
   </mat-sidenav>

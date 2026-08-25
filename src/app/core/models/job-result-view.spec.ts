@@ -34,7 +34,8 @@ describe('mapModulesChangeResult', () => {
     expect(items.length).toBe(2);
     expect(items[0].ok).toBe(true);
     expect(items[1].ok).toBe(false);
-    expect(items[1].hint).toContain('Delete its deployment');
+    // A translation key, not display text - see hintForError.
+    expect(items[1].hint).toBe('core.jobResultView.hints.deploymentExists');
     expect(hasFailures(items)).toBe(true);
   });
 

@@ -26,6 +26,7 @@ export interface TelemetryLevelOption {
   readonly level: TelemetryLevel;
   /** Stable name for the level, used in the dialog markup and in tests. */
   readonly id: 'none' | 'errors' | 'errors-replay';
+  /** Translation keys, not display text - telemetry-consent-dialog.component.html applies the `transloco` pipe to both. */
   readonly label: string;
   readonly description: string;
 }
@@ -34,20 +35,20 @@ export const TELEMETRY_LEVEL_OPTIONS: readonly TelemetryLevelOption[] = [
   {
     level: 0,
     id: 'none',
-    label: 'Off',
-    description: 'Nothing is collected.',
+    label: 'core.telemetryConsent.levels.none.label',
+    description: 'core.telemetryConsent.levels.none.description',
   },
   {
     level: 1,
     id: 'errors',
-    label: 'Error reports',
-    description: 'Error reports and logs are collected.',
+    label: 'core.telemetryConsent.levels.errors.label',
+    description: 'core.telemetryConsent.levels.errors.description',
   },
   {
     level: 2,
     id: 'errors-replay',
-    label: 'Error reports with session replay',
-    description: 'Additionally a recording of the session when an error occurs.',
+    label: 'core.telemetryConsent.levels.errorsReplay.label',
+    description: 'core.telemetryConsent.levels.errorsReplay.description',
   },
 ];
 

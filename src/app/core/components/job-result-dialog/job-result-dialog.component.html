@@ -1,10 +1,10 @@
-<h2 class="title" mat-dialog-title>{{ title }}</h2>
+<h2 class="title" mat-dialog-title>{{ title || ('core.jobResultDialog.titleFallback' | transloco) }}</h2>
 
 <div class="dialog-content" mat-dialog-content>
   @if (failedCount() > 0) {
     <div class="summary">
       <mat-icon>error</mat-icon>
-      <span>{{ failedCount() }} of {{ items.length }} item{{ items.length === 1 ? '' : 's' }} failed.</span>
+      <span>{{ summaryKey() | transloco: {failed: failedCount(), total: items.length} }}</span>
     </div>
   }
 
@@ -14,12 +14,16 @@
         {{ item.ok ? 'check_circle' : 'error' }}
       </mat-icon>
       <div class="item-body">
+        <!-- item.label mixes an identifier with a raw backend tag (e.g.
+             "my-module (update)") for some entries - see job-result-view.ts -
+             so it is shown as-is rather than through the pipe, which would
+             report every one of those as a missing translation key. -->
         <div class="label">{{ item.label }}</div>
         @if (item.message) {
           <div class="message">{{ item.message }}</div>
         }
         @if (item.hint) {
-          <div class="hint">{{ item.hint }}</div>
+          <div class="hint">{{ item.hint | transloco }}</div>
         }
       </div>
     </div>
@@ -28,5 +32,5 @@
 
 <div class="actions" mat-dialog-actions>
   <span class="mgw-spacer"></span>
-  <button [mat-dialog-close]="undefined" mat-flat-button>Close</button>
+  <button [mat-dialog-close]="undefined" mat-flat-button>{{ 'core.jobResultDialog.close' | transloco }}</button>
 </div>

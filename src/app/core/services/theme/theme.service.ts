@@ -59,14 +59,19 @@ export class ThemeService {
     }
   }
 
+  /**
+   * A translation key, not display text - ThemeService has no reason to know
+   * about Transloco, so the template applies the `transloco` pipe to
+   * whatever this returns (see shell.component.html).
+   */
   label(): string {
     switch (this.mode()) {
       case 'light':
-        return 'Light theme';
+        return 'core.theme.light';
       case 'dark':
-        return 'Dark theme';
+        return 'core.theme.dark';
       default:
-        return 'Follows the system setting';
+        return 'core.theme.system';
     }
   }
 

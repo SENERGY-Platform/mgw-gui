@@ -36,6 +36,7 @@ import {SpinnerComponent} from '../spinner/spinner.component';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {MatTooltip} from '@angular/material/tooltip';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {StatusPillComponent, StatusTone} from '../status-pill/status-pill.component';
 
 @Component({
@@ -61,13 +62,16 @@ import {StatusPillComponent, StatusTone} from '../status-pill/status-pill.compon
     DatePipe,
     MatTooltip,
     StatusPillComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('core')],
 })
 export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
-  // human-readable name of the service the jobs belong to
+  // human-readable name of the service the jobs belong to - translation
+  // keys, not display text; the template applies the `transloco` pipe.
   readonly sourceLabels: Record<string, string> = {
-    'module-manager': 'Module manager',
-    'core-manager': 'Core manager',
+    'module-manager': 'core.listJobs.sources.moduleManager',
+    'core-manager': 'core.listJobs.sources.coreManager',
   };
 
   dataSource = new MatTableDataSource<JobRow>();
@@ -89,7 +93,7 @@ export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
   }
 
   sourceLabel(): string {
-    return this.sourceLabels[this.source || ''] || this.source || 'Jobs';
+    return this.sourceLabels[this.source || ''] || this.source || 'core.listJobs.sources.fallback';
   }
 
   statusTone(job: JobRow): StatusTone {
@@ -104,12 +108,12 @@ export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
 
   statusLabel(job: JobRow): string {
     if (job.error) {
-      return 'Failed';
+      return 'core.listJobs.statuses.failed';
     }
     if (job.canceled) {
-      return 'Canceled';
+      return 'core.listJobs.statuses.canceled';
     }
-    return job.done ? 'Completed' : 'Running';
+    return job.done ? 'core.listJobs.statuses.completed' : 'core.listJobs.statuses.running';
   }
 
   // the finish column shows whichever end state the job reached

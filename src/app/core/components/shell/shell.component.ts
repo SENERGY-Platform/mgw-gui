@@ -25,6 +25,7 @@ import {MatTooltip} from '@angular/material/tooltip';
 import {MatDivider} from '@angular/material/divider';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Subscription, concatMap, filter} from 'rxjs';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {environment} from 'src/environments/environment';
 import {AuthService} from '../../services/auth/auth.service';
 import {ErrorService} from '../../services/util/error.service';
@@ -32,6 +33,7 @@ import {ThemeService} from '../../services/theme/theme.service';
 import {TelemetryConsentService} from '../../services/telemetry/telemetry-consent.service';
 import {TelemetryConsentDialogComponent} from '../telemetry-consent-dialog/telemetry-consent-dialog.component';
 import {FeedbackDialogComponent} from '../feedback-dialog/feedback-dialog.component';
+import {LanguageSwitchComponent} from '../language-switch/language-switch.component';
 import {NAV_ITEMS, NavItem} from './nav.model';
 
 const COLLAPSE_KEY = 'mgw-nav-collapsed';
@@ -56,7 +58,10 @@ const HANDSET = '(max-width: 1023px)';
     MatMenuTrigger,
     MatTooltip,
     MatDivider,
+    TranslocoPipe,
+    LanguageSwitchComponent,
   ],
+  providers: [provideTranslocoScope('core')],
 })
 export class ShellComponent implements OnInit, OnDestroy {
   readonly navItems = NAV_ITEMS;

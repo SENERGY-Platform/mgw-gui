@@ -33,16 +33,20 @@ export interface JobResultItem {
   hint?: string;
 }
 
-// Treatment hints for known error causes.
+// Treatment hints for known error causes. Returns a translation key, not
+// display text - job-result-dialog.component.html applies the `transloco`
+// pipe to it; unlike JobResultItem.label, every hint is one of these two
+// fixed sentences, never a raw backend string, so the pipe never sees
+// anything that would look like a missing key.
 export function hintForError(errorMsg: string): string | undefined {
   if (!errorMsg) {
     return undefined;
   }
   if (errorMsg.includes('deployment exists')) {
-    return 'A module can only be removed while it has no deployment. Delete its deployment on the Modules page first.';
+    return 'core.jobResultView.hints.deploymentExists';
   }
   if (errorMsg.includes('not found')) {
-    return 'The item may have been changed or removed in the meantime. Reload the page and try again.';
+    return 'core.jobResultView.hints.notFound';
   }
   return undefined;
 }

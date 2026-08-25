@@ -25,6 +25,7 @@ import {
 
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {JobResultItem} from 'src/app/core/models/job-result-view';
 
 // Presents the outcome of a job per item: what succeeded, what failed with
@@ -33,18 +34,28 @@ import {JobResultItem} from 'src/app/core/models/job-result-view';
   selector: 'job-result-dialog',
   templateUrl: './job-result-dialog.component.html',
   styleUrls: ['./job-result-dialog.component.css'],
-  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatIcon],
+  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatIcon, TranslocoPipe],
+  providers: [provideTranslocoScope('core')],
 })
 export class JobResultDialogComponent {
+  // Empty rather than defaulted to 'Result' here, for the same reason as
+  // ErrorDialogComponent's context: the template decides the fallback text,
+  // through the transloco pipe, rather than this constructor resolving it
+  // once before the translation may even have loaded.
   title: string;
   items: JobResultItem[];
 
   constructor(@Inject(MAT_DIALOG_DATA) data: any) {
-    this.title = data.title || 'Result';
+    this.title = data.title || '';
     this.items = data.items || [];
   }
 
   failedCount(): number {
     return this.items.filter((item) => !item.ok).length;
+  }
+
+  /** The plural form to use for the "N of M failed" summary - see the JSON for both forms. */
+  summaryKey(): string {
+    return `core.jobResultDialog.summary.${this.items.length === 1 ? 'one' : 'other'}`;
   }
 }

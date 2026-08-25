@@ -1,0 +1,165 @@
+{
+  "shell": {
+    "toggleNav": "Toggle navigation",
+    "brandName": "MGW",
+    "brandSub": "Module Gateway",
+    "sendFeedback": "Send feedback",
+    "switchTheme": "Switch theme",
+    "account": "Account",
+    "signedIn": "Signed in",
+    "errorReporting": "Error reporting",
+    "logOut": "Log out",
+    "version": "Version {{version}}"
+  },
+  "nav": {
+    "overview": "Overview",
+    "modules": "Modules",
+    "modulesInstalled": "Installed",
+    "modulesCatalog": "Catalog",
+    "modulesRepositories": "Repositories",
+    "resources": "Resources",
+    "resourcesSecrets": "Secrets",
+    "resourcesGlobalConfigs": "Global configs",
+    "resourcesEndpoints": "Endpoints",
+    "system": "System",
+    "systemStatus": "Status",
+    "systemJobs": "Jobs",
+    "systemConfiguration": "Configuration",
+    "systemUsers": "Users",
+    "systemApplications": "Applications",
+    "developer": "Developer"
+  },
+  "theme": {
+    "light": "Light theme",
+    "dark": "Dark theme",
+    "system": "Follows the system setting"
+  },
+  "languageSwitch": {
+    "label": "Switch language"
+  },
+  "confirmDialog": {
+    "title": "Please confirm",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "errorDialog": {
+    "defaultContext": "The last action failed",
+    "noDetails": "No further details were reported.",
+    "close": "Close"
+  },
+  "errorService": {
+    "detailsAction": "Details",
+    "operationInProgress": "Another operation is still running, please wait for it to finish.",
+    "httpStatusSuffix": "(HTTP {{status}})",
+    "genericError": "Something bad happened; please try again later."
+  },
+  "feedbackDialog": {
+    "title": "Send feedback",
+    "message": "Message",
+    "name": "Name (optional)",
+    "email": "Email (optional)",
+    "addScreenshot": "Add screenshot",
+    "removeScreenshot": "Remove screenshot",
+    "includeReplay": "Include a recording of what happened",
+    "cancel": "Cancel",
+    "send": "Send",
+    "screenshotError": "The screenshot could not be taken.",
+    "sendFailed": "The report could not be sent. Please try again.",
+    "sentSuccess": "Feedback sent. Thank you."
+  },
+  "telemetryConsent": {
+    "title": "Error reporting",
+    "message": "Reports about failures in this interface help fix them. Choose how much may be sent. You can change this at any time under Account.",
+    "howMuch": "How much may be reported",
+    "notNow": "Not now",
+    "save": "Save",
+    "levels": {
+      "none": {
+        "label": "Off",
+        "description": "Nothing is collected."
+      },
+      "errors": {
+        "label": "Error reports",
+        "description": "Error reports and logs are collected."
+      },
+      "errorsReplay": {
+        "label": "Error reports with session replay",
+        "description": "Additionally a recording of the session when an error occurs."
+      }
+    }
+  },
+  "jobResultDialog": {
+    "titleFallback": "Result",
+    "close": "Close",
+    "summary": {
+      "one": "{{failed}} of {{total}} item failed.",
+      "other": "{{failed}} of {{total}} items failed."
+    }
+  },
+  "jobResultView": {
+    "hints": {
+      "deploymentExists": "A module can only be removed while it has no deployment. Delete its deployment on the Modules page first.",
+      "notFound": "The item may have been changed or removed in the meantime. Reload the page and try again."
+    }
+  },
+  "listEndpoints": {
+    "empty": "This deployment exposes no endpoints.",
+    "generated": "Generated",
+    "aliases": "Aliases",
+    "url": "URL",
+    "addAlias": "Add alias",
+    "addAliasHint": "Give this endpoint a shorter URL",
+    "selectAllAliases": "Select all aliases",
+    "selected": "{{count}} selected",
+    "delete": "Delete",
+    "clearSelection": "Clear selection",
+    "deleteAlias": "Delete alias",
+    "deleteEndpointJob": "Delete endpoint",
+    "deleteEndpointsJob": "Delete endpoints"
+  },
+  "listJobs": {
+    "job": "Job",
+    "status": "Status",
+    "started": "Started",
+    "finished": "Finished",
+    "empty": "No jobs recorded.",
+    "cancelJob": "Cancel this job",
+    "count": {
+      "one": "{{count}} job",
+      "other": "{{count}} jobs"
+    },
+    "sources": {
+      "moduleManager": "Module manager",
+      "coreManager": "Core manager",
+      "fallback": "Jobs"
+    },
+    "statuses": {
+      "failed": "Failed",
+      "canceled": "Canceled",
+      "completed": "Completed",
+      "running": "Running"
+    }
+  },
+  "screenshotEditor": {
+    "redactionTool": "Redaction tool",
+    "hide": "Hide",
+    "hideRegion": "Hide a region",
+    "highlight": "Highlight",
+    "highlightRegion": "Highlight a region",
+    "interactionMode": "Interaction mode",
+    "draw": "Draw",
+    "drawRegion": "Draw a region",
+    "move": "Move the image",
+    "zoom": "Zoom",
+    "fitToWindow": "Fit to window",
+    "actualSize": "Actual size",
+    "zoomTo100": "Zoom to 100 percent",
+    "zoomOut": "Zoom out",
+    "zoomIn": "Zoom in",
+    "removeAllRegions": "Remove all regions",
+    "preview": "Screenshot preview, drag to draw a region",
+    "removeThisRegion": "Remove this region",
+    "regions": "Drawn regions",
+    "discardedDrag": "That region was too small to keep, so nothing was covered. Drag a larger box."
+  }
+}

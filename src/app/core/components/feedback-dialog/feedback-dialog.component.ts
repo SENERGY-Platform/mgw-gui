@@ -21,6 +21,7 @@ import {MatCheckbox} from '@angular/material/checkbox';
 import {MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {captureFeedback, flush, withScope} from '@sentry/angular';
 import {ScreenshotEditorComponent} from '../screenshot-editor/screenshot-editor.component';
 import {
@@ -116,13 +117,20 @@ export const FEEDBACK_SDK = new InjectionToken<FeedbackSdk>('FEEDBACK_SDK', {
     MatInput,
     MatCheckbox,
     ScreenshotEditorComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('core')],
 })
 export class FeedbackDialogComponent implements OnDestroy {
   private readonly dialogRef = inject(MatDialogRef<FeedbackDialogComponent>);
   private readonly screenshotService = inject(ScreenshotService);
   private readonly notifications = inject(NotificationService);
   private readonly sdk = inject(FEEDBACK_SDK);
+  // Resolved directly rather than through the `transloco` pipe: `error` and
+  // `screenshotError` below are plain string fields shown by ordinary
+  // interpolation, and `showSuccess` takes a plain string too - none of the
+  // three has a template binding a pipe could sit on.
+  private readonly transloco = inject(TranslocoService);
 
   message = '';
   name = '';
@@ -181,7 +189,9 @@ export class FeedbackDialogComponent implements OnDestroy {
       }
     } catch (error) {
       this.screenshotError =
-        error instanceof ScreenshotCaptureError ? error.message : 'The screenshot could not be taken.';
+        error instanceof ScreenshotCaptureError
+          ? error.message
+          : this.transloco.translate<string>('core.feedbackDialog.screenshotError');
     }
   }
 
@@ -266,7 +276,7 @@ export class FeedbackDialogComponent implements OnDestroy {
         // with it: sent on its own it is a recording of a session nobody in
         // Sentry has a report for, and the retry would upload a second copy.
         sendReplay = false;
-        this.error = 'The report could not be sent. Please try again.';
+        this.error = this.transloco.translate<string>('core.feedbackDialog.sendFailed');
         return;
       }
 
@@ -274,10 +284,10 @@ export class FeedbackDialogComponent implements OnDestroy {
       // either way, which is not the same as a failure - see
       // watchFeedbackDelivery. Both are reported as sent, and both keep the
       // recording, since neither is known to have failed.
-      this.notifications.showSuccess('Feedback sent. Thank you.');
+      this.notifications.showSuccess(this.transloco.translate<string>('core.feedbackDialog.sentSuccess'));
       this.dialogRef.close();
     } catch {
-      this.error = 'The report could not be sent. Please try again.';
+      this.error = this.transloco.translate<string>('core.feedbackDialog.sendFailed');
     } finally {
       this.sending = false;
       this.dialogRef.disableClose = false;

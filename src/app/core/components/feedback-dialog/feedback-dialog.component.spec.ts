@@ -18,6 +18,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialogRef} from '@angular/material/dialog';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import type {Mock} from 'vitest';
+import {provideTranslocoTesting} from 'src/testing/transloco-testing';
 import {ScreenshotService} from '../../services/screenshot/screenshot.service';
 import {ReplayCapture} from '../../services/telemetry/telemetry';
 import {NotificationService} from '../../services/util/notifications.service';
@@ -112,7 +113,7 @@ describe('FeedbackDialogComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [FeedbackDialogComponent],
+      imports: [FeedbackDialogComponent, provideTranslocoTesting('core')],
       providers: [
         provideNoopAnimations(),
         {provide: MatDialogRef, useValue: dialogRef},

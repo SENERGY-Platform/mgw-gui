@@ -18,6 +18,7 @@ import {Component, inject, signal} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {TelemetryLevel} from '../../services/telemetry/telemetry-consent';
 import {TelemetryConsentService} from '../../services/telemetry/telemetry-consent.service';
 
@@ -33,7 +34,16 @@ import {TelemetryConsentService} from '../../services/telemetry/telemetry-consen
   selector: 'app-telemetry-consent-dialog',
   templateUrl: './telemetry-consent-dialog.component.html',
   styleUrls: ['./telemetry-consent-dialog.component.css'],
-  imports: [MatButton, MatDialogTitle, MatDialogContent, MatDialogActions, MatRadioGroup, MatRadioButton],
+  imports: [
+    MatButton,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatRadioGroup,
+    MatRadioButton,
+    TranslocoPipe,
+  ],
+  providers: [provideTranslocoScope('core')],
 })
 export class TelemetryConsentDialogComponent {
   private readonly dialogRef =

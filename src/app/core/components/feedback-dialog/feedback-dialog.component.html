@@ -14,7 +14,7 @@
 ~ limitations under the License.
 -->
 
-<h2 class="title" mat-dialog-title>Send feedback</h2>
+<h2 class="title" mat-dialog-title>{{ 'core.feedbackDialog.title' | transloco }}</h2>
 
 <div [class.has-screenshot]="capture" class="dialog-content" mat-dialog-content>
   <!-- Capped to a comfortable line length of its own, even while the dialog
@@ -22,24 +22,26 @@
        wide dialog is not the same as a text field anyone wants that wide. -->
   <div class="form-fields">
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Message</mat-label>
+      <mat-label>{{ 'core.feedbackDialog.message' | transloco }}</mat-label>
       <textarea [(ngModel)]="message" matInput required rows="4"></textarea>
     </mat-form-field>
 
     <div class="name-email">
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Name (optional)</mat-label>
+        <mat-label>{{ 'core.feedbackDialog.name' | transloco }}</mat-label>
         <input [(ngModel)]="name" matInput type="text" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Email (optional)</mat-label>
+        <mat-label>{{ 'core.feedbackDialog.email' | transloco }}</mat-label>
         <input [(ngModel)]="email" matInput type="email" />
       </mat-form-field>
     </div>
 
     @if (screenshotSupported && !capture) {
-      <button (click)="takeScreenshot()" mat-button type="button">Add screenshot</button>
+      <button (click)="takeScreenshot()" mat-button type="button">
+        {{ 'core.feedbackDialog.addScreenshot' | transloco }}
+      </button>
       @if (screenshotError) {
         <p class="error" role="alert">{{ screenshotError }}</p>
       }
@@ -48,12 +50,14 @@
 
   @if (screenshotSupported && capture) {
     <mgw-screenshot-editor [(redactions)]="redactions" [capture]="capture" class="editor"></mgw-screenshot-editor>
-    <button (click)="removeScreenshot()" mat-button type="button">Remove screenshot</button>
+    <button (click)="removeScreenshot()" mat-button type="button">
+      {{ 'core.feedbackDialog.removeScreenshot' | transloco }}
+    </button>
   }
 
   <div class="form-fields">
     @if (replayOffered) {
-      <mat-checkbox [(ngModel)]="includeReplay">Include a recording of what happened</mat-checkbox>
+      <mat-checkbox [(ngModel)]="includeReplay">{{ 'core.feedbackDialog.includeReplay' | transloco }}</mat-checkbox>
     }
 
     @if (error) {
@@ -64,6 +68,10 @@
 
 <div class="actions" mat-dialog-actions>
   <span class="mgw-spacer"></span>
-  <button (click)="cancel()" [disabled]="sending" mat-button type="button">Cancel</button>
-  <button (click)="submit()" [disabled]="sending || !message.trim()" mat-flat-button type="button">Send</button>
+  <button (click)="cancel()" [disabled]="sending" mat-button type="button">
+    {{ 'core.feedbackDialog.cancel' | transloco }}
+  </button>
+  <button (click)="submit()" [disabled]="sending || !message.trim()" mat-flat-button type="button">
+    {{ 'core.feedbackDialog.send' | transloco }}
+  </button>
 </div>

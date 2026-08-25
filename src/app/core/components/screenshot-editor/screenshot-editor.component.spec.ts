@@ -17,6 +17,7 @@
 import {Component} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
+import {provideTranslocoTesting} from 'src/testing/transloco-testing';
 
 import {Redaction} from '../../services/screenshot/screenshot.service';
 import {ScreenshotEditorComponent} from './screenshot-editor.component';
@@ -43,7 +44,7 @@ describe('ScreenshotEditorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HostComponent],
+      imports: [HostComponent, provideTranslocoTesting('core')],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HostComponent);

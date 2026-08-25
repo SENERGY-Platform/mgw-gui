@@ -15,6 +15,7 @@
  */
 
 export interface NavItem {
+  /** A translation key, not display text - shell.component.html applies the `transloco` pipe to it. */
   label: string;
   icon: string;
   route: string;
@@ -29,38 +30,38 @@ export interface NavItem {
  * deployment consumes second, the gateway itself last.
  */
 export const NAV_ITEMS: NavItem[] = [
-  {label: 'Overview', icon: 'dashboard', route: '/overview', exact: true},
+  {label: 'core.nav.overview', icon: 'dashboard', route: '/overview', exact: true},
   {
-    label: 'Modules',
+    label: 'core.nav.modules',
     icon: 'extension',
     route: '/modules',
     children: [
-      {label: 'Installed', icon: 'inventory_2', route: '/modules', exact: true},
-      {label: 'Catalog', icon: 'storefront', route: '/modules/catalog', exact: true},
-      {label: 'Repositories', icon: 'cloud_download', route: '/modules/repositories', exact: true},
+      {label: 'core.nav.modulesInstalled', icon: 'inventory_2', route: '/modules', exact: true},
+      {label: 'core.nav.modulesCatalog', icon: 'storefront', route: '/modules/catalog', exact: true},
+      {label: 'core.nav.modulesRepositories', icon: 'cloud_download', route: '/modules/repositories', exact: true},
     ],
   },
   {
-    label: 'Resources',
+    label: 'core.nav.resources',
     icon: 'category',
     route: '/resources',
     children: [
-      {label: 'Secrets', icon: 'key', route: '/resources/secrets', exact: true},
-      {label: 'Global configs', icon: 'tune', route: '/resources/global-configs', exact: true},
-      {label: 'Endpoints', icon: 'link', route: '/resources/endpoints', exact: true},
+      {label: 'core.nav.resourcesSecrets', icon: 'key', route: '/resources/secrets', exact: true},
+      {label: 'core.nav.resourcesGlobalConfigs', icon: 'tune', route: '/resources/global-configs', exact: true},
+      {label: 'core.nav.resourcesEndpoints', icon: 'link', route: '/resources/endpoints', exact: true},
     ],
   },
   {
-    label: 'System',
+    label: 'core.nav.system',
     icon: 'dns',
     route: '/system',
     children: [
-      {label: 'Status', icon: 'monitor_heart', route: '/system/status', exact: true},
-      {label: 'Jobs', icon: 'work_history', route: '/system/jobs', exact: true},
-      {label: 'Configuration', icon: 'settings', route: '/system/configuration', exact: true},
-      {label: 'Users', icon: 'group', route: '/system/accounts/users', exact: true},
-      {label: 'Applications', icon: 'devices_other', route: '/system/accounts/apps', exact: true},
+      {label: 'core.nav.systemStatus', icon: 'monitor_heart', route: '/system/status', exact: true},
+      {label: 'core.nav.systemJobs', icon: 'work_history', route: '/system/jobs', exact: true},
+      {label: 'core.nav.systemConfiguration', icon: 'settings', route: '/system/configuration', exact: true},
+      {label: 'core.nav.systemUsers', icon: 'group', route: '/system/accounts/users', exact: true},
+      {label: 'core.nav.systemApplications', icon: 'devices_other', route: '/system/accounts/apps', exact: true},
     ],
   },
-  {label: 'Developer', icon: 'code', route: '/developer', exact: true},
+  {label: 'core.nav.developer', icon: 'code', route: '/developer', exact: true},
 ];

@@ -1,12 +1,17 @@
-/// <reference types="@angular/localize" />
-
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 
 import {registerAppLocale} from './app/core/locale';
 import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {AuthCheckInterceptor} from './app/core/services/auth/interceptor/auth.interceptor';
 import {environment} from './environments/environment';
-import {ErrorHandler, LOCALE_ID, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
+import {
+  ErrorHandler,
+  LOCALE_ID,
+  importProvidersFrom,
+  inject,
+  provideAppInitializer,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import {createErrorHandler} from '@sentry/angular';
 import {initTelemetry} from './app/core/services/telemetry/telemetry';
 import {MAT_ICON_DEFAULT_OPTIONS} from '@angular/material/icon';
@@ -16,6 +21,9 @@ import {provideRouter} from '@angular/router';
 import {routes} from './app/app.routes';
 import {provideAnimations} from '@angular/platform-browser/animations';
 import {AppComponent} from './app/app.component';
+import {provideTransloco} from '@jsverse/transloco';
+import {AVAILABLE_LANGS, LanguageService} from './app/core/services/language/language.service';
+import {TranslocoHttpLoader} from './app/core/services/language/transloco-http.loader';
 
 // Before bootstrap, so an error thrown while the application starts is still
 // seen. Does nothing at all when the environment carries no DSN, and sends
@@ -77,5 +85,26 @@ bootstrapApplication(AppComponent, {
     },
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
+    provideTransloco({
+      config: {
+        availableLangs: [...AVAILABLE_LANGS],
+        defaultLang: AVAILABLE_LANGS[0],
+        fallbackLang: AVAILABLE_LANGS[0],
+        // Each area loads its own scope on demand (see the per-scope files
+        // under src/assets/i18n); nothing is translated outside of a scope,
+        // so re-rendering on a language change only has scopes already in
+        // use to redo.
+        reRenderOnLangChange: true,
+        prodMode: environment.production,
+      },
+      loader: TranslocoHttpLoader,
+    }),
+    // Constructs LanguageService before the first frame: it applies the
+    // stored (or default) language to <html lang> and to Transloco's active
+    // language itself, so nothing renders in the wrong language for a tick
+    // and then flips.
+    provideAppInitializer(() => {
+      inject(LanguageService);
+    }),
   ],
 }).catch((err) => console.error(err));

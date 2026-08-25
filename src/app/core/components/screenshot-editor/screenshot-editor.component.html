@@ -15,41 +15,70 @@
 -->
 
 <div class="toolbar">
-  <mat-button-toggle-group [value]="tool" (change)="setTool($event.value)" aria-label="Redaction tool">
-    <mat-button-toggle value="hide" aria-label="Hide a region">
+  <mat-button-toggle-group
+    [value]="tool"
+    (change)="setTool($event.value)"
+    [attr.aria-label]="'core.screenshotEditor.redactionTool' | transloco"
+  >
+    <mat-button-toggle [attr.aria-label]="'core.screenshotEditor.hideRegion' | transloco" value="hide">
       <mat-icon>visibility_off</mat-icon>
-      Hide
+      {{ 'core.screenshotEditor.hide' | transloco }}
     </mat-button-toggle>
-    <mat-button-toggle value="highlight" aria-label="Highlight a region">
+    <mat-button-toggle [attr.aria-label]="'core.screenshotEditor.highlightRegion' | transloco" value="highlight">
       <mat-icon>highlight</mat-icon>
-      Highlight
+      {{ 'core.screenshotEditor.highlight' | transloco }}
     </mat-button-toggle>
   </mat-button-toggle-group>
 
-  <mat-button-toggle-group [value]="mode" (change)="setMode($event.value)" aria-label="Interaction mode">
-    <mat-button-toggle value="draw" aria-label="Draw a region" matTooltip="Draw">
+  <mat-button-toggle-group
+    [value]="mode"
+    (change)="setMode($event.value)"
+    [attr.aria-label]="'core.screenshotEditor.interactionMode' | transloco"
+  >
+    <mat-button-toggle
+      [attr.aria-label]="'core.screenshotEditor.drawRegion' | transloco"
+      [matTooltip]="'core.screenshotEditor.draw' | transloco"
+      value="draw"
+    >
       <mat-icon>edit</mat-icon>
     </mat-button-toggle>
-    <mat-button-toggle [disabled]="!canPan()" value="move" aria-label="Move the image" matTooltip="Move the image">
+    <mat-button-toggle
+      [disabled]="!canPan()"
+      [attr.aria-label]="'core.screenshotEditor.move' | transloco"
+      [matTooltip]="'core.screenshotEditor.move' | transloco"
+      value="move"
+    >
       <mat-icon>pan_tool</mat-icon>
     </mat-button-toggle>
   </mat-button-toggle-group>
 
   <span class="mgw-spacer"></span>
 
-  <div aria-label="Zoom" class="zoom-controls" role="group">
-    <button (click)="zoomToFit()" aria-label="Fit to window" mat-icon-button matTooltip="Fit to window" type="button">
+  <div [attr.aria-label]="'core.screenshotEditor.zoom' | transloco" class="zoom-controls" role="group">
+    <button
+      (click)="zoomToFit()"
+      [attr.aria-label]="'core.screenshotEditor.fitToWindow' | transloco"
+      [matTooltip]="'core.screenshotEditor.fitToWindow' | transloco"
+      mat-icon-button
+      type="button"
+    >
       <mat-icon>fit_screen</mat-icon>
     </button>
-    <button (click)="zoomTo100()" aria-label="Zoom to 100 percent" mat-button matTooltip="Actual size" type="button">
+    <button
+      (click)="zoomTo100()"
+      [attr.aria-label]="'core.screenshotEditor.zoomTo100' | transloco"
+      [matTooltip]="'core.screenshotEditor.actualSize' | transloco"
+      mat-button
+      type="button"
+    >
       100%
     </button>
     <button
       (click)="zoomOut()"
       [disabled]="!canZoomOut()"
-      aria-label="Zoom out"
+      [attr.aria-label]="'core.screenshotEditor.zoomOut' | transloco"
+      [matTooltip]="'core.screenshotEditor.zoomOut' | transloco"
       mat-icon-button
-      matTooltip="Zoom out"
       type="button"
     >
       <mat-icon>zoom_out</mat-icon>
@@ -57,9 +86,9 @@
     <button
       (click)="zoomIn()"
       [disabled]="!canZoomIn()"
-      aria-label="Zoom in"
+      [attr.aria-label]="'core.screenshotEditor.zoomIn' | transloco"
+      [matTooltip]="'core.screenshotEditor.zoomIn' | transloco"
       mat-icon-button
-      matTooltip="Zoom in"
       type="button"
     >
       <mat-icon>zoom_in</mat-icon>
@@ -69,9 +98,9 @@
   <button
     (click)="reset()"
     [disabled]="redactions.length === 0"
-    aria-label="Remove all regions"
+    [attr.aria-label]="'core.screenshotEditor.removeAllRegions' | transloco"
+    [matTooltip]="'core.screenshotEditor.removeAllRegions' | transloco"
     mat-icon-button
-    matTooltip="Remove all regions"
   >
     <mat-icon>delete_sweep</mat-icon>
   </button>
@@ -88,7 +117,7 @@
     (pointerdown)="onPointerDown($event)"
     (pointermove)="onPointerMove($event)"
     (pointerup)="onPointerUp($event)"
-    aria-label="Screenshot preview, drag to draw a region"
+    [attr.aria-label]="'core.screenshotEditor.preview' | transloco"
     class="capture"
   ></canvas>
 
@@ -106,15 +135,18 @@
 </div>
 
 @if (discardedDrag) {
-  <p class="hint" role="alert">That region was too small to keep, so nothing was covered. Drag a larger box.</p>
+  <p class="hint" role="alert">{{ 'core.screenshotEditor.discardedDrag' | transloco }}</p>
 }
 
 @if (redactions.length > 0) {
-  <mat-chip-set aria-label="Drawn regions" class="regions">
+  <mat-chip-set [attr.aria-label]="'core.screenshotEditor.regions' | transloco" class="regions">
     @for (redaction of redactions; track $index) {
       <mat-chip (removed)="remove($index)" [removable]="true">
-        {{ redaction.kind === 'hide' ? 'Hide' : 'Highlight' }} {{ $index + 1 }}
-        <mat-icon aria-label="Remove this region" matChipRemove>cancel</mat-icon>
+        {{ (redaction.kind === 'hide' ? 'core.screenshotEditor.hide' : 'core.screenshotEditor.highlight') | transloco }}
+        {{ $index + 1 }}
+        <mat-icon [attr.aria-label]="'core.screenshotEditor.removeThisRegion' | transloco" matChipRemove
+          >cancel</mat-icon
+        >
       </mat-chip>
     }
   </mat-chip-set>

@@ -1,6 +1,6 @@
 <h2 class="title" mat-dialog-title>
   <mat-icon>error</mat-icon>
-  {{ context }}
+  {{ context || ('core.errorDialog.defaultContext' | transloco) }}
 </h2>
 
 <div class="dialog-content" mat-dialog-content>
@@ -10,11 +10,11 @@
   @if (detail) {
     <pre class="detail">{{ detail }}</pre>
   } @else {
-    <p class="none">No further details were reported.</p>
+    <p class="none">{{ 'core.errorDialog.noDetails' | transloco }}</p>
   }
 </div>
 
 <div class="actions" mat-dialog-actions>
   <span class="mgw-spacer"></span>
-  <button [mat-dialog-close]="undefined" mat-flat-button>Close</button>
+  <button [mat-dialog-close]="undefined" mat-flat-button>{{ 'core.errorDialog.close' | transloco }}</button>
 </div>

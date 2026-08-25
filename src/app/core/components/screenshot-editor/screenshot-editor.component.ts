@@ -32,6 +32,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {Point, Redaction, ScreenshotAttachment, ScreenshotService} from '../../services/screenshot/screenshot.service';
 
 /** Whether a pointer drag draws a region or moves the view around. */
@@ -98,7 +99,8 @@ const Epsilon = 1e-6;
   selector: 'mgw-screenshot-editor',
   templateUrl: './screenshot-editor.component.html',
   styleUrl: './screenshot-editor.component.css',
-  imports: [MatButtonToggleModule, MatButtonModule, MatChipsModule, MatIconModule, MatTooltipModule],
+  imports: [MatButtonToggleModule, MatButtonModule, MatChipsModule, MatIconModule, MatTooltipModule, TranslocoPipe],
+  providers: [provideTranslocoScope('core')],
 })
 export class ScreenshotEditorComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input({required: true}) capture!: HTMLCanvasElement;

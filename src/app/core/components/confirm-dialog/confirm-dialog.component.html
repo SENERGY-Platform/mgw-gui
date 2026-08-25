@@ -1,4 +1,4 @@
-<h2 class="title" mat-dialog-title>Please confirm</h2>
+<h2 class="title" mat-dialog-title>{{ 'core.confirmDialog.title' | transloco }}</h2>
 
 <div class="dialog-content" mat-dialog-content>
   <p class="message">{{ message }}</p>
@@ -6,6 +6,6 @@
 
 <div class="actions" mat-dialog-actions>
   <span class="mgw-spacer"></span>
-  <button (click)="cancel()" mat-button>Cancel</button>
-  <button (click)="confirm()" mat-flat-button>Confirm</button>
+  <button (click)="cancel()" mat-button>{{ 'core.confirmDialog.cancel' | transloco }}</button>
+  <button (click)="confirm()" mat-flat-button>{{ 'core.confirmDialog.confirm' | transloco }}</button>
 </div>

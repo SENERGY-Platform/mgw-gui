@@ -16,19 +16,24 @@
 
 <section class="job-group">
   <header class="group-head">
-    <h2>{{ sourceLabel() }}</h2>
-    <span class="count">{{ dataSource.data.length }} job{{ dataSource.data.length === 1 ? '' : 's' }}</span>
+    <h2>{{ sourceLabel() | transloco }}</h2>
+    <span class="count">
+      {{
+        'core.listJobs.count.' + (dataSource.data.length === 1 ? 'one' : 'other')
+          | transloco: {count: dataSource.data.length}
+      }}
+    </span>
   </header>
 
   <spinner [show]="!ready && init"></spinner>
 
   @if (ready && dataSource.data.length === 0) {
-    <p class="none">No jobs recorded.</p>
+    <p class="none">{{ 'core.listJobs.empty' | transloco }}</p>
   } @else if (dataSource.data.length > 0) {
     <div class="mgw-table-card">
       <table [dataSource]="dataSource" mat-table matSort matSortActive="created" matSortDirection="desc">
         <ng-container matColumnDef="job">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header="description">Job</th>
+          <th *matHeaderCellDef mat-header-cell mat-sort-header="description">{{ 'core.listJobs.job' | transloco }}</th>
           <td *matCellDef="let job" mat-cell>
             <div class="mgw-cell-stack">
               <span class="mgw-cell-primary">{{ job.description }}</span>
@@ -41,19 +46,19 @@
         </ng-container>
 
         <ng-container matColumnDef="status">
-          <th *matHeaderCellDef mat-header-cell>Status</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'core.listJobs.status' | transloco }}</th>
           <td *matCellDef="let job" mat-cell>
-            <mgw-status-pill [label]="statusLabel(job)" [tone]="statusTone(job)"></mgw-status-pill>
+            <mgw-status-pill [label]="statusLabel(job) | transloco" [tone]="statusTone(job)"></mgw-status-pill>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="started">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header="created">Started</th>
+          <th *matHeaderCellDef mat-header-cell mat-sort-header="created">{{ 'core.listJobs.started' | transloco }}</th>
           <td *matCellDef="let job" mat-cell>{{ job.started | date: 'short' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="finished">
-          <th *matHeaderCellDef mat-header-cell>Finished</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'core.listJobs.finished' | transloco }}</th>
           <td *matCellDef="let job" mat-cell>
             @if (finishedAt(job)) {
               {{ finishedAt(job) | date: 'short' }}
@@ -67,7 +72,12 @@
           <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
           <td *matCellDef="let job" class="mgw-col-actions" mat-cell>
             <div class="mgw-row-actions">
-              <button (click)="cancelJob(job.id)" [disabled]="job.done" mat-icon-button matTooltip="Cancel this job">
+              <button
+                (click)="cancelJob(job.id)"
+                [disabled]="job.done"
+                [matTooltip]="'core.listJobs.cancelJob' | transloco"
+                mat-icon-button
+              >
                 <mat-icon>cancel</mat-icon>
               </button>
             </div>

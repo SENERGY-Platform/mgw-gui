@@ -82,6 +82,7 @@ stop
 storefront
 swap_horiz
 switch
+translate
 tune
 update
 upgrade

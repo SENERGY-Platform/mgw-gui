@@ -25,6 +25,7 @@ import {
 
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 // Shows the full error behind a short notification: what failed (context),
 // where it happened technically, and the raw response for diagnosis.
@@ -32,15 +33,21 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'error-dialog',
   templateUrl: './error-dialog.component.html',
   styleUrls: ['./error-dialog.component.css'],
-  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatIcon],
+  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MatIcon, TranslocoPipe],
+  providers: [provideTranslocoScope('core')],
 })
 export class ErrorDialogComponent {
+  // Empty rather than defaulted here: an empty context means "show the
+  // fallback text", and the template is what decides what that text is, so
+  // that it goes through the transloco pipe like everything else instead of
+  // being resolved once, synchronously, before the translation may even have
+  // loaded.
   context: string;
   source: string;
   detail: string;
 
   constructor(@Inject(MAT_DIALOG_DATA) data: any) {
-    this.context = data.context || 'The last action failed';
+    this.context = data.context || '';
     this.source = data.source || '';
     this.detail = data.detail || '';
   }
