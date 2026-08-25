@@ -6,10 +6,6 @@ COPY package.json package-lock.json ./
 RUN npm ci --quiet
 
 # Build
-#COPY src .
-#COPY angular.json .
-#COPY tsconfig.json .
-#COPY tsconfig.app.json .
 COPY . .
 
 # The environments ship 'UI-VERSION' as a placeholder so a source build has
@@ -27,18 +23,23 @@ ARG VERSION="missing-version"
 RUN sed -i "s/'UI-VERSION'/'${VERSION}'/" src/environments/*.ts
 RUN npx ng build -c debug --base-href="/core/web-ui/"
 
-FROM nginx:1.27.2-alpine-slim AS serve
+# Carries the server configuration and nothing else. The build output is
+# copied per serve target rather than here: a shared stage holding one build
+# leaves its files behind in the other, because a later COPY overwrites by
+# name and everything that does not collide simply stays. That is how the
+# production image came to ship the debug build's source maps.
+FROM nginx:1.27.2-alpine-slim AS serve_base
+COPY build/conf /etc/nginx/conf.d/default.conf
+
+FROM serve_base AS serve_prod
 ARG VERSION="missing-version"
-ENV VERSION=${VERSION}
-COPY --from=dev_builder /home/node/app/dist/mgw-gui/browser /usr/share/nginx/html
-RUN echo ${VERSION}
-RUN touch /usr/share/nginx/html/version.txt
-RUN echo $VERSION > /usr/share/nginx/html/version.txt
-
-
-FROM serve AS serve_prod
 COPY --from=prod_builder /home/node/app/dist/mgw-gui/browser /usr/share/nginx/html
-COPY build/conf /etc/nginx/conf.d/default.conf
+RUN echo "$VERSION" > /usr/share/nginx/html/version.txt
 
-FROM serve AS serve_dev
-COPY build/conf /etc/nginx/conf.d/default.conf
+FROM serve_base AS serve_dev
+ARG VERSION="missing-version"
+COPY --from=dev_builder /home/node/app/dist/mgw-gui/browser /usr/share/nginx/html
+RUN echo "$VERSION" > /usr/share/nginx/html/version.txt
+
+# deployment/docker-compose.yml builds this name; it is the unminified image.
+FROM serve_dev AS serve
