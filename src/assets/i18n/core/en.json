@@ -51,7 +51,8 @@
     "detailsAction": "Details",
     "operationInProgress": "Another operation is still running, please wait for it to finish.",
     "httpStatusSuffix": "(HTTP {{status}})",
-    "genericError": "Something bad happened; please try again later."
+    "genericError": "Something bad happened; please try again later.",
+    "backendUnreachable": "The backend service is not reachable"
   },
   "feedbackDialog": {
     "title": "Send feedback",

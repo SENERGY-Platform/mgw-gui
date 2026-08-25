@@ -76,12 +76,26 @@ describe('ErrorService', () => {
     );
   });
 
-  it('appends the translated HTTP status suffix for any other HTTP error', () => {
-    const error = new HttpErrorResponse({status: 502, error: 'bad gateway'});
+  it('says the backend is unreachable on a gateway 502 instead of showing a status code', () => {
+    // what nginx actually returns when the host binaries are down
+    const error = new HttpErrorResponse({status: 502, error: '<html><body><h1>502 Bad Gateway</h1></body></html>'});
 
     create().handleError('Svc', 'method', error, 'Loading modules failed');
 
-    expect(snackBar.open).toHaveBeenCalledWith('Loading modules failed (HTTP 502)', 'Details', expect.anything());
+    expect(snackBar.open).toHaveBeenCalledWith(
+      'Loading modules failed — The backend service is not reachable',
+      'Details',
+      expect.anything(),
+    );
+  });
+
+  it('appends the translated HTTP status suffix for any other HTTP error', () => {
+    // 404 and not 502: gateway statuses carry their own wording now
+    const error = new HttpErrorResponse({status: 404, error: 'not found'});
+
+    create().handleError('Svc', 'method', error, 'Loading modules failed');
+
+    expect(snackBar.open).toHaveBeenCalledWith('Loading modules failed (HTTP 404)', 'Details', expect.anything());
   });
 
   it('still works when nothing configured Transloco, falling back to the bare key', () => {

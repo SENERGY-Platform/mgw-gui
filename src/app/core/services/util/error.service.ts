@@ -83,6 +83,12 @@ export class ErrorService {
       // the module-manager serializes long-running operations: 503 means
       // another job is still active
       short = (context ? context + ' — ' : '') + this.translate('core.errorService.operationInProgress');
+    } else if (status === 502 || status === 504) {
+      // both mean the gateway could not get an answer from the service
+      // behind it - typically the host binaries are down after a reboot. The
+      // body is nginx's own HTML error page: keep it for the details dialog,
+      // but the message has to say what is actually wrong.
+      short = (context ? context + ' — ' : '') + this.translate('core.errorService.backendUnreachable');
     } else if (status > 0) {
       short = short + ' ' + this.translate('core.errorService.httpStatusSuffix', {status});
     }
