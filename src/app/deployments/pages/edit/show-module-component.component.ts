@@ -92,10 +92,8 @@ export class ShowModuleComponentComponent implements OnInit {
       globalConfigs: this.moduleService.getGlobalConfigs().pipe(catchError(() => of({}))),
     }).subscribe({
       next: (result) => {
-        // only deployed modules can be edited; the list endpoint currently
-        // reports is_deployed=false despite embedding the deployment, so a
-        // populated deployment ID counts as deployed too
-        this.modules = (result.modules || []).filter((module) => module.is_deployed || !!module.deployment?.id);
+        // only deployed modules can be edited
+        this.modules = (result.modules || []).filter((module) => module.is_deployed);
         this.hostResources = result.hostResources || [];
         this.secrets = result.secrets || [];
         this.globalConfigs = Object.values(result.globalConfigs || {});
