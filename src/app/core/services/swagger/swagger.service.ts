@@ -19,6 +19,7 @@ import {Injectable} from '@angular/core';
 import {Observable, map, of} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {SwaggerDocument} from 'src/app/developer/models/openapi';
+import {safeInjectTransloco} from '../language/safe-transloco';
 
 export interface ApiRequest {
   method: string;
@@ -48,7 +49,18 @@ export interface ApiCallResult {
  */
 @Injectable({providedIn: 'root'})
 export class SwaggerService {
+  // providedIn: 'root' and reachable only from the developer playground today,
+  // but a plain inject(TranslocoService) still throws for any spec that
+  // constructs this service without configuring Transloco - see
+  // safeInjectTransloco for why this goes through it instead, like
+  // ErrorService.
+  private readonly transloco = safeInjectTransloco();
+
   constructor(private httpClient: HttpClient) {}
+
+  private translate(key: string): string {
+    return this.transloco?.translate<string>(key) ?? key;
+  }
 
   loadDocument(url: string): Observable<SwaggerDocument> {
     return this.httpClient.get<SwaggerDocument>(url, {withCredentials: true});
@@ -109,13 +121,13 @@ export class SwaggerService {
     if (!error || error.status === undefined || error.status === 0) {
       return {
         status: 0,
-        statusText: 'No response',
+        statusText: this.translate('developer.swaggerService.noResponse'),
         durationMs: durationMs,
         headers: {},
         body: '',
         contentType: '',
         ok: false,
-        networkError: error?.message || 'The request did not reach a server.',
+        networkError: error?.message || this.translate('developer.swaggerService.networkError'),
       };
     }
     return {

@@ -8,12 +8,24 @@ import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [SpinnerComponent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, MatIcon],
+  imports: [
+    SpinnerComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatButton,
+    MatIcon,
+    TranslocoPipe,
+  ],
+  providers: [provideTranslocoScope('auth')],
 })
 export class LoginComponent {
   flowID = '';

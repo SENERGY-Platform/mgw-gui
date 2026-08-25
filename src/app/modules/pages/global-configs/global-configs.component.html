@@ -16,13 +16,13 @@
 
 <div class="mgw-page">
   <mgw-page-header
-    description="Values that several deployments can reference instead of each setting them separately."
-    title="Global configs"
+    [description]="'modules.globalConfigs.description' | transloco"
+    [title]="'modules.globalConfigs.title' | transloco"
   >
     <div pageActions>
       <button (click)="add()" mat-flat-button>
         <mat-icon>add</mat-icon>
-        Add global config
+        {{ 'modules.globalConfigs.addGlobalConfig' | transloco }}
       </button>
     </div>
   </mgw-page-header>
@@ -34,16 +34,20 @@
   } @else if (dataSource.data.length === 0) {
     <mgw-empty-state
       icon="tune"
-      message="A global config holds one value centrally. In a deployment form, switch a field to “Global config” to point at it instead of typing the value again."
-      title="No global configs defined"
+      [message]="'modules.globalConfigs.empty.message' | transloco"
+      [title]="'modules.globalConfigs.empty.title' | transloco"
     >
-      <button (click)="add()" emptyAction mat-flat-button>Add global config</button>
+      <button (click)="add()" emptyAction mat-flat-button>
+        {{ 'modules.globalConfigs.addGlobalConfig' | transloco }}
+      </button>
     </mgw-empty-state>
   } @else {
     <div class="mgw-table-card">
       <table [dataSource]="dataSource" mat-table matSort matSortActive="name" matSortDirection="asc">
         <ng-container matColumnDef="name">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header>Name</th>
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>
+            {{ 'modules.globalConfigs.columns.name' | transloco }}
+          </th>
           <td *matCellDef="let config" mat-cell>
             <div class="mgw-cell-stack">
               <span class="mgw-cell-primary">{{ config.name }}</span>
@@ -53,14 +57,14 @@
         </ng-container>
 
         <ng-container matColumnDef="type">
-          <th *matHeaderCellDef mat-header-cell>Type</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'modules.globalConfigs.columns.type' | transloco }}</th>
           <td *matCellDef="let config" mat-cell>
             <span class="type-badge">{{ typeLabel(config) }}</span>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="value">
-          <th *matHeaderCellDef mat-header-cell>Value</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'modules.globalConfigs.columns.value' | transloco }}</th>
           <td *matCellDef="let config" mat-cell>
             <span class="value mgw-mono">{{ valuePreview(config) }}</span>
           </td>
@@ -70,10 +74,15 @@
           <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
           <td *matCellDef="let config" class="mgw-col-actions" mat-cell>
             <div class="mgw-row-actions">
-              <button (click)="edit(config)" mat-icon-button matTooltip="Edit">
+              <button (click)="edit(config)" mat-icon-button [matTooltip]="'modules.globalConfigs.edit' | transloco">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button (click)="delete(config)" class="danger-icon" mat-icon-button matTooltip="Delete">
+              <button
+                (click)="delete(config)"
+                class="danger-icon"
+                mat-icon-button
+                [matTooltip]="'modules.globalConfigs.delete' | transloco"
+              >
                 <mat-icon>delete</mat-icon>
               </button>
             </div>

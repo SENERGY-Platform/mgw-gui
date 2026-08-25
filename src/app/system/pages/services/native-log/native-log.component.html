@@ -1,15 +1,15 @@
 <div class="mgw-page">
   <mgw-page-header
     backTo="/system/status"
-    description="Most recent output. Increase the line count to look further back."
-    title="Log"
+    [description]="'system.nativeLog.description' | transloco"
+    [title]="'system.nativeLog.title' | transloco"
   >
     <div pageActions>
       <mat-slide-toggle (change)="autoRefreshToggleChanged($event)" [ngModel]="autoRefreshEnabled">
-        Auto refresh
+        {{ 'system.nativeLog.autoRefresh' | transloco }}
       </mat-slide-toggle>
       <mat-form-field appearance="outline" class="lines" subscriptSizing="dynamic">
-        <mat-label>Lines</mat-label>
+        <mat-label>{{ 'system.nativeLog.lines' | transloco }}</mat-label>
         <input (ngModelChange)="maxLinesChanges($event)" [(ngModel)]="maxLines" matInput type="number" />
       </mat-form-field>
     </div>
@@ -19,7 +19,7 @@
     @if (ready && !init) {
       <mgw-log-viewer [logs]="logs" />
     } @else {
-      <p class="loading">Loading log…</p>
+      <p class="loading">{{ 'system.nativeLog.loading' | transloco }}</p>
     }
   </div>
 </div>

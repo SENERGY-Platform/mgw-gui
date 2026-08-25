@@ -21,6 +21,7 @@ import {MatTooltip} from '@angular/material/tooltip';
 import {AddDialogComponent, DialogData} from './add-dialog/add-dialog.component';
 import {MatIconButton} from '@angular/material/button';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-host-applications',
@@ -42,9 +43,11 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
     MatIcon,
     MatIconButton,
     MatTooltip,
+    TranslocoPipe,
   ],
   templateUrl: './host-applications.component.html',
   styleUrl: './host-applications.component.css',
+  providers: [provideTranslocoScope('system')],
 })
 export class HostApplicationsComponent implements AfterViewInit, OnInit {
   displayedColumns: string[] = ['name', 'path', 'actions'];

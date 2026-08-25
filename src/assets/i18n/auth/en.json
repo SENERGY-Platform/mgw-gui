@@ -1,0 +1,10 @@
+{
+  "login": {
+    "brandName": "MGW",
+    "brandSub": "Module Gateway",
+    "title": "Sign in",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Sign in"
+  }
+}

@@ -16,17 +16,21 @@
 
 <div class="mgw-page has-action-bar">
   <mgw-page-header
-    description="Modules offered by the configured repositories. Collect what you want to change, then review and apply it in one go."
-    title="Catalog"
+    [description]="'modules.manage.description' | transloco"
+    [title]="'modules.manage.title' | transloco"
   >
     <div pageActions>
-      <button (click)="refreshRepositories()" mat-stroked-button matTooltip="Fetch the latest module list">
+      <button
+        (click)="refreshRepositories()"
+        mat-stroked-button
+        [matTooltip]="'modules.manage.refreshHint' | transloco"
+      >
         <mat-icon>refresh</mat-icon>
-        Refresh repositories
+        {{ 'modules.manage.refreshRepositories' | transloco }}
       </button>
       <button (click)="updateAll()" [disabled]="updatesCount === 0" mat-flat-button>
         <mat-icon>upgrade</mat-icon>
-        Update all
+        {{ 'modules.manage.updateAll' | transloco }}
         @if (updatesCount > 0) {
           <span>&nbsp;({{ updatesCount }})</span>
         }
@@ -37,27 +41,24 @@
   @if (pendingRequest) {
     <div class="mgw-notice warn">
       <mat-icon>pending_actions</mat-icon>
-      <span
-        >A change request is pending on the gateway. It stays there until it is applied or discarded — a repository
-        refresh discards it too.</span
-      >
-      <button (click)="openPendingRequest()" mat-stroked-button>Review</button>
+      <span>{{ 'modules.manage.pendingRequest' | transloco }}</span>
+      <button (click)="openPendingRequest()" mat-stroked-button>{{ 'modules.manage.review' | transloco }}</button>
     </div>
   }
 
   <div class="mgw-toolbar">
     <mat-form-field appearance="outline" class="mgw-search" subscriptSizing="dynamic">
-      <mat-label>Search modules</mat-label>
+      <mat-label>{{ 'modules.manage.searchModules' | transloco }}</mat-label>
       <input (keyup.enter)="load()" [(ngModel)]="nameFilter" matInput />
-      <button (click)="load()" aria-label="Search" mat-icon-button matSuffix>
+      <button (click)="load()" [attr.aria-label]="'modules.manage.search' | transloco" mat-icon-button matSuffix>
         <mat-icon>search</mat-icon>
       </button>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="repo" subscriptSizing="dynamic">
-      <mat-label>Repository</mat-label>
+      <mat-label>{{ 'modules.manage.repository' | transloco }}</mat-label>
       <mat-select (selectionChange)="load()" [(ngModel)]="repoFilter">
-        <mat-option value="">All repositories</mat-option>
+        <mat-option value="">{{ 'modules.manage.allRepositories' | transloco }}</mat-option>
         @for (repo of repositories; track repo.Source) {
           <mat-option [value]="repo.Source">{{ repo.Source }}</mat-option>
         }
@@ -65,12 +66,14 @@
     </mat-form-field>
 
     <div class="mgw-chips">
-      <button (click)="setScope('all')" [class.selected]="scope === 'all'" class="mgw-chip" type="button">All</button>
+      <button (click)="setScope('all')" [class.selected]="scope === 'all'" class="mgw-chip" type="button">
+        {{ 'modules.manage.scopes.all' | transloco }}
+      </button>
       <button (click)="setScope('installed')" [class.selected]="scope === 'installed'" class="mgw-chip" type="button">
-        Installed
+        {{ 'modules.manage.scopes.installed' | transloco }}
       </button>
       <button (click)="setScope('updates')" [class.selected]="scope === 'updates'" class="mgw-chip" type="button">
-        Updates
+        {{ 'modules.manage.scopes.updates' | transloco }}
         @if (updatesCount > 0) {
           <span class="mgw-chip-count">{{ updatesCount }}</span>
         }
@@ -83,16 +86,18 @@
   @if (ready && dataSource.data.length === 0) {
     <mgw-empty-state
       icon="inventory_2"
-      message="Nothing matches the current filter. If the catalog is empty altogether, refresh the repositories to fetch the latest module list."
-      title="No modules found"
+      [message]="'modules.manage.empty.message' | transloco"
+      [title]="'modules.manage.empty.title' | transloco"
     >
-      <button (click)="refreshRepositories()" emptyAction mat-stroked-button>Refresh repositories</button>
+      <button (click)="refreshRepositories()" emptyAction mat-stroked-button>
+        {{ 'modules.manage.refreshRepositories' | transloco }}
+      </button>
     </mgw-empty-state>
   } @else if (dataSource.data.length > 0) {
     <div class="mgw-table-card">
       <table [dataSource]="dataSource" mat-table>
         <ng-container matColumnDef="name">
-          <th *matHeaderCellDef mat-header-cell>Module</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'modules.manage.columns.module' | transloco }}</th>
           <td *matCellDef="let module" mat-cell>
             <div class="module-cell">
               <span class="module-name">{{ module.name }}</span>
@@ -102,14 +107,14 @@
         </ng-container>
 
         <ng-container matColumnDef="status">
-          <th *matHeaderCellDef mat-header-cell>Status</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'modules.manage.columns.status' | transloco }}</th>
           <td *matCellDef="let module" mat-cell>
-            <mgw-status-pill [label]="statusLabel(module)" [tone]="statusTone(module)"></mgw-status-pill>
+            <mgw-status-pill [label]="statusLabel(module) | transloco" [tone]="statusTone(module)"></mgw-status-pill>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="version">
-          <th *matHeaderCellDef mat-header-cell>Version</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'modules.manage.columns.version' | transloco }}</th>
           <td *matCellDef="let module" mat-cell>
             @if (!module.is_installed) {
               <span>{{ module.version }}</span>
@@ -128,7 +133,7 @@
         </ng-container>
 
         <ng-container matColumnDef="variant">
-          <th *matHeaderCellDef mat-header-cell>Repository / channel</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'modules.manage.columns.variant' | transloco }}</th>
           <td *matCellDef="let module" mat-cell>
             @if ((variantOptionsById[module.id] || []).length < 2) {
               <span class="variant-static">
@@ -155,8 +160,8 @@
             @if (cartAction(module.id)) {
               <span class="staged" [attr.data-action]="cartAction(module.id)">
                 <mat-icon>check</mat-icon>
-                {{ cartAction(module.id) }}
-                <button (click)="undo(module.id)" mat-icon-button matTooltip="Undo">
+                {{ cartActionLabel(module.id) | transloco }}
+                <button (click)="undo(module.id)" [matTooltip]="'modules.manage.undo' | transloco" mat-icon-button>
                   <mat-icon>close</mat-icon>
                 </button>
               </span>
@@ -165,36 +170,42 @@
                 @if (primaryAction(module) === 'install') {
                   <button (click)="applyPrimary(module)" mat-stroked-button>
                     <mat-icon>add</mat-icon>
-                    Install
+                    {{ 'modules.manage.install' | transloco }}
                   </button>
                 } @else if (primaryAction(module) === 'switch') {
                   <button
                     (click)="applyPrimary(module)"
                     mat-stroked-button
-                    matTooltip="Switch to the selected repository and channel"
+                    [matTooltip]="'modules.manage.switchHint' | transloco"
                   >
                     <mat-icon>swap_horiz</mat-icon>
-                    Switch
+                    {{ 'modules.manage.switch' | transloco }}
                   </button>
                 } @else if (primaryAction(module) === 'update') {
                   <button
                     (click)="applyPrimary(module)"
                     mat-flat-button
-                    matTooltip="Update to {{ module.installed_variant.next_version }}"
+                    [matTooltip]="
+                      'modules.manage.updateHint' | transloco: {version: module.installed_variant.next_version}
+                    "
                   >
                     <mat-icon>upgrade</mat-icon>
-                    Update
+                    {{ 'modules.manage.update' | transloco }}
                   </button>
                 }
 
                 @if (module.is_installed) {
-                  <button [matMenuTriggerFor]="rowMenu" mat-icon-button matTooltip="More actions">
+                  <button
+                    [matMenuTriggerFor]="rowMenu"
+                    mat-icon-button
+                    [matTooltip]="'modules.manage.moreActions' | transloco"
+                  >
                     <mat-icon>more_vert</mat-icon>
                   </button>
                   <mat-menu #rowMenu="matMenu">
                     <button (click)="remove(module)" class="mgw-danger" mat-menu-item>
                       <mat-icon>delete</mat-icon>
-                      <span>Remove module</span>
+                      <span>{{ 'modules.manage.removeModule' | transloco }}</span>
                     </button>
                   </mat-menu>
                 }
@@ -211,12 +222,12 @@
 
   @if (cartCount() > 0) {
     <div class="mgw-action-bar">
-      <span class="staged-count">{{ cartCount() }} change{{ cartCount() === 1 ? '' : 's' }} staged</span>
+      <span class="staged-count">{{ stagedCountKey() | transloco: {count: cartCount()} }}</span>
       <span class="mgw-spacer"></span>
-      <button (click)="clearCart()" mat-button>Clear</button>
+      <button (click)="clearCart()" mat-button>{{ 'modules.manage.clear' | transloco }}</button>
       <button (click)="reviewCart()" mat-flat-button>
         <mat-icon>fact_check</mat-icon>
-        Review &amp; apply
+        {{ 'modules.manage.reviewApply' | transloco }}
       </button>
     </div>
   }

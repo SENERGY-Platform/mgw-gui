@@ -25,6 +25,7 @@ import {PageHeaderComponent} from 'src/app/core/components/page-header/page-head
 import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {RouterLink} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-list',
@@ -51,7 +52,9 @@ import {MatIcon} from '@angular/material/icon';
     MatRow,
     PageHeaderComponent,
     EmptyStateComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('secrets')],
 })
 export class ListComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<Secret>();

@@ -1,29 +1,31 @@
 <div class="mgw-table-card">
   <table [dataSource]="dataSource" mat-table>
     <ng-container matColumnDef="name">
-      <th *matHeaderCellDef mat-header-cell>Service</th>
+      <th *matHeaderCellDef mat-header-cell>{{ 'developer.swaggerList.service' | transloco }}</th>
       <td *matCellDef="let item" mat-cell>
         <span class="mgw-cell-primary">{{ item.name }}</span>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="auth">
-      <th *matHeaderCellDef mat-header-cell>Authentication</th>
+      <th *matHeaderCellDef mat-header-cell>{{ 'developer.swaggerList.authentication' | transloco }}</th>
       <td *matCellDef="let item" mat-cell>
         <mgw-status-pill
-          [label]="item.requiresAuth ? 'session' : 'none'"
+          [label]="
+            (item.requiresAuth ? 'developer.swaggerList.authSession' : 'developer.swaggerList.authNone') | transloco
+          "
           [tone]="item.requiresAuth ? 'info' : 'idle'"
         ></mgw-status-pill>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="apiUrl">
-      <th *matHeaderCellDef mat-header-cell>Base URL</th>
+      <th *matHeaderCellDef mat-header-cell>{{ 'developer.swaggerList.baseUrl' | transloco }}</th>
       <td *matCellDef="let item" mat-cell>
         <span class="mgw-mono">{{ item.displayUrl }}</span>
         @if (!isExecutable(item)) {
-          <span class="internal" matTooltip="Served inside the gateway network, not reachable from a browser">
-            internal
+          <span class="internal" [matTooltip]="'developer.swaggerList.internalTooltip' | transloco">
+            {{ 'developer.swaggerList.internal' | transloco }}
           </span>
         }
       </td>
@@ -36,16 +38,21 @@
           @if (hasPlayground(item)) {
             <button
               [routerLink]="['/developer', item.scope, item.id]"
+              [matTooltip]="'developer.swaggerList.playgroundTooltip' | transloco"
               mat-flat-button
-              matTooltip="Browse and call the endpoints of this service"
             >
               <mat-icon>api</mat-icon>
-              Playground
+              {{ 'developer.swaggerList.playground' | transloco }}
             </button>
           }
-          <a [href]="item.docUrl" mat-stroked-button matTooltip="Open the generated Swagger UI" target="_blank">
+          <a
+            [href]="item.docUrl"
+            [matTooltip]="'developer.swaggerList.swaggerTooltip' | transloco"
+            mat-stroked-button
+            target="_blank"
+          >
             <mat-icon>menu_book</mat-icon>
-            Swagger
+            {{ 'developer.swaggerList.swagger' | transloco }}
           </a>
         </div>
       </td>

@@ -28,6 +28,7 @@ import {FormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {MatCheckbox} from '@angular/material/checkbox';
 import {MatIcon} from '@angular/material/icon';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {Repository} from 'src/app/core/models/repositories';
 
 // Lets the user pick which repositories to refresh. Closes with the selected
@@ -46,7 +47,9 @@ import {Repository} from 'src/app/core/models/repositories';
     MatButton,
     MatCheckbox,
     MatIcon,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('modules')],
 })
 export class RefreshReposDialogComponent {
   repositories: Repository[] = [];

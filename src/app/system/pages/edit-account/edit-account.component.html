@@ -4,20 +4,20 @@
   @if (ready) {
     <mgw-page-header
       backTo="/system/accounts/users"
-      description="Set a new password for this account."
-      title="Change password"
+      [description]="'system.editAccount.description' | transloco"
+      [title]="'system.editAccount.title' | transloco"
     ></mgw-page-header>
 
     <div [formGroup]="form" class="mgw-card card">
       <div class="field">
-        <label for="acc-password">New password</label>
+        <label for="acc-password">{{ 'system.editAccount.newPassword' | transloco }}</label>
         <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
           <input formControlName="password" id="acc-password" matInput type="password" />
         </mat-form-field>
       </div>
 
       <div class="field">
-        <label for="acc-confirm">Confirm password</label>
+        <label for="acc-confirm">{{ 'system.editAccount.confirmPassword' | transloco }}</label>
         <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
           <input formControlName="confirmation" id="acc-confirm" matInput type="password" />
         </mat-form-field>
@@ -32,8 +32,10 @@
 
     <div class="mgw-action-bar">
       <span class="mgw-spacer"></span>
-      <button [routerLink]="'/system/accounts/users'" mat-button>Cancel</button>
-      <button (click)="edit()" [disabled]="!form.valid" mat-flat-button type="submit">Save password</button>
+      <button [routerLink]="'/system/accounts/users'" mat-button>{{ 'system.editAccount.cancel' | transloco }}</button>
+      <button (click)="edit()" [disabled]="!form.valid" mat-flat-button type="submit">
+        {{ 'system.editAccount.save' | transloco }}
+      </button>
     </div>
   }
 </div>

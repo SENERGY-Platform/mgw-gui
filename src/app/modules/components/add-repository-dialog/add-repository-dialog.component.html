@@ -1,17 +1,17 @@
-<h2 class="title" mat-dialog-title>Add repository</h2>
+<h2 class="title" mat-dialog-title>{{ 'modules.addRepositoryDialog.title' | transloco }}</h2>
 
 <div class="dialog-content" mat-dialog-content>
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Type</mat-label>
+    <mat-label>{{ 'modules.addRepositoryDialog.type' | transloco }}</mat-label>
     <mat-select [(ngModel)]="repositoryType">
       <mat-option value="github.com">github.com</mat-option>
     </mat-select>
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Source definition (JSON)</mat-label>
+    <mat-label>{{ 'modules.addRepositoryDialog.sourceDefinition' | transloco }}</mat-label>
     <textarea [(ngModel)]="definitionJson" class="definition" matInput rows="12" spellcheck="false"></textarea>
-    <mat-hint>Passed verbatim to the repository type handler</mat-hint>
+    <mat-hint>{{ 'modules.addRepositoryDialog.hint' | transloco }}</mat-hint>
   </mat-form-field>
 
   @if (error) {
@@ -21,6 +21,6 @@
 
 <div class="actions" mat-dialog-actions>
   <span class="mgw-spacer"></span>
-  <button [mat-dialog-close]="undefined" mat-button>Cancel</button>
-  <button (click)="save()" mat-flat-button>Add</button>
+  <button [mat-dialog-close]="undefined" mat-button>{{ 'modules.addRepositoryDialog.cancel' | transloco }}</button>
+  <button (click)="save()" mat-flat-button>{{ 'modules.addRepositoryDialog.add' | transloco }}</button>
 </div>

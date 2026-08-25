@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnDestroy, OnInit, ViewChild, AfterViewInit} from '@angular/core';
+import {AfterViewInit, Component, Inject, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {
@@ -47,6 +47,7 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatDivider} from '@angular/material/divider';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {
   DEPLOYMENT_STATE_HEALTHY,
   DEPLOYMENT_STATE_UNHEALTHY,
@@ -104,7 +105,9 @@ interface StatusFilter {
     PageHeaderComponent,
     StatusPillComponent,
     EmptyStateComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('modules')],
 })
 export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
   dataSource = new MatTableDataSource<ModuleReduced>();
@@ -118,16 +121,22 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   search = '';
   statusFilter: StatusFilter['key'] = 'all';
+  // display text is translation keys, not display text - the template applies
+  // the pipe where it renders each filter chip
   readonly statusFilters: StatusFilter[] = [
-    {key: 'all', label: 'All'},
-    {key: 'healthy', label: 'Running'},
-    {key: 'disabled', label: 'Stopped'},
-    {key: 'unhealthy', label: 'Unhealthy'},
-    {key: 'none', label: 'Not deployed'},
-    {key: 'update', label: 'Update pending'},
+    {key: 'all', label: 'modules.list.filters.all'},
+    {key: 'healthy', label: 'modules.list.filters.healthy'},
+    {key: 'disabled', label: 'modules.list.filters.disabled'},
+    {key: 'unhealthy', label: 'modules.list.filters.unhealthy'},
+    {key: 'none', label: 'modules.list.filters.none'},
+    {key: 'update', label: 'modules.list.filters.update'},
   ];
 
   needsDeploymentUpdate = needsDeploymentUpdate;
+
+  // Field injection, not a constructor parameter: new dependencies follow
+  // the prefer-inject rule; the parameters above predate it.
+  private readonly transloco = inject(TranslocoService);
 
   constructor(
     public dialog: MatDialog,
@@ -136,6 +145,10 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private utilService: UtilService,
   ) {}
+
+  private translate(key: string, params?: Record<string, unknown>): string {
+    return this.transloco.translate<string>(key, params);
+  }
 
   ngOnInit(): void {
     this.dataSource.filterPredicate = (module, _) => this.matchesFilters(module);
@@ -187,7 +200,12 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       error: (err) => {
         if (!background) {
-          this.errorService.handleError(ListComponent.name, 'loadModules', err, 'Loading the modules failed');
+          this.errorService.handleError(
+            ListComponent.name,
+            'loadModules',
+            err,
+            this.translate('modules.list.errors.loadFailed'),
+          );
         }
         this.ready = true;
       },
@@ -254,18 +272,19 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  // a translation key, not display text - the template applies the pipe
   statusLabel(module: ModuleReduced): string {
     switch (this.statusOf(module)) {
       case 'healthy':
-        return 'Running';
+        return 'modules.list.statuses.running';
       case 'unhealthy':
-        return 'Unhealthy';
+        return 'modules.list.statuses.unhealthy';
       case 'disabled':
-        return 'Stopped';
+        return 'modules.list.statuses.stopped';
       case 'unknown':
-        return 'Unknown';
+        return 'modules.list.statuses.unknown';
       default:
-        return 'Not deployed';
+        return 'modules.list.statuses.notDeployed';
     }
   }
 
@@ -316,7 +335,9 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
           ListComponent.name,
           method,
           err,
-          method === 'start' ? 'Starting the deployments failed' : 'Stopping the deployments failed',
+          method === 'start'
+            ? this.translate('modules.list.errors.startFailed')
+            : this.translate('modules.list.errors.stopFailed'),
         );
         this.ready = true;
         this.startPeriodicRefresh();
@@ -338,12 +359,12 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.runJob(
       this.moduleService.recreateDeployments(moduleIDs),
-      'Deployments are recreating',
+      this.translate('modules.list.jobs.recreating'),
       'deployments',
       'recreate',
-      'Recreate containers',
-      'Containers recreated',
-      'Recreating the containers failed',
+      this.translate('modules.list.recreateContainers'),
+      this.translate('modules.list.jobs.recreated'),
+      this.translate('modules.list.errors.recreateFailed'),
     );
   }
 
@@ -360,9 +381,7 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
     this.utilService
-      .askForConfirmation(
-        'Delete the deployment(s) of ' + moduleIDs.length + ' module(s)? Data stored in volumes will be removed.',
-      )
+      .askForConfirmation(this.translate('modules.list.confirmDelete', {count: moduleIDs.length}))
       .pipe(
         concatMap((confirmed) => {
           if (!confirmed) {
@@ -370,12 +389,12 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
           }
           this.runJob(
             this.moduleService.removeDeployments(moduleIDs),
-            'Deployments are being deleted',
+            this.translate('modules.list.jobs.deleting'),
             'deployments-delete',
             'delete',
-            'Delete deployments',
-            'Deployments deleted',
-            'Deleting the deployments failed',
+            this.translate('modules.list.deleteDeployments'),
+            this.translate('modules.list.jobs.deleted'),
+            this.translate('modules.list.errors.deleteFailed'),
           );
           return of(true);
         }),
@@ -423,7 +442,7 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
   showModuleError(module: ModuleReduced) {
     this.dialog.open(ErrorDialogComponent, {
       data: {
-        context: 'The module was loaded with errors',
+        context: this.translate('modules.list.moduleLoadedWithErrors'),
         source: module.id,
         detail: module.error_msg || module.deployment?.error_msg || '',
       },

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -26,6 +26,7 @@ import {UtilService} from '../../../../core/services/util/util.service';
 import {concatMap, map, of, throwError} from 'rxjs';
 import {MatTooltip} from '@angular/material/tooltip';
 import {StatusPillComponent, StatusTone} from '../../../../core/components/status-pill/status-pill.component';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-container-list',
@@ -45,19 +46,29 @@ import {StatusPillComponent, StatusTone} from '../../../../core/components/statu
     MatHeaderCellDef,
     MatTooltip,
     StatusPillComponent,
+    TranslocoPipe,
   ],
   templateUrl: './container-list.component.html',
   styleUrl: './container-list.component.css',
+  providers: [provideTranslocoScope('system')],
 })
 export class ContainerListComponent implements OnInit, OnDestroy {
+  // Resolved directly rather than through the `transloco` pipe: the job
+  // loader modal opened from `restart` below takes a plain string, with no
+  // template binding a pipe could sit on.
+  private readonly transloco = inject(TranslocoService);
+
   // the engine reports free-form container states; anything but "running"
   // is a problem for a core service
   stateTone(service: CoreService): StatusTone {
     return service.container?.state === 'running' ? 'ok' : service.container?.state ? 'danger' : 'idle';
   }
 
+  // A real state is a free-form value reported by the engine, not one of
+  // ours to translate - only the fallback for a missing one is our own text,
+  // as a translation key the template resolves with the `transloco` pipe.
   stateLabel(service: CoreService): string {
-    return service.container?.state || 'unknown';
+    return service.container?.state || 'system.containerList.unknownState';
   }
 
   dataSource = new MatTableDataSource<CoreService>();
@@ -131,7 +142,9 @@ export class ContainerListComponent implements OnInit, OnDestroy {
       .reloadService(serviceID)
       .pipe(
         concatMap((jobId: string) => {
-          const message = 'Reload service ' + serviceID;
+          const message = this.transloco.translate<string>('system.containerList.reloadServiceMessage', {
+            name: serviceID,
+          });
           return this.utilsService.checkJobStatus(jobId, message, 'core-manager');
         }),
         concatMap((result) => {

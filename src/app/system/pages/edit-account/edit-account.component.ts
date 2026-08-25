@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, inject} from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -21,6 +21,7 @@ import {MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 
 export function passwordMustMatch(control: AbstractControl): ValidationErrors | null {
   const confirmation = control.get('confirmation');
@@ -42,9 +43,16 @@ export function passwordMustMatch(control: AbstractControl): ValidationErrors | 
     MatIcon,
     RouterLink,
     PageHeaderComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('system')],
 })
 export class EditAccountComponent implements OnDestroy {
+  // Resolved directly rather than through the `transloco` pipe: this is
+  // computed on demand from the form's validity, not a plain template
+  // binding a pipe could sit on.
+  private readonly transloco = inject(TranslocoService);
+
   form = new FormGroup(
     {
       password: new FormControl('', {nonNullable: true, validators: Validators.required}),
@@ -104,7 +112,7 @@ export class EditAccountComponent implements OnDestroy {
 
   getErrorMessage() {
     if (this.form.hasError('match')) {
-      return 'Password does not match';
+      return this.transloco.translate<string>('system.editAccount.passwordMismatch');
     }
     return '';
   }

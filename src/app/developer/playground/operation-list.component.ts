@@ -18,6 +18,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {ApiOperation} from '../models/openapi';
 import {MethodChipComponent} from './method-chip.component';
 
@@ -29,11 +30,12 @@ export interface OperationGroup {
 /** Filterable, tag-grouped index of the operations a service publishes. */
 @Component({
   selector: 'api-operation-list',
-  imports: [FormsModule, MatFormField, MatLabel, MatInput, MethodChipComponent],
+  imports: [FormsModule, MatFormField, MatLabel, MatInput, MethodChipComponent, TranslocoPipe],
+  providers: [provideTranslocoScope('developer')],
   template: `
     <aside class="ops">
       <mat-form-field appearance="outline" class="ops-search" subscriptSizing="dynamic">
-        <mat-label>Filter operations</mat-label>
+        <mat-label>{{ 'developer.operationList.filter' | transloco }}</mat-label>
         <input (ngModelChange)="filterChange.emit($event)" [ngModel]="filter" matInput />
       </mat-form-field>
 
@@ -58,7 +60,7 @@ export interface OperationGroup {
       }
 
       @if (groups.length === 0) {
-        <p class="no-ops">No operation matches the filter.</p>
+        <p class="no-ops">{{ 'developer.operationList.noMatches' | transloco }}</p>
       }
     </aside>
   `,

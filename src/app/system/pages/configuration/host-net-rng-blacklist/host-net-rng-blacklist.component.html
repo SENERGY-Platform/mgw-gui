@@ -1,22 +1,29 @@
 <section class="config-group">
   <header class="group-head">
     <div>
-      <h2>Blocked network ranges</h2>
-      <p>Address ranges modules must not reach.</p>
+      <h2>{{ 'system.hostNetRngBlacklist.title' | transloco }}</h2>
+      <p>{{ 'system.hostNetRngBlacklist.description' | transloco }}</p>
     </div>
     <button (click)="addNetInterface()" mat-stroked-button>
       <mat-icon>add</mat-icon>
-      Add
+      {{ 'system.hostNetRngBlacklist.add' | transloco }}
     </button>
   </header>
 
   @if (dataSource.data.length === 0) {
-    <p class="none">No range is blocked.</p>
+    <p class="none">{{ 'system.hostNetRngBlacklist.empty' | transloco }}</p>
   } @else {
     <div class="mgw-table-card">
       <table [dataSource]="dataSource" mat-table matSort>
         <ng-container matColumnDef="range">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header sortActionDescription="Sort by range">Range</th>
+          <th
+            *matHeaderCellDef
+            mat-header-cell
+            mat-sort-header
+            [sortActionDescription]="'system.hostNetRngBlacklist.sortByRange' | transloco"
+          >
+            {{ 'system.hostNetRngBlacklist.range' | transloco }}
+          </th>
           <td *matCellDef="let element" class="mgw-mono" mat-cell>{{ element }}</td>
         </ng-container>
 
@@ -28,7 +35,7 @@
                 (click)="removeNetRange(element)"
                 class="danger-icon"
                 mat-icon-button
-                matTooltip="Remove from blocklist"
+                [matTooltip]="'system.hostNetRngBlacklist.removeFromBlocklist' | transloco"
               >
                 <mat-icon>delete</mat-icon>
               </button>

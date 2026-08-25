@@ -15,17 +15,14 @@
 -->
 
 <div class="page">
-  <mgw-page-header
-    description="State of the modules installed on this gateway and of the gateway itself."
-    title="Overview"
-  >
+  <mgw-page-header [description]="'overview.page.description' | transloco" [title]="'overview.page.title' | transloco">
     <div pageActions>
-      <button (click)="load()" mat-icon-button matTooltip="Refresh">
+      <button (click)="load()" [matTooltip]="'overview.actions.refresh' | transloco" mat-icon-button>
         <mat-icon>refresh</mat-icon>
       </button>
       <button [routerLink]="'/modules/catalog'" mat-flat-button>
         <mat-icon>add</mat-icon>
-        Install modules
+        {{ 'overview.actions.installModules' | transloco }}
       </button>
     </div>
   </mgw-page-header>
@@ -37,30 +34,30 @@
   @if (ready) {
     <section class="stats">
       <a class="stat" routerLink="/modules">
-        <span class="stat-label">Running</span>
+        <span class="stat-label">{{ 'overview.stats.running' | transloco }}</span>
         <span class="stat-value">{{ running }}</span>
-        <span class="stat-foot">of {{ deployedCount() }} deployments</span>
+        <span class="stat-foot">{{ 'overview.stats.deployedOf' | transloco: {count: deployedCount()} }}</span>
         <mat-icon class="stat-icon tone-ok">play_circle</mat-icon>
       </a>
 
       <a class="stat" routerLink="/modules">
-        <span class="stat-label">Unhealthy</span>
+        <span class="stat-label">{{ 'overview.stats.unhealthy' | transloco }}</span>
         <span [class.tone-danger-text]="unhealthy > 0" class="stat-value">{{ unhealthy }}</span>
-        <span class="stat-foot">{{ unknown }} in an unknown state</span>
+        <span class="stat-foot">{{ 'overview.stats.unknownState' | transloco: {count: unknown} }}</span>
         <mat-icon class="stat-icon tone-danger">error</mat-icon>
       </a>
 
       <a class="stat" routerLink="/modules">
-        <span class="stat-label">Stopped</span>
+        <span class="stat-label">{{ 'overview.stats.stopped' | transloco }}</span>
         <span class="stat-value">{{ stopped }}</span>
-        <span class="stat-foot">{{ notDeployed }} not deployed</span>
+        <span class="stat-foot">{{ 'overview.stats.notDeployed' | transloco: {count: notDeployed} }}</span>
         <mat-icon class="stat-icon tone-idle">pause_circle</mat-icon>
       </a>
 
       <a class="stat" routerLink="/modules/catalog">
-        <span class="stat-label">Updates</span>
+        <span class="stat-label">{{ 'overview.stats.updates' | transloco }}</span>
         <span [class.tone-warn-text]="updatesAvailable > 0" class="stat-value">{{ updatesAvailable }}</span>
-        <span class="stat-foot">{{ modules.length }} modules installed</span>
+        <span class="stat-foot">{{ 'overview.stats.modulesInstalled' | transloco: {count: modules.length} }}</span>
         <mat-icon class="stat-icon tone-warn">upgrade</mat-icon>
       </a>
     </section>
@@ -68,16 +65,19 @@
     <section class="panels">
       <article class="panel">
         <header class="panel-head">
-          <h2>Needs attention</h2>
+          <h2>{{ 'overview.attention.heading' | transloco }}</h2>
           @if (attention.length > 0) {
-            <mgw-status-pill [label]="attention.length + ' open'" tone="warn"></mgw-status-pill>
+            <mgw-status-pill
+              [label]="'overview.attention.openCount' | transloco: {count: attention.length}"
+              tone="warn"
+            ></mgw-status-pill>
           }
         </header>
 
         @if (attention.length === 0) {
           <div class="empty">
             <mat-icon>check_circle</mat-icon>
-            <p>Nothing to do — every deployment is healthy and up to date.</p>
+            <p>{{ 'overview.attention.empty' | transloco }}</p>
           </div>
         }
 
@@ -96,11 +96,11 @@
       <div class="side">
         <article class="panel">
           <header class="panel-head">
-            <h2>Gateway services</h2>
-            <a routerLink="/system/status">Details</a>
+            <h2>{{ 'overview.services.heading' | transloco }}</h2>
+            <a routerLink="/system/status">{{ 'overview.services.details' | transloco }}</a>
           </header>
           @if (coreServices.length === 0) {
-            <p class="muted">No service information available.</p>
+            <p class="muted">{{ 'overview.services.none' | transloco }}</p>
           }
           @for (service of coreServices; track service.name) {
             <div class="row">
@@ -112,16 +112,16 @@
 
         <article class="panel">
           <header class="panel-head">
-            <h2>Active jobs</h2>
-            <a routerLink="/system/jobs">All jobs</a>
+            <h2>{{ 'overview.jobs.heading' | transloco }}</h2>
+            <a routerLink="/system/jobs">{{ 'overview.jobs.all' | transloco }}</a>
           </header>
           @if (activeJobs.length === 0) {
-            <p class="muted">No job is running.</p>
+            <p class="muted">{{ 'overview.jobs.none' | transloco }}</p>
           }
           @for (job of activeJobs; track job.id) {
             <div class="row">
               <span class="row-name">{{ job.description }}</span>
-              <mgw-status-pill label="running" tone="info"></mgw-status-pill>
+              <mgw-status-pill [label]="'overview.jobs.runningStatus' | transloco" tone="info"></mgw-status-pill>
             </div>
           }
         </article>

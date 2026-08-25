@@ -3,20 +3,20 @@
 
   <mgw-page-header
     backTo="/system/accounts/users"
-    description="Create a user account that can sign in to this gateway."
-    title="Add user"
+    [description]="'system.register.description' | transloco"
+    [title]="'system.register.title' | transloco"
   ></mgw-page-header>
 
   <div [formGroup]="form" class="mgw-card card">
     <div class="row">
       <div class="field">
-        <label for="reg-first">First name</label>
+        <label for="reg-first">{{ 'system.register.firstName' | transloco }}</label>
         <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
           <input formControlName="firstName" id="reg-first" matInput type="text" />
         </mat-form-field>
       </div>
       <div class="field">
-        <label for="reg-last">Last name</label>
+        <label for="reg-last">{{ 'system.register.lastName' | transloco }}</label>
         <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
           <input formControlName="lastName" id="reg-last" matInput type="text" />
         </mat-form-field>
@@ -24,15 +24,15 @@
     </div>
 
     <div class="field">
-      <label for="reg-username">Username</label>
-      <p class="desc">Used to sign in.</p>
+      <label for="reg-username">{{ 'system.register.username' | transloco }}</label>
+      <p class="desc">{{ 'system.register.usernameHint' | transloco }}</p>
       <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
         <input formControlName="username" id="reg-username" matInput type="text" />
       </mat-form-field>
     </div>
 
     <div class="field">
-      <label for="reg-password">Password</label>
+      <label for="reg-password">{{ 'system.register.password' | transloco }}</label>
       <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
         <input formControlName="password" id="reg-password" matInput type="password" />
       </mat-form-field>
@@ -41,7 +41,9 @@
 
   <div class="mgw-action-bar">
     <span class="mgw-spacer"></span>
-    <button [routerLink]="'/system/accounts/users'" mat-button>Cancel</button>
-    <button (click)="register()" [disabled]="!form.valid" mat-flat-button type="submit">Create account</button>
+    <button [routerLink]="'/system/accounts/users'" mat-button>{{ 'system.register.cancel' | transloco }}</button>
+    <button (click)="register()" [disabled]="!form.valid" mat-flat-button type="submit">
+      {{ 'system.register.create' | transloco }}
+    </button>
   </div>
 </div>

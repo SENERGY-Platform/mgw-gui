@@ -1,23 +1,25 @@
-<h2 class="title" mat-dialog-title>Review module changes</h2>
+<h2 class="title" mat-dialog-title>{{ 'modules.changeRequestDialog.title' | transloco }}</h2>
 
 <div class="dialog-content" mat-dialog-content>
   <p class="created">
-    Created {{ request.created | date: 'medium' }}. The request stays pending on the gateway until it is applied or
-    discarded; refreshing the repositories also discards it.
+    {{ 'modules.changeRequestDialog.created' | transloco: {date: (request.created | date: 'medium')} }}
   </p>
 
   @if (isEmpty()) {
     <div class="empty">
       <mat-icon>check_circle</mat-icon>
-      <span>Nothing to do — all requested modules are already installed in the requested variant and version.</span>
+      <span>{{ 'modules.changeRequestDialog.empty' | transloco }}</span>
     </div>
   }
 
   @if (request.install?.length) {
     <section class="block">
       <header>
-        <mgw-status-pill [label]="'Install ' + request.install!.length" tone="info"></mgw-status-pill>
-        <span class="block-hint">including automatically resolved dependencies</span>
+        <mgw-status-pill
+          [label]="'modules.changeRequestDialog.install' | transloco: {count: request.install!.length}"
+          tone="info"
+        ></mgw-status-pill>
+        <span class="block-hint">{{ 'modules.changeRequestDialog.blockHint' | transloco }}</span>
       </header>
       @for (module of request.install; track module.id) {
         <div class="entry">
@@ -31,7 +33,10 @@
   @if (request.change?.length) {
     <section class="block">
       <header>
-        <mgw-status-pill [label]="'Change ' + request.change!.length" tone="warn"></mgw-status-pill>
+        <mgw-status-pill
+          [label]="'modules.changeRequestDialog.change' | transloco: {count: request.change!.length}"
+          tone="warn"
+        ></mgw-status-pill>
       </header>
       @for (pair of request.change; track pair[0].id) {
         <div class="entry">
@@ -49,7 +54,10 @@
   @if (request.remove?.length) {
     <section class="block">
       <header>
-        <mgw-status-pill [label]="'Remove ' + request.remove!.length" tone="danger"></mgw-status-pill>
+        <mgw-status-pill
+          [label]="'modules.changeRequestDialog.remove' | transloco: {count: request.remove!.length}"
+          tone="danger"
+        ></mgw-status-pill>
       </header>
       @for (id of request.remove; track id) {
         <div class="entry">
@@ -58,15 +66,21 @@
       }
       <p class="hint">
         <mat-icon>info</mat-icon>
-        A module can only be removed while it has no deployment. Delete its deployment on the Modules page first.
+        {{ 'modules.changeRequestDialog.removeHint' | transloco }}
       </p>
     </section>
   }
 </div>
 
 <div class="actions" mat-dialog-actions>
-  <button (click)="discard()" class="danger" mat-button>Discard request</button>
+  <button (click)="discard()" class="danger" mat-button>
+    {{ 'modules.changeRequestDialog.discardRequest' | transloco }}
+  </button>
   <span class="spacer"></span>
-  <button [mat-dialog-close]="undefined" mat-button>Keep for later</button>
-  <button (click)="execute()" [disabled]="isEmpty()" mat-flat-button>Apply changes</button>
+  <button [mat-dialog-close]="undefined" mat-button>
+    {{ 'modules.changeRequestDialog.keepForLater' | transloco }}
+  </button>
+  <button (click)="execute()" [disabled]="isEmpty()" mat-flat-button>
+    {{ 'modules.changeRequestDialog.applyChanges' | transloco }}
+  </button>
 </div>

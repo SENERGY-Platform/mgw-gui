@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, inject, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {
   MatCell,
@@ -40,6 +40,7 @@ import {PageHeaderComponent} from 'src/app/core/components/page-header/page-head
 import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatIcon} from '@angular/material/icon';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {Repository} from 'src/app/core/models/repositories';
 import {AddRepositoryDialogComponent} from '../../components/add-repository-dialog/add-repository-dialog.component';
 
@@ -65,7 +66,9 @@ import {AddRepositoryDialogComponent} from '../../components/add-repository-dial
     MatButton,
     PageHeaderComponent,
     EmptyStateComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('modules')],
 })
 export class RepositoriesComponent implements OnInit {
   dataSource = new MatTableDataSource<Repository>();
@@ -73,12 +76,20 @@ export class RepositoriesComponent implements OnInit {
   init = true;
   displayColumns = ['source', 'priority', 'channels', 'actions'];
 
+  // Field injection, not a constructor parameter: new dependencies follow
+  // the prefer-inject rule; the parameters above predate it.
+  private readonly transloco = inject(TranslocoService);
+
   constructor(
     public dialog: MatDialog,
     @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
     private errorService: ErrorService,
     private utilService: UtilService,
   ) {}
+
+  private translate(key: string, params?: Record<string, unknown>): string {
+    return this.transloco.translate<string>(key, params);
+  }
 
   ngOnInit(): void {
     this.load();
@@ -93,7 +104,12 @@ export class RepositoriesComponent implements OnInit {
         this.ready = true;
       },
       error: (err) => {
-        this.errorService.handleError(RepositoriesComponent.name, 'load', err, 'Loading the repositories failed');
+        this.errorService.handleError(
+          RepositoriesComponent.name,
+          'load',
+          err,
+          this.translate('modules.repositories.errors.loadFailed'),
+        );
         this.ready = true;
       },
     });
@@ -120,7 +136,7 @@ export class RepositoriesComponent implements OnInit {
             concatMap((job) =>
               this.utilService.checkJobStatus(
                 job.id,
-                'Fetching repository modules',
+                this.translate('modules.repositories.jobs.fetchingModules'),
                 'module-manager',
                 'repositories-refresh',
               ),
@@ -129,7 +145,12 @@ export class RepositoriesComponent implements OnInit {
           .subscribe({
             next: (_) => this.load(),
             error: (err) => {
-              this.errorService.handleError(RepositoriesComponent.name, 'add', err, 'Adding the repository failed');
+              this.errorService.handleError(
+                RepositoriesComponent.name,
+                'add',
+                err,
+                this.translate('modules.repositories.errors.addFailed'),
+              );
               this.load();
             },
           });
@@ -141,14 +162,12 @@ export class RepositoriesComponent implements OnInit {
       this.errorService.handleError(
         RepositoriesComponent.name,
         'delete',
-        new Error('The host directory repository is part of the core installation and cannot be removed.'),
+        new Error(this.translate('modules.repositories.hostDirNotRemovable')),
       );
       return;
     }
     this.utilService
-      .askForConfirmation(
-        "Delete repository '" + repository.Source + "'? Its modules can no longer be installed or updated.",
-      )
+      .askForConfirmation(this.translate('modules.repositories.confirmDelete', {source: repository.Source}))
       .pipe(
         concatMap((confirmed) => {
           if (!confirmed) {
@@ -164,7 +183,12 @@ export class RepositoriesComponent implements OnInit {
           }
         },
         error: (err) =>
-          this.errorService.handleError(RepositoriesComponent.name, 'delete', err, 'Deleting the repository failed'),
+          this.errorService.handleError(
+            RepositoriesComponent.name,
+            'delete',
+            err,
+            this.translate('modules.repositories.errors.deleteFailed'),
+          ),
       });
   }
 }

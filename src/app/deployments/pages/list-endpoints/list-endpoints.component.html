@@ -16,19 +16,21 @@
 
 <div class="mgw-page">
   <mgw-page-header
-    description="HTTP endpoints the running deployments expose through the gateway. Generated endpoints come from the module itself; aliases are the shorter URLs you define."
-    title="Endpoints"
+    [description]="'deployments.endpointsPage.description' | transloco"
+    [title]="'deployments.endpointsPage.title' | transloco"
   ></mgw-page-header>
 
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
   @if (ready && deploymentIDs.length === 0) {
     <mgw-empty-state
+      [message]="'deployments.endpointsPage.emptyMessage' | transloco"
+      [title]="'deployments.endpointsPage.emptyTitle' | transloco"
       icon="link"
-      message="Endpoints appear here once a deployed module exposes one. Deploy a module that serves HTTP to get started."
-      title="No endpoints"
     >
-      <button [routerLink]="'/modules'" emptyAction mat-stroked-button>Go to modules</button>
+      <button [routerLink]="'/modules'" emptyAction mat-stroked-button>
+        {{ 'deployments.endpointsPage.goToModules' | transloco }}
+      </button>
     </mgw-empty-state>
   }
 

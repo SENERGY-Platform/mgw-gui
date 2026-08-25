@@ -1,29 +1,29 @@
 <div class="mgw-page">
   <mgw-page-header
-    description="OpenAPI documentation for the gateway's services, grouped by who the API is meant for."
-    title="Developer"
+    [description]="'developer.page.description' | transloco"
+    [title]="'developer.page.title' | transloco"
   ></mgw-page-header>
 
   <section class="api-group">
     <header>
-      <h2>Public</h2>
-      <p>APIs for app developers, reachable from outside the gateway.</p>
+      <h2>{{ 'developer.groups.public.title' | transloco }}</h2>
+      <p>{{ 'developer.groups.public.description' | transloco }}</p>
     </header>
     <app-swagger-list [items]="publicApis"></app-swagger-list>
   </section>
 
   <section class="api-group">
     <header>
-      <h2>Module</h2>
-      <p>Internal APIs a module may call from inside the gateway network.</p>
+      <h2>{{ 'developer.groups.module.title' | transloco }}</h2>
+      <p>{{ 'developer.groups.module.description' | transloco }}</p>
     </header>
     <app-swagger-list [items]="moduleApis"></app-swagger-list>
   </section>
 
   <section class="api-group">
     <header>
-      <h2>Core</h2>
-      <p>Internal APIs the core services use among themselves.</p>
+      <h2>{{ 'developer.groups.core.title' | transloco }}</h2>
+      <p>{{ 'developer.groups.core.description' | transloco }}</p>
     </header>
     <app-swagger-list [items]="internalApis"></app-swagger-list>
   </section>

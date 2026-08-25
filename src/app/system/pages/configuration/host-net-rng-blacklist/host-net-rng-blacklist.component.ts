@@ -21,6 +21,7 @@ import {HostManagerService} from '../../../../core/services/host-manager/host-ma
 import {ErrorService} from '../../../../core/services/util/error.service';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {AddDialogComponent, DialogData} from './add-dialog/add-dialog.component';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-host-net-rng-blacklist',
@@ -41,9 +42,11 @@ import {AddDialogComponent, DialogData} from './add-dialog/add-dialog.component'
     MatTable,
     MatTooltip,
     MatHeaderCellDef,
+    TranslocoPipe,
   ],
   templateUrl: './host-net-rng-blacklist.component.html',
   styleUrl: './host-net-rng-blacklist.component.css',
+  providers: [provideTranslocoScope('system')],
 })
 export class HostNetRngBlacklistComponent implements AfterViewInit, OnInit {
   displayedColumns: string[] = ['range', 'actions'];

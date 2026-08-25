@@ -1,29 +1,43 @@
 <section class="config-group">
   <header class="group-head">
     <div>
-      <h2>Host applications</h2>
-      <p>Applications on the host that a module may talk to through a socket.</p>
+      <h2>{{ 'system.hostApplications.title' | transloco }}</h2>
+      <p>{{ 'system.hostApplications.description' | transloco }}</p>
     </div>
     <button (click)="addApplication()" mat-stroked-button>
       <mat-icon>add</mat-icon>
-      Add
+      {{ 'system.hostApplications.add' | transloco }}
     </button>
   </header>
 
   @if (dataSource.data.length === 0) {
-    <p class="none">No host applications configured.</p>
+    <p class="none">{{ 'system.hostApplications.empty' | transloco }}</p>
   } @else {
     <div class="mgw-table-card">
       <table [dataSource]="dataSource" mat-table matSort>
         <ng-container matColumnDef="name">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header sortActionDescription="Sort by name">Name</th>
+          <th
+            *matHeaderCellDef
+            mat-header-cell
+            mat-sort-header
+            [sortActionDescription]="'system.hostApplications.sortByName' | transloco"
+          >
+            {{ 'system.hostApplications.name' | transloco }}
+          </th>
           <td *matCellDef="let element" mat-cell>
             <span class="mgw-cell-primary">{{ element.name }}</span>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="path">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header sortActionDescription="Sort by socket">Socket path</th>
+          <th
+            *matHeaderCellDef
+            mat-header-cell
+            mat-sort-header
+            [sortActionDescription]="'system.hostApplications.sortBySocket' | transloco"
+          >
+            {{ 'system.hostApplications.socketPath' | transloco }}
+          </th>
           <td *matCellDef="let element" class="mgw-mono" mat-cell>{{ element.socket }}</td>
         </ng-container>
 
@@ -35,7 +49,7 @@
                 (click)="removeApplication(element.id)"
                 class="danger-icon"
                 mat-icon-button
-                matTooltip="Remove application"
+                [matTooltip]="'system.hostApplications.removeApplication' | transloco"
               >
                 <mat-icon>delete</mat-icon>
               </button>

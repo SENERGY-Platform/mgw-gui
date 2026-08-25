@@ -26,6 +26,7 @@ import {Router} from '@angular/router';
 import {Log} from '../../../models/logs';
 import {InfoResponse} from '../../../../core/models/info';
 import {MatTooltip} from '@angular/material/tooltip';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 interface ListItem {
   name: string;
@@ -50,9 +51,11 @@ interface ListItem {
     MatIcon,
     MatIconButton,
     MatTooltip,
+    TranslocoPipe,
   ],
   templateUrl: './native-list.component.html',
   styleUrl: './native-list.component.css',
+  providers: [provideTranslocoScope('system')],
 })
 export class NativeListComponent implements OnInit {
   ready = false;
@@ -107,9 +110,11 @@ export class NativeListComponent implements OnInit {
         logs.forEach((log) => {
           let item = itemMap.get(log.service_name);
           if (item === undefined) {
+            // translation key, not a raw value - the template resolves it
+            // with the `transloco` pipe, same as a real reported version
             item = {
               name: log.service_name,
-              version: 'n/a',
+              version: 'system.nativeList.notAvailable',
               logId: log.id,
             };
           } else {

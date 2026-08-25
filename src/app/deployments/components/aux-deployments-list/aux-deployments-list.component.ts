@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -30,6 +30,7 @@ import {
 } from '@angular/material/table';
 import {DatePipe} from '@angular/common';
 import {MatTooltip} from '@angular/material/tooltip';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {SpinnerComponent} from 'src/app/core/components/spinner/spinner.component';
@@ -58,7 +59,9 @@ import {StatusPillComponent, StatusTone} from 'src/app/core/components/status-pi
     MatRowDef,
     MatRow,
     StatusPillComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('deployments')],
 })
 export class AuxDeploymentsListComponent implements OnInit, OnDestroy {
   @Input() deploymentID = '';
@@ -67,6 +70,10 @@ export class AuxDeploymentsListComponent implements OnInit, OnDestroy {
   ready = false;
   interval: any;
   displayColumns = ['status', 'name', 'reference', 'image', 'updated'];
+
+  // Field injection, not a constructor parameter: new dependencies follow
+  // the prefer-inject rule; the parameters above predate it.
+  private readonly transloco = inject(TranslocoService);
 
   constructor(
     @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
@@ -102,7 +109,7 @@ export class AuxDeploymentsListComponent implements OnInit, OnDestroy {
             AuxDeploymentsListComponent.name,
             'load',
             err,
-            'Loading the auxiliary deployments failed',
+            this.transloco.translate<string>('deployments.auxDeployments.loadFailed'),
           );
         }
         this.ready = true;
@@ -124,20 +131,25 @@ export class AuxDeploymentsListComponent implements OnInit, OnDestroy {
   statusLabel(aux: AuxDeployment): string {
     switch (this.statusOf(aux)) {
       case 'healthy':
-        return 'Running';
+        return 'deployments.auxDeployments.statuses.running';
       case 'unhealthy':
-        return 'Unhealthy';
+        return 'deployments.auxDeployments.statuses.unhealthy';
       default:
-        return 'Disabled';
+        return 'deployments.auxDeployments.statuses.disabled';
     }
   }
 
   // the pill carries the coarse state, the tooltip the engine's own wording
   statusDetail(aux: AuxDeployment): string {
     if (!aux.enabled) {
-      return 'Disabled';
+      return this.transloco.translate<string>('deployments.auxDeployments.statuses.disabled');
     }
-    return [aux.container?.state || 'container missing', aux.container?.health].filter(Boolean).join(' · ');
+    return [
+      aux.container?.state || this.transloco.translate<string>('deployments.auxDeployments.containerMissing'),
+      aux.container?.health,
+    ]
+      .filter(Boolean)
+      .join(' · ');
   }
 
   statusOf(aux: AuxDeployment): string {

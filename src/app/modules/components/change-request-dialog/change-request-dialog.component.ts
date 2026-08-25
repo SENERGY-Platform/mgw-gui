@@ -26,6 +26,7 @@ import {
 import {DatePipe} from '@angular/common';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {StatusPillComponent} from 'src/app/core/components/status-pill/status-pill.component';
 import {ModulesChangeRequest} from 'src/app/core/models/modules';
 
@@ -44,7 +45,9 @@ import {ModulesChangeRequest} from 'src/app/core/models/modules';
     MatIcon,
     StatusPillComponent,
     DatePipe,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('modules')],
 })
 export class ChangeRequestDialogComponent {
   request!: ModulesChangeRequest;

@@ -11,6 +11,7 @@ import {MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-register',
@@ -25,7 +26,9 @@ import {PageHeaderComponent} from 'src/app/core/components/page-header/page-head
     MatButton,
     RouterLink,
     PageHeaderComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('system')],
 })
 export class RegisterComponent {
   flowID = '';

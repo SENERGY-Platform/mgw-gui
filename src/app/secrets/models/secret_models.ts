@@ -24,12 +24,14 @@ export enum SecretTypes {
   PrivateKey = 'private-key',
 }
 
+// translation keys, not display text - the template applies the `transloco`
+// pipe where it renders each entry
 export var SecretTypesDisplayNames: Record<SecretTypes, string> = {
-  [SecretTypes.Certificate]: 'Certificate',
-  [SecretTypes.BasicAuth]: 'Credentials',
-  [SecretTypes.APIKey]: 'API Key',
-  [SecretTypes.ClientID]: 'Client ID',
-  [SecretTypes.PrivateKey]: 'Private Key',
+  [SecretTypes.Certificate]: 'secrets.types.certificate',
+  [SecretTypes.BasicAuth]: 'secrets.types.basicAuth',
+  [SecretTypes.APIKey]: 'secrets.types.apiKey',
+  [SecretTypes.ClientID]: 'secrets.types.clientId',
+  [SecretTypes.PrivateKey]: 'secrets.types.privateKey',
 };
 
 export interface SecretRequest {

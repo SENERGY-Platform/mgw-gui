@@ -4,6 +4,7 @@ import {MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle} from '
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 export interface DialogData {
   range: string;
@@ -20,9 +21,11 @@ export interface DialogData {
     MatInput,
     MatLabel,
     ReactiveFormsModule,
+    TranslocoPipe,
   ],
   templateUrl: './add-dialog.component.html',
   styleUrl: './add-dialog.component.css',
+  providers: [provideTranslocoScope('system')],
 })
 export class AddDialogComponent implements OnInit {
   form!: FormGroup;

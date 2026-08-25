@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import {Injector, runInInjectionContext} from '@angular/core';
+import {TranslocoService} from '@jsverse/transloco';
 import {of, throwError} from 'rxjs';
 import {ManageComponent} from './manage.component';
 import {RepoModule} from 'src/app/core/models/repositories';
@@ -35,14 +37,24 @@ function repoModule(id: string, installed: boolean): RepoModule {
   };
 }
 
-// plain class tests: the collaborators are stubbed at the service boundary
+// plain class tests: the collaborators are stubbed at the service boundary.
+// The component reads TranslocoService through inject(), so the direct
+// construction has to happen inside an injection context that provides the
+// stub - translate() returns the key itself, since none of the tests below
+// render translated text.
 function makeComponent(modules: RepoModule[]) {
   const moduleService: any = {
     loadRepositoryModules: () => of(modules),
     getAvailableUpdatesCount: () => of(0),
     getModulesChangeRequest: () => throwError(() => ({status: 404})),
   };
-  return new ManageComponent({} as any, moduleService, {handleError: () => undefined} as any, {} as any);
+  const injector = Injector.create({
+    providers: [{provide: TranslocoService, useValue: {translate: (key: string) => key}}],
+  });
+  return runInInjectionContext(
+    injector,
+    () => new ManageComponent({} as any, moduleService, {handleError: () => undefined} as any, {} as any),
+  );
 }
 
 describe('ManageComponent.load', () => {

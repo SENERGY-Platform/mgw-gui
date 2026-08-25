@@ -1,33 +1,37 @@
 <section class="service-group">
   <header class="group-head">
-    <h2>Native services</h2>
+    <h2>{{ 'system.nativeList.title' | transloco }}</h2>
     <span class="count">{{ dataSource.data.length }}</span>
   </header>
 
   <spinner [show]="!ready"></spinner>
 
   @if (ready && dataSource.data.length === 0) {
-    <p class="none">No native services found.</p>
+    <p class="none">{{ 'system.nativeList.empty' | transloco }}</p>
   } @else if (dataSource.data.length > 0) {
     <div class="mgw-table-card">
       <table [dataSource]="dataSource" mat-table>
         <ng-container matColumnDef="name">
-          <th *matHeaderCellDef mat-header-cell>Service</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'system.nativeList.service' | transloco }}</th>
           <td *matCellDef="let component" mat-cell>
             <span class="mgw-cell-primary">{{ component.name }}</span>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="version">
-          <th *matHeaderCellDef mat-header-cell>Version</th>
-          <td *matCellDef="let component" mat-cell>{{ component.version }}</td>
+          <th *matHeaderCellDef mat-header-cell>{{ 'system.nativeList.version' | transloco }}</th>
+          <td *matCellDef="let component" mat-cell>{{ component.version | transloco }}</td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
           <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
           <td *matCellDef="let component" class="mgw-col-actions" mat-cell>
             <div class="mgw-row-actions">
-              <button (click)="showLog(component.logId)" mat-icon-button matTooltip="Show log">
+              <button
+                (click)="showLog(component.logId)"
+                mat-icon-button
+                [matTooltip]="'system.nativeList.showLog' | transloco"
+              >
                 <mat-icon>article</mat-icon>
               </button>
             </div>

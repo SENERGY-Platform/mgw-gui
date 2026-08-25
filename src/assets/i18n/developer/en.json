@@ -1,0 +1,67 @@
+{
+  "page": {
+    "title": "Developer",
+    "description": "OpenAPI documentation for the gateway's services, grouped by who the API is meant for."
+  },
+  "groups": {
+    "public": {
+      "title": "Public",
+      "description": "APIs for app developers, reachable from outside the gateway."
+    },
+    "module": {
+      "title": "Module",
+      "description": "Internal APIs a module may call from inside the gateway network."
+    },
+    "core": {
+      "title": "Core",
+      "description": "Internal APIs the core services use among themselves."
+    }
+  },
+  "swaggerList": {
+    "service": "Service",
+    "authentication": "Authentication",
+    "authSession": "session",
+    "authNone": "none",
+    "baseUrl": "Base URL",
+    "internal": "internal",
+    "internalTooltip": "Served inside the gateway network, not reachable from a browser",
+    "playground": "Playground",
+    "playgroundTooltip": "Browse and call the endpoints of this service",
+    "swagger": "Swagger",
+    "swaggerTooltip": "Open the generated Swagger UI"
+  },
+  "playground": {
+    "title": "{{name}} playground",
+    "defaultDescription": "Try the endpoints of this service against the running gateway.",
+    "swaggerUi": "Swagger UI",
+    "baseUrl": "Base URL",
+    "sessionRequired": "session required",
+    "internalNotice": "This API is only served inside the gateway network, so requests cannot be sent from the browser. The operations below are shown for reference — call them from a module or a core service.",
+    "unknownApi": "Unknown API.",
+    "loadFailed": "The API description could not be loaded from {{url}}.",
+    "missingPathParams": "Fill in the path parameters first: {{names}}",
+    "selectPrompt": "Select an operation to build and send a request.",
+    "copyUrl": "Copy URL",
+    "restrictedNotice": "This is part of the service's module-facing surface. It is served on the gateway-internal network only, so it cannot be called through the public base URL.",
+    "pathParameters": "Path parameters",
+    "queryParameters": "Query parameters",
+    "headers": "Headers",
+    "requestBody": "Request body",
+    "formatJson": "Format JSON",
+    "sending": "Sending…",
+    "sendRequest": "Send request",
+    "notReachable": "Not reachable from the browser",
+    "noResponseStatus": "no response",
+    "durationMs": "{{ms}} ms",
+    "noBody": "The response had no body.",
+    "responseHeaders": "Response headers ({{count}})"
+  },
+  "operationList": {
+    "filter": "Filter operations",
+    "noMatches": "No operation matches the filter."
+  },
+  "swaggerService": {
+    "noResponse": "No response",
+    "networkError": "The request did not reach a server."
+  }
+}

@@ -1,14 +1,16 @@
-<h2 class="title" mat-dialog-title>{{ isEdit ? 'Edit global config' : 'New global config' }}</h2>
+<h2 class="title" mat-dialog-title>
+  {{ (isEdit ? 'modules.globalConfigDialog.editTitle' : 'modules.globalConfigDialog.newTitle') | transloco }}
+</h2>
 
 <div class="dialog-content" mat-dialog-content>
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Name</mat-label>
+    <mat-label>{{ 'modules.globalConfigDialog.name' | transloco }}</mat-label>
     <input [(ngModel)]="name" matInput />
   </mat-form-field>
 
   <div class="type-row">
     <mat-form-field appearance="outline">
-      <mat-label>Data type</mat-label>
+      <mat-label>{{ 'modules.globalConfigDialog.dataType' | transloco }}</mat-label>
       <mat-select [(ngModel)]="dataType">
         <mat-option [value]="DATA_TYPE_STRING">string</mat-option>
         <mat-option [value]="DATA_TYPE_INT">int</mat-option>
@@ -17,27 +19,29 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-checkbox [(ngModel)]="isSlice">List of values</mat-checkbox>
+    <mat-checkbox [(ngModel)]="isSlice">{{ 'modules.globalConfigDialog.listOfValues' | transloco }}</mat-checkbox>
   </div>
 
   @if (isEdit) {
-    <p class="hint">
-      Deployments referencing this config use the value as declared by their module config — changing the data type can
-      break them.
-    </p>
+    <p class="hint">{{ 'modules.globalConfigDialog.editHint' | transloco }}</p>
   }
 
   @if (isSlice) {
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Values</mat-label>
+      <mat-label>{{ 'modules.globalConfigDialog.values' | transloco }}</mat-label>
       <textarea [(ngModel)]="rawValue" matInput rows="6"></textarea>
-      <mat-hint>One value per line{{ dataType === DATA_TYPE_BOOL ? ' (true or false)' : '' }}</mat-hint>
+      <mat-hint>{{
+        (dataType === DATA_TYPE_BOOL
+          ? 'modules.globalConfigDialog.valuesHintBool'
+          : 'modules.globalConfigDialog.valuesHint'
+        ) | transloco
+      }}</mat-hint>
     </mat-form-field>
   }
 
   @if (!isSlice && dataType !== DATA_TYPE_BOOL) {
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Value</mat-label>
+      <mat-label>{{ 'modules.globalConfigDialog.value' | transloco }}</mat-label>
       <input
         [(ngModel)]="rawValue"
         [step]="dataType === DATA_TYPE_INT ? 1 : 'any'"
@@ -45,17 +49,17 @@
         matInput
       />
       @if (dataType === DATA_TYPE_INT) {
-        <mat-hint>Whole number</mat-hint>
+        <mat-hint>{{ 'modules.globalConfigDialog.wholeNumber' | transloco }}</mat-hint>
       }
       @if (dataType === DATA_TYPE_FLOAT) {
-        <mat-hint>Number</mat-hint>
+        <mat-hint>{{ 'modules.globalConfigDialog.number' | transloco }}</mat-hint>
       }
     </mat-form-field>
   }
 
   @if (!isSlice && dataType === DATA_TYPE_BOOL) {
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Value</mat-label>
+      <mat-label>{{ 'modules.globalConfigDialog.value' | transloco }}</mat-label>
       <mat-select [(ngModel)]="boolValue">
         <mat-option value="true">true</mat-option>
         <mat-option value="false">false</mat-option>
@@ -70,6 +74,8 @@
 
 <div class="actions" mat-dialog-actions>
   <span class="mgw-spacer"></span>
-  <button [mat-dialog-close]="undefined" mat-button>Cancel</button>
-  <button (click)="save()" mat-flat-button>{{ isEdit ? 'Save' : 'Create' }}</button>
+  <button [mat-dialog-close]="undefined" mat-button>{{ 'modules.globalConfigDialog.cancel' | transloco }}</button>
+  <button (click)="save()" mat-flat-button>
+    {{ (isEdit ? 'modules.globalConfigDialog.save' : 'modules.globalConfigDialog.create') | transloco }}
+  </button>
 </div>

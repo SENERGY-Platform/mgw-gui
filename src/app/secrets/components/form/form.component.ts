@@ -13,6 +13,7 @@ import {MatInput} from '@angular/material/input';
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {MatButton} from '@angular/material/button';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 @Component({
   selector: 'secret-form',
@@ -30,7 +31,9 @@ import {PageHeaderComponent} from 'src/app/core/components/page-header/page-head
     MatButton,
     RouterLink,
     PageHeaderComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('secrets')],
 })
 export class FormComponent implements OnChanges, OnInit {
   @Input() mode = 'add';
@@ -118,6 +121,14 @@ export class FormComponent implements OnChanges, OnInit {
 
   selectSecretType() {
     this.setupForm();
+  }
+
+  titleKey(): string {
+    return this.mode === 'add' ? 'secrets.form.titleAdd' : 'secrets.form.titleEdit';
+  }
+
+  descriptionKey(): string {
+    return this.mode === 'add' ? 'secrets.form.descriptionAdd' : 'secrets.form.descriptionEdit';
   }
 
   parseSecretRequest(): CreateSecret {

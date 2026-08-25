@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, inject, OnDestroy, OnInit} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {MatIcon} from '@angular/material/icon';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {ModuleManagerService} from '../core/services/module-manager/module-manager-service.service';
 import {CoreManagerService} from '../core/services/core-manager/core-manager.service';
 import {
@@ -55,7 +56,9 @@ interface Attention {
     PageHeaderComponent,
     StatusPillComponent,
     SpinnerComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('overview')],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   ready = false;
@@ -72,6 +75,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
   attention: Attention[] = [];
 
   private interval: any;
+
+  // Field injection, not a constructor parameter: new dependencies follow
+  // the prefer-inject rule; the parameters above predate it.
+  private readonly transloco = inject(TranslocoService);
 
   constructor(
     @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
@@ -126,7 +133,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   serviceLabel(service: CoreService): string {
-    return service.container?.state || 'unknown';
+    return service.container?.state || this.transloco.translate<string>('overview.services.unknownState');
   }
 
   private recount() {
@@ -150,7 +157,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           tone: 'danger',
           icon: 'error',
           title: module.name,
-          detail: 'The deployment is running but reports an unhealthy state.',
+          detail: this.transloco.translate<string>('overview.attention.unhealthy'),
           route: '/modules/detail/' + encodeURIComponent(module.id),
         });
       } else {
@@ -162,7 +169,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
           tone: 'danger',
           icon: 'warning',
           title: module.name,
-          detail: module.error_msg || module.deployment?.error_msg || 'The module was loaded with errors.',
+          detail:
+            module.error_msg ||
+            module.deployment?.error_msg ||
+            this.transloco.translate<string>('overview.attention.moduleError'),
           route: '/modules/detail/' + encodeURIComponent(module.id),
         });
       }
@@ -172,12 +182,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
           tone: 'warn',
           icon: 'upgrade',
           title: module.name,
-          detail:
-            'Installed ' +
-            module.version +
-            ', deployed ' +
-            module.deployment.module_version +
-            ' — edit the deployment to apply the change.',
+          detail: this.transloco.translate<string>('overview.attention.updateAvailable', {
+            installed: module.version,
+            deployed: module.deployment.module_version,
+          }),
           route: '/deployments/edit/' + encodeURIComponent(module.id),
         });
       }
@@ -187,8 +195,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
       attention.push({
         tone: 'info',
         icon: 'download',
-        title: this.updatesAvailable + ' module update' + (this.updatesAvailable === 1 ? '' : 's') + ' available',
-        detail: 'New versions were found in the configured repositories.',
+        title: this.transloco.translate<string>(
+          `overview.attention.updatesAvailableTitle.${this.updatesAvailable === 1 ? 'one' : 'other'}`,
+          {count: this.updatesAvailable},
+        ),
+        detail: this.transloco.translate<string>('overview.attention.newVersionsFound'),
         route: '/modules/catalog',
       });
     }

@@ -19,6 +19,7 @@ import {ComponentFixture, TestBed, fakeAsync, tick, discardPeriodicTasks} from '
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
 import type {Mock} from 'vitest';
+import {provideTranslocoTesting} from 'src/testing/transloco-testing';
 
 import {AuxDeploymentsListComponent} from './aux-deployments-list.component';
 
@@ -38,7 +39,7 @@ describe('AuxDeploymentsListComponent', () => {
     moduleService = {getAuxDeployments: vi.fn().mockReturnValue(of({}))};
 
     await TestBed.configureTestingModule({
-      imports: [HostComponent],
+      imports: [HostComponent, provideTranslocoTesting('deployments')],
       providers: [provideNoopAnimations(), {provide: 'ModuleManagerService', useValue: moduleService}],
     }).compileComponents();
 

@@ -15,21 +15,21 @@
 -->
 
 <div class="mgw-page">
-  <mgw-page-header description="Modules installed on this gateway and the state of their deployments." title="Modules">
+  <mgw-page-header [description]="'modules.list.description' | transloco" [title]="'modules.list.title' | transloco">
     <div pageActions>
-      <button (click)="loadModules(false)" mat-icon-button matTooltip="Refresh">
+      <button (click)="loadModules(false)" [matTooltip]="'modules.list.refresh' | transloco" mat-icon-button>
         <mat-icon>refresh</mat-icon>
       </button>
       <button [routerLink]="'/modules/catalog'" mat-flat-button>
         <mat-icon>add</mat-icon>
-        Install modules
+        {{ 'modules.list.installModules' | transloco }}
       </button>
     </div>
   </mgw-page-header>
 
   <div class="mgw-toolbar">
     <mat-form-field appearance="outline" class="mgw-search" subscriptSizing="dynamic">
-      <mat-label>Search modules</mat-label>
+      <mat-label>{{ 'modules.list.searchModules' | transloco }}</mat-label>
       <input (ngModelChange)="applyFilters()" [(ngModel)]="search" matInput />
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
@@ -42,7 +42,7 @@
           class="mgw-chip"
           type="button"
         >
-          {{ filter.label }}
+          {{ filter.label | transloco }}
           <span class="mgw-chip-count">{{ countFor(filter.key) }}</span>
         </button>
       }
@@ -53,30 +53,30 @@
 
   @if (selection.selected.length > 0) {
     <div class="bulk-bar">
-      <span class="bulk-count">{{ selection.selected.length }} selected</span>
+      <span class="bulk-count">{{ 'modules.list.selected' | transloco: {count: selection.selected.length} }}</span>
       <mat-divider [vertical]="true"></mat-divider>
       <button (click)="startMultiple()" mat-button>
         <mat-icon>play_arrow</mat-icon>
-        Start
+        {{ 'modules.list.start' | transloco }}
       </button>
       <button (click)="stopMultiple()" mat-button>
         <mat-icon>stop</mat-icon>
-        Stop
+        {{ 'modules.list.stop' | transloco }}
       </button>
       <button (click)="recreateMultiple()" mat-button>
         <mat-icon>restart_alt</mat-icon>
-        Recreate
+        {{ 'modules.list.recreate' | transloco }}
       </button>
       <button (click)="editMultiple()" mat-button>
         <mat-icon>tune</mat-icon>
-        Edit
+        {{ 'modules.list.edit' | transloco }}
       </button>
       <button (click)="deleteMultiple()" class="mgw-danger" mat-button>
         <mat-icon>delete</mat-icon>
-        Delete deployments
+        {{ 'modules.list.deleteDeployments' | transloco }}
       </button>
       <span class="mgw-spacer"></span>
-      <button (click)="selectionClear()" mat-icon-button matTooltip="Clear selection">
+      <button (click)="selectionClear()" [matTooltip]="'modules.list.clearSelection' | transloco" mat-icon-button>
         <mat-icon>close</mat-icon>
       </button>
     </div>
@@ -87,18 +87,22 @@
   } @else if (dataSource.data.length === 0) {
     <mgw-empty-state
       icon="extension"
-      message="Install a module from a configured repository to get started."
-      title="No modules installed"
+      [message]="'modules.list.empty.message' | transloco"
+      [title]="'modules.list.empty.title' | transloco"
     >
-      <button [routerLink]="'/modules/catalog'" emptyAction mat-flat-button>Open catalog</button>
+      <button [routerLink]="'/modules/catalog'" emptyAction mat-flat-button>
+        {{ 'modules.list.empty.action' | transloco }}
+      </button>
     </mgw-empty-state>
   } @else if (filteredCount() === 0) {
     <mgw-empty-state
       icon="search_off"
-      message="No installed module matches the current search and filter."
-      title="No module matches"
+      [message]="'modules.list.noMatch.message' | transloco"
+      [title]="'modules.list.noMatch.title' | transloco"
     >
-      <button (click)="clearFilters()" emptyAction mat-stroked-button>Clear filters</button>
+      <button (click)="clearFilters()" emptyAction mat-stroked-button>
+        {{ 'modules.list.noMatch.action' | transloco }}
+      </button>
     </mgw-empty-state>
   } @else {
     <div class="mgw-table-card">
@@ -109,7 +113,7 @@
               (change)="$event ? masterToggle() : null"
               [checked]="selection.hasValue() && isAllSelected()"
               [indeterminate]="selection.hasValue() && !isAllSelected()"
-              aria-label="Select all modules"
+              [attr.aria-label]="'modules.list.selectAll' | transloco"
             >
             </mat-checkbox>
           </th>
@@ -124,7 +128,7 @@
         </ng-container>
 
         <ng-container matColumnDef="module">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header>Module</th>
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'modules.list.columns.module' | transloco }}</th>
           <td *matCellDef="let module" mat-cell>
             <div class="module-cell">
               <span class="module-name">
@@ -134,7 +138,7 @@
                     (click)="showModuleError(module); $event.stopPropagation()"
                     class="warn-btn"
                     mat-icon-button
-                    matTooltip="Loaded with errors — click for details"
+                    [matTooltip]="'modules.list.loadedWithErrors' | transloco"
                   >
                     <mat-icon>warning</mat-icon>
                   </button>
@@ -146,28 +150,33 @@
         </ng-container>
 
         <ng-container matColumnDef="status">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header>Status</th>
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'modules.list.columns.status' | transloco }}</th>
           <td *matCellDef="let module" mat-cell>
-            <mgw-status-pill [label]="statusLabel(module)" [tone]="statusTone(module)"></mgw-status-pill>
+            <mgw-status-pill [label]="statusLabel(module) | transloco" [tone]="statusTone(module)"></mgw-status-pill>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="version">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header>Version</th>
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'modules.list.columns.version' | transloco }}</th>
           <td *matCellDef="let module" mat-cell>
             <div class="version-cell">
               <span>{{ module.version }}</span>
               @if (needsDeploymentUpdate(module)) {
                 <span
                   class="update-badge"
-                  matTooltip="The installed module changed (installed: {{ module.version }} / {{
-                    module.channel
-                  }}, deployed: {{ module.deployment.module_version }} / {{
-                    module.deployment.module_channel
-                  }}). Edit the deployment to apply the change."
+                  [matTooltip]="
+                    'modules.list.updateHint'
+                      | transloco
+                        : {
+                            version: module.version,
+                            channel: module.channel,
+                            deployedVersion: module.deployment.module_version,
+                            deployedChannel: module.deployment.module_channel,
+                          }
+                  "
                 >
                   <mat-icon>upgrade</mat-icon>
-                  deployed {{ module.deployment.module_version }}
+                  {{ 'modules.list.deployedVersion' | transloco: {version: module.deployment.module_version} }}
                 </span>
               }
             </div>
@@ -181,14 +190,22 @@
               @if (!module.is_deployed) {
                 <button (click)="deploy(module.id); $event.stopPropagation()" mat-stroked-button>
                   <mat-icon>rocket_launch</mat-icon>
-                  Deploy
+                  {{ 'modules.list.deploy' | transloco }}
                 </button>
               } @else if (module.deployment.enabled) {
-                <button (click)="stop(module.id); $event.stopPropagation()" mat-icon-button matTooltip="Stop">
+                <button
+                  (click)="stop(module.id); $event.stopPropagation()"
+                  mat-icon-button
+                  [matTooltip]="'modules.list.stop' | transloco"
+                >
                   <mat-icon>stop</mat-icon>
                 </button>
               } @else {
-                <button (click)="start(module.id); $event.stopPropagation()" mat-icon-button matTooltip="Start">
+                <button
+                  (click)="start(module.id); $event.stopPropagation()"
+                  mat-icon-button
+                  [matTooltip]="'modules.list.start' | transloco"
+                >
                   <mat-icon>play_arrow</mat-icon>
                 </button>
               }
@@ -197,22 +214,22 @@
                 [matMenuTriggerFor]="rowMenu"
                 (click)="$event.stopPropagation()"
                 mat-icon-button
-                matTooltip="More actions"
+                [matTooltip]="'modules.list.moreActions' | transloco"
               >
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #rowMenu="matMenu">
                 <button (click)="showModuleInfo(module.id)" mat-menu-item>
                   <mat-icon>info</mat-icon>
-                  <span>Details</span>
+                  <span>{{ 'modules.list.details' | transloco }}</span>
                 </button>
                 <button (click)="edit(module.id)" [disabled]="!module.is_deployed" mat-menu-item>
                   <mat-icon>tune</mat-icon>
-                  <span>Edit deployment</span>
+                  <span>{{ 'modules.list.editDeployment' | transloco }}</span>
                 </button>
                 <button (click)="recreate(module.id)" [disabled]="!module.is_deployed" mat-menu-item>
                   <mat-icon>restart_alt</mat-icon>
-                  <span>Recreate containers</span>
+                  <span>{{ 'modules.list.recreateContainers' | transloco }}</span>
                 </button>
                 <mat-divider></mat-divider>
                 <button
@@ -222,7 +239,7 @@
                   mat-menu-item
                 >
                   <mat-icon>delete</mat-icon>
-                  <span>Delete deployment</span>
+                  <span>{{ 'modules.list.deleteDeployment' | transloco }}</span>
                 </button>
               </mat-menu>
             </div>

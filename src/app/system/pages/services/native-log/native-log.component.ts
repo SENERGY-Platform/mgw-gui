@@ -10,12 +10,23 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {CoreManagerService} from '../../../../core/services/core-manager/core-manager.service';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 import {LogViewerComponent} from 'src/app/core/components/log-viewer/log-viewer.component';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-native-log',
-  imports: [FormsModule, MatFormField, MatInput, MatLabel, MatSlideToggle, LogViewerComponent, PageHeaderComponent],
+  imports: [
+    FormsModule,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    MatSlideToggle,
+    LogViewerComponent,
+    PageHeaderComponent,
+    TranslocoPipe,
+  ],
   templateUrl: './native-log.component.html',
   styleUrl: './native-log.component.css',
+  providers: [provideTranslocoScope('system')],
 })
 export class NativeLogComponent implements OnDestroy {
   logID!: string;

@@ -32,6 +32,7 @@ import {MatIcon} from '@angular/material/icon';
 import {MatButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
 import {RouterLink} from '@angular/router';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {StatusPillComponent} from '../../core/components/status-pill/status-pill.component';
 import {ApiEntry, hasPlayground, isExecutable} from '../api-registry';
 
@@ -53,9 +54,11 @@ import {ApiEntry, hasPlayground, isExecutable} from '../api-registry';
     MatTooltip,
     RouterLink,
     StatusPillComponent,
+    TranslocoPipe,
   ],
   templateUrl: './swagger-list.component.html',
   styleUrl: './swagger-list.component.css',
+  providers: [provideTranslocoScope('developer')],
 })
 export class SwaggerListComponent implements OnInit {
   @Input() items: ApiEntry[] = [];

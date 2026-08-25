@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, Inject, OnInit, QueryList, ViewChildren, inject} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {concatMap, forkJoin, of} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
@@ -50,9 +51,16 @@ import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
     PageHeaderComponent,
     EmptyStateComponent,
     DeploymentFormComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('deployments')],
 })
 export class ModulesComponent implements OnInit {
+  // Resolved directly rather than through the `transloco` pipe: these are
+  // plain strings handed to the error snackbar and the job dialogs, neither
+  // of which has a template binding a pipe could sit on.
+  private readonly transloco = inject(TranslocoService);
+
   modules: DeploymentRequestModule[] = [];
   hostResources: HostResource[] = [];
   secrets: Secret[] = [];
@@ -88,7 +96,12 @@ export class ModulesComponent implements OnInit {
         this.ready = true;
       },
       error: (err) => {
-        this.errorService.handleError(ModulesComponent.name, 'ngOnInit', err, 'Loading the deployment form failed');
+        this.errorService.handleError(
+          ModulesComponent.name,
+          'ngOnInit',
+          err,
+          this.transloco.translate<string>('deployments.addDeployment.loadFailed'),
+        );
         this.ready = true;
       },
     });
@@ -112,22 +125,32 @@ export class ModulesComponent implements OnInit {
       .createDeployments(inputs)
       .pipe(
         concatMap((job) =>
-          this.utilService.checkJobStatus(job.id, 'Creating deployments', 'module-manager', 'deployments'),
+          this.utilService.checkJobStatus(
+            job.id,
+            this.transloco.translate<string>('deployments.addDeployment.creatingJob'),
+            'module-manager',
+            'deployments',
+          ),
         ),
       )
       .subscribe({
         next: (jobResult) => {
           if (jobResult?.result) {
             this.utilService.presentJobResult(
-              'Create deployments',
+              this.transloco.translate<string>('deployments.addDeployment.jobResultTitle'),
               mapDeploymentResults(jobResult.result),
-              'Deployment created',
+              this.transloco.translate<string>('deployments.addDeployment.deploymentCreated'),
             );
           }
           this.router.navigateByUrl('/modules');
         },
         error: (err) => {
-          this.errorService.handleError(ModulesComponent.name, 'submit', err, 'Creating the deployment failed');
+          this.errorService.handleError(
+            ModulesComponent.name,
+            'submit',
+            err,
+            this.transloco.translate<string>('deployments.addDeployment.createFailed'),
+          );
           this.submitting = false;
         },
       });

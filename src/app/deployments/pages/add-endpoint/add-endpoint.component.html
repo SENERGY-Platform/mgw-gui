@@ -1,14 +1,14 @@
 <div class="mgw-page mgw-page-narrow has-action-bar">
   <mgw-page-header
+    [description]="'deployments.addEndpoint.description' | transloco"
+    [title]="'deployments.addEndpoint.title' | transloco"
     backTo="/resources/endpoints"
-    description="Give a generated endpoint a shorter URL. The alias is served under /endpoints/alias/."
-    title="Add endpoint alias"
   ></mgw-page-header>
 
   <div [formGroup]="form" class="mgw-card card">
     <div class="field">
-      <label for="alias-path">Path</label>
-      <p class="desc">The part after /endpoints/alias/, for example <code>dashboard</code>.</p>
+      <label for="alias-path">{{ 'deployments.addEndpoint.path' | transloco }}</label>
+      <p [innerHTML]="'deployments.addEndpoint.pathHint' | transloco" class="desc"></p>
       <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
         <input formControlName="path" id="alias-path" matInput type="text" />
       </mat-form-field>
@@ -17,7 +17,9 @@
 
   <div class="mgw-action-bar">
     <span class="mgw-spacer"></span>
-    <button [routerLink]="'/resources/endpoints'" mat-button>Cancel</button>
-    <button (click)="add()" [disabled]="!form.valid" mat-flat-button type="submit">Add alias</button>
+    <button [routerLink]="'/resources/endpoints'" mat-button>{{ 'deployments.addEndpoint.cancel' | transloco }}</button>
+    <button (click)="add()" [disabled]="!form.valid" mat-flat-button type="submit">
+      {{ 'deployments.addEndpoint.addAlias' | transloco }}
+    </button>
   </div>
 </div>

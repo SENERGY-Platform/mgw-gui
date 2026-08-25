@@ -1,14 +1,14 @@
-<h2 class="title" mat-dialog-title>Refresh repositories</h2>
+<h2 class="title" mat-dialog-title>{{ 'modules.refreshReposDialog.title' | transloco }}</h2>
 
 <div class="dialog-content" mat-dialog-content>
   @if (hasPendingChangeRequest) {
     <div class="warning">
       <mat-icon>warning</mat-icon>
-      <span>Refreshing discards the pending change request.</span>
+      <span>{{ 'modules.refreshReposDialog.warning' | transloco }}</span>
     </div>
   }
 
-  <p class="lead">Select the repositories to fetch the latest module list from.</p>
+  <p class="lead">{{ 'modules.refreshReposDialog.lead' | transloco }}</p>
 
   @for (repo of repositories; track repo.Source) {
     <label class="repo">
@@ -23,6 +23,8 @@
 
 <div class="actions" mat-dialog-actions>
   <span class="mgw-spacer"></span>
-  <button [mat-dialog-close]="undefined" mat-button>Cancel</button>
-  <button (click)="refresh()" [disabled]="selectedSources().length === 0" mat-flat-button>Refresh</button>
+  <button [mat-dialog-close]="undefined" mat-button>{{ 'modules.refreshReposDialog.cancel' | transloco }}</button>
+  <button (click)="refresh()" [disabled]="selectedSources().length === 0" mat-flat-button>
+    {{ 'modules.refreshReposDialog.refresh' | transloco }}
+  </button>
 </div>

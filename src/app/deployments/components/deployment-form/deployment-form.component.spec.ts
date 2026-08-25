@@ -16,6 +16,7 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
+import {provideTranslocoTesting} from 'src/testing/transloco-testing';
 import {
   DeploymentRequestModule,
   ModuleConfigValue,
@@ -92,7 +93,7 @@ describe('DeploymentFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DeploymentFormComponent],
+      imports: [DeploymentFormComponent, provideTranslocoTesting('deployments')],
       providers: [provideNoopAnimations()],
     }).compileComponents();
   });

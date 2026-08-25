@@ -7,25 +7,27 @@
         <mat-icon>hub</mat-icon>
       </span>
       <span class="brand-text">
-        <span class="brand-name">MGW</span>
-        <span class="brand-sub">Module Gateway</span>
+        <span class="brand-name">{{ 'auth.login.brandName' | transloco }}</span>
+        <span class="brand-sub">{{ 'auth.login.brandSub' | transloco }}</span>
       </span>
     </div>
 
-    <h1>Sign in</h1>
+    <h1>{{ 'auth.login.title' | transloco }}</h1>
 
     <div (keydown.enter)="login()" [formGroup]="form" class="form">
       <mat-form-field appearance="outline">
-        <mat-label>Username</mat-label>
+        <mat-label>{{ 'auth.login.username' | transloco }}</mat-label>
         <input autocomplete="username" formControlName="username" matInput type="text" />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
+        <mat-label>{{ 'auth.login.password' | transloco }}</mat-label>
         <input autocomplete="current-password" formControlName="password" matInput type="password" />
       </mat-form-field>
 
-      <button (click)="login()" [disabled]="!form.valid" mat-flat-button type="submit">Sign in</button>
+      <button (click)="login()" [disabled]="!form.valid" mat-flat-button type="submit">
+        {{ 'auth.login.submit' | transloco }}
+      </button>
     </div>
   </div>
 </div>

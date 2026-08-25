@@ -16,13 +16,13 @@
 
 <div class="mgw-page">
   <mgw-page-header
-    description="Sources the gateway fetches installable modules from. A higher priority wins when the same module is offered more than once."
-    title="Repositories"
+    [description]="'modules.repositories.description' | transloco"
+    [title]="'modules.repositories.title' | transloco"
   >
     <div pageActions>
       <button (click)="add()" mat-flat-button>
         <mat-icon>add</mat-icon>
-        Add repository
+        {{ 'modules.repositories.addRepository' | transloco }}
       </button>
     </div>
   </mgw-page-header>
@@ -34,16 +34,18 @@
   } @else if (dataSource.data.length === 0) {
     <mgw-empty-state
       icon="cloud_download"
-      message="Without a repository the catalog stays empty. Add a GitHub repository to make modules installable."
-      title="No repositories configured"
+      [message]="'modules.repositories.empty.message' | transloco"
+      [title]="'modules.repositories.empty.title' | transloco"
     >
-      <button (click)="add()" emptyAction mat-flat-button>Add repository</button>
+      <button (click)="add()" emptyAction mat-flat-button>
+        {{ 'modules.repositories.addRepository' | transloco }}
+      </button>
     </mgw-empty-state>
   } @else {
     <div class="mgw-table-card">
       <table [dataSource]="dataSource" mat-table>
         <ng-container matColumnDef="source">
-          <th *matHeaderCellDef mat-header-cell>Source</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'modules.repositories.columns.source' | transloco }}</th>
           <td *matCellDef="let repository" mat-cell>
             <div class="mgw-cell-stack">
               <span class="mgw-cell-primary">{{ repository.Source }}</span>
@@ -53,12 +55,12 @@
         </ng-container>
 
         <ng-container matColumnDef="priority">
-          <th *matHeaderCellDef mat-header-cell>Priority</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'modules.repositories.columns.priority' | transloco }}</th>
           <td *matCellDef="let repository" mat-cell>{{ repository.Priority }}</td>
         </ng-container>
 
         <ng-container matColumnDef="channels">
-          <th *matHeaderCellDef mat-header-cell>Channels</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'modules.repositories.columns.channels' | transloco }}</th>
           <td *matCellDef="let repository" mat-cell>
             @if (channelNames(repository)) {
               <span class="channels">{{ channelNames(repository) }}</span>
@@ -73,12 +75,17 @@
           <td *matCellDef="let repository" class="mgw-col-actions" mat-cell>
             <div class="mgw-row-actions">
               @if (repository.Type === 'host-dir') {
-                <span class="locked" matTooltip="Part of the core installation and cannot be removed">
+                <span class="locked" [matTooltip]="'modules.repositories.builtInHint' | transloco">
                   <mat-icon>lock</mat-icon>
-                  built in
+                  {{ 'modules.repositories.builtIn' | transloco }}
                 </span>
               } @else {
-                <button (click)="delete(repository)" class="danger-icon" mat-icon-button matTooltip="Delete repository">
+                <button
+                  (click)="delete(repository)"
+                  class="danger-icon"
+                  mat-icon-button
+                  [matTooltip]="'modules.repositories.deleteRepository' | transloco"
+                >
                   <mat-icon>delete</mat-icon>
                 </button>
               }

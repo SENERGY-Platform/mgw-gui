@@ -1,15 +1,19 @@
 <form [formGroup]="form" (ngSubmit)="submit(form)">
-  <h2 mat-dialog-title>Add host network interface</h2>
+  <h2 mat-dialog-title>{{ 'system.hostNetItfBlacklist.addDialog.title' | transloco }}</h2>
   <mat-dialog-content>
     <div class="input-container">
       <mat-form-field appearance="outline" class="input-field">
-        <mat-label>Name</mat-label>
+        <mat-label>{{ 'system.hostNetItfBlacklist.addDialog.name' | transloco }}</mat-label>
         <input matInput formControlName="name" required />
       </mat-form-field>
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-stroked-button type="button" (click)="dialogRef.close()">Cancel</button>
-    <button mat-stroked-button type="submit" [disabled]="!form.valid">Add</button>
+    <button mat-stroked-button type="button" (click)="dialogRef.close()">
+      {{ 'system.hostNetItfBlacklist.addDialog.cancel' | transloco }}
+    </button>
+    <button mat-stroked-button type="submit" [disabled]="!form.valid">
+      {{ 'system.hostNetItfBlacklist.addDialog.add' | transloco }}
+    </button>
   </mat-dialog-actions>
 </form>

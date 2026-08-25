@@ -15,15 +15,17 @@
  */
 
 import {Component} from '@angular/core';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {PageHeaderComponent} from '../core/components/page-header/page-header.component';
 import {SwaggerListComponent} from './swagger-list/swagger-list.component';
 import {ApiEntry, INTERNAL_APIS, MODULE_APIS, PUBLIC_APIS} from './api-registry';
 
 @Component({
   selector: 'app-developer',
-  imports: [PageHeaderComponent, SwaggerListComponent],
+  imports: [PageHeaderComponent, SwaggerListComponent, TranslocoPipe],
   templateUrl: './developer.component.html',
   styleUrl: './developer.component.css',
+  providers: [provideTranslocoScope('developer')],
 })
 export class DeveloperComponent {
   publicApis: ApiEntry[] = PUBLIC_APIS;

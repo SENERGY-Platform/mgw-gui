@@ -1,0 +1,9 @@
+{
+  "logs": {
+    "title": "Log",
+    "description": "Most recent output. Increase the line count to look further back.",
+    "autoRefresh": "Auto refresh",
+    "lines": "Lines",
+    "loading": "Loading log…"
+  }
+}

@@ -21,6 +21,7 @@ import {HostManagerService} from '../../../../core/services/host-manager/host-ma
 import {ErrorService} from '../../../../core/services/util/error.service';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {AddDialogComponent, DialogData} from './add-dialog/add-dialog.component';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-host-net-itf-blacklist',
@@ -41,9 +42,11 @@ import {AddDialogComponent, DialogData} from './add-dialog/add-dialog.component'
     MatTooltip,
     MatHeaderCellDef,
     MatButton,
+    TranslocoPipe,
   ],
   templateUrl: './host-net-itf-blacklist.component.html',
   styleUrl: './host-net-itf-blacklist.component.css',
+  providers: [provideTranslocoScope('system')],
 })
 export class HostNetItfBlacklistComponent implements AfterViewInit, OnInit {
   displayedColumns: string[] = ['name', 'actions'];

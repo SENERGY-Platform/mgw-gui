@@ -1,7 +1,7 @@
 <div class="mgw-page">
   <mgw-page-header
-    description="Host-level settings of the gateway: which host applications modules may reach, and which network interfaces and ranges are off limits."
-    title="Configuration"
+    [description]="'system.configuration.description' | transloco"
+    [title]="'system.configuration.title' | transloco"
   ></mgw-page-header>
 
   <app-host-applications></app-host-applications>

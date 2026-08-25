@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {MatIcon} from '@angular/material/icon';
@@ -22,6 +22,7 @@ import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatFormField} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {concatMap, of} from 'rxjs';
 import {SwaggerService} from 'src/app/core/services/swagger/swagger.service';
 import {ApiCallResult} from 'src/app/core/services/swagger/swagger.service';
@@ -64,7 +65,9 @@ const RESTRICTED_PREFIX = '/restricted/';
     PageHeaderComponent,
     OperationListComponent,
     MethodChipComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('developer')],
 })
 export class PlaygroundComponent implements OnInit {
   api?: ApiEntry;
@@ -85,6 +88,10 @@ export class PlaygroundComponent implements OnInit {
   sending = false;
   result?: ApiCallResult;
 
+  // Field injection, not a constructor parameter: new dependencies follow
+  // the prefer-inject rule; the parameters above predate it.
+  private readonly transloco = inject(TranslocoService);
+
   constructor(
     private route: ActivatedRoute,
     private swaggerService: SwaggerService,
@@ -97,7 +104,7 @@ export class PlaygroundComponent implements OnInit {
       this.api = findApi(params['scope'], params['service']);
       this.reset();
       if (!this.api) {
-        this.loadError = 'Unknown API.';
+        this.loadError = this.transloco.translate<string>('developer.playground.unknownApi');
         this.ready = true;
         return;
       }
@@ -152,7 +159,9 @@ export class PlaygroundComponent implements OnInit {
     }
     const missing = this.pathFields.filter((field) => field.value.trim() === '');
     if (missing.length > 0) {
-      this.loadError = 'Fill in the path parameters first: ' + missing.map((f) => f.parameter.name).join(', ');
+      this.loadError = this.transloco.translate<string>('developer.playground.missingPathParams', {
+        names: missing.map((f) => f.parameter.name).join(', '),
+      });
       return;
     }
     this.loadError = '';
@@ -249,7 +258,7 @@ export class PlaygroundComponent implements OnInit {
         this.ready = true;
       },
       error: (_) => {
-        this.loadError = 'The API description could not be loaded from ' + specUrl(api) + '.';
+        this.loadError = this.transloco.translate<string>('developer.playground.loadFailed', {url: specUrl(api)});
         this.ready = true;
       },
     });

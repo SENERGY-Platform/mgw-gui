@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {concatMap, of, throwError} from 'rxjs';
@@ -9,14 +9,30 @@ import {MatFormField} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-add-endpoint',
   templateUrl: './add-endpoint.component.html',
   styleUrls: ['./add-endpoint.component.css'],
-  imports: [FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatButton, RouterLink, PageHeaderComponent],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatInput,
+    MatButton,
+    RouterLink,
+    PageHeaderComponent,
+    TranslocoPipe,
+  ],
+  providers: [provideTranslocoScope('deployments')],
 })
 export class AddEndpointComponent {
+  // Resolved directly rather than through the `transloco` pipe: the job
+  // message below is a plain string handed to a dialog with no template
+  // binding a pipe could sit on.
+  private readonly transloco = inject(TranslocoService);
+
   form = new FormGroup({
     parent_id: new FormControl('', {nonNullable: true, validators: Validators.required}),
     path: new FormControl('', {nonNullable: true, validators: Validators.required}),
@@ -42,7 +58,7 @@ export class AddEndpointComponent {
       .createEndpointAlias(endpointReq)
       .pipe(
         concatMap((jobID: string) => {
-          const message = 'Create endpoint';
+          const message = this.transloco.translate<string>('deployments.addEndpoint.jobMessage');
           return this.utilsService.checkJobStatus(jobID, message, 'core-manager');
         }),
         concatMap((result) => {

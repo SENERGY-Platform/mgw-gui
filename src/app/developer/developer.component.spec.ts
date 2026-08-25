@@ -1,5 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {provideRouter} from '@angular/router';
+import {provideTranslocoTesting} from 'src/testing/transloco-testing';
 
 import {DeveloperComponent} from './developer.component';
 
@@ -9,7 +10,7 @@ describe('DeveloperComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DeveloperComponent],
+      imports: [DeveloperComponent, provideTranslocoTesting('developer')],
       providers: [provideRouter([])],
     }).compileComponents();
 

@@ -18,7 +18,7 @@
 
 @if (ready && dataSource.data.length === 0) {
   <p class="empty">
-    No auxiliary deployments. Modules spawn and manage them on their own; the UI only shows their state.
+    {{ 'deployments.auxDeployments.empty' | transloco }}
   </p>
 }
 
@@ -26,29 +26,29 @@
   <div class="mgw-table-card">
     <table [dataSource]="dataSource" mat-table>
       <ng-container matColumnDef="status">
-        <th *matHeaderCellDef mat-header-cell>Status</th>
+        <th *matHeaderCellDef mat-header-cell>{{ 'deployments.auxDeployments.status' | transloco }}</th>
         <td *matCellDef="let aux" mat-cell>
           <mgw-status-pill
-            [label]="statusLabel(aux)"
+            [label]="statusLabel(aux) | transloco"
             [tone]="statusTone(aux)"
             [matTooltip]="statusDetail(aux)"
           ></mgw-status-pill>
         </td>
       </ng-container>
       <ng-container matColumnDef="name">
-        <th *matHeaderCellDef mat-header-cell>Name</th>
+        <th *matHeaderCellDef mat-header-cell>{{ 'deployments.auxDeployments.name' | transloco }}</th>
         <td *matCellDef="let aux" mat-cell>{{ aux.name }}</td>
       </ng-container>
       <ng-container matColumnDef="reference">
-        <th *matHeaderCellDef mat-header-cell>Reference</th>
+        <th *matHeaderCellDef mat-header-cell>{{ 'deployments.auxDeployments.reference' | transloco }}</th>
         <td *matCellDef="let aux" mat-cell>{{ aux.reference }}</td>
       </ng-container>
       <ng-container matColumnDef="image">
-        <th *matHeaderCellDef mat-header-cell>Image</th>
+        <th *matHeaderCellDef mat-header-cell>{{ 'deployments.auxDeployments.image' | transloco }}</th>
         <td *matCellDef="let aux" class="mgw-mono" mat-cell>{{ aux.image }}</td>
       </ng-container>
       <ng-container matColumnDef="updated">
-        <th *matHeaderCellDef mat-header-cell>Updated</th>
+        <th *matHeaderCellDef mat-header-cell>{{ 'deployments.auxDeployments.updated' | transloco }}</th>
         <td *matCellDef="let aux" mat-cell>{{ aux.updated | date: 'short' }}</td>
       </ng-container>
       <tr *matHeaderRowDef="displayColumns" mat-header-row></tr>

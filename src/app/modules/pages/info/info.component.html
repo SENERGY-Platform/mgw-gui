@@ -25,36 +25,36 @@
         @if (!module.is_deployed) {
           <button (click)="deploy()" mat-flat-button>
             <mat-icon>rocket_launch</mat-icon>
-            Deploy
+            {{ 'modules.info.deploy' | transloco }}
           </button>
         } @else {
           @if (module.deployment.enabled) {
             <button (click)="stop()" mat-stroked-button>
               <mat-icon>stop</mat-icon>
-              Stop
+              {{ 'modules.info.stop' | transloco }}
             </button>
           } @else {
             <button (click)="start()" mat-stroked-button>
               <mat-icon>play_arrow</mat-icon>
-              Start
+              {{ 'modules.info.start' | transloco }}
             </button>
           }
           <button (click)="edit()" mat-flat-button>
             <mat-icon>tune</mat-icon>
-            Edit deployment
+            {{ 'modules.info.editDeployment' | transloco }}
           </button>
-          <button [matMenuTriggerFor]="menu" mat-icon-button matTooltip="More actions">
+          <button [matMenuTriggerFor]="menu" mat-icon-button [matTooltip]="'modules.info.moreActions' | transloco">
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
             <button (click)="recreate()" mat-menu-item>
               <mat-icon>restart_alt</mat-icon>
-              <span>Recreate containers</span>
+              <span>{{ 'modules.info.recreateContainers' | transloco }}</span>
             </button>
             <mat-divider></mat-divider>
             <button (click)="deleteDeployment()" class="danger" mat-menu-item>
               <mat-icon>delete</mat-icon>
-              <span>Delete deployment</span>
+              <span>{{ 'modules.info.deleteDeployment' | transloco }}</span>
             </button>
           </mat-menu>
         }
@@ -65,7 +65,7 @@
       <div class="banner">
         <mat-icon>error</mat-icon>
         <div>
-          <strong>The module was loaded with errors.</strong>
+          <strong>{{ 'modules.info.loadedWithErrors' | transloco }}</strong>
           <span>{{ errorMessage() }}</span>
         </div>
       </div>
@@ -73,48 +73,48 @@
 
     <div class="summary">
       <div class="summary-item">
-        <span class="summary-label">Deployment</span>
-        <mgw-status-pill [label]="deploymentStateLabel()" [tone]="deploymentTone()"></mgw-status-pill>
+        <span class="summary-label">{{ 'modules.info.summary.deployment' | transloco }}</span>
+        <mgw-status-pill [label]="deploymentStateLabel() | transloco" [tone]="deploymentTone()"></mgw-status-pill>
       </div>
       <div class="summary-item">
-        <span class="summary-label">Version</span>
+        <span class="summary-label">{{ 'modules.info.summary.version' | transloco }}</span>
         <span class="summary-value">{{ module.version }}</span>
       </div>
       <div class="summary-item">
-        <span class="summary-label">Repository</span>
+        <span class="summary-label">{{ 'modules.info.summary.repository' | transloco }}</span>
         <span class="summary-value">{{ module.source }} / {{ module.channel }}</span>
       </div>
       <div class="summary-item">
-        <span class="summary-label">Containers</span>
+        <span class="summary-label">{{ 'modules.info.summary.containers' | transloco }}</span>
         <span class="summary-value">{{ containerCount() }}</span>
       </div>
     </div>
 
     <mat-tab-group animationDuration="0ms" class="tabs">
-      <mat-tab label="Overview">
+      <mat-tab [label]="'modules.info.tabs.overview' | transloco">
         <div class="tab-body">
           <section class="card">
-            <h2>Module</h2>
+            <h2>{{ 'modules.info.module.title' | transloco }}</h2>
             <dl class="facts">
-              <dt>ID</dt>
+              <dt>{{ 'modules.info.module.id' | transloco }}</dt>
               <dd class="mono">{{ module.id }}</dd>
-              <dt>Version</dt>
+              <dt>{{ 'modules.info.module.version' | transloco }}</dt>
               <dd>{{ module.version }}</dd>
-              <dt>Author</dt>
+              <dt>{{ 'modules.info.module.author' | transloco }}</dt>
               <dd>{{ module.author || '—' }}</dd>
-              <dt>License</dt>
+              <dt>{{ 'modules.info.module.license' | transloco }}</dt>
               <dd>{{ module.license || '—' }}</dd>
-              <dt>Repository</dt>
+              <dt>{{ 'modules.info.module.repository' | transloco }}</dt>
               <dd class="mono">{{ module.source }}</dd>
-              <dt>Channel</dt>
+              <dt>{{ 'modules.info.module.channel' | transloco }}</dt>
               <dd>{{ module.channel }}</dd>
-              <dt>Added</dt>
+              <dt>{{ 'modules.info.module.added' | transloco }}</dt>
               <dd>{{ module.added | date: 'short' }}</dd>
-              <dt>Updated</dt>
+              <dt>{{ 'modules.info.module.updated' | transloco }}</dt>
               <dd>{{ module.updated | date: 'short' }}</dd>
             </dl>
             @if (module.tags?.length) {
-              <mat-chip-set aria-label="Tags" class="tags">
+              <mat-chip-set [attr.aria-label]="'modules.info.tags' | transloco" class="tags">
                 @for (tag of module.tags; track tag) {
                   <mat-chip>{{ tag }}</mat-chip>
                 }
@@ -123,32 +123,39 @@
           </section>
 
           <section class="card">
-            <h2>Deployment</h2>
+            <h2>{{ 'modules.info.deployment.title' | transloco }}</h2>
             @if (!module.is_deployed) {
               <div class="empty-inline">
-                <p>This module has no deployment yet.</p>
-                <button (click)="deploy()" mat-stroked-button>Create deployment</button>
+                <p>{{ 'modules.info.deployment.none' | transloco }}</p>
+                <button (click)="deploy()" mat-stroked-button>
+                  {{ 'modules.info.deployment.create' | transloco }}
+                </button>
               </div>
             } @else {
               <dl class="facts">
-                <dt>State</dt>
+                <dt>{{ 'modules.info.deployment.state' | transloco }}</dt>
                 <dd>
-                  <mgw-status-pill [label]="deploymentStateLabel()" [tone]="deploymentTone()"></mgw-status-pill>
+                  <mgw-status-pill
+                    [label]="deploymentStateLabel() | transloco"
+                    [tone]="deploymentTone()"
+                  ></mgw-status-pill>
                 </dd>
-                <dt>ID</dt>
+                <dt>{{ 'modules.info.deployment.id' | transloco }}</dt>
                 <dd class="mono">{{ module.deployment.id }}</dd>
-                <dt>Deployed version</dt>
+                <dt>{{ 'modules.info.deployment.deployedVersion' | transloco }}</dt>
                 <dd>
                   {{ module.deployment.module_version }}
                   @if (module.deployment.module_version !== module.version) {
-                    <span class="drift">installed {{ module.version }} — edit the deployment to apply</span>
+                    <span class="drift">{{
+                      'modules.info.deployment.drift' | transloco: {version: module.version}
+                    }}</span>
                   }
                 </dd>
-                <dt>Deployed from</dt>
+                <dt>{{ 'modules.info.deployment.deployedFrom' | transloco }}</dt>
                 <dd class="mono">{{ module.deployment.module_source }} / {{ module.deployment.module_channel }}</dd>
-                <dt>Created</dt>
+                <dt>{{ 'modules.info.deployment.created' | transloco }}</dt>
                 <dd>{{ module.deployment.created | date: 'short' }}</dd>
-                <dt>Updated</dt>
+                <dt>{{ 'modules.info.deployment.updated' | transloco }}</dt>
                 <dd>{{ module.deployment.updated | date: 'short' }}</dd>
               </dl>
             }
@@ -156,18 +163,18 @@
         </div>
       </mat-tab>
 
-      <mat-tab [disabled]="!module.is_deployed" label="Containers">
+      <mat-tab [disabled]="!module.is_deployed" [label]="'modules.info.tabs.containers' | transloco">
         <div class="tab-body">
           <section class="card">
             @if (!module.is_deployed || !module.deployment.containers) {
-              <p class="muted">No container information available.</p>
+              <p class="muted">{{ 'modules.info.noContainerInfo' | transloco }}</p>
             } @else {
               <table class="containers">
                 <thead>
                   <tr>
-                    <th>Status</th>
-                    <th>Service</th>
-                    <th>Container</th>
+                    <th>{{ 'modules.info.containers.status' | transloco }}</th>
+                    <th>{{ 'modules.info.containers.service' | transloco }}</th>
+                    <th>{{ 'modules.info.containers.container' | transloco }}</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -176,7 +183,7 @@
                     <tr>
                       <td>
                         <mgw-status-pill
-                          [label]="containerLabel(entry.value)"
+                          [label]="containerLabel(entry.value) | transloco"
                           [tone]="containerTone(entry.value)"
                         ></mgw-status-pill>
                       </td>
@@ -186,7 +193,7 @@
                         <button
                           [routerLink]="'/containers/' + entry.value.name + '/logs'"
                           mat-icon-button
-                          matTooltip="Show logs"
+                          [matTooltip]="'modules.info.showLogs' | transloco"
                         >
                           <mat-icon>article</mat-icon>
                         </button>
@@ -200,7 +207,7 @@
         </div>
       </mat-tab>
 
-      <mat-tab [disabled]="!module.is_deployed" label="Auxiliary deployments">
+      <mat-tab [disabled]="!module.is_deployed" [label]="'modules.info.tabs.auxDeployments' | transloco">
         <!-- Lazily, so the list is built when the tab is opened rather than
              with the page. Without this a disabled tab's body is created all
              the same, and the list underneath starts polling for a module
@@ -208,9 +215,7 @@
         <ng-template matTabContent>
           <div class="tab-body">
             <section class="card">
-              <p class="muted">
-                Extra containers this module spawned at runtime. Read-only — modules manage them themselves.
-              </p>
+              <p class="muted">{{ 'modules.info.auxDeploymentsHint' | transloco }}</p>
               <aux-deployments-list [deploymentID]="module.deployment.id"></aux-deployments-list>
             </section>
           </div>

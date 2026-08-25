@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, Inject, OnInit, QueryList, ViewChildren, inject} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {concatMap, forkJoin, of} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
@@ -51,9 +52,16 @@ import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
     PageHeaderComponent,
     EmptyStateComponent,
     DeploymentFormComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('deployments')],
 })
 export class ShowModuleComponentComponent implements OnInit {
+  // Resolved directly rather than through the `transloco` pipe: these are
+  // plain strings handed to the error snackbar and the job dialogs, neither
+  // of which has a template binding a pipe could sit on.
+  private readonly transloco = inject(TranslocoService);
+
   modules: DeploymentRequestModule[] = [];
   hostResources: HostResource[] = [];
   secrets: Secret[] = [];
@@ -98,7 +106,7 @@ export class ShowModuleComponentComponent implements OnInit {
           ShowModuleComponentComponent.name,
           'ngOnInit',
           err,
-          'Loading the deployment failed',
+          this.transloco.translate<string>('deployments.editDeployment.loadFailed'),
         );
         this.ready = true;
       },
@@ -123,16 +131,21 @@ export class ShowModuleComponentComponent implements OnInit {
       .updateDeployments(inputs)
       .pipe(
         concatMap((job) =>
-          this.utilService.checkJobStatus(job.id, 'Updating deployment', 'module-manager', 'deployments-update'),
+          this.utilService.checkJobStatus(
+            job.id,
+            this.transloco.translate<string>('deployments.editDeployment.updatingJob'),
+            'module-manager',
+            'deployments-update',
+          ),
         ),
       )
       .subscribe({
         next: (jobResult) => {
           if (jobResult?.result) {
             this.utilService.presentJobResult(
-              'Update deployments',
+              this.transloco.translate<string>('deployments.editDeployment.jobResultTitle'),
               mapDeploymentResults(jobResult.result),
-              'Deployment(s) updated',
+              this.transloco.translate<string>('deployments.editDeployment.deploymentUpdated'),
             );
           }
           this.router.navigateByUrl('/modules');
@@ -142,7 +155,7 @@ export class ShowModuleComponentComponent implements OnInit {
             ShowModuleComponentComponent.name,
             'submit',
             err,
-            'Updating the deployment failed',
+            this.transloco.translate<string>('deployments.editDeployment.updateFailed'),
           );
           this.submitting = false;
         },
@@ -151,6 +164,14 @@ export class ShowModuleComponentComponent implements OnInit {
 
   updatePending(): boolean {
     return this.modules.some((module) => module.deployment.module_version !== module.version);
+  }
+
+  titleKey(): string {
+    return `deployments.editDeployment.title.${this.modules.length === 1 ? 'one' : 'other'}`;
+  }
+
+  descriptionKey(): string {
+    return `deployments.editDeployment.description.${this.modules.length === 1 ? 'one' : 'other'}`;
   }
 
   cancel() {

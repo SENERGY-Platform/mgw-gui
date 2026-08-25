@@ -1,0 +1,312 @@
+{
+  "list": {
+    "title": "Modules",
+    "description": "Modules installed on this gateway and the state of their deployments.",
+    "refresh": "Refresh",
+    "installModules": "Install modules",
+    "searchModules": "Search modules",
+    "filters": {
+      "all": "All",
+      "healthy": "Running",
+      "disabled": "Stopped",
+      "unhealthy": "Unhealthy",
+      "none": "Not deployed",
+      "update": "Update pending"
+    },
+    "selected": "{{count}} selected",
+    "start": "Start",
+    "stop": "Stop",
+    "recreate": "Recreate",
+    "edit": "Edit",
+    "deleteDeployments": "Delete deployments",
+    "clearSelection": "Clear selection",
+    "empty": {
+      "title": "No modules installed",
+      "message": "Install a module from a configured repository to get started.",
+      "action": "Open catalog"
+    },
+    "noMatch": {
+      "title": "No module matches",
+      "message": "No installed module matches the current search and filter.",
+      "action": "Clear filters"
+    },
+    "selectAll": "Select all modules",
+    "columns": {
+      "module": "Module",
+      "status": "Status",
+      "version": "Version"
+    },
+    "loadedWithErrors": "Loaded with errors — click for details",
+    "updateHint": "The installed module changed (installed: {{version}} / {{channel}}, deployed: {{deployedVersion}} / {{deployedChannel}}). Edit the deployment to apply the change.",
+    "deployedVersion": "deployed {{version}}",
+    "deploy": "Deploy",
+    "moreActions": "More actions",
+    "details": "Details",
+    "editDeployment": "Edit deployment",
+    "recreateContainers": "Recreate containers",
+    "deleteDeployment": "Delete deployment",
+    "statuses": {
+      "running": "Running",
+      "unhealthy": "Unhealthy",
+      "stopped": "Stopped",
+      "unknown": "Unknown",
+      "notDeployed": "Not deployed"
+    },
+    "errors": {
+      "loadFailed": "Loading the modules failed",
+      "startFailed": "Starting the deployments failed",
+      "stopFailed": "Stopping the deployments failed",
+      "recreateFailed": "Recreating the containers failed",
+      "deleteFailed": "Deleting the deployments failed"
+    },
+    "jobs": {
+      "recreating": "Deployments are recreating",
+      "recreated": "Containers recreated",
+      "deleting": "Deployments are being deleted",
+      "deleted": "Deployments deleted"
+    },
+    "confirmDelete": "Delete the deployment(s) of {{count}} module(s)? Data stored in volumes will be removed.",
+    "moduleLoadedWithErrors": "The module was loaded with errors"
+  },
+  "manage": {
+    "title": "Catalog",
+    "description": "Modules offered by the configured repositories. Collect what you want to change, then review and apply it in one go.",
+    "refreshHint": "Fetch the latest module list",
+    "refreshRepositories": "Refresh repositories",
+    "updateAll": "Update all",
+    "pendingRequest": "A change request is pending on the gateway. It stays there until it is applied or discarded — a repository refresh discards it too.",
+    "review": "Review",
+    "searchModules": "Search modules",
+    "search": "Search",
+    "repository": "Repository",
+    "allRepositories": "All repositories",
+    "scopes": {
+      "all": "All",
+      "installed": "Installed",
+      "updates": "Updates"
+    },
+    "empty": {
+      "title": "No modules found",
+      "message": "Nothing matches the current filter. If the catalog is empty altogether, refresh the repositories to fetch the latest module list."
+    },
+    "columns": {
+      "module": "Module",
+      "status": "Status",
+      "version": "Version",
+      "variant": "Repository / channel"
+    },
+    "cartActions": {
+      "remove": "remove",
+      "update": "update",
+      "install": "install"
+    },
+    "undo": "Undo",
+    "install": "Install",
+    "switchHint": "Switch to the selected repository and channel",
+    "switch": "Switch",
+    "updateHint": "Update to {{version}}",
+    "update": "Update",
+    "moreActions": "More actions",
+    "removeModule": "Remove module",
+    "staged": {
+      "one": "{{count}} change staged",
+      "other": "{{count}} changes staged"
+    },
+    "clear": "Clear",
+    "reviewApply": "Review & apply",
+    "statuses": {
+      "available": "Available",
+      "updateAvailable": "Update available",
+      "installed": "Installed"
+    },
+    "errors": {
+      "loadFailed": "Loading the module catalog failed",
+      "createChangeRequestFailed": "Creating the change request failed",
+      "applyFailed": "Applying the module changes failed",
+      "discardFailed": "Discarding the change request failed",
+      "refreshFailed": "Refreshing the repositories failed"
+    },
+    "jobs": {
+      "applying": "Applying module changes",
+      "applied": "Module changes applied",
+      "refreshing": "Refreshing repositories",
+      "refreshed": "Repositories refreshed"
+    },
+    "moduleChanges": "Module changes",
+    "repositoryRefresh": "Repository refresh"
+  },
+  "info": {
+    "deploy": "Deploy",
+    "stop": "Stop",
+    "start": "Start",
+    "editDeployment": "Edit deployment",
+    "moreActions": "More actions",
+    "recreateContainers": "Recreate containers",
+    "deleteDeployment": "Delete deployment",
+    "loadedWithErrors": "The module was loaded with errors.",
+    "summary": {
+      "deployment": "Deployment",
+      "version": "Version",
+      "repository": "Repository",
+      "containers": "Containers"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "containers": "Containers",
+      "auxDeployments": "Auxiliary deployments"
+    },
+    "module": {
+      "title": "Module",
+      "id": "ID",
+      "version": "Version",
+      "author": "Author",
+      "license": "License",
+      "repository": "Repository",
+      "channel": "Channel",
+      "added": "Added",
+      "updated": "Updated"
+    },
+    "tags": "Tags",
+    "deployment": {
+      "title": "Deployment",
+      "none": "This module has no deployment yet.",
+      "create": "Create deployment",
+      "state": "State",
+      "id": "ID",
+      "deployedVersion": "Deployed version",
+      "drift": "installed {{version}} — edit the deployment to apply",
+      "deployedFrom": "Deployed from",
+      "created": "Created",
+      "updated": "Updated"
+    },
+    "noContainerInfo": "No container information available.",
+    "containers": {
+      "status": "Status",
+      "service": "Service",
+      "container": "Container"
+    },
+    "showLogs": "Show logs",
+    "auxDeploymentsHint": "Extra containers this module spawned at runtime. Read-only — modules manage them themselves.",
+    "containerMissing": "missing",
+    "statuses": {
+      "notDeployed": "Not deployed",
+      "stopped": "Stopped",
+      "running": "Running",
+      "unhealthy": "Unhealthy",
+      "unknown": "Unknown"
+    },
+    "errors": {
+      "loadFailed": "Loading the module failed",
+      "startFailed": "Starting the deployment failed",
+      "stopFailed": "Stopping the deployment failed",
+      "recreateFailed": "Recreating the containers failed",
+      "deleteFailed": "Deleting the deployment failed"
+    },
+    "jobs": {
+      "recreating": "Deployment is recreating",
+      "recreated": "Containers recreated",
+      "deleting": "Deployment is being deleted",
+      "deleted": "Deployment deleted"
+    },
+    "confirmDelete": "Delete the deployment of {{name}}? Data stored in volumes will be removed."
+  },
+  "repositories": {
+    "title": "Repositories",
+    "description": "Sources the gateway fetches installable modules from. A higher priority wins when the same module is offered more than once.",
+    "addRepository": "Add repository",
+    "empty": {
+      "title": "No repositories configured",
+      "message": "Without a repository the catalog stays empty. Add a GitHub repository to make modules installable."
+    },
+    "columns": {
+      "source": "Source",
+      "priority": "Priority",
+      "channels": "Channels"
+    },
+    "builtInHint": "Part of the core installation and cannot be removed",
+    "builtIn": "built in",
+    "deleteRepository": "Delete repository",
+    "errors": {
+      "loadFailed": "Loading the repositories failed",
+      "addFailed": "Adding the repository failed",
+      "deleteFailed": "Deleting the repository failed"
+    },
+    "jobs": {
+      "fetchingModules": "Fetching repository modules"
+    },
+    "confirmDelete": "Delete repository '{{source}}'? Its modules can no longer be installed or updated.",
+    "hostDirNotRemovable": "The host directory repository is part of the core installation and cannot be removed."
+  },
+  "globalConfigs": {
+    "title": "Global configs",
+    "description": "Values that several deployments can reference instead of each setting them separately.",
+    "addGlobalConfig": "Add global config",
+    "empty": {
+      "title": "No global configs defined",
+      "message": "A global config holds one value centrally. In a deployment form, switch a field to “Global config” to point at it instead of typing the value again."
+    },
+    "columns": {
+      "name": "Name",
+      "type": "Type",
+      "value": "Value"
+    },
+    "edit": "Edit",
+    "delete": "Delete",
+    "errors": {
+      "loadFailed": "Loading the global configs failed",
+      "addFailed": "Creating the global config failed",
+      "editFailed": "Saving the global config failed",
+      "deleteFailed": "Deleting the global config failed"
+    },
+    "confirmDelete": "Delete global config '{{name}}'? Deployments referencing it will lose the value.",
+    "typeUnknown": "unknown",
+    "typeList": "{{type}} list"
+  },
+  "addRepositoryDialog": {
+    "title": "Add repository",
+    "type": "Type",
+    "sourceDefinition": "Source definition (JSON)",
+    "hint": "Passed verbatim to the repository type handler",
+    "cancel": "Cancel",
+    "add": "Add",
+    "invalidJson": "Invalid JSON: {{message}}"
+  },
+  "changeRequestDialog": {
+    "title": "Review module changes",
+    "created": "Created {{date}}. The request stays pending on the gateway until it is applied or discarded; refreshing the repositories also discards it.",
+    "empty": "Nothing to do — all requested modules are already installed in the requested variant and version.",
+    "install": "Install {{count}}",
+    "change": "Change {{count}}",
+    "remove": "Remove {{count}}",
+    "blockHint": "including automatically resolved dependencies",
+    "removeHint": "A module can only be removed while it has no deployment. Delete its deployment on the Modules page first.",
+    "discardRequest": "Discard request",
+    "keepForLater": "Keep for later",
+    "applyChanges": "Apply changes"
+  },
+  "globalConfigDialog": {
+    "editTitle": "Edit global config",
+    "newTitle": "New global config",
+    "name": "Name",
+    "dataType": "Data type",
+    "listOfValues": "List of values",
+    "editHint": "Deployments referencing this config use the value as declared by their module config — changing the data type can break them.",
+    "values": "Values",
+    "valuesHint": "One value per line",
+    "valuesHintBool": "One value per line (true or false)",
+    "value": "Value",
+    "wholeNumber": "Whole number",
+    "number": "Number",
+    "cancel": "Cancel",
+    "save": "Save",
+    "create": "Create",
+    "nameRequired": "Name is required"
+  },
+  "refreshReposDialog": {
+    "title": "Refresh repositories",
+    "warning": "Refreshing discards the pending change request.",
+    "lead": "Select the repositories to fetch the latest module list from.",
+    "cancel": "Cancel",
+    "refresh": "Refresh"
+  }
+}

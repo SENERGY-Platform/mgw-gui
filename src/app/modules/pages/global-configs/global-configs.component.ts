@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnInit, ViewChild, AfterViewInit} from '@angular/core';
+import {AfterViewInit, Component, Inject, inject, OnInit, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {
@@ -41,6 +41,7 @@ import {PageHeaderComponent} from 'src/app/core/components/page-header/page-head
 import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatIcon} from '@angular/material/icon';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {DATA_TYPE_LABELS, formatConfigValue, GlobalConfig, GlobalConfigInput} from 'src/app/core/models/global-configs';
 import {GlobalConfigDialogComponent} from '../../components/global-config-dialog/global-config-dialog.component';
 
@@ -68,7 +69,9 @@ import {GlobalConfigDialogComponent} from '../../components/global-config-dialog
     MatButton,
     PageHeaderComponent,
     EmptyStateComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('modules')],
 })
 export class GlobalConfigsComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<GlobalConfig>();
@@ -77,12 +80,20 @@ export class GlobalConfigsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   displayColumns = ['name', 'type', 'value', 'actions'];
 
+  // Field injection, not a constructor parameter: new dependencies follow
+  // the prefer-inject rule; the parameters above predate it.
+  private readonly transloco = inject(TranslocoService);
+
   constructor(
     public dialog: MatDialog,
     @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
     private errorService: ErrorService,
     private utilService: UtilService,
   ) {}
+
+  private translate(key: string, params?: Record<string, unknown>): string {
+    return this.transloco.translate<string>(key, params);
+  }
 
   ngOnInit(): void {
     this.load();
@@ -106,15 +117,23 @@ export class GlobalConfigsComponent implements OnInit, AfterViewInit {
         this.ready = true;
       },
       error: (err) => {
-        this.errorService.handleError(GlobalConfigsComponent.name, 'load', err, 'Loading the global configs failed');
+        this.errorService.handleError(
+          GlobalConfigsComponent.name,
+          'load',
+          err,
+          this.translate('modules.globalConfigs.errors.loadFailed'),
+        );
         this.ready = true;
       },
     });
   }
 
+  // DATA_TYPE_LABELS carries the type system's own words (string/int/float/
+  // bool) - technical, not prose, so they are not run through the pipe; only
+  // the "unknown" fallback and the "list" qualifier are real text
   typeLabel(config: GlobalConfig): string {
-    const label = DATA_TYPE_LABELS[config.data_type] || 'unknown';
-    return config.is_slice ? label + ' list' : label;
+    const label = DATA_TYPE_LABELS[config.data_type] || this.translate('modules.globalConfigs.typeUnknown');
+    return config.is_slice ? this.translate('modules.globalConfigs.typeList', {type: label}) : label;
   }
 
   valuePreview(config: GlobalConfig): string {
@@ -133,7 +152,12 @@ export class GlobalConfigsComponent implements OnInit, AfterViewInit {
         this.moduleService.createGlobalConfig(input).subscribe({
           next: (_) => this.load(),
           error: (err) =>
-            this.errorService.handleError(GlobalConfigsComponent.name, 'add', err, 'Creating the global config failed'),
+            this.errorService.handleError(
+              GlobalConfigsComponent.name,
+              'add',
+              err,
+              this.translate('modules.globalConfigs.errors.addFailed'),
+            ),
         });
       });
   }
@@ -149,14 +173,19 @@ export class GlobalConfigsComponent implements OnInit, AfterViewInit {
         this.moduleService.updateGlobalConfig(config.id, input).subscribe({
           next: (_) => this.load(),
           error: (err) =>
-            this.errorService.handleError(GlobalConfigsComponent.name, 'edit', err, 'Saving the global config failed'),
+            this.errorService.handleError(
+              GlobalConfigsComponent.name,
+              'edit',
+              err,
+              this.translate('modules.globalConfigs.errors.editFailed'),
+            ),
         });
       });
   }
 
   delete(config: GlobalConfig) {
     this.utilService
-      .askForConfirmation("Delete global config '" + config.name + "'? Deployments referencing it will lose the value.")
+      .askForConfirmation(this.translate('modules.globalConfigs.confirmDelete', {name: config.name}))
       .pipe(
         concatMap((confirmed) => {
           if (!confirmed) {
@@ -176,7 +205,7 @@ export class GlobalConfigsComponent implements OnInit, AfterViewInit {
             GlobalConfigsComponent.name,
             'delete',
             err,
-            'Deleting the global config failed',
+            this.translate('modules.globalConfigs.errors.deleteFailed'),
           ),
       });
   }

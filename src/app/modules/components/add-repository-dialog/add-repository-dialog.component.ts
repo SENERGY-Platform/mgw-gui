@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {
   MatDialogActions,
   MatDialogClose,
@@ -28,6 +28,7 @@ import {MatButton} from '@angular/material/button';
 import {MatFormField, MatHint, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 
 // The repository definition is passed verbatim to the backend's type handler,
 // so the dialog takes it as JSON (deliberately simple, see SNRGY-4587).
@@ -57,12 +58,18 @@ const GITHUB_TEMPLATE = {
     MatInput,
     MatSelect,
     MatOption,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('modules')],
 })
 export class AddRepositoryDialogComponent {
   repositoryType = 'github.com';
   definitionJson: string = JSON.stringify(GITHUB_TEMPLATE, null, 2);
   error = '';
+
+  // Field injection, not a constructor parameter: new dependencies follow
+  // the prefer-inject rule; the parameters above predate it.
+  private readonly transloco = inject(TranslocoService);
 
   constructor(public dialogRef: MatDialogRef<AddRepositoryDialogComponent>) {}
 
@@ -72,7 +79,7 @@ export class AddRepositoryDialogComponent {
     try {
       definition = JSON.parse(this.definitionJson);
     } catch (err: any) {
-      this.error = 'Invalid JSON: ' + err.message;
+      this.error = this.transloco.translate<string>('modules.addRepositoryDialog.invalidJson', {message: err.message});
       return;
     }
     this.dialogRef.close({type: this.repositoryType, definition: definition});

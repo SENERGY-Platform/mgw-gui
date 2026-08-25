@@ -16,13 +16,13 @@
 
 <div class="mgw-page">
   <mgw-page-header
-    description="Devices and applications paired with this gateway. Each holds its own account."
-    title="Applications"
+    [description]="'system.listApps.description' | transloco"
+    [title]="'system.listApps.title' | transloco"
   >
     <div pageActions>
       <button (click)="openPairing()" mat-flat-button>
         <mat-icon>add</mat-icon>
-        Pair application
+        {{ 'system.listApps.pairApplication' | transloco }}
       </button>
     </div>
   </mgw-page-header>
@@ -34,28 +34,30 @@
   } @else if (dataSource.data.length === 0) {
     <mgw-empty-state
       icon="devices_other"
-      message="Pair an application to give it its own account on this gateway."
-      title="No applications paired"
+      [message]="'system.listApps.empty.message' | transloco"
+      [title]="'system.listApps.empty.title' | transloco"
     >
-      <button (click)="openPairing()" emptyAction mat-flat-button>Pair application</button>
+      <button (click)="openPairing()" emptyAction mat-flat-button>
+        {{ 'system.listApps.pairApplication' | transloco }}
+      </button>
     </mgw-empty-state>
   } @else {
     <div class="mgw-table-card">
       <table [dataSource]="dataSource" mat-table matSort matSortActive="username" matSortDirection="asc">
         <ng-container matColumnDef="username">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header>Application</th>
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'system.listApps.application' | transloco }}</th>
           <td *matCellDef="let app" mat-cell>
             <span class="mgw-cell-primary">{{ app.username }}</span>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="model">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header>Model</th>
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'system.listApps.model' | transloco }}</th>
           <td *matCellDef="let app" mat-cell>{{ app.meta.model || '—' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="manufacturer">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header>Manufacturer</th>
+          <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'system.listApps.manufacturer' | transloco }}</th>
           <td *matCellDef="let app" mat-cell>{{ app.meta.manufacturer || '—' }}</td>
         </ng-container>
 
@@ -63,7 +65,12 @@
           <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
           <td *matCellDef="let app" class="mgw-col-actions" mat-cell>
             <div class="mgw-row-actions">
-              <button (click)="deleteUser(app.id)" class="danger-icon" mat-icon-button matTooltip="Remove">
+              <button
+                (click)="deleteUser(app.id)"
+                class="danger-icon"
+                mat-icon-button
+                [matTooltip]="'system.listApps.remove' | transloco"
+              >
                 <mat-icon>delete</mat-icon>
               </button>
             </div>

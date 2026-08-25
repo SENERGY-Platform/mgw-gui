@@ -1,7 +1,7 @@
 <div class="mgw-page">
   <mgw-page-header
-    description="Long-running operations the gateway performed. Deployment and module changes run as jobs."
-    title="Jobs"
+    [description]="'system.jobs.description' | transloco"
+    [title]="'system.jobs.title' | transloco"
   ></mgw-page-header>
 
   <list-job source="module-manager"></list-job>

@@ -1,18 +1,18 @@
 <section class="service-group">
   <header class="group-head">
-    <h2>Container services</h2>
+    <h2>{{ 'system.containerList.title' | transloco }}</h2>
     <span class="count">{{ dataSource.data.length }}</span>
   </header>
 
   <spinner [show]="!ready && init"></spinner>
 
   @if (ready && dataSource.data.length === 0) {
-    <p class="none">No container services found.</p>
+    <p class="none">{{ 'system.containerList.empty' | transloco }}</p>
   } @else if (dataSource.data.length > 0) {
     <div class="mgw-table-card">
       <table [dataSource]="dataSource" mat-table>
         <ng-container matColumnDef="name">
-          <th *matHeaderCellDef mat-header-cell>Service</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'system.containerList.service' | transloco }}</th>
           <td *matCellDef="let service" mat-cell>
             <div class="mgw-cell-stack">
               <span class="mgw-cell-primary">{{ service.name }}</span>
@@ -22,14 +22,14 @@
         </ng-container>
 
         <ng-container matColumnDef="status">
-          <th *matHeaderCellDef mat-header-cell>Status</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'system.containerList.status' | transloco }}</th>
           <td *matCellDef="let service" mat-cell>
-            <mgw-status-pill [label]="stateLabel(service)" [tone]="stateTone(service)"></mgw-status-pill>
+            <mgw-status-pill [label]="stateLabel(service) | transloco" [tone]="stateTone(service)"></mgw-status-pill>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="version">
-          <th *matHeaderCellDef mat-header-cell>Version</th>
+          <th *matHeaderCellDef mat-header-cell>{{ 'system.containerList.version' | transloco }}</th>
           <td *matCellDef="let service" mat-cell>{{ service.image.tag }}</td>
         </ng-container>
 
@@ -37,10 +37,18 @@
           <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
           <td *matCellDef="let service" class="mgw-col-actions" mat-cell>
             <div class="mgw-row-actions">
-              <button (click)="showLogs(service.container.id)" mat-icon-button matTooltip="Show log">
+              <button
+                (click)="showLogs(service.container.id)"
+                mat-icon-button
+                [matTooltip]="'system.containerList.showLog' | transloco"
+              >
                 <mat-icon>article</mat-icon>
               </button>
-              <button (click)="restart(service.name)" mat-icon-button matTooltip="Restart service">
+              <button
+                (click)="restart(service.name)"
+                mat-icon-button
+                [matTooltip]="'system.containerList.restartService' | transloco"
+              >
                 <mat-icon>restart_alt</mat-icon>
               </button>
             </div>

@@ -7,6 +7,7 @@ import {UtilService} from 'src/app/core/services/util/util.service';
 import {FormsModule} from '@angular/forms';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 import {LogViewerComponent} from 'src/app/core/components/log-viewer/log-viewer.component';
@@ -15,7 +16,17 @@ import {LogViewerComponent} from 'src/app/core/components/log-viewer/log-viewer.
   selector: 'app-logs',
   templateUrl: './logs.component.html',
   styleUrls: ['./logs.component.css'],
-  imports: [MatSlideToggle, FormsModule, MatFormField, MatLabel, MatInput, LogViewerComponent, PageHeaderComponent],
+  imports: [
+    MatSlideToggle,
+    FormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    LogViewerComponent,
+    PageHeaderComponent,
+    TranslocoPipe,
+  ],
+  providers: [provideTranslocoScope('container')],
 })
 export class LogsComponent implements OnDestroy {
   containerID!: string;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, inject, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {
   MatCell,
@@ -44,6 +44,7 @@ import {MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 import {StatusPillComponent, StatusTone} from 'src/app/core/components/status-pill/status-pill.component';
 import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
@@ -93,7 +94,9 @@ interface VariantOption {
     PageHeaderComponent,
     StatusPillComponent,
     EmptyStateComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('modules')],
 })
 export class ManageComponent implements OnInit {
   dataSource = new MatTableDataSource<RepoModule>();
@@ -117,12 +120,20 @@ export class ManageComponent implements OnInit {
   variantOptionsById: Record<string, VariantOption[]> = {};
   pendingRequest: ModulesChangeRequest | null = null;
 
+  // Field injection, not a constructor parameter: new dependencies follow
+  // the prefer-inject rule; the parameters above predate it.
+  private readonly transloco = inject(TranslocoService);
+
   constructor(
     public dialog: MatDialog,
     @Inject('ModuleManagerService') private moduleService: ModuleManagerService,
     private errorService: ErrorService,
     private utilService: UtilService,
   ) {}
+
+  private translate(key: string, params?: Record<string, unknown>): string {
+    return this.transloco.translate<string>(key, params);
+  }
 
   ngOnInit(): void {
     this.load();
@@ -156,7 +167,12 @@ export class ManageComponent implements OnInit {
           this.ready = true;
         },
         error: (err) => {
-          this.errorService.handleError(ManageComponent.name, 'load', err, 'Loading the module catalog failed');
+          this.errorService.handleError(
+            ManageComponent.name,
+            'load',
+            err,
+            this.translate('modules.manage.errors.loadFailed'),
+          );
           this.ready = true;
         },
       });
@@ -188,11 +204,14 @@ export class ManageComponent implements OnInit {
     return module.installed_variant.next_version ? 'warn' : 'ok';
   }
 
+  // a translation key, not display text - the template applies the pipe
   statusLabel(module: RepoModule): string {
     if (!module.is_installed) {
-      return 'Available';
+      return 'modules.manage.statuses.available';
     }
-    return module.installed_variant.next_version ? 'Update available' : 'Installed';
+    return module.installed_variant.next_version
+      ? 'modules.manage.statuses.updateAvailable'
+      : 'modules.manage.statuses.installed';
   }
 
   // label of the button that applies the currently selected intent
@@ -267,6 +286,8 @@ export class ManageComponent implements OnInit {
     delete this.cart[moduleID];
   }
 
+  // the technical value: also drives the [attr.data-action] binding the CSS
+  // selects on, so it stays an untranslated literal
   cartAction(moduleID: string): string {
     const item = this.cart[moduleID];
     if (!item) {
@@ -281,8 +302,27 @@ export class ManageComponent implements OnInit {
     return 'install';
   }
 
+  // a translation key for the same intent, for display - the template
+  // applies the pipe
+  cartActionLabel(moduleID: string): string {
+    switch (this.cartAction(moduleID)) {
+      case 'remove':
+        return 'modules.manage.cartActions.remove';
+      case 'update':
+        return 'modules.manage.cartActions.update';
+      default:
+        return 'modules.manage.cartActions.install';
+    }
+  }
+
   cartCount(): number {
     return Object.keys(this.cart).length;
+  }
+
+  // a translation key with a `.one`/`.other` form - see the README section on
+  // plurals
+  stagedCountKey(): string {
+    return `modules.manage.staged.${this.cartCount() === 1 ? 'one' : 'other'}`;
   }
 
   clearCart() {
@@ -308,7 +348,7 @@ export class ManageComponent implements OnInit {
           ManageComponent.name,
           'createAndReview',
           err,
-          'Creating the change request failed',
+          this.translate('modules.manage.errors.createChangeRequestFailed'),
         );
       },
     });
@@ -338,7 +378,12 @@ export class ManageComponent implements OnInit {
       .executeModulesChangeRequest()
       .pipe(
         concatMap((job) => {
-          return this.utilService.checkJobStatus(job.id, 'Applying module changes', 'module-manager', 'modules-change');
+          return this.utilService.checkJobStatus(
+            job.id,
+            this.translate('modules.manage.jobs.applying'),
+            'module-manager',
+            'modules-change',
+          );
         }),
       )
       .subscribe({
@@ -346,9 +391,9 @@ export class ManageComponent implements OnInit {
           // the job succeeds even if single modules failed
           if (jobResult?.result) {
             this.utilService.presentJobResult(
-              'Module changes',
+              this.translate('modules.manage.moduleChanges'),
               mapModulesChangeResult(jobResult.result),
-              'Module changes applied',
+              this.translate('modules.manage.jobs.applied'),
             );
           }
           this.pendingRequest = null;
@@ -360,7 +405,7 @@ export class ManageComponent implements OnInit {
             ManageComponent.name,
             'executeRequest',
             err,
-            'Applying the module changes failed',
+            this.translate('modules.manage.errors.applyFailed'),
           );
           this.ready = true;
         },
@@ -377,7 +422,7 @@ export class ManageComponent implements OnInit {
           ManageComponent.name,
           'discardRequest',
           err,
-          'Discarding the change request failed',
+          this.translate('modules.manage.errors.discardFailed'),
         );
       },
     });
@@ -406,7 +451,7 @@ export class ManageComponent implements OnInit {
         concatMap((job) => {
           return this.utilService.checkJobStatus(
             job.id,
-            'Refreshing repositories',
+            this.translate('modules.manage.jobs.refreshing'),
             'module-manager',
             'repositories-refresh',
           );
@@ -416,9 +461,9 @@ export class ManageComponent implements OnInit {
         next: (jobResult) => {
           if (jobResult?.result) {
             this.utilService.presentJobResult(
-              'Repository refresh',
+              this.translate('modules.manage.repositoryRefresh'),
               mapRepositoryRefreshResult(jobResult.result),
-              'Repositories refreshed',
+              this.translate('modules.manage.jobs.refreshed'),
             );
           }
           // a refresh discards the pending change request
@@ -426,7 +471,12 @@ export class ManageComponent implements OnInit {
           this.load();
         },
         error: (err) => {
-          this.errorService.handleError(ManageComponent.name, 'runRefresh', err, 'Refreshing the repositories failed');
+          this.errorService.handleError(
+            ManageComponent.name,
+            'runRefresh',
+            err,
+            this.translate('modules.manage.errors.refreshFailed'),
+          );
           this.ready = true;
         },
       });

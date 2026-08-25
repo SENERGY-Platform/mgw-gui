@@ -19,28 +19,27 @@
 
   @if (ready) {
     <mgw-page-header
-      [description]="
-        modules.length > 1
-          ? 'Change the values of ' + modules.length + ' deployments. They are saved as one job.'
-          : 'Change the values of this deployment. Saving recreates the containers.'
-      "
-      [title]="modules.length > 1 ? 'Edit deployments' : 'Edit deployment'"
+      [description]="descriptionKey() | transloco: {count: modules.length}"
+      [title]="titleKey() | transloco"
       backTo="/modules"
     ></mgw-page-header>
 
     @if (updatePending()) {
       <div class="mgw-notice warn">
         <mat-icon>upgrade</mat-icon>
-        <span
-          >At least one installed module is newer than the version its deployment was created for. Saving applies that
-          update to the deployment.</span
-        >
+        <span>{{ 'deployments.editDeployment.updateNotice' | transloco }}</span>
       </div>
     }
 
     @if (modules.length === 0) {
-      <mgw-empty-state icon="info" message="None of the selected modules has a deployment." title="Nothing to edit">
-        <button [routerLink]="'/modules'" emptyAction mat-stroked-button>Back to modules</button>
+      <mgw-empty-state
+        [message]="'deployments.editDeployment.noneEditableMessage' | transloco"
+        [title]="'deployments.editDeployment.nothingToEdit' | transloco"
+        icon="info"
+      >
+        <button [routerLink]="'/modules'" emptyAction mat-stroked-button>
+          {{ 'deployments.editDeployment.backToModules' | transloco }}
+        </button>
       </mgw-empty-state>
     }
 
@@ -56,10 +55,12 @@
 
     @if (modules.length > 0) {
       <div class="mgw-action-bar">
-        <button (click)="cancel()" [disabled]="submitting" mat-button>Cancel</button>
+        <button (click)="cancel()" [disabled]="submitting" mat-button>
+          {{ 'deployments.editDeployment.cancel' | transloco }}
+        </button>
         <button (click)="submit()" [disabled]="submitting" mat-flat-button>
           <mat-icon>save</mat-icon>
-          Save
+          {{ 'deployments.editDeployment.save' | transloco }}
         </button>
       </div>
     }

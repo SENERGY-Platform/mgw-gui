@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, inject, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {ModuleManagerService} from 'src/app/core/services/module-manager/module-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
@@ -29,6 +29,7 @@ import {MatIcon} from '@angular/material/icon';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatDivider} from '@angular/material/divider';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {concatMap, Observable, of} from 'rxjs';
 import {DEPLOYMENT_STATE_HEALTHY, DEPLOYMENT_STATE_UNHEALTHY, ModuleInfo} from 'src/app/core/models/modules';
 import {AuxContainer} from 'src/app/core/models/aux-deployments';
@@ -62,7 +63,9 @@ import {StatusPillComponent, StatusTone} from 'src/app/core/components/status-pi
     AuxDeploymentsListComponent,
     PageHeaderComponent,
     StatusPillComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('modules')],
 })
 export class InfoComponent implements OnInit, OnDestroy {
   module!: ModuleInfo;
@@ -71,6 +74,10 @@ export class InfoComponent implements OnInit, OnDestroy {
 
   private interval: any;
 
+  // Field injection, not a constructor parameter: new dependencies follow
+  // the prefer-inject rule; the parameters above predate it.
+  private readonly transloco = inject(TranslocoService);
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -78,6 +85,10 @@ export class InfoComponent implements OnInit, OnDestroy {
     private errorService: ErrorService,
     private utilService: UtilService,
   ) {}
+
+  private translate(key: string, params?: Record<string, unknown>): string {
+    return this.transloco.translate<string>(key, params);
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -104,7 +115,12 @@ export class InfoComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         if (!background) {
-          this.errorService.handleError(InfoComponent.name, 'load', err, 'Loading the module failed');
+          this.errorService.handleError(
+            InfoComponent.name,
+            'load',
+            err,
+            this.translate('modules.info.errors.loadFailed'),
+          );
         }
         this.ready = true;
       },
@@ -130,20 +146,21 @@ export class InfoComponent implements OnInit, OnDestroy {
     }
   }
 
+  // a translation key, not display text - the template applies the pipe
   deploymentStateLabel(): string {
     if (!this.module.is_deployed) {
-      return 'Not deployed';
+      return 'modules.info.statuses.notDeployed';
     }
     if (!this.module.deployment.enabled) {
-      return 'Stopped';
+      return 'modules.info.statuses.stopped';
     }
     switch (this.module.deployment.state) {
       case DEPLOYMENT_STATE_HEALTHY:
-        return 'Running';
+        return 'modules.info.statuses.running';
       case DEPLOYMENT_STATE_UNHEALTHY:
-        return 'Unhealthy';
+        return 'modules.info.statuses.unhealthy';
       default:
-        return 'Unknown';
+        return 'modules.info.statuses.unknown';
     }
   }
 
@@ -157,9 +174,12 @@ export class InfoComponent implements OnInit, OnDestroy {
     return container.state ? 'idle' : 'danger';
   }
 
+  // 'missing' is a translation key; the container state/health themselves are
+  // raw backend values, not prose, so they pass through the pipe untranslated
+  // (see ListJobTable.sourceLabel for the same fallback pattern)
   containerLabel(container: AuxContainer): string {
     if (!container.state) {
-      return 'missing';
+      return 'modules.info.containerMissing';
     }
     return container.health ? container.state + ' · ' + container.health : container.state;
   }
@@ -187,28 +207,36 @@ export class InfoComponent implements OnInit, OnDestroy {
   }
 
   start() {
-    this.runSync(this.moduleService.enableDeployments([this.moduleID]), 'start', 'Starting the deployment failed');
+    this.runSync(
+      this.moduleService.enableDeployments([this.moduleID]),
+      'start',
+      this.translate('modules.info.errors.startFailed'),
+    );
   }
 
   stop() {
-    this.runSync(this.moduleService.disableDeployments([this.moduleID]), 'stop', 'Stopping the deployment failed');
+    this.runSync(
+      this.moduleService.disableDeployments([this.moduleID]),
+      'stop',
+      this.translate('modules.info.errors.stopFailed'),
+    );
   }
 
   recreate() {
     this.runJob(
       this.moduleService.recreateDeployments([this.moduleID]),
-      'Deployment is recreating',
+      this.translate('modules.info.jobs.recreating'),
       'deployments',
       'recreate',
-      'Recreate containers',
-      'Containers recreated',
-      'Recreating the containers failed',
+      this.translate('modules.info.recreateContainers'),
+      this.translate('modules.info.jobs.recreated'),
+      this.translate('modules.info.errors.recreateFailed'),
     );
   }
 
   deleteDeployment() {
     this.utilService
-      .askForConfirmation('Delete the deployment of ' + this.module.name + '? Data stored in volumes will be removed.')
+      .askForConfirmation(this.translate('modules.info.confirmDelete', {name: this.module.name}))
       .pipe(
         concatMap((confirmed) => {
           if (!confirmed) {
@@ -216,12 +244,12 @@ export class InfoComponent implements OnInit, OnDestroy {
           }
           this.runJob(
             this.moduleService.removeDeployments([this.moduleID]),
-            'Deployment is being deleted',
+            this.translate('modules.info.jobs.deleting'),
             'deployments-delete',
             'delete',
-            'Delete deployment',
-            'Deployment deleted',
-            'Deleting the deployment failed',
+            this.translate('modules.info.deleteDeployment'),
+            this.translate('modules.info.jobs.deleted'),
+            this.translate('modules.info.errors.deleteFailed'),
           );
           return of(true);
         }),

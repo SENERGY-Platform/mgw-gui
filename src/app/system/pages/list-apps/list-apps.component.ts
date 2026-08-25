@@ -1,4 +1,4 @@
-import {Component, ViewChild, OnInit} from '@angular/core';
+import {Component, ViewChild, OnInit, inject} from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import {
   MatCell,
@@ -27,6 +27,7 @@ import {MatSortHeader} from '@angular/material/sort';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {MatIcon} from '@angular/material/icon';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-list-apps',
@@ -52,9 +53,15 @@ import {MatIcon} from '@angular/material/icon';
     MatRow,
     PageHeaderComponent,
     EmptyStateComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('system')],
 })
 export class ListAppsComponent implements OnInit {
+  // Resolved directly rather than through the `transloco` pipe: `showError`
+  // below takes a plain string, with no template binding a pipe could sit on.
+  private readonly transloco = inject(TranslocoService);
+
   dataSource = new MatTableDataSource<DeviceUser>();
   ready = false;
   init = true;
@@ -134,7 +141,7 @@ export class ListAppsComponent implements OnInit {
   openPairing() {
     this.userService.openPairingMode().subscribe({
       next: (_) => {
-        this.notifierService.showError('MGW open for pairing!');
+        this.notifierService.showError(this.transloco.translate<string>('system.listApps.pairingOpened'));
       },
       error: (err) => {
         this.errorService.handleError(ListAppsComponent.name, 'openPairing', err);

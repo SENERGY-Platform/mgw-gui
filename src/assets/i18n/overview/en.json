@@ -1,0 +1,45 @@
+{
+  "page": {
+    "title": "Overview",
+    "description": "State of the modules installed on this gateway and of the gateway itself."
+  },
+  "actions": {
+    "refresh": "Refresh",
+    "installModules": "Install modules"
+  },
+  "stats": {
+    "running": "Running",
+    "unhealthy": "Unhealthy",
+    "stopped": "Stopped",
+    "updates": "Updates",
+    "deployedOf": "of {{count}} deployments",
+    "unknownState": "{{count}} in an unknown state",
+    "notDeployed": "{{count}} not deployed",
+    "modulesInstalled": "{{count}} modules installed"
+  },
+  "attention": {
+    "heading": "Needs attention",
+    "openCount": "{{count}} open",
+    "empty": "Nothing to do — every deployment is healthy and up to date.",
+    "unhealthy": "The deployment is running but reports an unhealthy state.",
+    "moduleError": "The module was loaded with errors.",
+    "updateAvailable": "Installed {{installed}}, deployed {{deployed}} — edit the deployment to apply the change.",
+    "updatesAvailableTitle": {
+      "one": "{{count}} module update available",
+      "other": "{{count}} module updates available"
+    },
+    "newVersionsFound": "New versions were found in the configured repositories."
+  },
+  "services": {
+    "heading": "Gateway services",
+    "details": "Details",
+    "none": "No service information available.",
+    "unknownState": "unknown"
+  },
+  "jobs": {
+    "heading": "Active jobs",
+    "all": "All jobs",
+    "none": "No job is running.",
+    "runningStatus": "running"
+  }
+}

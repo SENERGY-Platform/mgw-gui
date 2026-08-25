@@ -28,31 +28,34 @@
   @if (!hasInputs()) {
     <p class="no-inputs">
       <mat-icon>check_circle</mat-icon>
-      This module needs no configuration.
+      {{ 'deployments.form.noInputs' | transloco }}
     </p>
   } @else {
-    <p class="required-legend"><span class="required" title="Required">*</span> Required</p>
+    <p class="required-legend">
+      <span class="required" [title]="'deployments.form.required' | transloco">*</span>
+      {{ 'deployments.form.required' | transloco }}
+    </p>
   }
 
   @for (group of configGroups; track group.label) {
     <section class="group">
-      <h3>{{ group.label || 'Configuration' }}</h3>
+      <h3>{{ group.label || ('deployments.form.defaultGroup' | transloco) }}</h3>
       @for (row of group.rows; track row.ref) {
         <div class="field">
           <div class="field-head">
             <label [attr.for]="'cfg-' + row.ref">
               {{ row.input.name }}
               @if (row.required) {
-                <span class="required" title="Required">*</span>
+                <span class="required" [title]="'deployments.form.required' | transloco">*</span>
               }
             </label>
             @if (row.matchingGlobals.length > 0) {
               <mat-slide-toggle
                 [(ngModel)]="row.useGlobal"
+                [matTooltip]="'deployments.form.globalConfigHint' | transloco"
                 class="global-toggle"
-                matTooltip="Reference a global config instead of entering a value here"
               >
-                Global config
+                {{ 'deployments.form.globalConfigLabel' | transloco }}
               </mat-slide-toggle>
             }
           </div>
@@ -62,7 +65,11 @@
 
           @if (row.useGlobal) {
             <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-              <mat-select [(ngModel)]="row.globalConfigId" [id]="'cfg-' + row.ref" placeholder="Select a global config">
+              <mat-select
+                [(ngModel)]="row.globalConfigId"
+                [id]="'cfg-' + row.ref"
+                [placeholder]="'deployments.form.selectGlobalConfig' | transloco"
+              >
                 @for (gc of row.matchingGlobals; track gc.id) {
                   <mat-option [value]="gc.id">{{ gc.name }}</mat-option>
                 }
@@ -72,7 +79,7 @@
             <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
               <textarea [(ngModel)]="row.raw" [id]="'cfg-' + row.ref" matInput rows="3"></textarea>
               @if (!row.input.description) {
-                <mat-hint>One value per line</mat-hint>
+                <mat-hint>{{ 'deployments.form.oneValuePerLine' | transloco }}</mat-hint>
               }
             </mat-form-field>
           } @else if (row.config.data_type === 'bool') {
@@ -100,7 +107,9 @@
                 matInput
               />
               @if (row.config.options && row.config.options.length > 0) {
-                <mat-hint>Suggested: {{ row.config.options.join(', ') }}</mat-hint>
+                <mat-hint>{{
+                  'deployments.form.suggested' | transloco: {options: row.config.options.join(', ')}
+                }}</mat-hint>
               }
             </mat-form-field>
           }
@@ -118,14 +127,14 @@
 
   @if (resourceRows.length > 0) {
     <section class="group">
-      <h3>Host resources</h3>
+      <h3>{{ 'deployments.form.hostResources' | transloco }}</h3>
       @for (row of resourceRows; track row.ref) {
         <div class="field">
           <div class="field-head">
             <label [attr.for]="'res-' + row.ref">
               {{ row.input.name }}
               @if (row.required) {
-                <span class="required" title="Required">*</span>
+                <span class="required" [title]="'deployments.form.required' | transloco">*</span>
               }
             </label>
           </div>
@@ -133,8 +142,12 @@
             <p class="field-desc">{{ row.input.description }}</p>
           }
           <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-            <mat-select [(ngModel)]="row.selectedId" [id]="'res-' + row.ref" placeholder="None">
-              <mat-option value="">None</mat-option>
+            <mat-select
+              [(ngModel)]="row.selectedId"
+              [id]="'res-' + row.ref"
+              [placeholder]="'deployments.form.none' | transloco"
+            >
+              <mat-option value="">{{ 'deployments.form.none' | transloco }}</mat-option>
               @for (resource of hostResources; track resource.id) {
                 <mat-option [value]="resource.id">{{ resource.name }} ({{ resource.path }})</mat-option>
               }
@@ -153,14 +166,14 @@
 
   @if (secretRows.length > 0) {
     <section class="group">
-      <h3>Secrets</h3>
+      <h3>{{ 'deployments.form.secrets' | transloco }}</h3>
       @for (row of secretRows; track row.ref) {
         <div class="field">
           <div class="field-head">
             <label [attr.for]="'sec-' + row.ref">
               {{ row.input.name }}
               @if (row.required) {
-                <span class="required" title="Required">*</span>
+                <span class="required" [title]="'deployments.form.required' | transloco">*</span>
               }
             </label>
             @if (row.type) {
@@ -171,8 +184,12 @@
             <p class="field-desc">{{ row.input.description }}</p>
           }
           <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-            <mat-select [(ngModel)]="row.selectedId" [id]="'sec-' + row.ref" placeholder="None">
-              <mat-option value="">None</mat-option>
+            <mat-select
+              [(ngModel)]="row.selectedId"
+              [id]="'sec-' + row.ref"
+              [placeholder]="'deployments.form.none' | transloco"
+            >
+              <mat-option value="">{{ 'deployments.form.none' | transloco }}</mat-option>
               @for (secret of secretOptionsFor(row); track secret.id) {
                 <mat-option [value]="secret.id">{{ secret.name }}</mat-option>
               }
@@ -191,18 +208,18 @@
 
   @if (fileRows.length > 0) {
     <section class="group">
-      <h3>Files</h3>
+      <h3>{{ 'deployments.form.files' | transloco }}</h3>
       @for (row of fileRows; track row.ref) {
         <div class="field">
           <div class="field-head">
             <label [attr.for]="'file-' + row.ref">
               {{ row.input.name }}
               @if (row.required) {
-                <span class="required" title="Required">*</span>
+                <span class="required" [title]="'deployments.form.required' | transloco">*</span>
               }
             </label>
             @if (row.hasDefault) {
-              <span class="type-tag">module default</span>
+              <span class="type-tag">{{ 'deployments.form.moduleDefault' | transloco }}</span>
             }
           </div>
           @if (row.input.description) {
@@ -225,7 +242,7 @@
 
   @if (fileGroupRows.length > 0) {
     <section class="group">
-      <h3>File groups</h3>
+      <h3>{{ 'deployments.form.fileGroups' | transloco }}</h3>
       @for (row of fileGroupRows; track row.ref) {
         <div class="field">
           <div class="field-head">
@@ -238,17 +255,21 @@
           @for (file of row.files; track file; let i = $index) {
             <div class="group-file">
               <div class="group-file-head">
-                <span class="group-file-index">File {{ i + 1 }}</span>
-                <button (click)="removeGroupFile(row, i)" mat-icon-button matTooltip="Remove file">
+                <span class="group-file-index">{{ 'deployments.form.fileIndex' | transloco: {index: i + 1} }}</span>
+                <button
+                  (click)="removeGroupFile(row, i)"
+                  [matTooltip]="'deployments.form.removeFile' | transloco"
+                  mat-icon-button
+                >
                   <mat-icon>delete</mat-icon>
                 </button>
               </div>
               <div class="group-file-meta">
                 <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                  <input [(ngModel)]="file.path" matInput placeholder="Path" />
+                  <input [(ngModel)]="file.path" [placeholder]="'deployments.form.path' | transloco" matInput />
                 </mat-form-field>
                 <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                  <input [(ngModel)]="file.format" matInput placeholder="Format" />
+                  <input [(ngModel)]="file.format" [placeholder]="'deployments.form.format' | transloco" matInput />
                 </mat-form-field>
               </div>
               <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
@@ -259,7 +280,7 @@
 
           <button (click)="addGroupFile(row)" mat-stroked-button>
             <mat-icon>add</mat-icon>
-            Add file
+            {{ 'deployments.form.addFile' | transloco }}
           </button>
 
           @if (row.error) {

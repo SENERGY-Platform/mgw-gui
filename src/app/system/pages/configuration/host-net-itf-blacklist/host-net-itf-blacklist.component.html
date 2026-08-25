@@ -1,22 +1,29 @@
 <section class="config-group">
   <header class="group-head">
     <div>
-      <h2>Blocked network interfaces</h2>
-      <p>Host interfaces that modules must not bind to.</p>
+      <h2>{{ 'system.hostNetItfBlacklist.title' | transloco }}</h2>
+      <p>{{ 'system.hostNetItfBlacklist.description' | transloco }}</p>
     </div>
     <button (click)="addNetInterface()" mat-stroked-button>
       <mat-icon>add</mat-icon>
-      Add
+      {{ 'system.hostNetItfBlacklist.add' | transloco }}
     </button>
   </header>
 
   @if (dataSource.data.length === 0) {
-    <p class="none">No interface is blocked.</p>
+    <p class="none">{{ 'system.hostNetItfBlacklist.empty' | transloco }}</p>
   } @else {
     <div class="mgw-table-card">
       <table [dataSource]="dataSource" mat-table matSort>
         <ng-container matColumnDef="name">
-          <th *matHeaderCellDef mat-header-cell mat-sort-header sortActionDescription="Sort by name">Interface</th>
+          <th
+            *matHeaderCellDef
+            mat-header-cell
+            mat-sort-header
+            [sortActionDescription]="'system.hostNetItfBlacklist.sortByName' | transloco"
+          >
+            {{ 'system.hostNetItfBlacklist.interface' | transloco }}
+          </th>
           <td *matCellDef="let element" class="mgw-mono" mat-cell>{{ element }}</td>
         </ng-container>
 
@@ -28,7 +35,7 @@
                 (click)="removeNetInterface(element)"
                 class="danger-icon"
                 mat-icon-button
-                matTooltip="Remove from blocklist"
+                [matTooltip]="'system.hostNetItfBlacklist.removeFromBlocklist' | transloco"
               >
                 <mat-icon>delete</mat-icon>
               </button>

@@ -17,6 +17,14 @@
 import {ModuleWithProviders} from '@angular/core';
 import {TranslocoTestingModule} from '@jsverse/transloco';
 import coreEn from 'src/assets/i18n/core/en.json';
+import modulesEn from 'src/assets/i18n/modules/en.json';
+import containerEn from 'src/assets/i18n/container/en.json';
+import developerEn from 'src/assets/i18n/developer/en.json';
+import deploymentsEn from 'src/assets/i18n/deployments/en.json';
+import secretsEn from 'src/assets/i18n/secrets/en.json';
+import authEn from 'src/assets/i18n/auth/en.json';
+import overviewEn from 'src/assets/i18n/overview/en.json';
+import systemEn from 'src/assets/i18n/system/en.json';
 
 /**
  * The real translation file for every scope a spec can ask for, keyed the
@@ -29,7 +37,15 @@ import coreEn from 'src/assets/i18n/core/en.json';
  * the "Mehrsprachigkeit" section of the project README for the convention.
  */
 const SCOPED_TRANSLATIONS: Readonly<Record<string, object>> = {
+  'auth/en': authEn,
   'core/en': coreEn,
+  'container/en': containerEn,
+  'deployments/en': deploymentsEn,
+  'developer/en': developerEn,
+  'modules/en': modulesEn,
+  'overview/en': overviewEn,
+  'secrets/en': secretsEn,
+  'system/en': systemEn,
 };
 
 /**

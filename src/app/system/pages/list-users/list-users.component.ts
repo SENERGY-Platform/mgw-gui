@@ -27,6 +27,7 @@ import {MatSortHeader} from '@angular/material/sort';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {MatIcon} from '@angular/material/icon';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-list-users',
@@ -53,7 +54,9 @@ import {MatIcon} from '@angular/material/icon';
     RouterLink,
     PageHeaderComponent,
     EmptyStateComponent,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('system')],
 })
 export class ListUsersComponent implements OnInit {
   dataSource = new MatTableDataSource<HumanUser>();

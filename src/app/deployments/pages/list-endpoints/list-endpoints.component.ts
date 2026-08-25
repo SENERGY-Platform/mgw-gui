@@ -14,6 +14,7 @@ import {SpinnerComponent} from '../../../core/components/spinner/spinner.compone
 import {MatIcon} from '@angular/material/icon';
 import {MatButton} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
+import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {PageHeaderComponent} from '../../../core/components/page-header/page-header.component';
 import {EmptyStateComponent} from '../../../core/components/empty-state/empty-state.component';
 import {ListEndpointsComponent as ListEndpointsComponent_1} from '../../../core/components/list-endpoints/list-endpoints.component';
@@ -30,7 +31,9 @@ import {ListEndpointsComponent as ListEndpointsComponent_1} from '../../../core/
     PageHeaderComponent,
     EmptyStateComponent,
     ListEndpointsComponent_1,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('deployments')],
 })
 export class ListEndpointsComponent implements OnInit {
   deploymentIDs: string[] = [];

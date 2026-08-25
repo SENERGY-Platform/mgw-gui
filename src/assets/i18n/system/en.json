@@ -1,0 +1,134 @@
+{
+  "configuration": {
+    "title": "Configuration",
+    "description": "Host-level settings of the gateway: which host applications modules may reach, and which network interfaces and ranges are off limits."
+  },
+  "hostApplications": {
+    "title": "Host applications",
+    "description": "Applications on the host that a module may talk to through a socket.",
+    "add": "Add",
+    "empty": "No host applications configured.",
+    "name": "Name",
+    "socketPath": "Socket path",
+    "sortByName": "Sort by name",
+    "sortBySocket": "Sort by socket",
+    "removeApplication": "Remove application",
+    "addDialog": {
+      "title": "Add host application",
+      "name": "Name",
+      "socketPath": "Socket path",
+      "cancel": "Cancel",
+      "add": "Add"
+    }
+  },
+  "hostNetItfBlacklist": {
+    "title": "Blocked network interfaces",
+    "description": "Host interfaces that modules must not bind to.",
+    "add": "Add",
+    "empty": "No interface is blocked.",
+    "interface": "Interface",
+    "sortByName": "Sort by name",
+    "removeFromBlocklist": "Remove from blocklist",
+    "addDialog": {
+      "title": "Add host network interface",
+      "name": "Name",
+      "cancel": "Cancel",
+      "add": "Add"
+    }
+  },
+  "hostNetRngBlacklist": {
+    "title": "Blocked network ranges",
+    "description": "Address ranges modules must not reach.",
+    "add": "Add",
+    "empty": "No range is blocked.",
+    "range": "Range",
+    "sortByRange": "Sort by range",
+    "removeFromBlocklist": "Remove from blocklist",
+    "addDialog": {
+      "title": "Add host network range",
+      "range": "Range",
+      "cancel": "Cancel",
+      "add": "Add"
+    }
+  },
+  "register": {
+    "title": "Add user",
+    "description": "Create a user account that can sign in to this gateway.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "username": "Username",
+    "usernameHint": "Used to sign in.",
+    "password": "Password",
+    "cancel": "Cancel",
+    "create": "Create account"
+  },
+  "editAccount": {
+    "title": "Change password",
+    "description": "Set a new password for this account.",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "passwordMismatch": "Password does not match",
+    "cancel": "Cancel",
+    "save": "Save password"
+  },
+  "jobs": {
+    "title": "Jobs",
+    "description": "Long-running operations the gateway performed. Deployment and module changes run as jobs."
+  },
+  "listApps": {
+    "title": "Applications",
+    "description": "Devices and applications paired with this gateway. Each holds its own account.",
+    "pairApplication": "Pair application",
+    "application": "Application",
+    "model": "Model",
+    "manufacturer": "Manufacturer",
+    "remove": "Remove",
+    "pairingOpened": "MGW open for pairing!",
+    "empty": {
+      "title": "No applications paired",
+      "message": "Pair an application to give it its own account on this gateway."
+    }
+  },
+  "listUsers": {
+    "title": "Users",
+    "description": "People who can sign in to this gateway.",
+    "addUser": "Add user",
+    "user": "User",
+    "edit": "Edit",
+    "delete": "Delete",
+    "empty": {
+      "title": "No users",
+      "message": "No user accounts exist on this gateway yet."
+    }
+  },
+  "services": {
+    "title": "System status",
+    "description": "Services that make up the gateway itself — the containers of the core installation and the natively installed components."
+  },
+  "containerList": {
+    "title": "Container services",
+    "empty": "No container services found.",
+    "service": "Service",
+    "status": "Status",
+    "version": "Version",
+    "showLog": "Show log",
+    "restartService": "Restart service",
+    "unknownState": "unknown",
+    "reloadServiceMessage": "Reload service {{name}}"
+  },
+  "nativeList": {
+    "title": "Native services",
+    "empty": "No native services found.",
+    "service": "Service",
+    "version": "Version",
+    "showLog": "Show log",
+    "notAvailable": "n/a"
+  },
+  "nativeLog": {
+    "title": "Log",
+    "description": "Most recent output. Increase the line count to look further back.",
+    "autoRefresh": "Auto refresh",
+    "lines": "Lines",
+    "loading": "Loading log…"
+  }
+}

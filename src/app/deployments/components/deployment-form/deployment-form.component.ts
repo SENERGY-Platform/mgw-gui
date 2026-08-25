@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, inject} from '@angular/core';
 
 import {FormsModule} from '@angular/forms';
 import {MatFormField, MatHint} from '@angular/material/form-field';
@@ -24,6 +24,7 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {MatTooltip} from '@angular/material/tooltip';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {
   decodeFileData,
   DeploymentRequestModule,
@@ -117,9 +118,17 @@ interface ConfigGroup {
     MatIconButton,
     MatIcon,
     MatTooltip,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('deployments')],
 })
 export class DeploymentFormComponent implements OnInit {
+  // Resolved directly rather than through the `transloco` pipe: the errors
+  // below are plain string fields shown by ordinary interpolation, set once
+  // validation runs - see the "TypeScript-only messages" section of the
+  // project README.
+  private readonly transloco = inject(TranslocoService);
+
   @Input() module!: DeploymentRequestModule;
   @Input() hostResources: HostResource[] = [];
   @Input() secrets: Secret[] = [];
@@ -317,7 +326,7 @@ export class DeploymentFormComponent implements OnInit {
       row.error = '';
       if (row.useGlobal) {
         if (!row.globalConfigId) {
-          row.error = 'Select a global config or switch back to a direct value';
+          row.error = this.transloco.translate<string>('deployments.form.errors.selectGlobalConfigOrValue');
           valid = false;
           continue;
         }
@@ -328,7 +337,7 @@ export class DeploymentFormComponent implements OnInit {
         // no input: fall back to the module default, unless there is none
         // to fall back to and the module needs a value regardless
         if (row.required && (row.config.default === null || row.config.default === undefined)) {
-          row.error = 'A value is required';
+          row.error = this.transloco.translate<string>('deployments.form.errors.valueRequired');
           valid = false;
         }
         continue;
@@ -346,7 +355,7 @@ export class DeploymentFormComponent implements OnInit {
       if (row.selectedId) {
         result.host_resources[row.ref] = row.selectedId;
       } else if (row.required) {
-        row.error = 'Select a host resource';
+        row.error = this.transloco.translate<string>('deployments.form.errors.selectHostResource');
         valid = false;
       }
     }
@@ -356,7 +365,7 @@ export class DeploymentFormComponent implements OnInit {
       if (row.selectedId) {
         result.secrets[row.ref] = row.selectedId;
       } else if (row.required) {
-        row.error = 'Select a secret';
+        row.error = this.transloco.translate<string>('deployments.form.errors.selectSecret');
         valid = false;
       }
     }
@@ -372,7 +381,7 @@ export class DeploymentFormComponent implements OnInit {
       const files: Record<string, any> = {};
       for (const file of row.files) {
         if (!file.path.trim()) {
-          row.error = 'Every file of the group needs a path';
+          row.error = this.transloco.translate<string>('deployments.form.errors.fileGroupPathRequired');
           valid = false;
           continue;
         }

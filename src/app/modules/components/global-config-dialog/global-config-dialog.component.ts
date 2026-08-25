@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, inject} from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -30,6 +30,7 @@ import {MatCheckbox} from '@angular/material/checkbox';
 import {MatFormField, MatHint, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
+import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {
   DATA_TYPE_BOOL,
   DATA_TYPE_FLOAT,
@@ -62,7 +63,9 @@ import {
     MatInput,
     MatSelect,
     MatOption,
+    TranslocoPipe,
   ],
+  providers: [provideTranslocoScope('modules')],
 })
 export class GlobalConfigDialogComponent {
   DATA_TYPE_STRING = DATA_TYPE_STRING;
@@ -77,6 +80,10 @@ export class GlobalConfigDialogComponent {
   rawValue = '';
   boolValue = 'true';
   error = '';
+
+  // Field injection, not a constructor parameter: new dependencies follow
+  // the prefer-inject rule; the parameters above predate it.
+  private readonly transloco = inject(TranslocoService);
 
   constructor(
     public dialogRef: MatDialogRef<GlobalConfigDialogComponent>,
@@ -99,7 +106,7 @@ export class GlobalConfigDialogComponent {
   save() {
     this.error = '';
     if (!this.name.trim()) {
-      this.error = 'Name is required';
+      this.error = this.transloco.translate<string>('modules.globalConfigDialog.nameRequired');
       return;
     }
     const raw = this.dataType === DATA_TYPE_BOOL && !this.isSlice ? this.boolValue : this.rawValue;
