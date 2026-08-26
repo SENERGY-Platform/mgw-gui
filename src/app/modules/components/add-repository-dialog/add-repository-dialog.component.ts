@@ -33,12 +33,20 @@ import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/t
 // The repository definition is passed verbatim to the backend's type handler,
 // so the dialog takes it as JSON (deliberately simple, see SNRGY-4587).
 // Closes with {type, definition} or undefined when cancelled.
+// The reference is a tag, not a branch: 'refs/heads/main-validated' does not
+// resolve, and a reference that does not resolve fails silently - the refresh
+// reports success and the repository simply contributes no modules (SNRGY-4631).
 const GITHUB_TEMPLATE = {
   owner: 'SENERGY-Platform',
   repository: 'mgw-module-repository',
-  reference: 'refs/heads/main',
-  priority: 1,
-  channels: [{name: 'main', priority: 1, blacklist: []}],
+  reference: 'main-validated',
+  priority: 100,
+  // one per directory in the repository, highest priority wins
+  channels: [
+    {name: 'main', priority: 2},
+    {name: 'testing', priority: 1},
+    {name: 'legacy', priority: 0},
+  ],
 };
 
 @Component({
