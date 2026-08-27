@@ -43,7 +43,7 @@ export class ModuleManagerMockService {
       has_error: false,
       error_msg: '',
       deployment: {
-        id: 'dep-a',
+        id: '4518698957efc10675d4a50d8c7f6ff2e7ed859f',
         module_source: 'github.com/SENERGY-Platform/mgw-module-repository',
         module_channel: 'main',
         module_version: 'v1.0.0',
@@ -52,8 +52,23 @@ export class ModuleManagerMockService {
         updated: new Date().toISOString(),
         state: 1,
         containers: {
-          web: {name: 'mgw-mock-dep-web', alias: 'web', image_id: 'sha256:abc', state: 'running', health: ''},
-          worker: {name: 'mgw-mock-dep-worker', alias: 'worker', image_id: 'sha256:def', state: 'stopped', health: ''},
+          // Names as the core actually builds them - core id plus the
+          // deployment hash. The short placeholders they replace fit any
+          // column and hid that the containers table cannot break one.
+          web: {
+            name: 'mgw-mock01-dep-4518698957efc10675d4a50d8c7f6ff2e7ed859f',
+            alias: 'web',
+            image_id: 'sha256:abc',
+            state: 'running',
+            health: '',
+          },
+          worker: {
+            name: 'mgw-mock01-dep-9c2f1ab73de845190bb6f0e2c74d3a81ff05b6c2',
+            alias: 'worker',
+            image_id: 'sha256:def',
+            state: 'stopped',
+            health: '',
+          },
         },
         has_error: false,
         error_msg: '',
@@ -129,7 +144,7 @@ export class ModuleManagerMockService {
     const module = this.mockRequestModule(moduleID);
     module.is_deployed = true;
     module.deployment = {
-      id: 'dep-a',
+      id: '4518698957efc10675d4a50d8c7f6ff2e7ed859f',
       module_version: 'v1.0.0',
       enabled: true,
       host_resources: {},
@@ -436,7 +451,7 @@ export class ModuleManagerMockService {
         has_error: false,
         error_msg: '',
         deployment: {
-          id: 'dep-a',
+          id: '4518698957efc10675d4a50d8c7f6ff2e7ed859f',
           module_source: 'github.com/SENERGY-Platform/mgw-module-repository',
           module_channel: 'main',
           module_version: 'v1.0.0',

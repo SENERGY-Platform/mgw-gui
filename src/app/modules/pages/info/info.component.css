@@ -66,7 +66,10 @@
 
 .tab-body {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  /* min() rather than a bare 340px: on a narrow screen the track would
+     otherwise keep a floor wider than the viewport and the card would hang
+     over the edge. */
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
   gap: 16px;
   padding-top: 16px;
   align-items: start;
@@ -155,6 +158,13 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 4px;
+}
+
+/* Container names are one unbroken token of about 55 characters. Without a
+   break opportunity they set the table's minimum width, which pushes the last
+   column - the link to the logs - past the edge of the card. */
+.containers .mono {
+  overflow-wrap: anywhere;
 }
 
 .containers th {
