@@ -9,6 +9,7 @@ import {MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
+import {environment} from 'src/environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -43,7 +44,10 @@ export class LoginComponent {
     private route: ActivatedRoute,
     private errorService: ErrorService,
   ) {
-    this.returnTo = getReturnTo(this.route.snapshot.queryParamMap.get('return_to'), '/core/web-ui');
+    // Where the app is mounted, not a fixed path: '/core/web-ui' in an install,
+    // the root under `ng serve`. Hard-coding it sent local development to the
+    // installed UI after every login.
+    this.returnTo = getReturnTo(this.route.snapshot.queryParamMap.get('return_to'), environment.uiBaseUrl || '/');
   }
 
   login() {

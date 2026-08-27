@@ -20,7 +20,13 @@ export const environment = {
   coreApiUrl: CORE_PREFIX + '/api',
   coreSwaggerUrl: CORE_PREFIX + '/swagger',
   authApiUrl: CORE_PREFIX + '/auth',
-  uiBaseUrl: CORE_PREFIX + '/web-ui',
+  // Empty on purpose, and the one value that differs from every other
+  // environment. The redirect on a 401 is built as uiBaseUrl + '/login';
+  // with the usual '/core/web-ui' that path matches the dev-server proxy,
+  // so an expired session silently hands the browser to the core's own
+  // bundle - the app appears to revert to the installed version on the same
+  // port. At the root the redirect stays on the dev server's /login route.
+  uiBaseUrl: '',
   endpointsUrl: '/endpoints',
   sentryDsn: '',
   sentryEnvironment: '',
