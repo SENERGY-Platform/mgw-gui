@@ -6,7 +6,10 @@
     <base href="/" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="#005cbb" name="theme-color" />
-    <link href="favicon.ico" rel="icon" type="image/x-icon" />
+    <!-- The svg is what current browsers use, at any size they need; the ico
+         carries hand-rastered 16, 32 and 48 for Safari and anything older. -->
+    <link href="favicon.svg" rel="icon" type="image/svg+xml" />
+    <link href="favicon.ico" rel="icon" sizes="48x48 32x32 16x16" />
   </head>
   <body class="mat-typography">
     <app-root></app-root>

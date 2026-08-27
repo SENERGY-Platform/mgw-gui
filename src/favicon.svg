@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <title>MGW</title>
+  <!--
+    The brand mark from the app shell: the same rounded square in the primary
+    colour with a hub in it. Redrawn with filled nodes rather than the Material
+    glyph's rings, which close up below about 24px - and a browser renders this
+    file for the 16px tab icon, so that size decides the drawing.
+
+    The dark palette matches the app's own: in dark mode the shell inverts the
+    mark rather than dimming it.
+  -->
+  <style>
+    .plate { fill: #005cbb; }
+    .mark { fill: #ffffff; stroke: #ffffff; }
+    @media (prefers-color-scheme: dark) {
+      .plate { fill: #abc7ff; }
+      .mark { fill: #002f65; stroke: #002f65; }
+    }
+  </style>
+  <rect class="plate" width="32" height="32" rx="9" />
+  <g class="mark" stroke-width="2.2" stroke-linecap="round">
+    <line x1="16" y1="16" x2="16" y2="6.4" />
+    <line x1="16" y1="16" x2="25.6" y2="16" />
+    <line x1="16" y1="16" x2="16" y2="25.6" />
+    <line x1="16" y1="16" x2="6.4" y2="16" />
+  </g>
+  <g class="mark" stroke="none">
+    <circle cx="16" cy="16" r="4.2" />
+    <circle cx="16" cy="6.4" r="3" />
+    <circle cx="25.6" cy="16" r="3" />
+    <circle cx="16" cy="25.6" r="3" />
+    <circle cx="6.4" cy="16" r="3" />
+  </g>
+</svg>
