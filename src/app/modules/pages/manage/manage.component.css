@@ -42,8 +42,23 @@
   height: 15px;
 }
 
+/* The column shows the same value twice over: as plain text when a module
+   comes from one repository, as a picker when it comes from several. An
+   outlined field made those two look like different fields, and its 56px box
+   set the height of the whole row. Stripped back to the text it selects, with
+   the arrow as the only sign that it is one.
+
+   Tokens rather than Material's internal classes: those sit inside a child
+   component and never receive this stylesheet's scope attribute, so a rule
+   against them silently does nothing. */
 .variant-select {
-  width: 300px;
+  width: 100%;
+  --mat-form-field-outlined-outline-width: 0;
+  --mat-form-field-outlined-focus-outline-width: 0;
+  --mat-form-field-container-height: 24px;
+  --mat-form-field-container-vertical-padding: 0;
+  --mat-select-trigger-text-size: 12px;
+  --mat-select-enabled-trigger-text-color: var(--mat-sys-on-surface-variant);
 }
 
 .variant-static {

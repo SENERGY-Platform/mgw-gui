@@ -211,6 +211,10 @@ mat-icon.mat-icon {
 .mgw-table-card table {
   width: 100%;
   background: transparent;
+  /* Material's 52px leaves six pixels around a 40px action button, which reads
+     as cramped next to the rows that carry two lines of text. Rows taller than
+     this from their own content keep their height. */
+  --mat-table-row-item-container-height: 64px;
 }
 
 /* action column: shrink to content and keep the buttons on the right edge */
