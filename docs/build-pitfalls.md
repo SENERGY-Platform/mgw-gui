@@ -54,6 +54,12 @@ their syntax. Cutting the font from the templates alone once cost the navigation
 every one of its icons — its names live in `nav.model.ts` — and the theme
 toggle's three, which a method returns.
 
+The same trap has a second entrance: a component whose markup lives in an
+inline `template:` is a `.ts` file, and a scan of `.html` alone never sees its
+icons. `page-header` is such a component, and its `arrow_back` was missing from
+the font on all ten pages with a back button while `check:icons` reported
+everything present. The markup patterns run over `.ts` as well since.
+
 A missing icon renders as its own name in words. Nothing fails: not the build,
 not a test, and no spec renders an icon. It is visible only by looking at a
 page, which is the reason `check:icons` exists and the reason it reports

@@ -4,6 +4,7 @@ add
 add_link
 api
 apps
+arrow_back
 arrow_forward
 article
 bug_report
@@ -73,6 +74,7 @@ restart_alt
 rocket_launch
 save
 search
+search_off
 select
 send
 settings

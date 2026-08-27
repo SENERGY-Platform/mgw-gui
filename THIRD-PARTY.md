@@ -44,28 +44,39 @@ recognisable as icons from their syntax; the theme toggle's `light_mode` is a
 string like any other. Cutting the font from templates alone once cost the
 navigation every one of its icons, with nothing failing anywhere.
 
+The file a name sits in matters as much as its syntax. A component with an
+inline `template:` keeps its markup in the `.ts`, so scanning `<mat-icon>` in
+`.html` alone misses it — that is how every page lost its back arrow while
+`check:icons` reported all icons present. The markup patterns therefore run
+over both suffixes.
+
 ```sh
 # 1. what the application asks for: the certain ones, plus the literals that
 #    are real icon names
-npm run icons:list > src/assets/fonts/icon-names.txt
+npm run --silent icons:list > src/assets/fonts/icon-names.txt
 
 # 2. a font cut to exactly those
 ICONS=$(tr '\n' ',' < src/assets/fonts/icon-names.txt | sed 's/,$//')
-curl -sS -A "Mozilla/5.0 Chrome/151.0" -G "https://fonts.googleapis.com/css2" \
+UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
+curl -sS -A "$UA" -G "https://fonts.googleapis.com/css2" \
   --data-urlencode "family=Material Symbols Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" \
   --data-urlencode "icon_names=$ICONS" --data-urlencode "display=block" -o /tmp/symbols.css
 
 # 3. the file the stylesheet points at
-curl -sS -A "Mozilla/5.0 Chrome/151.0" \
+curl -sS -A "$UA" \
   -o src/fonts/material-symbols-rounded.woff2 \
-  "$(grep -oE 'https://fonts.gstatic.com/l/font\?[^)]+' /tmp/symbols.css)"
+  "$(grep -oE 'https://fonts.gstatic.com/[^)]+' /tmp/symbols.css | head -1)"
 
 # 4. look at a page afterwards. A missing icon shows as its own name in words
 #    and no test catches it.
 ```
 
-A browser-like user agent matters: Google Fonts serves `woff2` only to clients
-it believes support it, and an unrecognised agent gets `ttf` instead.
+A browser-like user agent matters, and it has to be a complete one: Google Fonts
+serves `woff2` only to clients it believes support it. A short string such as
+`Mozilla/5.0 Chrome/151.0` no longer qualifies — the answer is then `ttf`, split
+across one `@font-face` per axis instead of a single file, which is why the
+download picks the first URL. Check `format('woff2')` in the css before
+downloading; that is the cheap way to notice.
 
 `scripts/material-symbols-names.txt` only needs regenerating when the upstream
 face gains icons. It comes from the ligature table of the full `woff2`, read

@@ -41,6 +41,9 @@ const KNOWN_NAMES = join(root, 'scripts/material-symbols-names.txt');
 
 const IN_TEMPLATE = />\s*([a-z0-9_]{2,})\s*<\/mat-icon>/g;
 const AS_ATTRIBUTE = /fontIcon="([a-z0-9_]+)"/g;
+// An `icon="..."` input, which is how the empty state and the page header are
+// told which icon to show.
+const AS_INPUT = /\bicon="([a-z0-9_]+)"/g;
 const AS_PROPERTY = /[Ii]con:\s*'([a-z0-9_]+)'/g;
 const ANY_LITERAL = /'([a-z][a-z0-9_]{1,})'/g;
 
@@ -74,8 +77,14 @@ export function findIcons(appDir = join(root, 'src/app')) {
   const scripts = sources(appDir, ['.ts']).filter((path) => !path.endsWith('.spec.ts'));
 
   const certain = new Map();
-  collect(templates, IN_TEMPLATE, certain);
-  collect(templates, AS_ATTRIBUTE, certain);
+  // The template patterns run over the .ts files too: a component with an
+  // inline `template:` carries the same markup, and scanning only .html once
+  // cost every page its back arrow - page-header is such a component, and
+  // nothing reported the icon as used or as missing.
+  const markup = [...templates, ...scripts];
+  collect(markup, IN_TEMPLATE, certain);
+  collect(markup, AS_ATTRIBUTE, certain);
+  collect(markup, AS_INPUT, certain);
   collect(scripts, AS_PROPERTY, certain);
 
   const literals = new Map();
