@@ -81,7 +81,10 @@ export class LoginComponent {
   }
 }
 
-const returnToRegex = /^\/.*/;
+// One leading slash and no second one: a browser reads '//host' and '/\host'
+// as a URL on another origin, so both would send the user off the gateway with
+// a session that was just established here.
+const returnToRegex = /^\/(?![/\\])/;
 
 function getReturnTo(v: string | null, def: string): string {
   if (v !== null) {
