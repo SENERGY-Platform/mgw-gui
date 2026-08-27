@@ -20,3 +20,9 @@
 .danger-icon {
   --mat-icon-button-icon-color: var(--mgw-danger);
 }
+
+@media (max-width: 767px) {
+  .value {
+    max-width: 18ch;
+  }
+}

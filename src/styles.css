@@ -302,3 +302,77 @@ mat-icon.mat-icon {
   --mat-menu-item-label-text-color: var(--mgw-danger);
   --mat-menu-item-icon-color: var(--mgw-danger);
 }
+
+/* --- phones ----------------------------------------------------------------
+   767px and not the shell's 1023px on purpose: that breakpoint is about the
+   navigation drawer, this one is about column widths. A tablet in landscape
+   has room for a five-column table long after the drawer has collapsed.
+
+   The rules below are a safety net, not a layout. Whatever still does not fit
+   stays reachable by scrolling the card; pages that want to actually fit drop
+   their secondary columns in their own stylesheet. */
+@media (max-width: 767px) {
+  .mgw-page {
+    padding: 12px;
+  }
+
+  /* Without this the card clips instead of scrolling, and every column past
+     the fold is unreachable rather than merely inconvenient. */
+  .mgw-table-card {
+    overflow-x: auto;
+  }
+
+  /* Row actions shrink to their icons. The label is taken out of the layout
+     rather than hidden, because for several of these buttons it is the only
+     accessible name they have. */
+  .mgw-row-actions .mdc-button__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .mgw-row-actions .mat-mdc-button > .mat-icon,
+  .mgw-row-actions .mat-mdc-unelevated-button > .mat-icon,
+  .mgw-row-actions .mat-mdc-outlined-button > .mat-icon {
+    margin: 0;
+  }
+
+  /* A button that is down to its icon keeps the padding its label needed,
+     which is wider than the icon it now shows. */
+  .mgw-row-actions .mat-mdc-button-base:not(.mat-mdc-icon-button) {
+    min-width: 40px;
+    padding: 0 8px;
+  }
+
+  /* 16px either side is a third of a narrow column. */
+  .mgw-table-card .mat-mdc-cell,
+  .mgw-table-card .mat-mdc-header-cell {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  /* 30px is comfortable with a mouse and too small for a thumb. */
+  .mgw-chip {
+    min-height: 44px;
+  }
+
+  /* Dialogs set a min-width so a form does not collapse on a desktop; below
+     the cap Material puts on the surface that same floor makes the content
+     wider than the dialog and the form has to be scrolled sideways. Dropping
+     the floor here rather than in each dialog keeps their widths exact where
+     there is room for them. The selector is this long to outweigh the
+     component styles it overrides without !important. */
+  .cdk-overlay-pane .mat-mdc-dialog-surface .mat-mdc-dialog-content {
+    min-width: 0;
+  }
+
+  /* Identifiers here are repository URLs; on a narrow screen they have to be
+     allowed to break rather than force the column open. */
+  .mgw-cell-secondary,
+  .mgw-mono {
+    overflow-wrap: anywhere;
+  }
+}

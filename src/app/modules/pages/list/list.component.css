@@ -100,3 +100,18 @@
 .mgw-row-actions mat-icon {
   font-variation-settings: 'FILL' 1;
 }
+
+/* On a phone the status and version columns cost more width than they carry:
+   both are repeated on the detail page, and without them module and actions
+   fit without sideways scrolling. */
+@media (max-width: 767px) {
+  .mat-column-status,
+  .mat-column-version {
+    display: none;
+  }
+
+  /* 46ch is roughly the whole viewport here, which defeats the cap. */
+  .module-id {
+    max-width: 22ch;
+  }
+}

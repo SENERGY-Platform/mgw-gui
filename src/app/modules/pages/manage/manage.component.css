@@ -86,3 +86,17 @@
   font-size: 13px;
   font-weight: 600;
 }
+
+/* Which repository a module came from is the least useful column while
+   installing one, and the status text is already implied by the action button
+   next to it. */
+@media (max-width: 767px) {
+  .mat-column-variant,
+  .mat-column-status {
+    display: none;
+  }
+
+  .module-cell {
+    max-width: 22ch;
+  }
+}

@@ -34,3 +34,12 @@
   color: var(--mgw-danger);
   overflow-wrap: anywhere;
 }
+
+/* Both timestamps are wide and only one of them is usually being read; the
+   job dialog carries the full pair. */
+@media (max-width: 767px) {
+  .mat-column-started,
+  .mat-column-finished {
+    display: none;
+  }
+}
