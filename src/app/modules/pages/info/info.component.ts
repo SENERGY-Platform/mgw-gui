@@ -71,6 +71,12 @@ export class InfoComponent implements OnInit, OnDestroy {
   module!: ModuleInfo;
   ready = false;
   moduleID = '';
+  selectedTab = 0;
+
+  // Tab order in the template. The query parameter carries the name rather
+  // than the index, so reordering the tabs does not break existing links -
+  // the logs page sends the reader back to 'containers'.
+  private readonly tabs = ['overview', 'containers', 'auxDeployments'];
 
   private interval: any;
 
@@ -96,12 +102,28 @@ export class InfoComponent implements OnInit, OnDestroy {
       this.ready = false;
       this.load(false);
     });
+    this.route.queryParams.subscribe((params) => {
+      const index = this.tabs.indexOf(params['tab']);
+      this.selectedTab = index < 0 ? 0 : index;
+    });
     // container state changes without a user action, same cadence as the list
     this.interval = setInterval(() => this.load(true), 5000);
   }
 
   ngOnDestroy(): void {
     clearInterval(this.interval);
+  }
+
+  onTabChange(index: number): void {
+    this.selectedTab = index;
+    // replaceUrl: switching tabs is not a navigation step the back button
+    // should have to walk through
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {tab: this.tabs[index]},
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   load(background: boolean) {

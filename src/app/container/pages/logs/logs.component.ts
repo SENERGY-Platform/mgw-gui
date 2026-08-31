@@ -1,6 +1,6 @@
 import {Component, Inject, OnDestroy} from '@angular/core';
 import {MatSlideToggleChange, MatSlideToggle} from '@angular/material/slide-toggle';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {ContainerEngineManagerService} from 'src/app/core/services/container-engine-manager/container-engine-manager.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {UtilService} from 'src/app/core/services/util/util.service';
@@ -30,6 +30,12 @@ import {LogViewerComponent} from 'src/app/core/components/log-viewer/log-viewer.
 })
 export class LogsComponent implements OnDestroy {
   containerID!: string;
+  /**
+   * Route segments rather than a path, because the module id contains slashes
+   * and has to reach the router as one encoded segment.
+   */
+  backTo: unknown[] = ['/modules'];
+  readonly backToQueryParams = {tab: 'containers'};
   ready = false;
   init = true;
   interval: any;
@@ -44,6 +50,7 @@ export class LogsComponent implements OnDestroy {
   ) {
     this.route.params.subscribe((params) => {
       this.containerID = params['containerId'];
+      this.backTo = ['/modules', 'detail', params['id']];
       this.getLogs();
       this.init = false;
       this.startAutoRefresh();

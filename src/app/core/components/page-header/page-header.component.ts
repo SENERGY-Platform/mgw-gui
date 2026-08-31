@@ -17,7 +17,7 @@
 import {Component, Input} from '@angular/core';
 import {MatIcon} from '@angular/material/icon';
 import {MatIconButton} from '@angular/material/button';
-import {RouterLink} from '@angular/router';
+import {Params, RouterLink} from '@angular/router';
 
 /**
  * Title block every page starts with. Actions are projected into
@@ -31,7 +31,7 @@ import {RouterLink} from '@angular/router';
     <header class="head">
       <div class="lead">
         @if (backTo) {
-          <a [routerLink]="backTo" aria-label="Back" class="back" mat-icon-button>
+          <a [queryParams]="backToQueryParams" [routerLink]="backTo" aria-label="Back" class="back" mat-icon-button>
             <mat-icon>arrow_back</mat-icon>
           </a>
         }
@@ -102,6 +102,11 @@ import {RouterLink} from '@angular/router';
 export class PageHeaderComponent {
   @Input({required: true}) title!: string;
   @Input() description?: string;
-  /** shows a back arrow linking to this route */
-  @Input() backTo?: string;
+  /**
+   * Shows a back arrow linking to this route. Pass an array of segments when
+   * a segment contains slashes - a module id does - so the router encodes it
+   * instead of reading it as a path.
+   */
+  @Input() backTo?: string | unknown[];
+  @Input() backToQueryParams?: Params;
 }

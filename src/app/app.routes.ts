@@ -38,7 +38,6 @@ export const routes: Routes = [
   {path: '', loadChildren: () => import('./developer/developer.routes').then((m) => m.routes)},
   {path: '', loadChildren: () => import('./auth/auth.routes').then((m) => m.routes)},
   {path: '', loadChildren: () => import('./deployments/deployments.routes').then((m) => m.routes)},
-  {path: '', loadChildren: () => import('./container/container.routes').then((m) => m.routes)},
   {path: '', loadChildren: () => import('./modules/modules.routes').then((m) => m.routes)},
   {path: '', loadChildren: () => import('./secrets/secrets.routes').then((m) => m.routes)},
   {path: '', loadChildren: () => import('./system/system.routes').then((m) => m.routes)},

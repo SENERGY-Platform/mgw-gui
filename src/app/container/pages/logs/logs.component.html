@@ -1,6 +1,7 @@
 <div class="mgw-page">
   <mgw-page-header
-    backTo="/system/status"
+    [backToQueryParams]="backToQueryParams"
+    [backTo]="backTo"
     [description]="'container.logs.description' | transloco"
     [title]="'container.logs.title' | transloco"
   >

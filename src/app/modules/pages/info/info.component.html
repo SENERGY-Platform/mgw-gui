@@ -90,7 +90,12 @@
       </div>
     </div>
 
-    <mat-tab-group animationDuration="0ms" class="tabs">
+    <mat-tab-group
+      (selectedIndexChange)="onTabChange($event)"
+      [selectedIndex]="selectedTab"
+      animationDuration="0ms"
+      class="tabs"
+    >
       <mat-tab [label]="'modules.info.tabs.overview' | transloco">
         <div class="tab-body">
           <section class="card">
@@ -191,7 +196,7 @@
                       <td class="mono">{{ entry.value.name }}</td>
                       <td class="right">
                         <button
-                          [routerLink]="'/containers/' + entry.value.name + '/logs'"
+                          [routerLink]="['/modules', 'detail', moduleID, 'containers', entry.value.name, 'logs']"
                           mat-icon-button
                           [matTooltip]="'modules.info.showLogs' | transloco"
                         >
