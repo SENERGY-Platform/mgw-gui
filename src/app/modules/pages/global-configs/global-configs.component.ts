@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {AfterViewInit, Component, Inject, inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, inject, OnInit, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {
@@ -73,11 +73,18 @@ import {GlobalConfigDialogComponent} from '../../components/global-config-dialog
   ],
   providers: [provideTranslocoScope('modules')],
 })
-export class GlobalConfigsComponent implements OnInit, AfterViewInit {
+export class GlobalConfigsComponent implements OnInit {
   dataSource = new MatTableDataSource<GlobalConfig>();
   ready = false;
   init = true;
-  @ViewChild(MatSort) sort!: MatSort;
+  // Set through a setter rather than in the view hook: the table renders
+  // behind a condition, so that hook runs before it exists and @ViewChild
+  // stays empty - which leaves the rows in whatever order the API sent.
+  @ViewChild(MatSort) set tableSort(sort: MatSort | undefined) {
+    if (sort) {
+      this.dataSource.sort = sort;
+    }
+  }
   displayColumns = ['name', 'type', 'value', 'actions'];
 
   // Field injection, not a constructor parameter: new dependencies follow
@@ -96,17 +103,14 @@ export class GlobalConfigsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.load();
-    this.init = false;
-  }
-
-  ngAfterViewInit(): void {
+    // not view-dependent, unlike the MatSort above
     this.dataSource.sortingDataAccessor = (row: GlobalConfig, sortHeaderId: string) => {
       let value = (row as any)[sortHeaderId];
       value = typeof value === 'string' ? value.toUpperCase() : value;
       return value;
     };
-    this.dataSource.sort = this.sort;
+    this.load();
+    this.init = false;
   }
 
   load() {

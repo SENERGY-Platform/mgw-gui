@@ -66,7 +66,14 @@ export class ListAppsComponent implements OnInit {
   ready = false;
   init = true;
   interval: any;
-  @ViewChild(MatSort) sort!: MatSort;
+  // Set through a setter rather than in the view hook: the table renders
+  // behind a condition, so that hook runs before it exists and @ViewChild
+  // stays empty - which leaves the rows in whatever order the API sent.
+  @ViewChild(MatSort) set tableSort(sort: MatSort | undefined) {
+    if (sort) {
+      this.dataSource.sort = sort;
+    }
+  }
   displayColumns = ['username', 'model', 'manufacturer', 'actions'];
   selection = new SelectionModel<string>(true, []);
 

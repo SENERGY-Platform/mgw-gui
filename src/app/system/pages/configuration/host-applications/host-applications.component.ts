@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Inject, inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, inject, OnInit, ViewChild} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {
   MatCell,
@@ -49,21 +49,24 @@ import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
   styleUrl: './host-applications.component.css',
   providers: [provideTranslocoScope('system')],
 })
-export class HostApplicationsComponent implements AfterViewInit, OnInit {
+export class HostApplicationsComponent implements OnInit {
   displayedColumns: string[] = ['name', 'path', 'actions'];
   dataSource = new MatTableDataSource<AppResponse>();
 
-  @ViewChild(MatSort) sort!: MatSort;
+  // Set through a setter rather than in the view hook: the table renders
+  // behind a condition, so that hook runs before it exists and @ViewChild
+  // stays empty - which leaves the rows in whatever order the API sent.
+  @ViewChild(MatSort) set tableSort(sort: MatSort | undefined) {
+    if (sort) {
+      this.dataSource.sort = sort;
+    }
+  }
 
   constructor(
     private hostManagerService: HostManagerService,
     private errorService: ErrorService,
     private dialog: MatDialog,
   ) {}
-
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-  }
 
   ngOnInit(): void {
     this.getApplications();

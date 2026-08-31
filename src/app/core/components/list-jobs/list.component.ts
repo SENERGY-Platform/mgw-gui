@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {
   MatCell,
@@ -66,7 +66,7 @@ import {StatusPillComponent, StatusTone} from '../status-pill/status-pill.compon
   ],
   providers: [provideTranslocoScope('core')],
 })
-export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
+export class ListJobTable implements OnInit, OnDestroy {
   // human-readable name of the service the jobs belong to - translation
   // keys, not display text; the template applies the `transloco` pipe.
   readonly sourceLabels: Record<string, string> = {
@@ -78,7 +78,14 @@ export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
   ready = false;
   init = true;
   interval: any;
-  @ViewChild(MatSort) sort!: MatSort;
+  // Set through a setter rather than in the view hook: the table renders
+  // behind a condition, so that hook runs before it exists and @ViewChild
+  // stays empty - which leaves the rows in whatever order the API sent.
+  @ViewChild(MatSort) set tableSort(sort: MatSort | undefined) {
+    if (sort) {
+      this.dataSource.sort = sort;
+    }
+  }
   displayColumns = ['job', 'status', 'started', 'finished', 'actions'];
   @Input() source?: string;
 
@@ -188,8 +195,6 @@ export class ListJobTable implements OnInit, OnDestroy, AfterViewInit {
       }
     };
   }
-
-  ngAfterViewInit(): void {}
 
   cancelJob(jobID: string) {
     const obs = this.source === 'core-manager' ? this.coreService.stopJob(jobID) : this.moduleService.stopJob(jobID);

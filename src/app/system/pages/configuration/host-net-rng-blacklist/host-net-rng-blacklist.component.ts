@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {
   MatCell,
@@ -48,21 +48,24 @@ import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
   styleUrl: './host-net-rng-blacklist.component.css',
   providers: [provideTranslocoScope('system')],
 })
-export class HostNetRngBlacklistComponent implements AfterViewInit, OnInit {
+export class HostNetRngBlacklistComponent implements OnInit {
   displayedColumns: string[] = ['range', 'actions'];
   dataSource = new MatTableDataSource<string>();
 
-  @ViewChild(MatSort) sort!: MatSort;
+  // Set through a setter rather than in the view hook: the table renders
+  // behind a condition, so that hook runs before it exists and @ViewChild
+  // stays empty - which leaves the rows in whatever order the API sent.
+  @ViewChild(MatSort) set tableSort(sort: MatSort | undefined) {
+    if (sort) {
+      this.dataSource.sort = sort;
+    }
+  }
 
   constructor(
     private hostManagerService: HostManagerService,
     private errorService: ErrorService,
     private dialog: MatDialog,
   ) {}
-
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-  }
 
   ngOnInit(): void {
     this.getNetRanges();

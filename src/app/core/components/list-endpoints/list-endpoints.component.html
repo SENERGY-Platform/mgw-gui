@@ -8,7 +8,14 @@
   <div class="group">
     <h3>{{ 'core.listEndpoints.generated' | transloco }}</h3>
     <div class="mgw-table-card">
-      <table [dataSource]="dataSource" mat-table matSort matSortActive="name" matSortDirection="asc">
+      <table
+        #endpointSort="matSort"
+        [dataSource]="dataSource"
+        mat-table
+        matSort
+        matSortActive="name"
+        matSortDirection="asc"
+      >
         <ng-container matColumnDef="url">
           <th *matHeaderCellDef mat-header-cell mat-sort-header>{{ 'core.listEndpoints.url' | transloco }}</th>
           <td *matCellDef="let endpoint" mat-cell>
@@ -68,7 +75,14 @@
     }
 
     <div class="mgw-table-card">
-      <table [dataSource]="dataSourceAlias" mat-table matSort matSortActive="name" matSortDirection="asc">
+      <table
+        #aliasSort="matSort"
+        [dataSource]="dataSourceAlias"
+        mat-table
+        matSort
+        matSortActive="name"
+        matSortDirection="asc"
+      >
         <ng-container matColumnDef="select">
           <th *matHeaderCellDef class="col-select" mat-header-cell>
             <mat-checkbox

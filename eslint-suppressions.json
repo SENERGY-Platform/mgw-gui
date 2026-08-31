@@ -95,14 +95,8 @@
     "@angular-eslint/component-selector": {
       "count": 1
     },
-    "@angular-eslint/no-empty-lifecycle-method": {
-      "count": 1
-    },
     "@angular-eslint/prefer-inject": {
       "count": 3
-    },
-    "@typescript-eslint/no-empty-function": {
-      "count": 1
     },
     "@typescript-eslint/no-explicit-any": {
       "count": 2

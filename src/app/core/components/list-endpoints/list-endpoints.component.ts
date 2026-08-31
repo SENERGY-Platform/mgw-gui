@@ -65,7 +65,20 @@ export class ListEndpointsComponent implements OnInit, OnDestroy {
   interval: any;
   ready = false;
   init = true;
-  @ViewChild(MatSort) sort!: MatSort;
+  // Two tables, each behind its own condition, so each needs its own
+  // MatSort - a single @ViewChild would bind whichever renders first and
+  // leave the other table unsorted.
+  @ViewChild('endpointSort') set endpointSort(sort: MatSort | undefined) {
+    if (sort) {
+      this.dataSource.sort = sort;
+    }
+  }
+
+  @ViewChild('aliasSort') set aliasSort(sort: MatSort | undefined) {
+    if (sort) {
+      this.dataSourceAlias.sort = sort;
+    }
+  }
   displayColumns = ['url', 'add'];
   displayColumnsAlias = ['select', 'url', 'delete'];
   selection = new SelectionModel<string>(true, []);

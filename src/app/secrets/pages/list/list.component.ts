@@ -1,4 +1,4 @@
-import {Component, Inject, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, Inject, ViewChild} from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import {
   MatCell,
@@ -56,13 +56,20 @@ import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
   ],
   providers: [provideTranslocoScope('secrets')],
 })
-export class ListComponent implements AfterViewInit {
+export class ListComponent {
   dataSource = new MatTableDataSource<Secret>();
   ready = false;
   init = true;
   interval: any;
   secretTypesDisplayNames: Record<any, string> = SecretTypesDisplayNames; // any type because elements in matCellDef are not typed
-  @ViewChild(MatSort) sort!: MatSort;
+  // Set through a setter rather than in the view hook: the table renders
+  // behind a condition, so that hook runs before it exists and @ViewChild
+  // stays empty - which leaves the rows in whatever order the API sent.
+  @ViewChild(MatSort) set tableSort(sort: MatSort | undefined) {
+    if (sort) {
+      this.dataSource.sort = sort;
+    }
+  }
   displayColumns = ['name', 'type', 'actions'];
 
   constructor(
@@ -71,10 +78,6 @@ export class ListComponent implements AfterViewInit {
   ) {
     this.loadSecrets();
     this.init = false;
-  }
-
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
   }
 
   loadSecrets() {

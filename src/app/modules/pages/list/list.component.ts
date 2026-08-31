@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {AfterViewInit, Component, Inject, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {
@@ -109,11 +109,19 @@ interface StatusFilter {
   ],
   providers: [provideTranslocoScope('modules')],
 })
-export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ListComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<ModuleReduced>();
   ready = false;
   init = true;
-  @ViewChild(MatSort) sort!: MatSort;
+  // The table renders only once data has arrived, so ngAfterViewInit runs
+  // before it exists and a plain @ViewChild stays undefined. A setter catches
+  // the MatSort whenever the table appears; without it the rows keep the order
+  // the API sent them, and that order is not stable between refreshes.
+  @ViewChild(MatSort) set tableSort(sort: MatSort | undefined) {
+    if (sort) {
+      this.dataSource.sort = sort;
+    }
+  }
   displayColumns = ['select', 'module', 'status', 'version', 'actions'];
   selection = new SelectionModel<string>(true, []);
   modulesById: Record<string, ModuleReduced> = {};
@@ -152,6 +160,18 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.dataSource.filterPredicate = (module, _) => this.matchesFilters(module);
+    this.dataSource.sortingDataAccessor = (row: ModuleReduced, sortHeaderId: string) => {
+      // the visible columns are composites, so they need their own sort keys
+      switch (sortHeaderId) {
+        case 'module':
+          return row.name.toUpperCase();
+        case 'status':
+          return this.statusOf(row);
+        default:
+          var value = (row as any)[sortHeaderId];
+          return typeof value === 'string' ? value.toUpperCase() : value;
+      }
+    };
     this.loadModules(false);
     this.startPeriodicRefresh();
     this.init = false;
@@ -170,22 +190,6 @@ export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   stopPeriodicRefresh() {
     clearTimeout(this.interval);
-  }
-
-  ngAfterViewInit(): void {
-    this.dataSource.sortingDataAccessor = (row: ModuleReduced, sortHeaderId: string) => {
-      // the visible columns are composites, so they need their own sort keys
-      switch (sortHeaderId) {
-        case 'module':
-          return row.name.toUpperCase();
-        case 'status':
-          return this.statusOf(row);
-        default:
-          var value = (row as any)[sortHeaderId];
-          return typeof value === 'string' ? value.toUpperCase() : value;
-      }
-    };
-    this.dataSource.sort = this.sort;
   }
 
   loadModules(background: boolean) {
