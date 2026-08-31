@@ -28,12 +28,47 @@ navigate to is a page nobody finds.
 - An empty table explains what to do next — `mgw-empty-state`.
 - Shared layout classes are prefixed `mgw-` in `styles.css`.
 
+## Sortable tables bind MatSort through a setter
+
+Every list here renders its table behind a condition — a spinner while loading,
+an empty state when there is nothing to show. `ngAfterViewInit` therefore runs
+before the table exists, `@ViewChild(MatSort)` stays `undefined`, and the hook
+does not run a second time. A table wired that way silently keeps whatever order
+the API sent, and a click on a column header does nothing.
+
+Bind it from a setter instead, which fires whenever the table appears:
+
+```ts
+@ViewChild(MatSort) set tableSort(sort: MatSort | undefined) {
+  if (sort) {
+    this.dataSource.sort = sort;
+  }
+}
+```
+
+The guard is not cosmetic: the setter fires with `undefined` when a filter
+empties the table, and without it the sort would be torn down.
+
+Anything that does not depend on the view — `filterPredicate`,
+`sortingDataAccessor` — goes in `ngOnInit`, which is guaranteed to run before the
+setter, so the accessor is in place the first time rows are sorted.
+
+Two tables in one component need a template reference each
+(`#endpointSort="matSort"`) and one setter per table. A type-based
+`@ViewChild(MatSort)` binds whichever renders first and leaves the other
+unsorted — that was the state of the endpoints page until 2026-08-31.
+
 ## Old routes redirect
 
 Bookmarks keep working: `/secrets`, `/modules/manage`,
 `/modules/global-configs`, `/deployments/endpoints`. Removing a redirect breaks
 links people have saved, which produces a bug report that looks like a missing
 page.
+
+One route was dropped **without** a redirect on 2026-08-31: the container logs
+moved from `/containers/<name>/logs` under the module that owns the container,
+and the new path needs a module id the old URL does not carry. There is no
+target to redirect to, so saved links to that page fail.
 
 ## Development
 
