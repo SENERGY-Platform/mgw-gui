@@ -70,6 +70,21 @@ moved from `/containers/<name>/logs` under the module that owns the container,
 and the new path needs a module id the old URL does not carry. There is no
 target to redirect to, so saved links to that page fail.
 
+## A page on two routes derives its back target
+
+The container logs page is mounted twice: under the module that owns the
+container (`modules/detail/:id/containers/:containerId/logs`), and under
+`system/status/container-logs/:containerId` for the core services, which carry
+no module id. A back target built from `params['id']` without checking it
+yields `/modules/detail/undefined` on the second route — a 404 the router
+cannot warn about, because the path is syntactically valid.
+
+The query parameters travelling with it need the same treatment:
+`tab=containers` selects a tab the service list does not have. Read the
+parameter, derive target and query parameters together, and pin each route in a
+spec — `logs.component.spec.ts` builds the component on both. Until 2026-09-07
+it had no spec at all, which is how the undefined target reached an install.
+
 ## Development
 
 - `npm run start:local` serves against a real local core through the dev proxy
