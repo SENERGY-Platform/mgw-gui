@@ -35,7 +35,7 @@ export class LogsComponent implements OnDestroy {
    * and has to reach the router as one encoded segment.
    */
   backTo: unknown[] = ['/modules'];
-  readonly backToQueryParams = {tab: 'containers'};
+  backToQueryParams: Record<string, string> = {};
   ready = false;
   init = true;
   interval: any;
@@ -50,11 +50,26 @@ export class LogsComponent implements OnDestroy {
   ) {
     this.route.params.subscribe((params) => {
       this.containerID = params['containerId'];
-      this.backTo = ['/modules', 'detail', params['id']];
+      this.setBackTarget(params['id']);
       this.getLogs();
       this.init = false;
       this.startAutoRefresh();
     });
+  }
+
+  /**
+   * Two routes render this page: one nested under a module, and
+   * system/status/container-logs for the core services, which carries no
+   * module id and whose target page has no tabs.
+   */
+  private setBackTarget(moduleID: string | undefined) {
+    if (moduleID) {
+      this.backTo = ['/modules', 'detail', moduleID];
+      this.backToQueryParams = {tab: 'containers'};
+      return;
+    }
+    this.backTo = ['/system', 'status'];
+    this.backToQueryParams = {};
   }
 
   getLogs() {
