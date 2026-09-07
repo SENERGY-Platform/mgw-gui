@@ -9,12 +9,19 @@ server {
     try_files $uri /version.txt;
   }
 
+  # The build's static output. A miss here is a missing file and not a route,
+  # so it must not fall back to the app shell: an asset answering with
+  # index.html and status 200 fails silently in whatever parses it, and the
+  # gateway hides such a 404 anyway. Matching on the directory rather than on
+  # the extension because a module id is a repository url - the dot in
+  # /modules/detail/github.com/... would make an extension rule 404 the page.
+  location ~ ^/(assets|media)/ {
+    try_files $uri =404;
+  }
+
+  # The =404 is not dead weight: without it a missing index.html answers 500,
+  # because nginx treats the last try_files argument as a file it must find.
   location / {
-    # don't cache it
-    proxy_no_cache 1;
-    # even if cached, don't try to use it
-    proxy_cache_bypass 1; 
-    
     try_files $uri $uri/ /index.html =404;
   }
 }
