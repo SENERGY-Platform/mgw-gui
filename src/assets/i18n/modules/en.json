@@ -269,6 +269,7 @@
     "hint": "Passed verbatim to the repository type handler",
     "cancel": "Cancel",
     "add": "Add",
+    "definitionRequired": "Enter the source definition of the repository to add",
     "invalidJson": "Invalid JSON: {{message}}"
   },
   "changeRequestDialog": {

@@ -17,49 +17,76 @@
 import {TestBed} from '@angular/core/testing';
 import {MatDialogRef} from '@angular/material/dialog';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
+import {TranslocoService} from '@jsverse/transloco';
+import {firstValueFrom} from 'rxjs';
+import type {Mock} from 'vitest';
 
 import {provideTranslocoTesting} from 'src/testing/transloco-testing';
 import {AddRepositoryDialogComponent} from './add-repository-dialog.component';
 
-// The prefilled definition is configuration, and configuration goes stale
-// without anything noticing: the module-manager accepts a reference that does
-// not resolve, reports the refresh as successful, and the repository simply
-// contributes no modules. Pinning the values is the only thing between a
-// changed upstream layout and a catalogue that is quietly empty.
+// The definition reaches the module-manager verbatim, and a definition it
+// cannot use fails quietly: the refresh reports success and the repository
+// contributes no modules. What the dialog can check before that happens is
+// that there is a definition at all and that it parses.
 describe('AddRepositoryDialogComponent', () => {
-  function create(): AddRepositoryDialogComponent {
+  let close: Mock;
+
+  // The messages below are resolved through TranslocoService in TypeScript,
+  // so the scope has to be loaded before save() runs. In the app the dialog
+  // opens long after the scope arrived.
+  async function create(): Promise<AddRepositoryDialogComponent> {
+    close = vi.fn();
     TestBed.configureTestingModule({
       imports: [AddRepositoryDialogComponent, provideTranslocoTesting('modules')],
-      providers: [provideNoopAnimations(), {provide: MatDialogRef, useValue: {close: () => undefined}}],
+      providers: [provideNoopAnimations(), {provide: MatDialogRef, useValue: {close: close}}],
     });
+    await firstValueFrom(TestBed.inject(TranslocoService).load('modules/en'));
     return TestBed.createComponent(AddRepositoryDialogComponent).componentInstance;
   }
 
-  it('prefills the module repository as SNRGY-4631 specifies it', () => {
-    const definition = JSON.parse(create().definitionJson);
-
-    expect(definition.owner).toBe('SENERGY-Platform');
-    expect(definition.repository).toBe('mgw-module-repository');
-    // a tag; 'refs/heads/main-validated' does not resolve and fails silently
-    expect(definition.reference).toBe('main-validated');
-    expect(definition.priority).toBe(100);
+  it('starts with an empty definition', async () => {
+    expect((await create()).definitionJson).toBe('');
   });
 
-  it('offers every channel the repository has, in priority order', () => {
-    const definition = JSON.parse(create().definitionJson);
+  it('does not submit an empty definition, and says why', async () => {
+    const component = await create();
 
-    expect(definition.channels).toEqual([
-      {name: 'main', priority: 2},
-      {name: 'testing', priority: 1},
-      {name: 'legacy', priority: 0},
-    ]);
+    component.save();
+
+    expect(close).not.toHaveBeenCalled();
+    expect(component.error).not.toBe('');
   });
 
-  it('carries no blacklist, which this repository does not need', () => {
-    const definition = JSON.parse(create().definitionJson);
+  it('does not submit a definition that is not JSON, and says why', async () => {
+    const component = await create();
+    component.definitionJson = '{owner: SENERGY-Platform}';
 
-    for (const channel of definition.channels) {
-      expect(channel.blacklist).toBeUndefined();
-    }
+    component.save();
+
+    expect(close).not.toHaveBeenCalled();
+    expect(component.error).toContain('Invalid JSON');
+  });
+
+  it('closes with the type and the parsed definition', async () => {
+    const component = await create();
+    component.definitionJson = '{"owner": "SENERGY-Platform", "repository": "mgw-module-repository"}';
+
+    component.save();
+
+    expect(close).toHaveBeenCalledWith({
+      type: 'github.com',
+      definition: {owner: 'SENERGY-Platform', repository: 'mgw-module-repository'},
+    });
+  });
+
+  it('clears an earlier error once a valid definition is submitted', async () => {
+    const component = await create();
+    component.save();
+    expect(component.error).not.toBe('');
+
+    component.definitionJson = '{}';
+    component.save();
+
+    expect(component.error).toBe('');
   });
 });
