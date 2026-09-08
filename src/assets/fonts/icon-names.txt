@@ -78,6 +78,7 @@ search_off
 select
 send
 settings
+settings_backup_restore
 source
 start
 stop

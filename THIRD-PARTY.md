@@ -22,9 +22,9 @@ and every icon as its own ligature name in plain text.
 ### Material Symbols Rounded
 
 - **File**: `src/fonts/material-symbols-rounded.woff2`
-- **Source**: <https://fonts.google.com/icons> (upstream: <https://github.com/google/material-design-icons>), v368 as served by Google Fonts
+- **Source**: <https://fonts.google.com/icons> (upstream: <https://github.com/google/material-design-icons>), v370 as served by Google Fonts
 - **Licence**: Apache License 2.0 — `src/assets/fonts/LICENSE-MaterialSymbols.txt`
-- **Taken over**: 2026-08-24
+- **Taken over**: 2026-09-08 (first taken over 2026-08-24 at v368; a recut takes whatever version Google serves that day)
 - **Modified**: subset. The full face carries thousands of icons and several
   megabytes; this one carries the icons the templates name, and nothing else.
 
