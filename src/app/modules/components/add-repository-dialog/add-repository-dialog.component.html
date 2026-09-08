@@ -8,9 +8,18 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="outline" class="full-width">
+  <!-- the label floats from the start so the placeholder's shape is readable
+       before the field is focused -->
+  <mat-form-field appearance="outline" class="full-width" floatLabel="always">
     <mat-label>{{ 'modules.addRepositoryDialog.sourceDefinition' | transloco }}</mat-label>
-    <textarea [(ngModel)]="definitionJson" class="definition" matInput rows="12" spellcheck="false"></textarea>
+    <textarea
+      [(ngModel)]="definitionJson"
+      [placeholder]="definitionPlaceholder"
+      class="definition"
+      matInput
+      rows="12"
+      spellcheck="false"
+    ></textarea>
     <mat-hint>{{ 'modules.addRepositoryDialog.hint' | transloco }}</mat-hint>
   </mat-form-field>
 

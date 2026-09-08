@@ -34,6 +34,17 @@ import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/t
 // so the dialog takes it as JSON (deliberately simple, see SNRGY-4587).
 // Closes with {type, definition} or undefined when cancelled.
 
+// Shown as the field's placeholder, because an empty field says nothing about
+// the shape a github.com definition has to take. Not a translation key: the
+// keys are the handler's field names, and translating them breaks the input.
+const GITHUB_SHAPE = `{
+  "owner": "",
+  "repository": "",
+  "reference": "",
+  "priority": 100,
+  "channels": [{"name": "main", "priority": 2}]
+}`;
+
 @Component({
   selector: 'add-repository-dialog',
   templateUrl: './add-repository-dialog.component.html',
@@ -58,6 +69,7 @@ import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/t
 export class AddRepositoryDialogComponent {
   repositoryType = 'github.com';
   definitionJson = '';
+  readonly definitionPlaceholder = GITHUB_SHAPE;
   error = '';
 
   // Field injection, not a constructor parameter: new dependencies follow

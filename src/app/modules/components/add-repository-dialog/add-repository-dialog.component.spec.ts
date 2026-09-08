@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialogRef} from '@angular/material/dialog';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {TranslocoService} from '@jsverse/transloco';
@@ -29,6 +29,7 @@ import {AddRepositoryDialogComponent} from './add-repository-dialog.component';
 // contributes no modules. What the dialog can check before that happens is
 // that there is a definition at all and that it parses.
 describe('AddRepositoryDialogComponent', () => {
+  let fixture: ComponentFixture<AddRepositoryDialogComponent>;
   let close: Mock;
 
   // The messages below are resolved through TranslocoService in TypeScript,
@@ -41,11 +42,23 @@ describe('AddRepositoryDialogComponent', () => {
       providers: [provideNoopAnimations(), {provide: MatDialogRef, useValue: {close: close}}],
     });
     await firstValueFrom(TestBed.inject(TranslocoService).load('modules/en'));
-    return TestBed.createComponent(AddRepositoryDialogComponent).componentInstance;
+    fixture = TestBed.createComponent(AddRepositoryDialogComponent);
+    fixture.detectChanges();
+    return fixture.componentInstance;
   }
 
   it('starts with an empty definition', async () => {
     expect((await create()).definitionJson).toBe('');
+  });
+
+  it('shows the expected shape as a placeholder, without submitting it', async () => {
+    const component = await create();
+
+    const textarea = fixture.nativeElement.querySelector('textarea.definition') as HTMLTextAreaElement;
+    const placeholder = JSON.parse(textarea.placeholder);
+
+    expect(Object.keys(placeholder)).toEqual(['owner', 'repository', 'reference', 'priority', 'channels']);
+    expect(component.definitionJson).toBe('');
   });
 
   it('does not submit an empty definition, and says why', async () => {
