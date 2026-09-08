@@ -93,6 +93,7 @@
     "description": "HTTP endpoints the running deployments expose through the gateway. Generated endpoints come from the module itself; aliases are the shorter URLs you define.",
     "emptyTitle": "No endpoints",
     "emptyMessage": "Endpoints appear here once a deployed module exposes one. Deploy a module that serves HTTP to get started.",
-    "goToModules": "Go to modules"
+    "goToModules": "Go to modules",
+    "unlabelledHint": "The core did not name a module for these endpoints, so only the deployment identifies them."
   }
 }

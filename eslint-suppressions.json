@@ -341,9 +341,6 @@
   "src/app/deployments/pages/list-endpoints/list-endpoints.component.ts": {
     "@angular-eslint/prefer-inject": {
       "count": 2
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 14
     }
   },
   "src/app/developer/models/openapi.spec.ts": {

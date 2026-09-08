@@ -1,14 +1,8 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
-import {concatMap, forkJoin, map, Observable, of, throwError} from 'rxjs';
-import {CoreService, CoreServicesResponse} from 'src/app/system/models/services';
+import {Component, OnInit} from '@angular/core';
+import {map} from 'rxjs';
 import {CoreManagerService} from 'src/app/core/services/core-manager/core-manager.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
-import {SelectionModel} from '@angular/cdk/collections';
-import {Router} from '@angular/router';
 import {CoreEndpoint, CoreEndpointsResponse} from '../../models/endpoints';
-import {UtilService} from 'src/app/core/services/util/util.service';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
 
 import {MatIcon} from '@angular/material/icon';
@@ -18,6 +12,18 @@ import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {PageHeaderComponent} from '../../../core/components/page-header/page-header.component';
 import {EmptyStateComponent} from '../../../core/components/empty-state/empty-state.component';
 import {ListEndpointsComponent as ListEndpointsComponent_1} from '../../../core/components/list-endpoints/list-endpoints.component';
+
+// The core labels a generated endpoint with the module that declared it.
+const MOD_ID_LABEL = 'mod_id';
+
+// The endpoints of one deployment. Grouping stays by ref because that is
+// what the nested list filters on; the module id only names the group.
+interface EndpointGroup {
+  ref: string;
+  // empty for an endpoint the core did not label, which is then only
+  // identifiable by its deployment
+  moduleId: string;
+}
 
 @Component({
   selector: 'app-list',
@@ -36,7 +42,7 @@ import {ListEndpointsComponent as ListEndpointsComponent_1} from '../../../core/
   providers: [provideTranslocoScope('deployments')],
 })
 export class ListEndpointsComponent implements OnInit {
-  deploymentIDs: string[] = [];
+  groups: EndpointGroup[] = [];
   ready = false;
 
   constructor(
@@ -51,24 +57,10 @@ export class ListEndpointsComponent implements OnInit {
   loadDeploymentsWithEndpoints() {
     this.coreService
       .getEndpoints()
-      .pipe(
-        map((endpointsResponse: CoreEndpointsResponse) => {
-          const services: CoreEndpoint[] = [];
-          for (const [key, value] of Object.entries(endpointsResponse)) {
-            services.push(value);
-          }
-          return services;
-        }),
-      )
+      .pipe(map((endpointsResponse: CoreEndpointsResponse) => Object.values(endpointsResponse || {})))
       .subscribe({
         next: (endpoints: CoreEndpoint[]) => {
-          if (endpoints) {
-            endpoints.forEach((endpoint) => {
-              if (this.deploymentIDs.indexOf(endpoint.ref) === -1) {
-                this.deploymentIDs.push(endpoint.ref);
-              }
-            });
-          }
+          this.groups = this.group(endpoints || []);
           this.ready = true;
         },
         error: (err) => {
@@ -76,5 +68,22 @@ export class ListEndpointsComponent implements OnInit {
           this.ready = true;
         },
       });
+  }
+
+  // An alias carries no mod_id, so the label is taken from whichever
+  // endpoint of the group has one rather than from the first one seen.
+  private group(endpoints: CoreEndpoint[]): EndpointGroup[] {
+    const groups: EndpointGroup[] = [];
+    for (const endpoint of endpoints) {
+      let group = groups.find((candidate) => candidate.ref === endpoint.ref);
+      if (!group) {
+        group = {ref: endpoint.ref, moduleId: ''};
+        groups.push(group);
+      }
+      if (!group.moduleId) {
+        group.moduleId = endpoint.labels?.[MOD_ID_LABEL] || '';
+      }
+    }
+    return groups;
   }
 }

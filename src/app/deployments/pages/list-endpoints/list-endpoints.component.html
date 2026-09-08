@@ -22,7 +22,7 @@
 
   <spinner [show]="!ready" class="global-centered-spinner"></spinner>
 
-  @if (ready && deploymentIDs.length === 0) {
+  @if (ready && groups.length === 0) {
     <mgw-empty-state
       [message]="'deployments.endpointsPage.emptyMessage' | transloco"
       [title]="'deployments.endpointsPage.emptyTitle' | transloco"
@@ -34,13 +34,20 @@
     </mgw-empty-state>
   }
 
-  @for (deploymentID of deploymentIDs; track deploymentID) {
+  @for (group of groups; track group.ref) {
     <section class="deployment">
       <header class="deployment-head">
-        <mat-icon>rocket_launch</mat-icon>
-        <span class="mgw-mono">{{ deploymentID }}</span>
+        @if (group.moduleId) {
+          <mat-icon>extension</mat-icon>
+          <a [queryParams]="{tab: 'endpoints'}" [routerLink]="['/modules/detail', group.moduleId]" class="mgw-mono">{{
+            group.moduleId
+          }}</a>
+        } @else {
+          <mat-icon>rocket_launch</mat-icon>
+          <span [title]="'deployments.endpointsPage.unlabelledHint' | transloco" class="mgw-mono">{{ group.ref }}</span>
+        }
       </header>
-      <list-endpoints [deploymentID]="deploymentID"></list-endpoints>
+      <list-endpoints [deploymentID]="group.ref"></list-endpoints>
     </section>
   }
 </div>
