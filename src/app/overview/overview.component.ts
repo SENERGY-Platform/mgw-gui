@@ -40,7 +40,9 @@ interface Attention {
   icon: string;
   title: string;
   detail: string;
-  route: string;
+  // router link commands, not a URL: only the first command is split on "/",
+  // so a module ID keeps its slashes and is encoded exactly once
+  route: string[];
 }
 
 @Component({
@@ -158,7 +160,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           icon: 'error',
           title: module.name,
           detail: this.transloco.translate<string>('overview.attention.unhealthy'),
-          route: '/modules/detail/' + encodeURIComponent(module.id),
+          route: ['/modules/detail', module.id],
         });
       } else {
         this.unknown++;
@@ -173,7 +175,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
             module.error_msg ||
             module.deployment?.error_msg ||
             this.transloco.translate<string>('overview.attention.moduleError'),
-          route: '/modules/detail/' + encodeURIComponent(module.id),
+          route: ['/modules/detail', module.id],
         });
       }
 
@@ -186,7 +188,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
             installed: module.version,
             deployed: module.deployment.module_version,
           }),
-          route: '/deployments/edit/' + encodeURIComponent(module.id),
+          route: ['/deployments/edit', module.id],
         });
       }
     }
@@ -200,7 +202,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           {count: this.updatesAvailable},
         ),
         detail: this.transloco.translate<string>('overview.attention.newVersionsFound'),
-        route: '/modules/catalog',
+        route: ['/modules/catalog'],
       });
     }
 
