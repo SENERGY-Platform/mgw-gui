@@ -24,6 +24,7 @@ import {DatePipe, KeyValuePipe} from '@angular/common';
 import {MatChip, MatChipSet} from '@angular/material/chips';
 import {MatTabGroup, MatTab, MatTabContent} from '@angular/material/tabs';
 import {AuxDeploymentsListComponent} from 'src/app/deployments/components/aux-deployments-list/aux-deployments-list.component';
+import {ListEndpointsComponent} from 'src/app/core/components/list-endpoints/list-endpoints.component';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -61,6 +62,7 @@ import {StatusPillComponent, StatusTone} from 'src/app/core/components/status-pi
     MatMenuTrigger,
     MatDivider,
     AuxDeploymentsListComponent,
+    ListEndpointsComponent,
     PageHeaderComponent,
     StatusPillComponent,
     TranslocoPipe,
@@ -76,7 +78,7 @@ export class InfoComponent implements OnInit, OnDestroy {
   // Tab order in the template. The query parameter carries the name rather
   // than the index, so reordering the tabs does not break existing links -
   // the logs page sends the reader back to 'containers'.
-  private readonly tabs = ['overview', 'containers', 'auxDeployments'];
+  private readonly tabs = ['overview', 'containers', 'endpoints', 'auxDeployments'];
 
   private interval: any;
 

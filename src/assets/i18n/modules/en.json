@@ -153,6 +153,7 @@
     "tabs": {
       "overview": "Overview",
       "containers": "Containers",
+      "endpoints": "Endpoints",
       "auxDeployments": "Auxiliary deployments"
     },
     "module": {
@@ -186,6 +187,7 @@
       "container": "Container"
     },
     "showLogs": "Show logs",
+    "endpointsHint": "Web interfaces this module exposes through the gateway. An alias gives one a shorter path of your own.",
     "auxDeploymentsHint": "Extra containers this module spawned at runtime. Read-only — modules manage them themselves.",
     "containerMissing": "missing",
     "statuses": {
