@@ -42,6 +42,7 @@ import {MatTooltip} from '@angular/material/tooltip';
 import {MatIcon} from '@angular/material/icon';
 import {TranslocoPipe, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
 import {Repository} from 'src/app/core/models/repositories';
+import {mapRepositoryRefreshResult} from 'src/app/core/models/job-result-view';
 import {AddRepositoryDialogComponent} from '../../components/add-repository-dialog/add-repository-dialog.component';
 
 @Component({
@@ -134,12 +135,24 @@ export class RepositoriesComponent implements OnInit {
         if (!result) {
           return;
         }
+        // The create call answers without naming the repository it made, so
+        // the source is whatever the list gained. Refreshing all of them
+        // instead would hit GitHub once per repository and run into its rate
+        // limit on a gateway with a handful of them.
+        const known = new Set(this.dataSource.data.map((repository) => repository.source));
         this.ready = false;
         this.moduleService
           .createRepository(result.type, result.definition)
           .pipe(
-            // fetch the new repository's modules right away, otherwise it stays empty
-            concatMap((_) => this.moduleService.refreshRepositories()),
+            concatMap((_) => this.moduleService.getRepositories()),
+            concatMap((repositories) => {
+              const added = (repositories || [])
+                .map((repository) => repository.source)
+                .filter((source) => !known.has(source));
+              // no new source means the repository was already configured;
+              // then there is nothing to single out and all of them refresh
+              return this.moduleService.refreshRepositories(added.length > 0 ? added : undefined);
+            }),
             concatMap((job) =>
               this.utilService.checkJobStatus(
                 job.id,
@@ -150,7 +163,17 @@ export class RepositoriesComponent implements OnInit {
             ),
           )
           .subscribe({
-            next: (_) => this.load(),
+            next: (jobResult) => {
+              // the job itself succeeds even when a repository failed to
+              // refresh, so its result decides whether there is an error
+              if (jobResult?.result) {
+                this.utilService.presentJobResult(
+                  this.translate('modules.repositories.repositoryRefresh'),
+                  mapRepositoryRefreshResult(jobResult.result),
+                );
+              }
+              this.load();
+            },
             error: (err) => {
               this.errorService.handleError(
                 RepositoriesComponent.name,

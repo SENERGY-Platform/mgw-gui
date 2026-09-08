@@ -22,9 +22,14 @@ import type {Mock} from 'vitest';
 
 import {provideTranslocoTesting} from 'src/testing/transloco-testing';
 import {Repository} from 'src/app/core/models/repositories';
+import {RepositoryJobResult} from 'src/app/core/models/jobs';
+import {JobResultItem} from 'src/app/core/models/job-result-view';
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {UtilService} from 'src/app/core/services/util/util.service';
 import {RepositoriesComponent} from './repositories.component';
+
+// what UtilService.checkJobStatus resolves with for a repositories-refresh
+type JobClose = {result: RepositoryJobResult} | undefined;
 
 function repository(overrides: Partial<Repository> = {}): Repository {
   return {
@@ -51,7 +56,7 @@ describe('RepositoriesComponent', () => {
 
   // The repositories the page has loaded before the add, the list the create
   // is followed by, and the job result the refresh reports.
-  function create(opts: {before?: Repository[]; after?: Repository[]; jobResult?: undefined} = {}) {
+  function create(opts: {before?: Repository[]; after?: Repository[]; jobResult?: JobClose} = {}) {
     moduleService = {
       getRepositories: vi.fn().mockReturnValue(of(opts.after ?? opts.before ?? [])),
       createRepository: vi.fn().mockReturnValue(of('')),
@@ -125,6 +130,50 @@ describe('RepositoriesComponent', () => {
 
       expect(moduleService.deleteRepository).not.toHaveBeenCalled();
       expect(errorService.handleError).toHaveBeenCalled();
+    });
+  });
+
+  // SNRGY-4685
+  describe('adding a repository', () => {
+    const added = repository({source: 'github.com/acme/modules'});
+
+    function addWith(opts: {before: Repository[]; after: Repository[]; jobResult?: JobClose}) {
+      create(opts);
+      dialog.open.mockReturnValue({afterClosed: () => of({type: 'github.com', definition: {}})});
+      component.add();
+    }
+
+    it('refreshes only the repository the create added', () => {
+      addWith({before: [repository()], after: [repository(), added]});
+
+      expect(moduleService.refreshRepositories).toHaveBeenCalledWith(['github.com/acme/modules']);
+    });
+
+    it('falls back to every repository when the list gained none', () => {
+      addWith({before: [repository()], after: [repository()]});
+
+      expect(moduleService.refreshRepositories).toHaveBeenCalledWith(undefined);
+    });
+
+    it('shows the refresh result, which is where a failed refresh reports itself', () => {
+      const result = {
+        job_id: 'job-1',
+        has_error: true,
+        error_msg: 'rate limit exceeded',
+        results: [],
+        results_err_num: 1,
+      };
+      addWith({before: [repository()], after: [repository(), added], jobResult: {result: result}});
+
+      expect(utilService.presentJobResult).toHaveBeenCalled();
+      const items: JobResultItem[] = utilService.presentJobResult.mock.calls[0][1];
+      expect(items.some((item: JobResultItem) => item.message === 'rate limit exceeded')).toBe(true);
+    });
+
+    it('does not present a result when the job carried none', () => {
+      addWith({before: [repository()], after: [repository(), added], jobResult: undefined});
+
+      expect(utilService.presentJobResult).not.toHaveBeenCalled();
     });
   });
 });

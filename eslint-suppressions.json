@@ -495,7 +495,7 @@
       "count": 4
     },
     "@typescript-eslint/no-unused-vars": {
-      "count": 2
+      "count": 1
     }
   },
   "src/app/overview/overview.component.ts": {
