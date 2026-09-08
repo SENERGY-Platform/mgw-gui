@@ -229,6 +229,58 @@ describe('DeploymentFormComponent', () => {
     expect(resLabel?.querySelector('.required')).not.toBeNull();
   });
 
+  it('offers to restore the module default once the value was changed', () => {
+    create(
+      makeModule({
+        configInputs: {cfg: moduleInput('Config')},
+        configs: {cfg: textConfig({default: 'hello'})},
+      }),
+    );
+
+    // untouched: the field still holds the default, nothing to restore
+    expect(fixture.nativeElement.querySelector('.reset-default')).toBeNull();
+
+    component.configRows[0].raw = 'changed';
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector('.reset-default') as HTMLButtonElement;
+    expect(button).not.toBeNull();
+
+    button.click();
+    fixture.detectChanges();
+
+    expect(component.configRows[0].raw).toBe('hello');
+    expect(fixture.nativeElement.querySelector('.reset-default')).toBeNull();
+  });
+
+  it('offers no restore for a config without a default', () => {
+    create(
+      makeModule({
+        configInputs: {cfg: moduleInput('Config')},
+        configs: {cfg: textConfig({default: null})},
+      }),
+    );
+
+    component.configRows[0].raw = 'changed';
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.reset-default')).toBeNull();
+  });
+
+  it('restores a slice default as one value per line', () => {
+    create(
+      makeModule({
+        configInputs: {cfg: moduleInput('Config')},
+        configs: {cfg: textConfig({default: ['a', 'b'], is_slice: true})},
+      }),
+    );
+
+    component.configRows[0].raw = 'c';
+    component.resetToDefault(component.configRows[0]);
+
+    expect(component.configRows[0].raw).toBe('a\nb');
+  });
+
   it('does not flag a required secret that already has a value from the edit prefill', () => {
     create(
       makeModule({

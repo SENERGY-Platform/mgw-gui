@@ -13,6 +13,7 @@
     "secrets": "Secrets",
     "files": "Files",
     "moduleDefault": "module default",
+    "restoreDefault": "Restore the module default",
     "fileGroups": "File groups",
     "fileIndex": "File {{index}}",
     "removeFile": "Remove file",

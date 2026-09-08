@@ -49,6 +49,17 @@
                 <span class="required" [title]="'deployments.form.required' | transloco">*</span>
               }
             </label>
+            @if (row.hasDefault && !row.useGlobal && row.raw !== row.defaultRaw) {
+              <button
+                (click)="resetToDefault(row)"
+                [matTooltip]="'deployments.form.restoreDefault' | transloco"
+                class="reset-default"
+                mat-icon-button
+                type="button"
+              >
+                <mat-icon>restart_alt</mat-icon>
+              </button>
+            }
             @if (row.matchingGlobals.length > 0) {
               <mat-slide-toggle
                 [(ngModel)]="row.useGlobal"

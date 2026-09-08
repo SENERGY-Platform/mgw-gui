@@ -47,6 +47,10 @@ interface ConfigRow {
   // it the same way for configs, secrets, resources and files
   required: boolean;
   raw: string;
+  // the module default rendered the same way as `raw`, so the two can be
+  // compared to tell whether the field still holds the default
+  defaultRaw: string;
+  hasDefault: boolean;
   useGlobal: boolean;
   globalConfigId: string;
   matchingGlobals: GlobalConfig[];
@@ -158,12 +162,15 @@ export class DeploymentFormComponent implements OnInit {
       }
       const globalId = deployment?.global_configs?.[ref] || '';
       const existing = deployment?.configs?.[ref];
+      const defaultRaw = this.defaultRaw(config);
       this.configRows.push({
         ref: ref,
         input: input as ModuleInput,
         config: config,
         required: config.required,
-        raw: existing ? formatConfigValue(existing) : this.defaultRaw(config),
+        raw: existing ? formatConfigValue(existing) : defaultRaw,
+        defaultRaw: defaultRaw,
+        hasDefault: config.default !== null && config.default !== undefined,
         useGlobal: !!globalId,
         globalConfigId: globalId,
         matchingGlobals: this.globalConfigs.filter(
@@ -296,6 +303,11 @@ export class DeploymentFormComponent implements OnInit {
       return this.secrets;
     }
     return this.secrets.filter((secret) => secret.type === row.type);
+  }
+
+  resetToDefault(row: ConfigRow) {
+    row.raw = row.defaultRaw;
+    row.error = '';
   }
 
   addGroupFile(row: FileGroupRow) {
