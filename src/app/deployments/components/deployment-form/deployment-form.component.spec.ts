@@ -324,6 +324,178 @@ describe('DeploymentFormComponent', () => {
     expect(fixture.nativeElement.querySelector('.reset-default')).toBeNull();
   });
 
+  it('blocks submit for a required file left empty with no module default', () => {
+    create(
+      makeModule({
+        fileInputs: {cfg: moduleInput('Config file')},
+        files: {cfg: {type: 'generic', required: true, default_data: ''}},
+      }),
+    );
+    component.fileRows[0].text = '   ';
+
+    const result = component.collect();
+
+    expect(result).toBeUndefined();
+    expect(component.fileRows[0].error).not.toBe('');
+  });
+
+  it('collects a required file left empty when the module ships a default', () => {
+    create(
+      makeModule({
+        fileInputs: {cfg: moduleInput('Config file')},
+        files: {cfg: {type: 'generic', required: true, default_data: encodeFileData('key = value')}},
+      }),
+    );
+    component.fileRows[0].text = '';
+
+    const result = component.collect();
+
+    expect(result).toBeDefined();
+    expect(result!.files['cfg']).toBe(encodeFileData(''));
+    expect(component.fileRows[0].error).toBe('');
+  });
+
+  it('collects an optional file left empty', () => {
+    create(
+      makeModule({
+        fileInputs: {cfg: moduleInput('Config file')},
+        files: {cfg: {type: 'json', required: false, default_data: ''}},
+      }),
+    );
+    component.fileRows[0].text = '';
+
+    const result = component.collect();
+
+    expect(result).toBeDefined();
+    expect(component.fileRows[0].error).toBe('');
+  });
+
+  it('collects a json file with valid content, base64-encoded', () => {
+    create(
+      makeModule({
+        fileInputs: {cfg: moduleInput('Config file')},
+        files: {cfg: {type: 'json', required: false, default_data: ''}},
+      }),
+    );
+    component.fileRows[0].text = '{"a":1}';
+
+    const result = component.collect();
+
+    expect(result).toBeDefined();
+    expect(result!.files['cfg']).toBe(encodeFileData('{"a":1}'));
+    expect(component.fileRows[0].error).toBe('');
+  });
+
+  it('blocks submit for a json file with broken content and marks the row', () => {
+    create(
+      makeModule({
+        fileInputs: {cfg: moduleInput('Config file')},
+        files: {cfg: {type: 'json', required: false, default_data: ''}},
+      }),
+    );
+    component.fileRows[0].text = '{"a":';
+
+    const result = component.collect();
+
+    expect(result).toBeUndefined();
+    expect(component.fileRows[0].error).not.toBe('');
+  });
+
+  it('collects a generic file with the same broken content fine - the type decides', () => {
+    create(
+      makeModule({
+        fileInputs: {cfg: moduleInput('Config file')},
+        files: {cfg: {type: 'generic', required: false, default_data: ''}},
+      }),
+    );
+    component.fileRows[0].text = '{"a":';
+
+    const result = component.collect();
+
+    expect(result).toBeDefined();
+    expect(result!.files['cfg']).toBe(encodeFileData('{"a":'));
+    expect(component.fileRows[0].error).toBe('');
+  });
+
+  it('collects a yaml file with broken content fine - there is no yaml validation', () => {
+    create(
+      makeModule({
+        fileInputs: {cfg: moduleInput('Config file')},
+        files: {cfg: {type: 'yaml', required: false, default_data: ''}},
+      }),
+    );
+    component.fileRows[0].text = 'a: [b';
+
+    const result = component.collect();
+
+    expect(result).toBeDefined();
+    expect(result!.files['cfg']).toBe(encodeFileData('a: [b'));
+    expect(component.fileRows[0].error).toBe('');
+  });
+
+  it('reformats valid json on blur and clears the error', () => {
+    create(
+      makeModule({
+        fileInputs: {cfg: moduleInput('Config file')},
+        files: {cfg: {type: 'json', required: false, default_data: ''}},
+      }),
+    );
+    component.fileRows[0].text = '{"a":1}';
+    component.fileRows[0].error = 'stale error';
+
+    component.formatFileOnBlur(component.fileRows[0]);
+
+    expect(component.fileRows[0].text).toBe(JSON.stringify({a: 1}, null, 2));
+    expect(component.fileRows[0].error).toBe('');
+  });
+
+  it('sets the error on blur with broken json and leaves the text unchanged', () => {
+    create(
+      makeModule({
+        fileInputs: {cfg: moduleInput('Config file')},
+        files: {cfg: {type: 'json', required: false, default_data: ''}},
+      }),
+    );
+    component.fileRows[0].text = '{"a":';
+
+    component.formatFileOnBlur(component.fileRows[0]);
+
+    expect(component.fileRows[0].text).toBe('{"a":');
+    expect(component.fileRows[0].error).not.toBe('');
+  });
+
+  it('clears the error when resetting a file to its module default', () => {
+    create(
+      makeModule({
+        fileInputs: {cfg: moduleInput('Config file')},
+        files: {cfg: {type: 'json', required: false, default_data: encodeFileData('{}')}},
+      }),
+    );
+    component.fileRows[0].text = '{"a":';
+    component.fileRows[0].error = 'stale error';
+
+    component.resetFileToDefault(component.fileRows[0]);
+
+    expect(component.fileRows[0].text).toBe('{}');
+    expect(component.fileRows[0].error).toBe('');
+  });
+
+  it('does not treat an empty json file as a parse error', () => {
+    create(
+      makeModule({
+        fileInputs: {cfg: moduleInput('Config file')},
+        files: {cfg: {type: 'json', required: false, default_data: ''}},
+      }),
+    );
+    component.fileRows[0].text = '';
+
+    const result = component.collect();
+
+    expect(result).toBeDefined();
+    expect(result!.files['cfg']).toBeUndefined();
+    expect(component.fileRows[0].error).toBe('');
+  });
+
   it('does not flag a required secret that already has a value from the edit prefill', () => {
     create(
       makeModule({

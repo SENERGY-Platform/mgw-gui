@@ -229,6 +229,9 @@
                 <span class="required" [title]="'deployments.form.required' | transloco">*</span>
               }
             </label>
+            @if (row.type && row.type !== 'generic') {
+              <span class="type-tag">{{ row.type }}</span>
+            }
             @if (row.hasDefault) {
               <span class="type-tag">{{ 'deployments.form.moduleDefault' | transloco }}</span>
             }
@@ -249,6 +252,7 @@
           }
           <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
             <textarea
+              (blur)="formatFileOnBlur(row)"
               [(ngModel)]="row.text"
               [id]="'file-' + row.ref"
               class="code"
@@ -257,6 +261,12 @@
               spellcheck="false"
             ></textarea>
           </mat-form-field>
+          @if (row.error) {
+            <p class="field-error">
+              <mat-icon>error</mat-icon>
+              {{ row.error }}
+            </p>
+          }
         </div>
       }
     </section>

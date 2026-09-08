@@ -25,7 +25,9 @@
       "valueRequired": "A value is required",
       "selectHostResource": "Select a host resource",
       "selectSecret": "Select a secret",
-      "fileGroupPathRequired": "Every file of the group needs a path"
+      "fileContentRequired": "File content is required",
+      "fileGroupPathRequired": "Every file of the group needs a path",
+      "fileInvalidJson": "Invalid JSON: {{message}}"
     }
   },
   "auxDeployments": {

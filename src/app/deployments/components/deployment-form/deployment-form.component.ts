@@ -82,6 +82,9 @@ interface FileRow {
   // the decoded module default, so it can be compared against the edited text
   defaultText: string;
   hasDefault: boolean;
+  // content type from the module, e.g. generic, json, yaml; drives validation
+  type: string;
+  error: string;
 }
 
 interface FileGroupFileRow {
@@ -214,6 +217,8 @@ export class DeploymentFormComponent implements OnInit {
         text: existingData !== undefined ? decodeFileData(existingData) : defaultText,
         defaultText: defaultText,
         hasDefault: !!file?.default_data,
+        type: file?.type || '',
+        error: '',
       });
     }
 
@@ -316,6 +321,29 @@ export class DeploymentFormComponent implements OnInit {
 
   resetFileToDefault(row: FileRow) {
     row.text = row.defaultText;
+    row.error = '';
+  }
+
+  // Reformats valid JSON to a readable indentation on blur; a parse failure
+  // sets the error and leaves the text as the user typed it.
+  formatFileOnBlur(row: FileRow) {
+    if (row.type !== 'json' || row.text.trim() === '') {
+      return;
+    }
+    try {
+      row.text = JSON.stringify(JSON.parse(row.text), null, 2);
+      row.error = '';
+    } catch (err) {
+      row.error = this.transloco.translate<string>('deployments.form.errors.fileInvalidJson', {
+        message: this.jsonErrorMessage(err),
+      });
+    }
+  }
+
+  // JSON.parse throws a SyntaxError, but a strict catch clause types it as
+  // unknown; this narrows it to the message text shown to the user.
+  private jsonErrorMessage(err: unknown): string {
+    return err instanceof Error ? err.message : String(err);
   }
 
   addGroupFile(row: FileGroupRow) {
@@ -389,6 +417,26 @@ export class DeploymentFormComponent implements OnInit {
     }
 
     for (const row of this.fileRows) {
+      row.error = '';
+      if (row.text.trim() === '') {
+        // no content: the module falls back to its own default, unless it ships
+        // none and still cannot be deployed without content
+        if (row.required && !row.hasDefault) {
+          row.error = this.transloco.translate<string>('deployments.form.errors.fileContentRequired');
+          valid = false;
+          continue;
+        }
+      } else if (row.type === 'json') {
+        try {
+          JSON.parse(row.text);
+        } catch (err) {
+          row.error = this.transloco.translate<string>('deployments.form.errors.fileInvalidJson', {
+            message: this.jsonErrorMessage(err),
+          });
+          valid = false;
+          continue;
+        }
+      }
       if (row.text !== '' || row.required) {
         result.files[row.ref] = encodeFileData(row.text);
       }
