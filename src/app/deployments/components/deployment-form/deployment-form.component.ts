@@ -79,6 +79,8 @@ interface FileRow {
   input: ModuleInput;
   required: boolean;
   text: string;
+  // the decoded module default, so it can be compared against the edited text
+  defaultText: string;
   hasDefault: boolean;
 }
 
@@ -204,11 +206,13 @@ export class DeploymentFormComponent implements OnInit {
     for (const [ref, input] of Object.entries(inputs.files || {})) {
       const file = (this.module.files || {})[ref];
       const existingData = deployment?.files?.[ref];
+      const defaultText = decodeFileData(file?.default_data || '');
       this.fileRows.push({
         ref: ref,
         input: input as ModuleInput,
         required: file?.required || false,
-        text: decodeFileData(existingData !== undefined ? existingData : file?.default_data || ''),
+        text: existingData !== undefined ? decodeFileData(existingData) : defaultText,
+        defaultText: defaultText,
         hasDefault: !!file?.default_data,
       });
     }
@@ -308,6 +312,10 @@ export class DeploymentFormComponent implements OnInit {
   resetToDefault(row: ConfigRow) {
     row.raw = row.defaultRaw;
     row.error = '';
+  }
+
+  resetFileToDefault(row: FileRow) {
+    row.text = row.defaultText;
   }
 
   addGroupFile(row: FileGroupRow) {

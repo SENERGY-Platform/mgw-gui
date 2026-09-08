@@ -19,7 +19,9 @@ import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {provideTranslocoTesting} from 'src/testing/transloco-testing';
 import {
   DeploymentRequestModule,
+  encodeFileData,
   ModuleConfigValue,
+  ModuleFileDef,
   ModuleHostResourceDef,
   ModuleInput,
   ModuleSecretDef,
@@ -56,6 +58,8 @@ interface ModuleOpts {
   secrets?: Record<string, ModuleSecretDef>;
   resourceInputs?: Record<string, ModuleInput>;
   hostResources?: Record<string, ModuleHostResourceDef>;
+  fileInputs?: Record<string, ModuleInput>;
+  files?: Record<string, ModuleFileDef>;
   isDeployed?: boolean;
   deployment?: DeploymentRequestModule['deployment'];
 }
@@ -76,14 +80,14 @@ function makeModule(opts: ModuleOpts = {}): DeploymentRequestModule {
       configs: opts.configInputs ?? null,
       resources: opts.resourceInputs ?? null,
       secrets: opts.secretInputs ?? null,
-      files: null,
+      files: opts.fileInputs ?? null,
       file_groups: null,
       groups: null,
     },
     configs: opts.configs ?? null,
     secrets: opts.secrets ?? null,
     host_resources: opts.hostResources ?? null,
-    files: null,
+    files: opts.files ?? null,
   };
 }
 
@@ -279,6 +283,45 @@ describe('DeploymentFormComponent', () => {
     component.resetToDefault(component.configRows[0]);
 
     expect(component.configRows[0].raw).toBe('a\nb');
+  });
+
+  it('offers to restore a file input to its module default', () => {
+    create(
+      makeModule({
+        fileInputs: {cfg: moduleInput('Config file')},
+        files: {cfg: {type: 'generic', required: false, default_data: encodeFileData('key = value')}},
+      }),
+    );
+
+    // untouched: the field holds the default that was decoded into it
+    expect(component.fileRows[0].text).toBe('key = value');
+    expect(fixture.nativeElement.querySelector('.reset-default')).toBeNull();
+
+    component.fileRows[0].text = 'key = other';
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector('.reset-default') as HTMLButtonElement;
+    expect(button).not.toBeNull();
+
+    button.click();
+    fixture.detectChanges();
+
+    expect(component.fileRows[0].text).toBe('key = value');
+    expect(fixture.nativeElement.querySelector('.reset-default')).toBeNull();
+  });
+
+  it('offers no restore for a file input without a default', () => {
+    create(
+      makeModule({
+        fileInputs: {cfg: moduleInput('Config file')},
+        files: {cfg: {type: 'generic', required: false, default_data: ''}},
+      }),
+    );
+
+    component.fileRows[0].text = 'something';
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.reset-default')).toBeNull();
   });
 
   it('does not flag a required secret that already has a value from the edit prefill', () => {

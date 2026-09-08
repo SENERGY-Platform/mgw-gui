@@ -232,6 +232,17 @@
             @if (row.hasDefault) {
               <span class="type-tag">{{ 'deployments.form.moduleDefault' | transloco }}</span>
             }
+            @if (row.hasDefault && row.text !== row.defaultText) {
+              <button
+                (click)="resetFileToDefault(row)"
+                [matTooltip]="'deployments.form.restoreDefault' | transloco"
+                class="reset-default"
+                mat-icon-button
+                type="button"
+              >
+                <mat-icon>settings_backup_restore</mat-icon>
+              </button>
+            }
           </div>
           @if (row.input.description) {
             <p class="field-desc">{{ row.input.description }}</p>
