@@ -231,11 +231,12 @@
       "addFailed": "Adding the repository failed",
       "deleteFailed": "Deleting the repository failed"
     },
+    "repositoryRefresh": "Repository refresh",
     "jobs": {
       "fetchingModules": "Fetching repository modules"
     },
     "confirmDelete": "Delete repository '{{source}}'? Its modules can no longer be installed or updated.",
-    "hostDirNotRemovable": "The host directory repository is part of the core installation and cannot be removed."
+    "notRemovable": "This repository is part of the core installation and cannot be removed."
   },
   "globalConfigs": {
     "title": "Global configs",

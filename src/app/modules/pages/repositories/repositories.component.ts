@@ -119,6 +119,13 @@ export class RepositoriesComponent implements OnInit {
     return (repository.channels || []).map((channel) => channel.name).join(', ');
   }
 
+  // The core sets read_only on the repositories it provides. The host-dir
+  // fallback covers a core from before the flag, where the field is absent
+  // and host-dir would otherwise offer a delete that only ever errors.
+  isReadOnly(repository: Repository): boolean {
+    return repository.read_only === true || repository.type === 'host-dir';
+  }
+
   add() {
     this.dialog
       .open(AddRepositoryDialogComponent, {data: {}})
@@ -158,11 +165,11 @@ export class RepositoriesComponent implements OnInit {
   }
 
   delete(repository: Repository) {
-    if (repository.type === 'host-dir') {
+    if (this.isReadOnly(repository)) {
       this.errorService.handleError(
         RepositoriesComponent.name,
         'delete',
-        new Error(this.translate('modules.repositories.hostDirNotRemovable')),
+        new Error(this.translate('modules.repositories.notRemovable')),
       );
       return;
     }

@@ -255,6 +255,7 @@ export class ModuleManagerMockService {
         source: 'localhost',
         priority: 0,
         channels: [{name: 'default', priority: 0}],
+        read_only: true,
       },
       {
         type: 'github.com',

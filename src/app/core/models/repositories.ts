@@ -29,6 +29,9 @@ export interface Repository {
   source: string;
   priority: number;
   channels: RepositoryChannel[];
+  // true for a repository the core provides; the user cannot delete it.
+  // Optional because a core older than the flag omits the field entirely.
+  read_only?: boolean;
 }
 
 export interface RepoModuleVariantChannel {

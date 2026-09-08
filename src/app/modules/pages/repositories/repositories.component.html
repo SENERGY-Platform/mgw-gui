@@ -74,7 +74,7 @@
           <th *matHeaderCellDef class="mgw-col-actions" mat-header-cell></th>
           <td *matCellDef="let repository" class="mgw-col-actions" mat-cell>
             <div class="mgw-row-actions">
-              @if (repository.type === 'host-dir') {
+              @if (isReadOnly(repository)) {
                 <span class="locked" [matTooltip]="'modules.repositories.builtInHint' | transloco">
                   <mat-icon>lock</mat-icon>
                   {{ 'modules.repositories.builtIn' | transloco }}
