@@ -15,3 +15,9 @@
   width: 18px;
   height: 18px;
 }
+
+/* the module id next to its name: the identity to search for, but not the
+   thing to read first */
+.group-id {
+  opacity: 0.7;
+}

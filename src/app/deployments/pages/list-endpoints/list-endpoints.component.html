@@ -39,9 +39,10 @@
       <header class="deployment-head">
         @if (group.moduleId) {
           <mat-icon>extension</mat-icon>
-          <a [queryParams]="{tab: 'endpoints'}" [routerLink]="['/modules/detail', group.moduleId]" class="mgw-mono">{{
-            group.moduleId
-          }}</a>
+          <a [queryParams]="{tab: 'endpoints'}" [routerLink]="['/modules/detail', group.moduleId]">{{ group.name }}</a>
+          @if (group.name !== group.moduleId) {
+            <span class="mgw-mono group-id">{{ group.moduleId }}</span>
+          }
         } @else {
           <mat-icon>rocket_launch</mat-icon>
           <span [title]="'deployments.endpointsPage.unlabelledHint' | transloco" class="mgw-mono">{{ group.ref }}</span>
