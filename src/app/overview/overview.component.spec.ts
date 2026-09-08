@@ -100,6 +100,33 @@ describe('OverviewComponent', () => {
   // stops the five-second poll ngOnInit starts
   afterEach(() => fixture?.destroy());
 
+  it('lists an unhealthy module with a backend error once, carrying that error', async () => {
+    await create([
+      makeModule({
+        state: DEPLOYMENT_STATE_UNHEALTHY,
+        deploymentHasError: true,
+        deploymentErrorMsg: 'container exited with code 1',
+      }),
+    ]);
+
+    expect(component.attention.length).toBe(1);
+    expect(component.attention[0].detail).toBe('container exited with code 1');
+  });
+
+  it('falls back to the generic text when an unhealthy deployment reports no message', async () => {
+    await create([makeModule({state: DEPLOYMENT_STATE_UNHEALTHY})]);
+
+    expect(component.attention.length).toBe(1);
+    expect(component.attention[0].detail).toContain('unhealthy state');
+  });
+
+  it('reports a module error on a healthy deployment', async () => {
+    await create([makeModule({hasError: true, errorMsg: 'modfile is invalid'})]);
+
+    expect(component.attention.length).toBe(1);
+    expect(component.attention[0].detail).toBe('modfile is invalid');
+  });
+
   it('escapes the module ID in the link exactly once', async () => {
     await create([makeModule({state: DEPLOYMENT_STATE_UNHEALTHY})]);
 

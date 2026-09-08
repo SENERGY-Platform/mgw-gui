@@ -147,6 +147,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     const attention: Attention[] = [];
 
     for (const module of this.modules) {
+      let unhealthy = false;
       if (!module.is_deployed) {
         this.notDeployed++;
       } else if (!module.deployment.enabled) {
@@ -155,26 +156,26 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.running++;
       } else if (module.deployment.state === DEPLOYMENT_STATE_UNHEALTHY) {
         this.unhealthy++;
-        attention.push({
-          tone: 'danger',
-          icon: 'error',
-          title: module.name,
-          detail: this.transloco.translate<string>('overview.attention.unhealthy'),
-          route: ['/modules/detail', module.id],
-        });
+        unhealthy = true;
       } else {
         this.unknown++;
       }
 
-      if (module.has_error || (module.is_deployed && module.deployment.has_error)) {
+      // An unhealthy deployment usually carries a backend error message as
+      // well. Both describe the same problem, so they share one entry: the
+      // message if there is one, the generic text otherwise.
+      const hasError = module.has_error || (module.is_deployed && module.deployment.has_error);
+      if (unhealthy || hasError) {
+        const errorMsg = module.error_msg || (module.is_deployed ? module.deployment.error_msg : '');
         attention.push({
           tone: 'danger',
-          icon: 'warning',
+          icon: unhealthy ? 'error' : 'warning',
           title: module.name,
           detail:
-            module.error_msg ||
-            module.deployment?.error_msg ||
-            this.transloco.translate<string>('overview.attention.moduleError'),
+            errorMsg ||
+            this.transloco.translate<string>(
+              unhealthy ? 'overview.attention.unhealthy' : 'overview.attention.moduleError',
+            ),
           route: ['/modules/detail', module.id],
         });
       }
