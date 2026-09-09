@@ -33,6 +33,7 @@ import {
   MODULE_DATA_TYPE_TO_NUMERIC,
   ModuleConfigValue,
   moduleConfigTypeOptionNumber,
+  moduleInputGroupLabel,
   ModuleInput,
   parseModuleConfigValue,
 } from 'src/app/core/models/deployment-request';
@@ -305,18 +306,8 @@ export class DeploymentFormComponent implements OnInit {
     return String(config.default);
   }
 
-  // flattened path of the nested input groups, e.g. "Broker / Advanced"
   groupLabel(groupRef: string): string {
-    const groups = this.module.inputs?.groups || {};
-    const parts: string[] = [];
-    let ref = groupRef;
-    let guard = 0;
-    while (ref && groups[ref] && guard < 10) {
-      parts.unshift(groups[ref].name || ref);
-      ref = groups[ref].group;
-      guard++;
-    }
-    return parts.join(' / ');
+    return moduleInputGroupLabel(this.module.inputs, groupRef);
   }
 
   secretOptionsFor(row: SecretRow): Secret[] {

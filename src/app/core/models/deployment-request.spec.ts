@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-import {decodeFileData, encodeFileData, ModuleConfigValue, parseModuleConfigValue} from './deployment-request';
+import {
+  decodeFileData,
+  encodeFileData,
+  ModuleConfigValue,
+  ModuleInputs,
+  moduleInputGroupLabel,
+  parseModuleConfigValue,
+} from './deployment-request';
 
 // type_opt entries arrive wrapped in {value, data_type}, never as bare values
 function typeOpts(entries: Record<string, [unknown, string]>) {
@@ -99,5 +106,38 @@ describe('file data encoding', () => {
 
   it('decodes empty data to an empty string', () => {
     expect(decodeFileData('')).toBe('');
+  });
+});
+
+describe('moduleInputGroupLabel', () => {
+  function inputs(groups: ModuleInputs['groups']): ModuleInputs {
+    return {resources: null, secrets: null, configs: null, files: null, file_groups: null, groups: groups};
+  }
+
+  it('walks the parents into one path', () => {
+    const meta = inputs({
+      broker: {name: 'Broker', description: '', group: ''},
+      advanced: {name: 'Advanced', description: '', group: 'broker'},
+    });
+
+    expect(moduleInputGroupLabel(meta, 'advanced')).toBe('Broker / Advanced');
+    expect(moduleInputGroupLabel(meta, 'broker')).toBe('Broker');
+  });
+
+  it('is empty for an input that belongs to no group, or to one the module does not declare', () => {
+    expect(moduleInputGroupLabel(inputs(null), '')).toBe('');
+    expect(moduleInputGroupLabel(inputs({}), 'gone')).toBe('');
+    expect(moduleInputGroupLabel(undefined, 'any')).toBe('');
+  });
+
+  // Groups point at their parent by reference, so a cycle would otherwise
+  // never return. The cap is what makes the walk safe to run on any payload.
+  it('gives up on a cycle instead of hanging', () => {
+    const meta = inputs({
+      a: {name: 'A', description: '', group: 'b'},
+      b: {name: 'B', description: '', group: 'a'},
+    });
+
+    expect(moduleInputGroupLabel(meta, 'a').split(' / ').length).toBe(10);
   });
 });

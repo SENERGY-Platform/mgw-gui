@@ -155,6 +155,22 @@ export interface DeploymentUserInput {
   file_groups: Record<string, Record<string, DeploymentFileGroupUserInput>>;
 }
 
+// Flattened path of the nested input groups an input belongs to, e.g.
+// "Broker / Advanced". The depth is capped rather than trusted: groups point
+// at their parent by reference, and a cycle in that chain would not return.
+export function moduleInputGroupLabel(inputs: ModuleInputs | undefined, groupRef: string): string {
+  const groups = inputs?.groups || {};
+  const parts: string[] = [];
+  let ref = groupRef;
+  let guard = 0;
+  while (ref && groups[ref] && guard < 10) {
+    parts.unshift(groups[ref].name || ref);
+    ref = groups[ref].group;
+    guard++;
+  }
+  return parts.join(' / ');
+}
+
 // Parses one raw string into the module-lib data type. Throws on invalid input.
 export function parseModuleConfigItem(dataType: string, raw: string): any {
   raw = raw.trim();
