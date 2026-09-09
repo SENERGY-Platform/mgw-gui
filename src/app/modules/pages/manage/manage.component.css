@@ -115,3 +115,30 @@
     max-width: 22ch;
   }
 }
+
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 6px 8px 6px 16px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+.bulk-count {
+  font-size: 13px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.bulk-bar mat-divider {
+  height: 22px;
+  margin-right: 8px;
+}
+
+.col-select {
+  width: 48px;
+}

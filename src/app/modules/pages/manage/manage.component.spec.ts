@@ -20,7 +20,7 @@ import {of, throwError} from 'rxjs';
 import {ManageComponent} from './manage.component';
 import {RepoModule} from 'src/app/core/models/repositories';
 
-function repoModule(id: string, installed: boolean): RepoModule {
+function repoModule(id: string, installed: boolean, nextVersion = ''): RepoModule {
   return {
     id: id,
     name: id,
@@ -32,7 +32,7 @@ function repoModule(id: string, installed: boolean): RepoModule {
     ],
     is_installed: installed,
     installed_variant: installed
-      ? {source: 'src-a', channel: 'main', version: 'v1.0.0', next_version: ''}
+      ? {source: 'src-a', channel: 'main', version: 'v1.0.0', next_version: nextVersion}
       : {source: '', channel: '', version: '', next_version: ''},
   };
 }
@@ -88,5 +88,103 @@ describe('ManageComponent.load', () => {
     expect(component.isVariantChange(component.dataSource.data[0])).toBe(false);
     component.selectedVariant['mod-a'] = 'src-b|dev';
     expect(component.isVariantChange(component.dataSource.data[0])).toBe(true);
+  });
+});
+
+// The catalog already collected installs, changes, updates and removals into
+// one change request; the selection stages one intent for many modules at
+// once. Only that staging is under test here - creating and executing the
+// request is unchanged.
+describe('ManageComponent selection', () => {
+  it('stages each selected module with its own primary action', () => {
+    const component = makeComponent([
+      repoModule('fresh', false),
+      repoModule('outdated', true, 'v1.1.0'),
+      repoModule('current', true),
+    ]);
+    component.load();
+
+    component.selection.select('fresh', 'outdated', 'current');
+    component.stageSelected();
+
+    // 'current' is installed and up to date, so it contributes no entry
+    expect(component.cartAction('fresh')).toBe('install');
+    expect(component.cartAction('outdated')).toBe('update');
+    expect(component.cartAction('current')).toBe('');
+    expect(component.selection.selected.length).toBe(0);
+  });
+
+  it('stages the variant the user picked, not the installed one', () => {
+    const component = makeComponent([repoModule('mod-a', true)]);
+    component.load();
+    component.selectedVariant['mod-a'] = 'src-b|dev';
+
+    component.selection.select('mod-a');
+    component.stageSelected();
+
+    expect(component.cart['mod-a']).toEqual({id: 'mod-a', source: 'src-b', channel: 'dev'});
+  });
+
+  it('restricts the bulk update to installed modules that have one', () => {
+    const component = makeComponent([
+      repoModule('fresh', false),
+      repoModule('outdated', true, 'v1.1.0'),
+      repoModule('current', true),
+    ]);
+    component.load();
+
+    component.selection.select('fresh', 'outdated', 'current');
+    expect(component.updatableSelected().map((module) => module.id)).toEqual(['outdated']);
+
+    component.stageUpdateForSelected();
+
+    expect(component.cart).toEqual({outdated: {id: 'outdated', update: true}});
+  });
+
+  it('restricts the bulk removal to installed modules', () => {
+    const component = makeComponent([repoModule('fresh', false), repoModule('installed', true)]);
+    component.load();
+
+    component.selection.select('fresh', 'installed');
+    component.stageRemoveForSelected();
+
+    expect(component.cart).toEqual({installed: {id: 'installed', remove: true}});
+  });
+
+  it('selects and clears every row through the header checkbox', () => {
+    const component = makeComponent([repoModule('mod-a', false), repoModule('mod-b', false)]);
+    component.load();
+
+    component.masterToggle();
+    expect(component.isAllSelected()).toBe(true);
+
+    component.masterToggle();
+    expect(component.selection.selected.length).toBe(0);
+  });
+
+  it('leaves a module that already carries a staged intent untouched', () => {
+    const component = makeComponent([repoModule('mod-a', true, 'v1.1.0')]);
+    component.load();
+    component.remove(component.dataSource.data[0]);
+
+    component.selection.select('mod-a');
+    component.stageSelected();
+
+    // the row offers undo rather than a second intent, and so does the bulk bar
+    expect(component.cart['mod-a']).toEqual({id: 'mod-a', remove: true});
+    expect(component.stageableSelected().length).toBe(0);
+  });
+
+  it('drops a selected module the reloaded catalog no longer lists', () => {
+    const modules = [repoModule('mod-a', false), repoModule('mod-b', false)];
+    const component = makeComponent(modules);
+    component.load();
+    component.selection.select('mod-a', 'mod-b');
+
+    // a narrower filter, or a repository refresh that removed the module
+    modules.pop();
+    component.load();
+
+    expect(component.selection.selected).toEqual(['mod-a']);
   });
 });

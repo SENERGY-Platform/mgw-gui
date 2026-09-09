@@ -52,6 +52,8 @@ import {RepoModule, Repository} from 'src/app/core/models/repositories';
 import {ChangeRequestItem, ModulesChangeRequest} from 'src/app/core/models/modules';
 import {mapModulesChangeResult, mapRepositoryRefreshResult} from 'src/app/core/models/job-result-view';
 import {ChangeRequestDialogComponent} from '../../components/change-request-dialog/change-request-dialog.component';
+import {SelectionModel} from '@angular/cdk/collections';
+import {MatDivider} from '@angular/material/divider';
 import {RefreshReposDialogComponent} from '../../components/refresh-repos-dialog/refresh-repos-dialog.component';
 
 interface VariantOption {
@@ -91,6 +93,8 @@ interface VariantOption {
     MatMenu,
     MatMenuItem,
     MatMenuTrigger,
+    MatCheckbox,
+    MatDivider,
     PageHeaderComponent,
     StatusPillComponent,
     EmptyStateComponent,
@@ -102,7 +106,8 @@ export class ManageComponent implements OnInit {
   dataSource = new MatTableDataSource<RepoModule>();
   ready = false;
   init = true;
-  displayColumns = ['name', 'status', 'version', 'variant', 'action'];
+  displayColumns = ['select', 'name', 'status', 'version', 'variant', 'action'];
+  selection = new SelectionModel<string>(true, []);
   nameFilter = '';
   // one chip instead of two independent checkboxes: the combination
   // "installed + updates" is just the updates scope, so it was never useful
@@ -164,6 +169,9 @@ export class ManageComponent implements OnInit {
             }
           });
           this.dataSource.data = modules;
+          // a filter or a repository refresh can drop a selected module; the
+          // selection would otherwise keep counting rows nobody can see
+          this.pruneSelection();
           this.ready = true;
         },
         error: (err) => {
@@ -286,6 +294,77 @@ export class ManageComponent implements OnInit {
     delete this.cart[moduleID];
   }
 
+  // Selection and bulk staging. A change request already carries installs,
+  // changes, updates and removals together - the cart collects them. What the
+  // selection adds is staging one intent for many modules in a single step.
+
+  private selectedModules(): RepoModule[] {
+    return this.dataSource.data.filter((module) => this.selection.isSelected(module.id));
+  }
+
+  private pruneSelection() {
+    const present = new Set(this.dataSource.data.map((module) => module.id));
+    const gone = this.selection.selected.filter((id) => !present.has(id));
+    if (gone.length > 0) {
+      this.selection.deselect(...gone);
+    }
+  }
+
+  isAllSelected(): boolean {
+    return this.dataSource.data.length > 0 && this.selection.selected.length === this.dataSource.data.length;
+  }
+
+  masterToggle() {
+    if (this.isAllSelected()) {
+      this.selectionClear();
+      return;
+    }
+    this.selection.select(...this.dataSource.data.map((module) => module.id));
+  }
+
+  selectionClear() {
+    this.selection.clear();
+  }
+
+  // Modules a bulk action can stage something for. A module already in the
+  // cart is left alone: the row replaces its buttons with the staged chip once
+  // an intent is set, so undo is the only way back on that level, and a bulk
+  // action silently replacing that intent would be the one path around it.
+  private undecidedSelected(): RepoModule[] {
+    return this.selectedModules().filter((module) => !this.cart[module.id]);
+  }
+
+  stageableSelected(): RepoModule[] {
+    return this.undecidedSelected().filter((module) => this.primaryAction(module) !== '');
+  }
+
+  updatableSelected(): RepoModule[] {
+    return this.undecidedSelected().filter((module) => module.is_installed && !!module.installed_variant.next_version);
+  }
+
+  removableSelected(): RepoModule[] {
+    return this.undecidedSelected().filter((module) => module.is_installed);
+  }
+
+  // stages each module's own primary action - install, switch or update
+  // depending on what it is; modules with nothing to do are skipped
+  stageSelected() {
+    this.stageableSelected().forEach((module) => this.applyPrimary(module));
+    this.selectionClear();
+  }
+
+  stageUpdateForSelected() {
+    this.updatableSelected().forEach((module) => this.update(module));
+    this.selectionClear();
+  }
+
+  // staging is not the destructive step: the change request is reviewed in a
+  // dialog and executed explicitly, so no confirmation belongs here
+  stageRemoveForSelected() {
+    this.removableSelected().forEach((module) => this.remove(module));
+    this.selectionClear();
+  }
+
   // the technical value: also drives the [attr.data-action] binding the CSS
   // selects on, so it stays an untranslated literal
   cartAction(moduleID: string): string {
@@ -398,6 +477,7 @@ export class ManageComponent implements OnInit {
           }
           this.pendingRequest = null;
           this.clearCart();
+          this.selectionClear();
           this.load();
         },
         error: (err) => {

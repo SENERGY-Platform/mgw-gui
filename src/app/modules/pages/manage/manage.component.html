@@ -94,8 +94,56 @@
       </button>
     </mgw-empty-state>
   } @else if (dataSource.data.length > 0) {
+    @if (selection.selected.length > 0) {
+      <div class="bulk-bar">
+        <span class="bulk-count">{{ 'modules.manage.selected' | transloco: {count: selection.selected.length} }}</span>
+        <mat-divider [vertical]="true"></mat-divider>
+        <button (click)="stageSelected()" [disabled]="stageableSelected().length === 0" mat-button>
+          <mat-icon>add</mat-icon>
+          {{ 'modules.manage.stageSelected' | transloco: {count: stageableSelected().length} }}
+        </button>
+        <button (click)="stageUpdateForSelected()" [disabled]="updatableSelected().length === 0" mat-button>
+          <mat-icon>upgrade</mat-icon>
+          {{ 'modules.manage.updateSelected' | transloco: {count: updatableSelected().length} }}
+        </button>
+        <button
+          (click)="stageRemoveForSelected()"
+          [disabled]="removableSelected().length === 0"
+          class="mgw-danger"
+          mat-button
+        >
+          <mat-icon>delete</mat-icon>
+          {{ 'modules.manage.removeSelected' | transloco: {count: removableSelected().length} }}
+        </button>
+        <span class="mgw-spacer"></span>
+        <button (click)="selectionClear()" [matTooltip]="'modules.manage.clearSelection' | transloco" mat-icon-button>
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    }
+
     <div class="mgw-table-card">
       <table [dataSource]="dataSource" mat-table>
+        <ng-container matColumnDef="select">
+          <th *matHeaderCellDef class="col-select" mat-header-cell>
+            <mat-checkbox
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()"
+              [attr.aria-label]="'modules.manage.selectAll' | transloco"
+            >
+            </mat-checkbox>
+          </th>
+          <td *matCellDef="let module" class="col-select" mat-cell>
+            <mat-checkbox
+              (change)="$event ? selection.toggle(module.id) : null"
+              (click)="$event.stopPropagation()"
+              [checked]="selection.isSelected(module.id)"
+            >
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="name">
           <th *matHeaderCellDef mat-header-cell>{{ 'modules.manage.columns.module' | transloco }}</th>
           <td *matCellDef="let module" mat-cell>
