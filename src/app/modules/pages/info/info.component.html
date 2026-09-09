@@ -168,6 +168,60 @@
         </div>
       </mat-tab>
 
+      <mat-tab [label]="'modules.info.tabs.configs' | transloco">
+        <div class="tab-body">
+          <section class="card">
+            <h2>{{ 'modules.info.configs.title' | transloco }}</h2>
+            @if (!hasConfigs()) {
+              <p class="muted">{{ 'modules.info.configs.none' | transloco }}</p>
+            } @else {
+              <p class="muted">
+                {{
+                  (module.is_deployed ? 'modules.info.configs.hintDeployed' : 'modules.info.configs.hintNotDeployed')
+                    | transloco
+                }}
+              </p>
+              <table class="configs">
+                <thead>
+                  <tr>
+                    <th>{{ 'modules.info.configs.columns.config' | transloco }}</th>
+                    <th>{{ 'modules.info.configs.columns.value' | transloco }}</th>
+                    <th>{{ 'modules.info.configs.columns.origin' | transloco }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of configRows; track row.ref) {
+                    <tr [class.deprecated]="row.origin === 'deprecated'">
+                      <td>
+                        <span class="config-name">
+                          {{ row.name }}
+                          @if (row.required) {
+                            <span class="required" [title]="'modules.info.configs.required' | transloco">*</span>
+                          }
+                        </span>
+                        @if (row.group) {
+                          <span class="config-group">{{ row.group }}</span>
+                        }
+                        @if (row.description) {
+                          <span class="config-desc">{{ row.description }}</span>
+                        }
+                        <span class="mono config-ref">{{ row.ref }}</span>
+                      </td>
+                      <td class="mono config-value">{{ row.value || '—' }}</td>
+                      <td>
+                        <span class="origin" [attr.data-origin]="row.origin">
+                          {{ originLabel(row.origin) | transloco }}
+                        </span>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </section>
+        </div>
+      </mat-tab>
+
       <mat-tab [disabled]="!module.is_deployed" [label]="'modules.info.tabs.containers' | transloco">
         <div class="tab-body">
           <section class="card">

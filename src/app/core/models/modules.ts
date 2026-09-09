@@ -20,6 +20,8 @@
 
 import {ErrorResult} from './jobs';
 import {AuxContainer} from './aux-deployments';
+import {InterfaceValue} from './global-configs';
+import {ModuleConfigValue, ModuleInputs} from './deployment-request';
 
 // constants.DeploymentState
 export const DEPLOYMENT_STATE_UNKNOWN = 0; // disabled or could not be determined
@@ -58,7 +60,7 @@ export interface ModuleReduced extends ErrorResult {
 }
 
 // Subset of the full deployment embedded in a Module, limited to the fields
-// the UI displays; runtime and user-input details follow with SNRGY-4589.
+// the UI displays.
 export interface DeploymentInfo extends ErrorResult {
   id: string;
   module_source: string;
@@ -72,11 +74,18 @@ export interface DeploymentInfo extends ErrorResult {
   // containers by module service reference; the engine-known name is the
   // handle for the ce-wrapper log endpoint
   containers: Record<string, AuxContainer> | null;
+  // the user's own values by config reference - only the ones actually set,
+  // every other config falls back to the module default
+  configs: Record<string, InterfaceValue> | null;
+  // global config id by config reference, for the configs the user pointed at
+  // a global config instead of typing a value
+  global_configs: Record<string, string> | null;
 }
 
 // Subset of the full Module returned by /modules and /modules/{MOD_ID},
-// limited to the fields the UI displays; the modfile metadata (configs,
-// inputs, files, ...) follows with SNRGY-4589.
+// limited to the fields the UI displays. The config metadata below is the
+// same the deployment form reads as a DeploymentRequestModule - one response,
+// two views of it.
 export interface ModuleInfo extends ErrorResult {
   id: string;
   name: string;
@@ -92,6 +101,10 @@ export interface ModuleInfo extends ErrorResult {
   updated: string;
   is_deployed: boolean;
   deployment: DeploymentInfo;
+  // labels, descriptions and grouping of the inputs the module asks for
+  inputs: ModuleInputs;
+  // what the module declares per config reference: default, options, type
+  configs: Record<string, ModuleConfigValue> | null;
 }
 
 // Exactly one intent per item: remove, update, or a variant given by source

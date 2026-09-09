@@ -193,3 +193,63 @@
   --mat-menu-item-label-text-color: var(--mgw-danger);
   --mat-menu-item-icon-color: var(--mgw-danger);
 }
+
+.configs {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.configs th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  opacity: 0.7;
+  padding: 0 12px 8px 0;
+}
+
+.configs td {
+  padding: 10px 12px 10px 0;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  vertical-align: top;
+}
+
+.configs tr.deprecated td {
+  opacity: 0.65;
+}
+
+.config-name {
+  display: block;
+  font-weight: 600;
+}
+
+.config-group,
+.config-desc,
+.config-ref {
+  display: block;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.config-value {
+  word-break: break-word;
+}
+
+.origin {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+  background: var(--mat-sys-surface-container-highest);
+}
+
+.origin[data-origin='input'] {
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+.origin[data-origin='deprecated'] {
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}

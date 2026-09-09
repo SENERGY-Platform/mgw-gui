@@ -158,6 +158,7 @@
     },
     "tabs": {
       "overview": "Overview",
+      "configs": "Configuration",
       "containers": "Containers",
       "endpoints": "Endpoints",
       "auxDeployments": "Auxiliary deployments"
@@ -216,7 +217,25 @@
       "deleting": "Deployment is being deleted",
       "deleted": "Deployment deleted"
     },
-    "confirmDelete": "Delete the deployment of {{name}}? Data stored in volumes will be removed."
+    "confirmDelete": "Delete the deployment of {{name}}? Data stored in volumes will be removed.",
+    "configs": {
+      "title": "Configuration",
+      "none": "This module declares no configuration values.",
+      "hintDeployed": "The module declares these values; the deployment answers some of them. Anything it does not answer keeps the module default.",
+      "hintNotDeployed": "The module declares these values. Deploying it is where they get answered; until then the module defaults apply.",
+      "required": "Required",
+      "columns": {
+        "config": "Config",
+        "value": "Value",
+        "origin": "From"
+      },
+      "origins": {
+        "input": "user input",
+        "global": "global config",
+        "default": "module default",
+        "deprecated": "no longer declared"
+      }
+    }
   },
   "repositories": {
     "title": "Repositories",

@@ -36,8 +36,27 @@ import {DEPLOYMENT_STATE_HEALTHY, DEPLOYMENT_STATE_UNHEALTHY, ModuleInfo} from '
 import {AuxContainer} from 'src/app/core/models/aux-deployments';
 import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
 import {JobResultKind} from 'src/app/core/components/job-loader-modal/job-loader-modal.component';
+import {formatConfigValue, GlobalConfig, InterfaceValue} from 'src/app/core/models/global-configs';
+import {ModuleConfigValue, moduleInputGroupLabel} from 'src/app/core/models/deployment-request';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 import {StatusPillComponent, StatusTone} from 'src/app/core/components/status-pill/status-pill.component';
+
+// One row of the configuration tab: what the module asks for, what the
+// deployment answers, and which of the two the container actually sees.
+export interface ConfigRow {
+  ref: string;
+  name: string;
+  description: string;
+  group: string;
+  value: string;
+  origin: ConfigOrigin;
+  required: boolean;
+}
+
+// 'input' and 'global' come from the deployment, 'default' from the module.
+// 'deprecated' is a value the deployment carries for a config the module no
+// longer declares - after an update that dropped it.
+export type ConfigOrigin = 'input' | 'global' | 'default' | 'deprecated';
 
 @Component({
   selector: 'module-info',
@@ -74,11 +93,13 @@ export class InfoComponent implements OnInit, OnDestroy {
   ready = false;
   moduleID = '';
   selectedTab = 0;
+  configRows: ConfigRow[] = [];
+  private globalConfigNames: Record<string, string> = {};
 
   // Tab order in the template. The query parameter carries the name rather
   // than the index, so reordering the tabs does not break existing links -
   // the logs page sends the reader back to 'containers'.
-  private readonly tabs = ['overview', 'containers', 'endpoints', 'auxDeployments'];
+  private readonly tabs = ['overview', 'configs', 'containers', 'endpoints', 'auxDeployments'];
 
   private interval: any;
 
@@ -108,6 +129,18 @@ export class InfoComponent implements OnInit, OnDestroy {
       const index = this.tabs.indexOf(params['tab']);
       this.selectedTab = index < 0 ? 0 : index;
     });
+    // Only for the names behind the global config ids; a failure leaves the
+    // id showing, which still identifies the config.
+    this.moduleService.getGlobalConfigs().subscribe({
+      next: (configs) => {
+        this.globalConfigNames = {};
+        Object.values(configs || {}).forEach(
+          (config: GlobalConfig) => (this.globalConfigNames[config.id] = config.name),
+        );
+        this.buildConfigRows();
+      },
+      error: () => undefined,
+    });
     // container state changes without a user action, same cadence as the list
     this.interval = setInterval(() => this.load(true), 5000);
   }
@@ -135,6 +168,7 @@ export class InfoComponent implements OnInit, OnDestroy {
     this.moduleService.loadModule(this.moduleID).subscribe({
       next: (module) => {
         this.module = module;
+        this.buildConfigRows();
         this.ready = true;
       },
       error: (err) => {
@@ -149,6 +183,97 @@ export class InfoComponent implements OnInit, OnDestroy {
         this.ready = true;
       },
     });
+  }
+
+  // --- configuration -------------------------------------------------------
+
+  // The module declares which configs exist, the deployment answers some of
+  // them. A config the deployment does not mention keeps the module default,
+  // which is what the container ends up with - so the default belongs in the
+  // list rather than being left blank.
+  private buildConfigRows() {
+    if (!this.module) {
+      return;
+    }
+    const declared = this.module.configs || {};
+    const inputs = this.module.inputs?.configs || {};
+    const deployment = this.module.is_deployed ? this.module.deployment : undefined;
+    const values = deployment?.configs || {};
+    const globals = deployment?.global_configs || {};
+
+    const rows: ConfigRow[] = Object.entries(declared).map(([ref, config]) =>
+      this.declaredRow(ref, config, inputs[ref], values[ref], globals[ref]),
+    );
+    // Anything the deployment answers that the module no longer asks about -
+    // an update dropped the config, and the value is still sitting there.
+    for (const ref of new Set([...Object.keys(values), ...Object.keys(globals)])) {
+      if (!declared[ref]) {
+        rows.push({
+          ref: ref,
+          name: ref,
+          description: '',
+          group: '',
+          value: globals[ref] ? this.globalConfigLabel(globals[ref]) : formatConfigValue(values[ref]),
+          origin: 'deprecated',
+          required: false,
+        });
+      }
+    }
+    this.configRows = rows;
+  }
+
+  private declaredRow(
+    ref: string,
+    config: ModuleConfigValue,
+    input: {name: string; description: string; group: string} | undefined,
+    value: InterfaceValue | undefined,
+    globalId: string | undefined,
+  ): ConfigRow {
+    let origin: ConfigOrigin = 'default';
+    let rendered = this.defaultLabel(config);
+    if (globalId) {
+      origin = 'global';
+      rendered = this.globalConfigLabel(globalId);
+    } else if (value) {
+      origin = 'input';
+      rendered = formatConfigValue(value);
+    }
+    return {
+      ref: ref,
+      // a config without user input metadata is one the module sets itself;
+      // its reference is the only name there is
+      name: input?.name || ref,
+      description: input?.description || '',
+      group: moduleInputGroupLabel(this.module.inputs, input?.group || ''),
+      value: rendered,
+      origin: origin,
+      required: config.required,
+    };
+  }
+
+  private defaultLabel(config: ModuleConfigValue): string {
+    if (config.default === null || config.default === undefined) {
+      return '';
+    }
+    return config.is_slice && Array.isArray(config.default) ? config.default.join(', ') : String(config.default);
+  }
+
+  // Falls back to the id: a global config the user cannot see the name of is
+  // still better identified than by an empty cell.
+  private globalConfigLabel(globalId: string | undefined): string {
+    if (!globalId) {
+      return '';
+    }
+    return this.globalConfigNames[globalId] || globalId;
+  }
+
+  hasConfigs(): boolean {
+    return this.configRows.length > 0;
+  }
+
+  // a translation key, not display text - the template applies the pipe
+  originLabel(origin: ConfigOrigin): string {
+    return 'modules.info.configs.origins.' + origin;
   }
 
   // --- state ---------------------------------------------------------------
