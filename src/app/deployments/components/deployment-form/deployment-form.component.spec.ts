@@ -524,4 +524,24 @@ describe('DeploymentFormComponent', () => {
     expect(result).toBeDefined();
     expect(result!.secrets['sec']).toBe('secret-1');
   });
+
+  // SNRGY-4691: the step of a number input comes out of type_opt, whose
+  // entries wrap the value together with its data type
+  it('reads the number step out of the wrapped type option', () => {
+    create(
+      makeModule({
+        configInputs: {scale: moduleInput('Scale factor')},
+        configs: {
+          scale: textConfig({
+            type: 'number',
+            data_type: 'float',
+            default: 1.5,
+            type_opt: {step: {value: 0.1, data_type: 'float'}},
+          }),
+        },
+      }),
+    );
+
+    expect(component.stepFor(component.configRows[0])).toBe(0.1);
+  });
 });

@@ -131,7 +131,7 @@
   },
   "src/app/core/models/deployment-request.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 7
+      "count": 6
     }
   },
   "src/app/core/models/global-configs.ts": {

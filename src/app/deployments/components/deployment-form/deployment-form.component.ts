@@ -32,6 +32,7 @@ import {
   encodeFileData,
   MODULE_DATA_TYPE_TO_NUMERIC,
   ModuleConfigValue,
+  moduleConfigTypeOptionNumber,
   ModuleInput,
   parseModuleConfigValue,
 } from 'src/app/core/models/deployment-request';
@@ -281,6 +282,12 @@ export class DeploymentFormComponent implements OnInit {
 
   isNumeric(row: ConfigRow): boolean {
     return row.config.data_type === 'int' || row.config.data_type === 'float';
+  }
+
+  // The number input needs the bare step value; type_opt wraps it together
+  // with its data type.
+  stepFor(row: ConfigRow): number | string {
+    return moduleConfigTypeOptionNumber(row.config, 'step') ?? (row.config.data_type === 'int' ? 1 : 'any');
   }
 
   private defaultRaw(config: ModuleConfigValue): string {

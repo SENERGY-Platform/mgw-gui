@@ -16,6 +16,11 @@
 
 import {decodeFileData, encodeFileData, ModuleConfigValue, parseModuleConfigValue} from './deployment-request';
 
+// type_opt entries arrive wrapped in {value, data_type}, never as bare values
+function typeOpts(entries: Record<string, [unknown, string]>) {
+  return Object.fromEntries(Object.entries(entries).map(([k, [v, t]]) => [k, {value: v, data_type: t}]));
+}
+
 function config(overrides: Partial<ModuleConfigValue> = {}): ModuleConfigValue {
   return {
     default: null,
@@ -32,7 +37,7 @@ function config(overrides: Partial<ModuleConfigValue> = {}): ModuleConfigValue {
 
 describe('parseModuleConfigValue', () => {
   it('applies the number constraints from the type options', () => {
-    const c = config({type: 'number', data_type: 'int', type_opt: {min: 1, max: 10}});
+    const c = config({type: 'number', data_type: 'int', type_opt: typeOpts({min: [1, 'int'], max: [10, 'int']})});
     expect(parseModuleConfigValue(c, '5')).toBe(5);
     expect(() => parseModuleConfigValue(c, '0')).toThrow();
     expect(() => parseModuleConfigValue(c, '11')).toThrow();
@@ -40,7 +45,9 @@ describe('parseModuleConfigValue', () => {
   });
 
   it('applies the text constraints from the type options', () => {
-    const c = config({type_opt: {min_len: 3, max_len: 5, regex: '^[a-z]+$'}});
+    const c = config({
+      type_opt: typeOpts({min_len: [3, 'int'], max_len: [5, 'int'], regex: ['^[a-z]+$', 'string']}),
+    });
     expect(parseModuleConfigValue(c, 'abc')).toBe('abc');
     expect(() => parseModuleConfigValue(c, 'ab')).toThrow();
     expect(() => parseModuleConfigValue(c, 'abcdef')).toThrow();
@@ -56,10 +63,25 @@ describe('parseModuleConfigValue', () => {
   });
 
   it('parses slices line by line and validates every item', () => {
-    const c = config({data_type: 'int', is_slice: true, type_opt: {max: 10}});
+    const c = config({data_type: 'int', is_slice: true, type_opt: typeOpts({max: [10, 'int']})});
     expect(parseModuleConfigValue(c, '1\n2\n3')).toEqual([1, 2, 3]);
     expect(() => parseModuleConfigValue(c, '1\n11')).toThrow();
     expect(() => parseModuleConfigValue(c, '')).toThrow();
+  });
+
+  // SNRGY-4691: reading a type_opt entry without unwrapping turned every
+  // constraint into a check against the string "[object Object]", which the
+  // module default of a restricted config could fail while other options
+  // happened to pass.
+  it('accepts a default that satisfies a regex constraint', () => {
+    const c = config({
+      default: 'warning',
+      options: ['debug', 'info', 'warning', 'error'],
+      type_opt: typeOpts({min_len: [4, 'int'], max_len: [16, 'int'], regex: ['^[a-z]+$', 'string']}),
+      required: true,
+    });
+    expect(parseModuleConfigValue(c, 'warning')).toBe('warning');
+    expect(parseModuleConfigValue(c, 'debug')).toBe('debug');
   });
 
   it('parses booleans', () => {

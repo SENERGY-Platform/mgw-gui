@@ -113,7 +113,7 @@
               <input
                 [(ngModel)]="row.raw"
                 [id]="'cfg-' + row.ref"
-                [step]="row.config.type_opt?.['step'] || (row.config.data_type === 'int' ? 1 : 'any')"
+                [step]="stepFor(row)"
                 [type]="isNumeric(row) ? 'number' : 'text'"
                 matInput
               />

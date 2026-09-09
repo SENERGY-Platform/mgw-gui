@@ -53,6 +53,14 @@ export interface ModuleInputs {
   groups: Record<string, ModuleInputGroup> | null;
 }
 
+// One entry of a config's type_opt. The module manager wraps every constraint
+// together with its own data type, so the entry is an object and not the bare
+// constraint - see model.ConfigTypeOption of mgw-module-lib.
+export interface ModuleConfigTypeOption {
+  value: unknown;
+  data_type: string;
+}
+
 export interface ModuleConfigValue {
   default: any;
   // allowed values matching data_type, null if unrestricted
@@ -62,7 +70,7 @@ export interface ModuleConfigValue {
   // validation definition, e.g. text, number
   type: string;
   // type specific constraints: min, max, step, regex, min_len, max_len
-  type_opt: Record<string, any> | null;
+  type_opt: Record<string, ModuleConfigTypeOption> | null;
   // string data type: string, int, float, bool
   data_type: string;
   is_slice: boolean;
@@ -177,29 +185,47 @@ export function parseModuleConfigItem(dataType: string, raw: string): any {
   }
 }
 
+// Reads one constraint out of type_opt. Using the entry itself yields the
+// wrapper object, which stringifies to "[object Object]" and turns every
+// constraint into a check that no realistic value passes. A constraint of an
+// unexpected type is dropped rather than applied.
+export function moduleConfigTypeOptionNumber(config: ModuleConfigValue, name: string): number | undefined {
+  const value = config.type_opt?.[name]?.value;
+  return typeof value === 'number' ? value : undefined;
+}
+
+export function moduleConfigTypeOptionString(config: ModuleConfigValue, name: string): string | undefined {
+  const value = config.type_opt?.[name]?.value;
+  return typeof value === 'string' ? value : undefined;
+}
+
 // Client-side counterpart of the mgw-module-lib validation definitions
 // (validation/configs/definitions): number -> min/max/step, text -> regex,
 // min_len, max_len, plus the options restriction. The module-manager
 // validates again server-side; this only surfaces errors early.
 export function validateModuleConfigItem(config: ModuleConfigValue, value: any): void {
-  const opt = config.type_opt || {};
+  const min = moduleConfigTypeOptionNumber(config, 'min');
+  const max = moduleConfigTypeOptionNumber(config, 'max');
+  const minLen = moduleConfigTypeOptionNumber(config, 'min_len');
+  const maxLen = moduleConfigTypeOptionNumber(config, 'max_len');
+  const regex = moduleConfigTypeOptionString(config, 'regex');
   if (typeof value === 'number') {
-    if (opt['min'] !== undefined && opt['min'] !== null && value < opt['min']) {
-      throw new Error(value + ' is below the minimum of ' + opt['min']);
+    if (min !== undefined && value < min) {
+      throw new Error(value + ' is below the minimum of ' + min);
     }
-    if (opt['max'] !== undefined && opt['max'] !== null && value > opt['max']) {
-      throw new Error(value + ' is above the maximum of ' + opt['max']);
+    if (max !== undefined && value > max) {
+      throw new Error(value + ' is above the maximum of ' + max);
     }
   }
   if (typeof value === 'string') {
-    if (opt['min_len'] && value.length < opt['min_len']) {
-      throw new Error('must be at least ' + opt['min_len'] + ' characters long');
+    if (minLen !== undefined && value.length < minLen) {
+      throw new Error('must be at least ' + minLen + ' characters long');
     }
-    if (opt['max_len'] && value.length > opt['max_len']) {
-      throw new Error('must be at most ' + opt['max_len'] + ' characters long');
+    if (maxLen !== undefined && value.length > maxLen) {
+      throw new Error('must be at most ' + maxLen + ' characters long');
     }
-    if (opt['regex'] && !new RegExp(opt['regex']).test(value)) {
-      throw new Error("'" + value + "' does not match " + opt['regex']);
+    if (regex && !new RegExp(regex).test(value)) {
+      throw new Error("'" + value + "' does not match " + regex);
     }
   }
   if (config.options && config.options.length > 0 && !config.opt_ext && !config.options.includes(value)) {
