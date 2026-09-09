@@ -94,6 +94,11 @@ interface FileGroupFileRow {
   text: string;
 }
 
+// Formats offered for a file of a file group. The module manager does not
+// interpret the value; it tells the ui which editor a file expects, so the
+// vocabulary follows the content types of ModuleFileDef.
+const FILE_GROUP_FORMATS = ['generic', 'json', 'yaml', 'xml', 'ini', 'toml'];
+
 interface FileGroupRow {
   ref: string;
   input: ModuleInput;
@@ -353,8 +358,17 @@ export class DeploymentFormComponent implements OnInit {
     return err instanceof Error ? err.message : String(err);
   }
 
+  // A stored format the list does not know stays selectable, otherwise
+  // editing a deployment would silently drop it.
+  formatOptionsFor(file: FileGroupFileRow): string[] {
+    if (file.format && !FILE_GROUP_FORMATS.includes(file.format)) {
+      return [file.format, ...FILE_GROUP_FORMATS];
+    }
+    return FILE_GROUP_FORMATS;
+  }
+
   addGroupFile(row: FileGroupRow) {
-    row.files.push({path: '', format: '', text: ''});
+    row.files.push({path: '', format: 'generic', text: ''});
   }
 
   removeGroupFile(row: FileGroupRow, index: number) {

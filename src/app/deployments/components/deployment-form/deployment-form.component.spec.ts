@@ -60,6 +60,7 @@ interface ModuleOpts {
   hostResources?: Record<string, ModuleHostResourceDef>;
   fileInputs?: Record<string, ModuleInput>;
   files?: Record<string, ModuleFileDef>;
+  fileGroupInputs?: Record<string, ModuleInput>;
   isDeployed?: boolean;
   deployment?: DeploymentRequestModule['deployment'];
 }
@@ -81,7 +82,7 @@ function makeModule(opts: ModuleOpts = {}): DeploymentRequestModule {
       resources: opts.resourceInputs ?? null,
       secrets: opts.secretInputs ?? null,
       files: opts.fileInputs ?? null,
-      file_groups: null,
+      file_groups: opts.fileGroupInputs ?? null,
       groups: null,
     },
     configs: opts.configs ?? null,
@@ -523,6 +524,46 @@ describe('DeploymentFormComponent', () => {
 
     expect(result).toBeDefined();
     expect(result!.secrets['sec']).toBe('secret-1');
+  });
+
+  it('offers a format from the known list and defaults a new group file to generic', () => {
+    create(makeModule({fileGroupInputs: {extra: moduleInput('Extra files')}}));
+
+    const row = component.fileGroupRows[0];
+    component.addGroupFile(row);
+
+    expect(row.files[0].format).toBe('generic');
+    expect(component.formatOptionsFor(row.files[0])).toContain('json');
+  });
+
+  it('keeps a stored format the known list does not cover', () => {
+    create(
+      makeModule({
+        fileGroupInputs: {extra: moduleInput('Extra files')},
+        isDeployed: true,
+        deployment: {
+          id: 'dep-1',
+          module_version: 'v1.0.0',
+          enabled: true,
+          host_resources: {},
+          secrets: {},
+          configs: {},
+          global_configs: {},
+          files: {},
+          file_groups: {
+            extra: {id: 'fg-1', files: [{path: 'run.sh', format: 'shell', data: encodeFileData('echo hi')}]},
+          },
+          has_error: false,
+          error_msg: '',
+        },
+      }),
+      {prefill: true},
+    );
+
+    const file = component.fileGroupRows[0].files[0];
+
+    expect(file.format).toBe('shell');
+    expect(component.formatOptionsFor(file)[0]).toBe('shell');
   });
 
   // SNRGY-4691: the step of a number input comes out of type_opt, whose

@@ -301,7 +301,12 @@
                   <input [(ngModel)]="file.path" [placeholder]="'deployments.form.path' | transloco" matInput />
                 </mat-form-field>
                 <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                  <input [(ngModel)]="file.format" [placeholder]="'deployments.form.format' | transloco" matInput />
+                  <mat-select [(ngModel)]="file.format" [placeholder]="'deployments.form.format' | transloco">
+                    <mat-option value="">{{ 'deployments.form.none' | transloco }}</mat-option>
+                    @for (format of formatOptionsFor(file); track format) {
+                      <mat-option [value]="format">{{ format }}</mat-option>
+                    }
+                  </mat-select>
                 </mat-form-field>
               </div>
               <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
