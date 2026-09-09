@@ -15,6 +15,7 @@
  */
 
 import {Routes} from '@angular/router';
+import {authGuard} from './core/services/auth/auth.guard';
 
 // Routes moved when the navigation was reorganised around what the user
 // manages. The redirects keep older bookmarks and in-module links working;
@@ -31,14 +32,25 @@ const legacyRedirects: Routes = [
 // it adds no segment of its own, so the feature's routes end up mounted
 // exactly where they used to be, just fetched lazily instead of bundled into
 // the start-up chunk.
+//
+// All of them sit under one guarded pass-through; the login page stays
+// outside it, being the one page a visitor without a session has to reach.
+// Guarding here rather than in each feature's own file means a new feature is
+// guarded by being added to this list, not by remembering to guard it.
 export const routes: Routes = [
   {path: '', redirectTo: '/overview', pathMatch: 'full'},
   ...legacyRedirects,
-  {path: '', loadChildren: () => import('./overview/overview.routes').then((m) => m.routes)},
-  {path: '', loadChildren: () => import('./developer/developer.routes').then((m) => m.routes)},
   {path: '', loadChildren: () => import('./auth/auth.routes').then((m) => m.routes)},
-  {path: '', loadChildren: () => import('./deployments/deployments.routes').then((m) => m.routes)},
-  {path: '', loadChildren: () => import('./modules/modules.routes').then((m) => m.routes)},
-  {path: '', loadChildren: () => import('./secrets/secrets.routes').then((m) => m.routes)},
-  {path: '', loadChildren: () => import('./system/system.routes').then((m) => m.routes)},
+  {
+    path: '',
+    canActivate: [authGuard],
+    children: [
+      {path: '', loadChildren: () => import('./overview/overview.routes').then((m) => m.routes)},
+      {path: '', loadChildren: () => import('./developer/developer.routes').then((m) => m.routes)},
+      {path: '', loadChildren: () => import('./deployments/deployments.routes').then((m) => m.routes)},
+      {path: '', loadChildren: () => import('./modules/modules.routes').then((m) => m.routes)},
+      {path: '', loadChildren: () => import('./secrets/secrets.routes').then((m) => m.routes)},
+      {path: '', loadChildren: () => import('./system/system.routes').then((m) => m.routes)},
+    ],
+  },
 ];

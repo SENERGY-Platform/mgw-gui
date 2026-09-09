@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpContext, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {catchError, map, Observable, of, shareReplay} from 'rxjs';
 import {environment} from 'src/environments/environment';
 import {InitLogoutResponse} from './auth.models';
+import {SKIP_AUTH_REDIRECT} from './interceptor/auth.interceptor';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +30,37 @@ export class AuthService {
   logoutPath = '/logout';
   registerPath = '/register';
 
+  // The gateway keeps its session check to itself: /validate-session is an
+  // internal nginx location and /core/auth exposes only the login and logout
+  // flows, so there is no whoami to ask. Every /core/api path sits behind the
+  // same auth_request, which makes a health endpoint the cheapest honest
+  // stand-in - it answers 200 with a session and 401 without one, and doing
+  // so is its entire job.
+  private readonly sessionProbePath = environment.coreApiUrl + '/module-manager/health/service';
+  private sessionCheck?: Observable<boolean>;
+
   constructor(private httpClient: HttpClient) {}
+
+  // Cached for the lifetime of the loaded application: the answer only ever
+  // goes from true to false, and that transition is the interceptor's to
+  // catch. Re-probing on every routed navigation would buy nothing.
+  hasSession(): Observable<boolean> {
+    if (!this.sessionCheck) {
+      this.sessionCheck = this.probeSession().pipe(shareReplay(1));
+    }
+    return this.sessionCheck;
+  }
+
+  private probeSession(): Observable<boolean> {
+    const context = new HttpContext().set(SKIP_AUTH_REDIRECT, true);
+    return this.httpClient.get(this.sessionProbePath, {withCredentials: true, context: context}).pipe(
+      map(() => true),
+      // Only a 401 means there is no session. A gateway or service that is
+      // down must not read as logged out - that would trade an error page the
+      // user can act on for a login screen that will not help them.
+      catchError((err) => of(!(err instanceof HttpErrorResponse && err.status === 401))),
+    );
+  }
 
   initFlow() {
     const url = this.basePath + this.loginPath + '/browser?refresh=true';

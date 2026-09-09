@@ -158,9 +158,6 @@
     }
   },
   "src/app/core/services/auth/interceptor/auth.interceptor.ts": {
-    "@typescript-eslint/no-empty-function": {
-      "count": 1
-    },
     "@typescript-eslint/no-explicit-any": {
       "count": 2
     }
