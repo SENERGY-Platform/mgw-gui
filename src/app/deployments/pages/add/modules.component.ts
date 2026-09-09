@@ -37,8 +37,8 @@ import {HostResource} from 'src/app/host/models/models';
 import {Secret} from 'src/app/secrets/models/secret_models';
 import {mapDeploymentResults} from 'src/app/core/models/job-result-view';
 
-// Create deployments: /deployment-request resolves the requested module plus
-// its dependencies, one form per module, submitted together as a batch.
+// Create deployments: /deployment-request resolves the requested modules plus
+// their dependencies, one form per module, submitted together as a batch.
 @Component({
   selector: 'add-deployment',
   templateUrl: './modules.component.html',
@@ -62,6 +62,9 @@ export class ModulesComponent implements OnInit {
   private readonly transloco = inject(TranslocoService);
 
   modules: DeploymentRequestModule[] = [];
+  // how many modules the route asked for, which decides whether the extra
+  // forms below are dependencies or the rest of the user's selection
+  requestedCount = 0;
   hostResources: HostResource[] = [];
   secrets: Secret[] = [];
   globalConfigs: GlobalConfig[] = [];
@@ -80,9 +83,13 @@ export class ModulesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const moduleID = decodeURIComponent(this.route.snapshot.params['id']);
+    // one or more module IDs, each URI-encoded, joined by commas (batch deploy)
+    const moduleIDs = String(this.route.snapshot.params['ids'])
+      .split(',')
+      .map((id) => decodeURIComponent(id));
+    this.requestedCount = moduleIDs.length;
     forkJoin({
-      modules: this.moduleService.loadDeploymentRequest([moduleID]),
+      modules: this.moduleService.loadDeploymentRequest(moduleIDs),
       hostResources: this.hostService.getHostResources().pipe(catchError(() => of([] as HostResource[]))),
       secrets: this.secretService.getSecrets().pipe(catchError(() => of([] as Secret[]))),
       globalConfigs: this.moduleService.getGlobalConfigs().pipe(catchError(() => of({}))),
@@ -154,6 +161,27 @@ export class ModulesComponent implements OnInit {
           this.submitting = false;
         },
       });
+  }
+
+  // a translation key, not display text - the template applies the pipe
+  descriptionKey(): string {
+    return this.requestedCount > 1
+      ? 'deployments.addDeployment.descriptionMultiple'
+      : 'deployments.addDeployment.description';
+  }
+
+  // a translation key, not display text - the template applies the pipe
+  noticeKey(): string {
+    return this.requestedCount > 1
+      ? 'deployments.addDeployment.selectionNotice'
+      : 'deployments.addDeployment.dependenciesNotice';
+  }
+
+  // a translation key, not display text - the template applies the pipe
+  nothingToDeployKey(): string {
+    return this.requestedCount > 1
+      ? 'deployments.addDeployment.allAlreadyDeployedMessage'
+      : 'deployments.addDeployment.alreadyDeployedMessage';
   }
 
   cancel() {

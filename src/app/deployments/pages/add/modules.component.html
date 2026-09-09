@@ -19,7 +19,7 @@
 
   @if (ready) {
     <mgw-page-header
-      [description]="'deployments.addDeployment.description' | transloco"
+      [description]="descriptionKey() | transloco"
       [title]="'deployments.addDeployment.title' | transloco"
       backTo="/modules"
     ></mgw-page-header>
@@ -27,13 +27,13 @@
     @if (modules.length > 1) {
       <div class="mgw-notice">
         <mat-icon>account_tree</mat-icon>
-        <span>{{ 'deployments.addDeployment.dependenciesNotice' | transloco: {count: modules.length} }}</span>
+        <span>{{ noticeKey() | transloco: {count: modules.length} }}</span>
       </div>
     }
 
     @if (modules.length === 0) {
       <mgw-empty-state
-        [message]="'deployments.addDeployment.alreadyDeployedMessage' | transloco"
+        [message]="nothingToDeployKey() | transloco"
         [title]="'deployments.addDeployment.nothingToDeploy' | transloco"
         icon="check_circle"
       >

@@ -458,7 +458,24 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   deploy(moduleID: string) {
-    this.router.navigateByUrl('/deployments/add/' + encodeURIComponent(moduleID));
+    this.openDeployForm([moduleID]);
+  }
+
+  // batch deploy: whether a module already has a deployment is left to
+  // /deployment-request, which drops those. Only a selected id the list no
+  // longer knows is filtered out here - the refresh never prunes the
+  // selection, and one id the module manager cannot resolve fails the whole
+  // request rather than just its own entry.
+  deployMultiple() {
+    const ids = this.selection.selected.filter((id) => this.modulesById[id]);
+    if (ids.length === 0) {
+      return;
+    }
+    this.openDeployForm(ids);
+  }
+
+  private openDeployForm(moduleIDs: string[]) {
+    this.router.navigateByUrl('/deployments/add/' + moduleIDs.map((id) => encodeURIComponent(id)).join(','));
   }
 
   edit(moduleID: string) {

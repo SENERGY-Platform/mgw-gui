@@ -57,9 +57,12 @@
   "addDeployment": {
     "title": "Create deployment",
     "description": "Set the values this module needs before its containers are created.",
+    "descriptionMultiple": "Set the values these modules need before their containers are created.",
     "dependenciesNotice": "This module pulls in dependencies. All {{count}} modules are deployed together — one section per module.",
+    "selectionNotice": "All {{count}} modules are deployed together — one section per module, dependencies included.",
     "nothingToDeploy": "Nothing to deploy",
     "alreadyDeployedMessage": "The module and all its dependencies already have a deployment.",
+    "allAlreadyDeployedMessage": "Every selected module and its dependencies already have a deployment.",
     "backToModules": "Back to modules",
     "cancel": "Cancel",
     "deploy": "Deploy",

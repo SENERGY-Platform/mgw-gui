@@ -55,6 +55,10 @@
     <div class="bulk-bar">
       <span class="bulk-count">{{ 'modules.list.selected' | transloco: {count: selection.selected.length} }}</span>
       <mat-divider [vertical]="true"></mat-divider>
+      <button (click)="deployMultiple()" mat-button>
+        <mat-icon>rocket_launch</mat-icon>
+        {{ 'modules.list.deploy' | transloco }}
+      </button>
       <button (click)="startMultiple()" mat-button>
         <mat-icon>play_arrow</mat-icon>
         {{ 'modules.list.start' | transloco }}

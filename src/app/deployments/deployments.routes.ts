@@ -24,7 +24,7 @@ export const routes: Routes = [
   {
     path: 'deployments',
     children: [
-      {path: 'add/:id', component: ModulesComponent},
+      {path: 'add/:ids', component: ModulesComponent},
       {path: 'edit/:ids', component: ShowModuleComponentComponent},
     ],
   },
