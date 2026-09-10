@@ -27,6 +27,12 @@ export class NotificationService {
     this.snackBar.open(message, undefined, {duration: 4000});
   }
 
+  // Neither a success nor an error: an explanation of what the app is doing
+  // next. Shown longer than a success, since it carries information.
+  showInfo(message: string): void {
+    this.snackBar.open(message, undefined, {duration: 8000});
+  }
+
   showError(message: string): void {
     // The second parameter is the text in the button.
     // In the third, we send in the css class for the snack bar.

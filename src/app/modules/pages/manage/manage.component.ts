@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import {Component, Inject, inject, OnInit} from '@angular/core';
+import {Component, DestroyRef, Inject, inject, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
 import {
   MatCell,
   MatCellDef,
@@ -33,6 +34,7 @@ import {ModuleManagerService} from 'src/app/core/services/module-manager/module-
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {UtilService} from 'src/app/core/services/util/util.service';
 import {concatMap} from 'rxjs';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 import {FormsModule} from '@angular/forms';
 import {SpinnerComponent} from '../../../core/components/spinner/spinner.component';
@@ -49,12 +51,37 @@ import {PageHeaderComponent} from 'src/app/core/components/page-header/page-head
 import {StatusPillComponent, StatusTone} from 'src/app/core/components/status-pill/status-pill.component';
 import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-state.component';
 import {RepoModule, Repository} from 'src/app/core/models/repositories';
-import {ChangeRequestItem, ModulesChangeRequest} from 'src/app/core/models/modules';
-import {mapModulesChangeResult, mapRepositoryRefreshResult} from 'src/app/core/models/job-result-view';
+import {ChangeRequestItem, ModulesChangeRequest, needsDeploymentUpdate} from 'src/app/core/models/modules';
+import {ChangeReportItem} from 'src/app/core/models/jobs';
+import {DeploymentRequestModule, DeploymentUserInput} from 'src/app/core/models/deployment-request';
+import {carryOverSetup} from 'src/app/core/models/deployment-carry-over';
+import {
+  mapDeploymentResults,
+  mapModulesChangeResult,
+  mapRepositoryRefreshResult,
+} from 'src/app/core/models/job-result-view';
+import {NotificationService} from 'src/app/core/services/util/notifications.service';
 import {ChangeRequestDialogComponent} from '../../components/change-request-dialog/change-request-dialog.component';
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatDivider} from '@angular/material/divider';
+import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {RefreshReposDialogComponent} from '../../components/refresh-repos-dialog/refresh-repos-dialog.component';
+
+// What an executed change request updates: the modules alone (today's
+// two-step path, the default) or their setups along with them.
+export type UpdateScope = 'modules' | 'modules-and-setups';
+
+const UPDATE_SCOPE_KEY = 'mgw-update-scope';
+
+// A blocked or throwing storage must not cost the page its update action, so
+// anything but the stored opt-in falls back to the default scope.
+function readUpdateScope(): UpdateScope {
+  try {
+    return localStorage.getItem(UPDATE_SCOPE_KEY) === 'modules-and-setups' ? 'modules-and-setups' : 'modules';
+  } catch {
+    return 'modules';
+  }
+}
 
 interface VariantOption {
   key: string; // source|channel
@@ -95,6 +122,8 @@ interface VariantOption {
     MatMenuTrigger,
     MatCheckbox,
     MatDivider,
+    MatButtonToggle,
+    MatButtonToggleGroup,
     PageHeaderComponent,
     StatusPillComponent,
     EmptyStateComponent,
@@ -124,10 +153,21 @@ export class ManageComponent implements OnInit {
   // recomputing arrays per change detection cycle loops the renderer
   variantOptionsById: Record<string, VariantOption[]> = {};
   pendingRequest: ModulesChangeRequest | null = null;
+  // which of the two update paths an executed change request takes, kept per
+  // browser; the two-step path stays the default
+  updateScope: UpdateScope = readUpdateScope();
+  // guards against a second follow-up starting while one is still running -
+  // two update jobs over the same setups would race each other
+  private setupFollowUpRunning = false;
 
   // Field injection, not a constructor parameter: new dependencies follow
   // the prefer-inject rule; the parameters above predate it.
   private readonly transloco = inject(TranslocoService);
+  private readonly router = inject(Router);
+  private readonly notifications = inject(NotificationService);
+  // The follow-up opens dialogs and navigates. Left running past the page it
+  // belongs to, it would do both on whatever page the user moved on to.
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     public dialog: MatDialog,
@@ -203,6 +243,15 @@ export class ManageComponent implements OnInit {
   setScope(scope: 'all' | 'installed' | 'updates') {
     this.scope = scope;
     this.load();
+  }
+
+  setUpdateScope(scope: UpdateScope) {
+    this.updateScope = scope;
+    try {
+      localStorage.setItem(UPDATE_SCOPE_KEY, scope);
+    } catch {
+      // private mode or storage disabled: the choice just does not survive a reload
+    }
   }
 
   statusTone(module: RepoModule): StatusTone {
@@ -479,6 +528,13 @@ export class ManageComponent implements OnInit {
           this.clearCart();
           this.selectionClear();
           this.load();
+          // only now is the drift visible: the setups lag behind the versions
+          // the job just installed
+          if (this.updateScope === 'modules-and-setups') {
+            this.updateDriftedSetups(
+              ((jobResult?.result?.success || []) as ChangeReportItem[]).map((entry) => entry.id),
+            );
+          }
         },
         error: (err) => {
           this.errorService.handleError(
@@ -490,6 +546,125 @@ export class ManageComponent implements OnInit {
           this.ready = true;
         },
       });
+  }
+
+  // Second update path: bring the setups of the modules whose installed
+  // version moved ahead onto that version, without a trip through the form -
+  // for the ones that need no answer the user has not already given.
+  private updateDriftedSetups(changedIds: string[]) {
+    if (this.setupFollowUpRunning || changedIds.length === 0) {
+      return;
+    }
+    this.setupFollowUpRunning = true;
+    // Only the modules this job changed: a drift left over from an earlier
+    // session must not have its containers recreated on the back of an
+    // unrelated install.
+    const changed = new Set(changedIds);
+    // read from the reduced module list rather than the table: a RepoModule
+    // carries the repository's view of a module, not its setup
+    this.moduleService
+      .loadModulesReduced()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (modules) => {
+          const ids = (modules || [])
+            .filter((module) => changed.has(module.id) && needsDeploymentUpdate(module))
+            .map((module) => module.id);
+          if (ids.length === 0) {
+            this.setupFollowUpRunning = false;
+            return;
+          }
+          // One request for both sides: /modules carries the new version's
+          // declarations next to the deployment created for the old one.
+          // Deliberately not /deployment-request - that one omits every module
+          // that already has a deployment, which is all of these.
+          this.moduleService
+            .loadModulesFull(ids)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: (loaded) => this.applyCarriedOverSetups(ids, loaded || []),
+              error: (err) => this.failSetupFollowUp(err),
+            });
+        },
+        error: (err) => this.failSetupFollowUp(err),
+      });
+  }
+
+  private applyCarriedOverSetups(ids: string[], loaded: DeploymentRequestModule[]) {
+    const byId = new Map(loaded.map((module) => [module.id, module]));
+    const inputs: DeploymentUserInput[] = [];
+    const needInput: string[] = [];
+    for (const id of ids) {
+      const input = carryOverSetup(byId.get(id));
+      if (input) {
+        inputs.push(input);
+      } else {
+        needInput.push(id);
+      }
+    }
+    if (inputs.length === 0) {
+      this.setupFollowUpRunning = false;
+      if (needInput.length > 0) {
+        this.offerSetupForm(needInput);
+      }
+      return;
+    }
+    this.moduleService
+      .updateDeployments(inputs)
+      .pipe(
+        concatMap((job) => {
+          return this.utilService.checkJobStatus(
+            job.id,
+            this.translate('modules.manage.setupUpdate.updating'),
+            'module-manager',
+            'deployments-update',
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (jobResult) => {
+          this.setupFollowUpRunning = false;
+          if (jobResult?.result) {
+            this.utilService.presentJobResult(
+              this.translate('modules.manage.setupUpdate.resultTitle'),
+              mapDeploymentResults(jobResult.result),
+              this.translate('modules.manage.setupUpdate.updated'),
+            );
+          }
+          // A cancelled job closes the loader the same way a finished one with
+          // nothing to report does, so an absent result is the only signal
+          // that the user stopped this - and then dragging them into a form is
+          // the last thing they asked for. The drift stays on the list.
+          if (needInput.length > 0 && jobResult?.result) {
+            this.offerSetupForm(needInput);
+            return;
+          }
+          this.load();
+        },
+        error: (err) => this.failSetupFollowUp(err),
+      });
+  }
+
+  // The setups the new version asks something new of are never skipped
+  // silently: they go to the edit form, all of them in one navigation.
+  private offerSetupForm(moduleIDs: string[]) {
+    this.notifications.showInfo(
+      this.translate(`modules.manage.setupUpdate.needsInput.${moduleIDs.length === 1 ? 'one' : 'other'}`, {
+        count: moduleIDs.length,
+      }),
+    );
+    this.router.navigateByUrl('/deployments/edit/' + moduleIDs.map((id) => encodeURIComponent(id)).join(','));
+  }
+
+  private failSetupFollowUp(err: unknown) {
+    this.setupFollowUpRunning = false;
+    this.errorService.handleError(
+      ManageComponent.name,
+      'updateDriftedSetups',
+      err,
+      this.translate('modules.manage.errors.setupUpdateFailed'),
+    );
   }
 
   private discardRequest() {

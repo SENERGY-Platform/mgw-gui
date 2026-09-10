@@ -74,6 +74,13 @@
     "refreshHint": "Fetch the latest module list",
     "refreshRepositories": "Refresh repositories",
     "updateAll": "Update all",
+    "updateScope": {
+      "label": "Update scope",
+      "modules": "Modules only",
+      "modulesHint": "Update the modules. Their setups keep running on the old version until you edit them.",
+      "modulesAndSetups": "Modules and their setups",
+      "modulesAndSetupsHint": "Update the modules and carry every setup over to the new version. Setups the new version asks something new of open in the edit form."
+    },
     "pendingRequest": "A change request is pending on the gateway. It stays there until it is applied or discarded — a repository refresh discards it too.",
     "review": "Review",
     "selectAll": "Select all modules",
@@ -130,7 +137,8 @@
       "createChangeRequestFailed": "Creating the change request failed",
       "applyFailed": "Applying the module changes failed",
       "discardFailed": "Discarding the change request failed",
-      "refreshFailed": "Refreshing the repositories failed"
+      "refreshFailed": "Refreshing the repositories failed",
+      "setupUpdateFailed": "Updating the setups after the module changes failed"
     },
     "jobs": {
       "applying": "Applying module changes",
@@ -139,7 +147,16 @@
       "refreshed": "Repositories refreshed"
     },
     "moduleChanges": "Module changes",
-    "repositoryRefresh": "Repository refresh"
+    "repositoryRefresh": "Repository refresh",
+    "setupUpdate": {
+      "updating": "Updating setups",
+      "resultTitle": "Update setups",
+      "updated": "Setups updated",
+      "needsInput": {
+        "one": "1 setup needs input for the new version and was not updated — opening its form.",
+        "other": "{{count}} setups need input for the new version and were not updated — opening their forms."
+      }
+    }
   },
   "info": {
     "deploy": "Set up",

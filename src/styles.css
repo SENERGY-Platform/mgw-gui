@@ -239,6 +239,9 @@ mat-icon.mat-icon {
   display: flex;
   align-items: center;
   gap: 8px;
+  /* the page body does not scroll sideways, so a row of actions wider than a
+     phone would put its last button out of reach rather than out of line */
+  flex-wrap: wrap;
 }
 
 .mgw-cell-stack {

@@ -28,6 +28,26 @@
         <mat-icon>refresh</mat-icon>
         {{ 'modules.manage.refreshRepositories' | transloco }}
       </button>
+      <div class="update-scope">
+        <span class="update-scope-label" id="mgw-update-scope-label">
+          {{ 'modules.manage.updateScope.label' | transloco }}
+        </span>
+        <mat-button-toggle-group
+          (change)="setUpdateScope($event.value)"
+          [value]="updateScope"
+          aria-labelledby="mgw-update-scope-label"
+        >
+          <mat-button-toggle [matTooltip]="'modules.manage.updateScope.modulesHint' | transloco" value="modules">
+            {{ 'modules.manage.updateScope.modules' | transloco }}
+          </mat-button-toggle>
+          <mat-button-toggle
+            [matTooltip]="'modules.manage.updateScope.modulesAndSetupsHint' | transloco"
+            value="modules-and-setups"
+          >
+            {{ 'modules.manage.updateScope.modulesAndSetups' | transloco }}
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
       <button (click)="updateAll()" [disabled]="updatesCount === 0" mat-flat-button>
         <mat-icon>upgrade</mat-icon>
         {{ 'modules.manage.updateAll' | transloco }}
