@@ -1,7 +1,9 @@
 .bulk-bar {
   display: flex;
   align-items: center;
-  gap: 4px;
+  /* the actions read as one run of words at 4px; this is a bar of separate
+     commands, one of which deletes deployments */
+  gap: 8px;
   flex-wrap: wrap;
   padding: 6px 8px 6px 16px;
   margin-bottom: 12px;
