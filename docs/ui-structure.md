@@ -28,6 +28,33 @@ navigate to is a page nobody finds.
 - An empty table explains what to do next — `mgw-empty-state`.
 - Shared layout classes are prefixed `mgw-` in `styles.css`.
 
+## Deployment forms validate in collect(), not through validators
+
+`deployment-form` is template-driven: every field binds `[(ngModel)]` to a row model
+built from what the module declares, and there is no `FormGroup` and no validator
+anywhere. Validity is decided in one place, `collect()`, when the page submits. It fills
+`row.error` on the offending rows, returns `undefined`, and the page reports the failure
+once. Three consequences that are not visible from a single field:
+
+- **Messages render as `<p class="field-error">`, not `<mat-error>`.** A `mat-error`
+  child flips the form field's subscript to the error slot and takes the `mat-hint` down
+  with it, which would hide "one value per line" exactly when the value was rejected. It
+  also does not fit a message that belongs to a group of controls rather than to one
+  field.
+- **`aria-invalid` comes from `[errorStateMatcher]`, not from an attribute binding.**
+  Material owns that attribute; a `[attr.aria-invalid]` on the control is overwritten
+  without a word. The matcher is cached per row, because a fresh object on every change
+  detection pass would reassign the input each cycle.
+- **Element ids carry a per-instance prefix** — `fieldId(kind, ref)` and
+  `errorId(kind, ref)`. The batch page renders one form per module at the same time, so
+  two modules declaring a config of the same name would otherwise produce the same id,
+  which cross-wires `<label for>` and `aria-describedby` between modules.
+
+Each field wrapper carries `data-field` with the same key `collect()` records, which is
+how `revealFirstError()` finds the topmost marked field and scrolls it into view. A file
+group keys per file (`filegroup-<ref>__<index>`) because its error belongs to one file,
+not to the group.
+
 ## Sortable tables bind MatSort through a setter
 
 Every list here renders its table behind a condition — a spinner while loading,
