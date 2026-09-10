@@ -18,6 +18,10 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  /* Material centres a 48px touch target on each 40px radio row, so the first
+     and last one reach 4px beyond this box - enough for the dialog content's
+     overflow: auto to show a scrollbar for a dialog that fits. */
+  padding-block: 4px;
 }
 
 .option-label {
