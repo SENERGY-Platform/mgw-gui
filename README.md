@@ -4,11 +4,11 @@ The web interface of the MGW ("multi gateway") edge-gateway stack: an Angular
 application through which users install and manage modules, control their
 deployments, and maintain secrets, global configs and endpoints.
 
-It is a client only. On the `next-gen` branch it talks exclusively to the
+It is a client only. It talks to the
 [mgw-module-manager](https://github.com/SENERGY-Platform/mgw-module-manager)
 API — the TypeScript models mirror its wire format — and fetches container logs
-through the container-engine wrapper. `master` remains the legacy UI for the old
-core.
+through the container-engine wrapper. The legacy UI for the old core is end of
+life: it was released last as `v2.13.2` and no branch carries it.
 
 # Development
 
@@ -147,5 +147,5 @@ turn the switch on.
 ## Further documentation
 
 `docs/` holds knowledge about this app that the code does not show: the structure and
-conventions of the `next-gen` UI, and the fact that configuration here is compile-time
+conventions of the UI, and the fact that configuration here is compile-time
 only — with what that rules out.

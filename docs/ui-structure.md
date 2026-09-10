@@ -2,10 +2,12 @@
 
 ## Applies when
 
-Changing or adding a page on the `next-gen` branch, as of 2026-08-20.
+Changing or adding a page, as of 2026-08-20.
 
-**Not this if**: you are on `master`. That is the legacy UI compatible with the
-old core and follows none of the conventions below.
+**Not this if**: you are looking at the UI released as `v2.13.2` or earlier.
+That is the legacy UI compatible with the old core and follows none of the
+conventions below; it went end of life when `next-gen` became `master` on
+2026-09-10.
 
 ## Navigation follows what is managed
 
