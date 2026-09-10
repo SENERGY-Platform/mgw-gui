@@ -41,9 +41,9 @@
     <section class="group">
       <h3>{{ group.label || ('deployments.form.defaultGroup' | transloco) }}</h3>
       @for (row of group.rows; track row.ref) {
-        <div class="field">
+        <div [attr.data-field]="'cfg-' + row.ref" class="field">
           <div class="field-head">
-            <label [attr.for]="'cfg-' + row.ref">
+            <label [attr.for]="fieldId('cfg', row.ref)">
               {{ row.input.name }}
               @if (row.required) {
                 <span class="required" [title]="'deployments.form.required' | transloco">*</span>
@@ -78,7 +78,9 @@
             <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
               <mat-select
                 [(ngModel)]="row.globalConfigId"
-                [id]="'cfg-' + row.ref"
+                [aria-describedby]="row.error ? errorId('cfg', row.ref) : ''"
+                [errorStateMatcher]="errorMatcher(row)"
+                [id]="fieldId('cfg', row.ref)"
                 [placeholder]="'deployments.form.selectGlobalConfig' | transloco"
               >
                 @for (gc of row.matchingGlobals; track gc.id) {
@@ -88,21 +90,38 @@
             </mat-form-field>
           } @else if (row.config.is_slice) {
             <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-              <textarea [(ngModel)]="row.raw" [id]="'cfg-' + row.ref" matInput rows="3"></textarea>
+              <textarea
+                [(ngModel)]="row.raw"
+                [aria-describedby]="row.error ? errorId('cfg', row.ref) : ''"
+                [errorStateMatcher]="errorMatcher(row)"
+                [id]="fieldId('cfg', row.ref)"
+                matInput
+                rows="3"
+              ></textarea>
               @if (!row.input.description) {
                 <mat-hint>{{ 'deployments.form.oneValuePerLine' | transloco }}</mat-hint>
               }
             </mat-form-field>
           } @else if (row.config.data_type === 'bool') {
             <mat-form-field appearance="outline" class="control narrow" subscriptSizing="dynamic">
-              <mat-select [(ngModel)]="row.raw" [id]="'cfg-' + row.ref">
+              <mat-select
+                [(ngModel)]="row.raw"
+                [aria-describedby]="row.error ? errorId('cfg', row.ref) : ''"
+                [errorStateMatcher]="errorMatcher(row)"
+                [id]="fieldId('cfg', row.ref)"
+              >
                 <mat-option value="true">true</mat-option>
                 <mat-option value="false">false</mat-option>
               </mat-select>
             </mat-form-field>
           } @else if (!isFreeText(row)) {
             <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
-              <mat-select [(ngModel)]="row.raw" [id]="'cfg-' + row.ref">
+              <mat-select
+                [(ngModel)]="row.raw"
+                [aria-describedby]="row.error ? errorId('cfg', row.ref) : ''"
+                [errorStateMatcher]="errorMatcher(row)"
+                [id]="fieldId('cfg', row.ref)"
+              >
                 @for (option of row.config.options; track option) {
                   <mat-option [value]="'' + option">{{ option }}</mat-option>
                 }
@@ -112,7 +131,9 @@
             <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
               <input
                 [(ngModel)]="row.raw"
-                [id]="'cfg-' + row.ref"
+                [aria-describedby]="row.error ? errorId('cfg', row.ref) : ''"
+                [errorStateMatcher]="errorMatcher(row)"
+                [id]="fieldId('cfg', row.ref)"
                 [step]="stepFor(row)"
                 [type]="isNumeric(row) ? 'number' : 'text'"
                 matInput
@@ -126,7 +147,7 @@
           }
 
           @if (row.error) {
-            <p class="field-error">
+            <p [id]="errorId('cfg', row.ref)" class="field-error">
               <mat-icon>error</mat-icon>
               {{ row.error }}
             </p>
@@ -140,9 +161,9 @@
     <section class="group">
       <h3>{{ 'deployments.form.hostResources' | transloco }}</h3>
       @for (row of resourceRows; track row.ref) {
-        <div class="field">
+        <div [attr.data-field]="'res-' + row.ref" class="field">
           <div class="field-head">
-            <label [attr.for]="'res-' + row.ref">
+            <label [attr.for]="fieldId('res', row.ref)">
               {{ row.input.name }}
               @if (row.required) {
                 <span class="required" [title]="'deployments.form.required' | transloco">*</span>
@@ -155,7 +176,9 @@
           <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
             <mat-select
               [(ngModel)]="row.selectedId"
-              [id]="'res-' + row.ref"
+              [aria-describedby]="row.error ? errorId('res', row.ref) : ''"
+              [errorStateMatcher]="errorMatcher(row)"
+              [id]="fieldId('res', row.ref)"
               [placeholder]="'deployments.form.none' | transloco"
             >
               <mat-option value="">{{ 'deployments.form.none' | transloco }}</mat-option>
@@ -165,7 +188,7 @@
             </mat-select>
           </mat-form-field>
           @if (row.error) {
-            <p class="field-error">
+            <p [id]="errorId('res', row.ref)" class="field-error">
               <mat-icon>error</mat-icon>
               {{ row.error }}
             </p>
@@ -179,9 +202,9 @@
     <section class="group">
       <h3>{{ 'deployments.form.secrets' | transloco }}</h3>
       @for (row of secretRows; track row.ref) {
-        <div class="field">
+        <div [attr.data-field]="'sec-' + row.ref" class="field">
           <div class="field-head">
-            <label [attr.for]="'sec-' + row.ref">
+            <label [attr.for]="fieldId('sec', row.ref)">
               {{ row.input.name }}
               @if (row.required) {
                 <span class="required" [title]="'deployments.form.required' | transloco">*</span>
@@ -197,7 +220,9 @@
           <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
             <mat-select
               [(ngModel)]="row.selectedId"
-              [id]="'sec-' + row.ref"
+              [aria-describedby]="row.error ? errorId('sec', row.ref) : ''"
+              [errorStateMatcher]="errorMatcher(row)"
+              [id]="fieldId('sec', row.ref)"
               [placeholder]="'deployments.form.none' | transloco"
             >
               <mat-option value="">{{ 'deployments.form.none' | transloco }}</mat-option>
@@ -207,7 +232,7 @@
             </mat-select>
           </mat-form-field>
           @if (row.error) {
-            <p class="field-error">
+            <p [id]="errorId('sec', row.ref)" class="field-error">
               <mat-icon>error</mat-icon>
               {{ row.error }}
             </p>
@@ -221,9 +246,9 @@
     <section class="group">
       <h3>{{ 'deployments.form.files' | transloco }}</h3>
       @for (row of fileRows; track row.ref) {
-        <div class="field">
+        <div [attr.data-field]="'file-' + row.ref" class="field">
           <div class="field-head">
-            <label [attr.for]="'file-' + row.ref">
+            <label [attr.for]="fieldId('file', row.ref)">
               {{ row.input.name }}
               @if (row.required) {
                 <span class="required" [title]="'deployments.form.required' | transloco">*</span>
@@ -254,7 +279,9 @@
             <textarea
               (blur)="formatFileOnBlur(row)"
               [(ngModel)]="row.text"
-              [id]="'file-' + row.ref"
+              [aria-describedby]="row.error ? errorId('file', row.ref) : ''"
+              [errorStateMatcher]="errorMatcher(row)"
+              [id]="fieldId('file', row.ref)"
               class="code"
               matInput
               rows="8"
@@ -262,7 +289,7 @@
             ></textarea>
           </mat-form-field>
           @if (row.error) {
-            <p class="field-error">
+            <p [id]="errorId('file', row.ref)" class="field-error">
               <mat-icon>error</mat-icon>
               {{ row.error }}
             </p>
@@ -285,7 +312,7 @@
           }
 
           @for (file of row.files; track file; let i = $index) {
-            <div class="group-file">
+            <div [attr.data-field]="'filegroup-' + row.ref + '__' + i" class="group-file">
               <div class="group-file-head">
                 <span class="group-file-index">{{ 'deployments.form.fileIndex' | transloco: {index: i + 1} }}</span>
                 <button
@@ -298,7 +325,13 @@
               </div>
               <div class="group-file-meta">
                 <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                  <input [(ngModel)]="file.path" [placeholder]="'deployments.form.path' | transloco" matInput />
+                  <input
+                    [(ngModel)]="file.path"
+                    [aria-describedby]="file.error ? errorId('filegroup', row.ref + '__' + i) : ''"
+                    [errorStateMatcher]="errorMatcher(file)"
+                    [placeholder]="'deployments.form.path' | transloco"
+                    matInput
+                  />
                 </mat-form-field>
                 <mat-form-field appearance="outline" subscriptSizing="dynamic">
                   <mat-select [(ngModel)]="file.format" [placeholder]="'deployments.form.format' | transloco">
@@ -312,6 +345,12 @@
               <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
                 <textarea [(ngModel)]="file.text" class="code" matInput rows="5" spellcheck="false"></textarea>
               </mat-form-field>
+              @if (file.error) {
+                <p [id]="errorId('filegroup', row.ref + '__' + i)" class="field-error">
+                  <mat-icon>error</mat-icon>
+                  {{ file.error }}
+                </p>
+              }
             </div>
           }
 
@@ -319,13 +358,6 @@
             <mat-icon>add</mat-icon>
             {{ 'deployments.form.addFile' | transloco }}
           </button>
-
-          @if (row.error) {
-            <p class="field-error">
-              <mat-icon>error</mat-icon>
-              {{ row.error }}
-            </p>
-          }
         </div>
       }
     </section>

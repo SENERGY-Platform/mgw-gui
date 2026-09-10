@@ -29,9 +29,10 @@ import {HostManagerService} from 'src/app/core/services/host-manager/host-manage
 import {SecretManagerServiceService} from 'src/app/core/services/secret-manager/secret-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {UtilService} from 'src/app/core/services/util/util.service';
+import {NotificationService} from 'src/app/core/services/util/notifications.service';
 import {SpinnerComponent} from 'src/app/core/components/spinner/spinner.component';
 import {DeploymentFormComponent} from '../../components/deployment-form/deployment-form.component';
-import {DeploymentRequestModule} from 'src/app/core/models/deployment-request';
+import {DeploymentRequestModule, DeploymentUserInput} from 'src/app/core/models/deployment-request';
 import {GlobalConfig} from 'src/app/core/models/global-configs';
 import {HostResource} from 'src/app/host/models/models';
 import {Secret} from 'src/app/secrets/models/secret_models';
@@ -61,6 +62,7 @@ export class ShowModuleComponentComponent implements OnInit {
   // plain strings handed to the error snackbar and the job dialogs, neither
   // of which has a template binding a pipe could sit on.
   private readonly transloco = inject(TranslocoService);
+  private readonly notifications = inject(NotificationService);
 
   modules: DeploymentRequestModule[] = [];
   hostResources: HostResource[] = [];
@@ -112,13 +114,22 @@ export class ShowModuleComponentComponent implements OnInit {
   }
 
   submit() {
-    const inputs = [];
+    const inputs: DeploymentUserInput[] = [];
+    let firstInvalid: DeploymentFormComponent | undefined;
     for (const form of this.forms.toArray()) {
       const input = form.collect();
       if (!input) {
-        return; // per-field errors are shown inline
+        firstInvalid ??= form;
+        continue;
       }
       inputs.push(input);
+    }
+    if (firstInvalid) {
+      // the per-field error alone is easy to miss: on a long form the offending
+      // field sits far above the button that was just pressed
+      this.notifications.showError(this.transloco.translate<string>('deployments.form.errors.formIncomplete'));
+      firstInvalid.revealFirstError();
+      return;
     }
     if (inputs.length === 0) {
       this.router.navigateByUrl('/modules');

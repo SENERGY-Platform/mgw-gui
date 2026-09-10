@@ -103,6 +103,12 @@ describe('DeploymentFormComponent', () => {
     }).compileComponents();
   });
 
+  afterEach(() => {
+    // vitest runs with restoreMocks: false, so a spy from one test would
+    // otherwise still be in place (and keep its call count) in the next.
+    vi.restoreAllMocks();
+  });
+
   // Sets the @Input properties and runs the first change detection, which
   // triggers ngOnInit / buildRows() the same way the host page would.
   function create(
@@ -225,13 +231,40 @@ describe('DeploymentFormComponent', () => {
       }),
     );
 
-    const cfgLabel = fixture.nativeElement.querySelector('label[for="cfg-cfg"]');
-    const secLabel = fixture.nativeElement.querySelector('label[for="sec-sec"]');
-    const resLabel = fixture.nativeElement.querySelector('label[for="res-res"]');
+    const cfgLabel = fixture.nativeElement.querySelector(`label[for="${component.fieldId('cfg', 'cfg')}"]`);
+    const secLabel = fixture.nativeElement.querySelector(`label[for="${component.fieldId('sec', 'sec')}"]`);
+    const resLabel = fixture.nativeElement.querySelector(`label[for="${component.fieldId('res', 'res')}"]`);
 
     expect(cfgLabel?.querySelector('.required')).not.toBeNull();
     expect(secLabel?.querySelector('.required')).not.toBeNull();
     expect(resLabel?.querySelector('.required')).not.toBeNull();
+  });
+
+  // SNRGY-4701: a screen reader announces the snackbar, but not that the field
+  // it focuses is itself invalid, unless the control carries these attributes.
+  // aria-invalid is Material's own (matInput/mat-select set it from an
+  // errorStateMatcher tied to row.error); it reads "false" rather than being
+  // absent before a failure, which is standard ARIA and not worth fighting.
+  it('announces a failed config field to screen readers once collect() marks it', () => {
+    create(
+      makeModule({
+        configInputs: {cfg: moduleInput('Config')},
+        configs: {cfg: textConfig({required: true, default: null})},
+      }),
+    );
+    const input = fixture.nativeElement.querySelector(`#${component.fieldId('cfg', 'cfg')}`) as HTMLInputElement;
+    expect(input.getAttribute('aria-invalid')).not.toBe('true');
+    expect(input.getAttribute('aria-describedby')).toBeNull();
+
+    component.configRows[0].raw = '';
+    expect(component.collect()).toBeUndefined();
+    fixture.detectChanges();
+
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(input.getAttribute('aria-describedby')).toBe(component.errorId('cfg', 'cfg'));
+    const errorParagraph = fixture.nativeElement.querySelector(`#${component.errorId('cfg', 'cfg')}`);
+    expect(errorParagraph).not.toBeNull();
+    expect(errorParagraph.textContent).toContain(component.configRows[0].error);
   });
 
   it('offers to restore the module default once the value was changed', () => {
@@ -584,5 +617,134 @@ describe('DeploymentFormComponent', () => {
     );
 
     expect(component.stepFor(component.configRows[0])).toBe(0.1);
+  });
+
+  it('reveals and focuses the field a failed required config was marked on', () => {
+    create(
+      makeModule({
+        configInputs: {cfg: moduleInput('Config')},
+        configs: {cfg: textConfig({required: true, default: null})},
+      }),
+    );
+    component.configRows[0].raw = '';
+    const scrollSpy = vi.spyOn(Element.prototype, 'scrollIntoView');
+
+    expect(component.collect()).toBeUndefined();
+    component.revealFirstError();
+
+    const wrapper = fixture.nativeElement.querySelector('[data-field="cfg-cfg"]');
+    const input = wrapper.querySelector('input');
+    expect(document.activeElement).toBe(input);
+    expect(scrollSpy).toHaveBeenCalledOnce();
+    expect(scrollSpy.mock.contexts[0]).toBe(wrapper);
+  });
+
+  it('reveals the topmost invalid field in dom order across categories', () => {
+    create(
+      makeModule({
+        configInputs: {cfg: moduleInput('Config')},
+        configs: {cfg: textConfig({required: true, default: 'hello'})},
+        resourceInputs: {res: moduleInput('Resource')},
+        hostResources: {res: {required: true}},
+        secretInputs: {sec: moduleInput('Secret')},
+        secrets: {sec: {type: 'certificate', required: true}},
+      }),
+    );
+    const scrollSpy = vi.spyOn(Element.prototype, 'scrollIntoView');
+
+    expect(component.collect()).toBeUndefined();
+    component.revealFirstError();
+
+    // the config is valid (buildRows sets raw to the default, so it goes
+    // through the parse branch, not the empty branch), so the topmost
+    // invalid wrapper is the host resource, above the secret in the dom
+    const resourceWrapper = fixture.nativeElement.querySelector('[data-field="res-res"]');
+    expect(document.activeElement).toBe(resourceWrapper.querySelector('mat-select'));
+    expect(scrollSpy).toHaveBeenCalledOnce();
+    expect(scrollSpy.mock.contexts[0]).toBe(resourceWrapper);
+  });
+
+  // The first file's content is left empty on purpose: a blank field that is
+  // allowed to be blank must not outrank the path the message is about.
+  function groupWithOneMissingPath(): void {
+    create(makeModule({fileGroupInputs: {extra: moduleInput('Extra files')}}));
+    const row = component.fileGroupRows[0];
+    row.files.push({path: 'config.yaml', format: 'yaml', text: '', error: ''});
+    row.files.push({path: '', format: 'generic', text: '', error: ''});
+    fixture.detectChanges();
+  }
+
+  it('focuses the path of the file that is missing one', async () => {
+    groupWithOneMissingPath();
+    await fixture.whenStable();
+    const scrollSpy = vi.spyOn(Element.prototype, 'scrollIntoView');
+
+    expect(component.collect()).toBeUndefined();
+    component.revealFirstError();
+
+    const wrappers = fixture.nativeElement.querySelectorAll('[data-field^="filegroup-extra"]');
+    expect(wrappers.length).toBe(2);
+    expect(document.activeElement).toBe(wrappers[1].querySelector('input'));
+    expect(scrollSpy).toHaveBeenCalledOnce();
+    expect(scrollSpy.mock.contexts[0]).toBe(wrappers[1]);
+  });
+
+  it('marks only the file of a group whose path is missing', async () => {
+    groupWithOneMissingPath();
+    await fixture.whenStable();
+    const files = component.fileGroupRows[0].files;
+
+    expect(component.collect()).toBeUndefined();
+    fixture.detectChanges();
+
+    expect(files[0].error).toBe('');
+    expect(files[1].error).not.toBe('');
+    const wrappers = fixture.nativeElement.querySelectorAll('[data-field^="filegroup-extra"]');
+    const filled = wrappers[0].querySelector('input') as HTMLInputElement;
+    const blank = wrappers[1].querySelector('input') as HTMLInputElement;
+    expect(filled.getAttribute('aria-invalid')).not.toBe('true');
+    expect(blank.getAttribute('aria-invalid')).toBe('true');
+    expect(blank.getAttribute('aria-describedby')).toBe(component.errorId('filegroup', 'extra__1'));
+    expect(wrappers[1].querySelector('.field-error').textContent).toContain(files[1].error);
+  });
+
+  it('clears fields invalidated by an earlier collect() that are valid now', () => {
+    create(
+      makeModule({
+        configInputs: {cfg: moduleInput('Config')},
+        configs: {cfg: textConfig({required: true, default: null})},
+        fileInputs: {file: moduleInput('Config file')},
+        files: {file: {type: 'json', required: false, default_data: ''}},
+      }),
+    );
+    component.fileRows[0].text = '{"a":';
+    expect(component.collect()).toBeUndefined();
+
+    component.configRows[0].raw = 'x';
+    const scrollSpy = vi.spyOn(Element.prototype, 'scrollIntoView');
+    expect(component.collect()).toBeUndefined();
+    component.revealFirstError();
+
+    // without clearing invalidFields at the start of collect(), the config
+    // would stay marked from the first run and wrongly outrank the file,
+    // which is the only field still invalid
+    const fileWrapper = fixture.nativeElement.querySelector('[data-field="file-file"]');
+    expect(scrollSpy).toHaveBeenCalledOnce();
+    expect(scrollSpy.mock.contexts[0]).toBe(fileWrapper);
+  });
+
+  it('does nothing when revealFirstError runs without a prior validation failure', () => {
+    create(
+      makeModule({
+        configInputs: {cfg: moduleInput('Config')},
+        configs: {cfg: textConfig({required: false, default: null})},
+      }),
+    );
+    const scrollSpy = vi.spyOn(Element.prototype, 'scrollIntoView');
+
+    expect(component.collect()).toBeDefined();
+    component.revealFirstError();
+
+    expect(scrollSpy).not.toHaveBeenCalled();
   });
 });

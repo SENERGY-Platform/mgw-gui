@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import {Component, Input, OnInit, inject} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, inject} from '@angular/core';
 
 import {FormsModule} from '@angular/forms';
+import {ErrorStateMatcher} from '@angular/material/core';
 import {MatFormField, MatHint} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatOption, MatSelect} from '@angular/material/select';
@@ -93,6 +94,7 @@ interface FileGroupFileRow {
   path: string;
   format: string;
   text: string;
+  error: string;
 }
 
 // Formats offered for a file of a file group. The module manager does not
@@ -104,7 +106,6 @@ interface FileGroupRow {
   ref: string;
   input: ModuleInput;
   files: FileGroupFileRow[];
-  error: string;
 }
 
 // Configuration inputs carry the module's own grouping. Rendering that
@@ -144,6 +145,37 @@ export class DeploymentFormComponent implements OnInit {
   // validation runs - see the "TypeScript-only messages" section of the
   // project README.
   private readonly transloco = inject(TranslocoService);
+  private readonly host = inject(ElementRef);
+
+  // unique per instance: the batch deploy page renders several forms at once and
+  // their config refs can collide, which would cross-wire labels and error texts
+  private static nextInstance = 0;
+  private readonly idPrefix = `df${DeploymentFormComponent.nextInstance++}`;
+
+  fieldId(kind: string, ref: string): string {
+    return `${this.idPrefix}-${kind}-${ref}`;
+  }
+
+  errorId(kind: string, ref: string): string {
+    return `${this.fieldId(kind, ref)}-error`;
+  }
+
+  private readonly errorMatchers = new WeakMap<object, ErrorStateMatcher>();
+
+  // matInput and mat-select set their own aria-invalid from Angular Material's error
+  // state, which only looks at the control's own validators - never row.error, since
+  // these fields use plain ngModel. This matcher plugs row.error into that mechanism
+  // instead of fighting the framework's [attr.aria-invalid] host binding directly.
+  // Cached per row: a fresh object on every change detection pass would reassign the
+  // input each cycle and trip the dev-mode binding check.
+  errorMatcher(row: {error: string}): ErrorStateMatcher {
+    let matcher = this.errorMatchers.get(row);
+    if (!matcher) {
+      matcher = {isErrorState: () => !!row.error};
+      this.errorMatchers.set(row, matcher);
+    }
+    return matcher;
+  }
 
   @Input() module!: DeploymentRequestModule;
   @Input() hostResources: HostResource[] = [];
@@ -158,6 +190,11 @@ export class DeploymentFormComponent implements OnInit {
   secretRows: SecretRow[] = [];
   fileRows: FileRow[] = [];
   fileGroupRows: FileGroupRow[] = [];
+
+  // data-field keys of the fields that failed validation in the last collect(),
+  // in the form the template uses: a 'cfg-', 'res-', 'sec-' or 'file-' prefix plus
+  // the row ref, and 'filegroup-<ref>__<index>' for one file of a group
+  private invalidFields = new Set<string>();
 
   ngOnInit(): void {
     this.buildRows();
@@ -238,8 +275,8 @@ export class DeploymentFormComponent implements OnInit {
           path: f.path,
           format: f.format,
           text: decodeFileData(f.data),
+          error: '',
         })),
-        error: '',
       });
     }
 
@@ -359,7 +396,7 @@ export class DeploymentFormComponent implements OnInit {
   }
 
   addGroupFile(row: FileGroupRow) {
-    row.files.push({path: '', format: 'generic', text: ''});
+    row.files.push({path: '', format: 'generic', text: '', error: ''});
   }
 
   removeGroupFile(row: FileGroupRow, index: number) {
@@ -370,6 +407,7 @@ export class DeploymentFormComponent implements OnInit {
   // offending fields when validation fails.
   collect(): DeploymentUserInput | undefined {
     let valid = true;
+    this.invalidFields.clear();
     const result: DeploymentUserInput = {
       module_id: this.module.id,
       host_resources: {},
@@ -386,6 +424,7 @@ export class DeploymentFormComponent implements OnInit {
         if (!row.globalConfigId) {
           row.error = this.transloco.translate<string>('deployments.form.errors.selectGlobalConfigOrValue');
           valid = false;
+          this.invalidFields.add('cfg-' + row.ref);
           continue;
         }
         result.global_configs[row.ref] = row.globalConfigId;
@@ -397,6 +436,7 @@ export class DeploymentFormComponent implements OnInit {
         if (row.required && (row.config.default === null || row.config.default === undefined)) {
           row.error = this.transloco.translate<string>('deployments.form.errors.valueRequired');
           valid = false;
+          this.invalidFields.add('cfg-' + row.ref);
         }
         continue;
       }
@@ -405,6 +445,7 @@ export class DeploymentFormComponent implements OnInit {
       } catch (err: any) {
         row.error = err.message;
         valid = false;
+        this.invalidFields.add('cfg-' + row.ref);
       }
     }
 
@@ -415,6 +456,7 @@ export class DeploymentFormComponent implements OnInit {
       } else if (row.required) {
         row.error = this.transloco.translate<string>('deployments.form.errors.selectHostResource');
         valid = false;
+        this.invalidFields.add('res-' + row.ref);
       }
     }
 
@@ -425,6 +467,7 @@ export class DeploymentFormComponent implements OnInit {
       } else if (row.required) {
         row.error = this.transloco.translate<string>('deployments.form.errors.selectSecret');
         valid = false;
+        this.invalidFields.add('sec-' + row.ref);
       }
     }
 
@@ -436,6 +479,7 @@ export class DeploymentFormComponent implements OnInit {
         if (row.required && !row.hasDefault) {
           row.error = this.transloco.translate<string>('deployments.form.errors.fileContentRequired');
           valid = false;
+          this.invalidFields.add('file-' + row.ref);
           continue;
         }
       } else if (row.type === 'json') {
@@ -446,6 +490,7 @@ export class DeploymentFormComponent implements OnInit {
             message: this.jsonErrorMessage(err),
           });
           valid = false;
+          this.invalidFields.add('file-' + row.ref);
           continue;
         }
       }
@@ -455,21 +500,37 @@ export class DeploymentFormComponent implements OnInit {
     }
 
     for (const row of this.fileGroupRows) {
-      row.error = '';
       const files: Record<string, any> = {};
-      for (const file of row.files) {
+      row.files.forEach((file, index) => {
+        file.error = '';
         if (!file.path.trim()) {
-          row.error = this.transloco.translate<string>('deployments.form.errors.fileGroupPathRequired');
+          file.error = this.transloco.translate<string>('deployments.form.errors.fileGroupPathRequired');
           valid = false;
-          continue;
+          this.invalidFields.add('filegroup-' + row.ref + '__' + index);
+          return;
         }
         files[file.path.trim()] = {format: file.format, data: encodeFileData(file.text)};
-      }
+      });
       if (Object.keys(files).length > 0) {
         result.file_groups[row.ref] = files;
       }
     }
 
     return valid ? result : undefined;
+  }
+
+  // Brings the topmost field that failed validation into view: the submit button
+  // can sit far below the offending field, where the inline error goes unnoticed.
+  revealFirstError(): void {
+    const wrappers = this.host.nativeElement.querySelectorAll('[data-field]');
+    for (const wrapper of Array.from(wrappers) as HTMLElement[]) {
+      if (!this.invalidFields.has(wrapper.dataset['field'] ?? '')) {
+        continue;
+      }
+      const control = wrapper.querySelector('input, textarea, mat-select') as HTMLElement | null;
+      control?.focus({preventScroll: true});
+      wrapper.scrollIntoView({behavior: 'smooth', block: 'center'});
+      return;
+    }
   }
 }

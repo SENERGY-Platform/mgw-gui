@@ -20,6 +20,7 @@ import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
 import {provideTranslocoTesting} from 'src/testing/transloco-testing';
 import {DeploymentRequestModule} from 'src/app/core/models/deployment-request';
+import {NotificationService} from 'src/app/core/services/util/notifications.service';
 import {ModulesComponent} from './modules.component';
 
 function requestModule(id: string, isDeployed = false): DeploymentRequestModule {
@@ -40,14 +41,44 @@ function requestModule(id: string, isDeployed = false): DeploymentRequestModule 
   };
 }
 
+// A module with one required config and no default, so leaving it empty
+// makes deployment-form's collect() fail for it.
+function moduleWithRequiredConfig(id: string): DeploymentRequestModule {
+  return {
+    ...requestModule(id),
+    inputs: {
+      configs: {cfg: {name: 'Config', description: '', group: ''}},
+      resources: null,
+      secrets: null,
+      files: null,
+      file_groups: null,
+      groups: null,
+    },
+    configs: {
+      cfg: {
+        default: null,
+        options: null,
+        opt_ext: false,
+        type: 'text',
+        type_opt: null,
+        data_type: 'string',
+        is_slice: false,
+        required: true,
+      },
+    },
+  };
+}
+
 describe('ModulesComponent', () => {
   let fixture: ComponentFixture<ModulesComponent>;
   let requested: string[];
+  let createDeploymentsSpy: ReturnType<typeof vi.fn>;
 
   // Only the calls the page makes on load are stubbed; every one of them is
   // wrapped in a catchError by the page except the module request itself.
   function create(ids: string, modules: DeploymentRequestModule[]): void {
     requested = [];
+    createDeploymentsSpy = vi.fn().mockReturnValue(of({id: 'job-1'}));
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [ModulesComponent, provideTranslocoTesting('deployments')],
@@ -62,6 +93,7 @@ describe('ModulesComponent', () => {
               return of(modules);
             },
             getGlobalConfigs: () => of({}),
+            createDeployments: createDeploymentsSpy,
           },
         },
         {provide: 'HostManagerService', useValue: {getHostResources: () => of([])}},
@@ -115,5 +147,35 @@ describe('ModulesComponent', () => {
     expect(fixture.componentInstance.descriptionKey()).toBe('deployments.addDeployment.description');
     expect(fixture.componentInstance.noticeKey()).toBe('deployments.addDeployment.dependenciesNotice');
     expect(fixture.componentInstance.nothingToDeployKey()).toBe('deployments.addDeployment.alreadyDeployedMessage');
+  });
+
+  // SNRGY-4701: submit() used to stop at the first invalid form, leaving the
+  // fields of later modules unmarked and the user without any feedback at all.
+  it('validates every form before giving up, so a later module is marked too', () => {
+    create('mod-a,mod-b', [moduleWithRequiredConfig('mod-a'), moduleWithRequiredConfig('mod-b')]);
+    const notifications = TestBed.inject(NotificationService);
+    vi.spyOn(notifications, 'showError').mockImplementation(() => undefined);
+
+    fixture.componentInstance.submit();
+
+    expect(createDeploymentsSpy).not.toHaveBeenCalled();
+    expect(notifications.showError).toHaveBeenCalledOnce();
+    const forms = fixture.componentInstance.forms.toArray();
+    expect(forms[0].configRows[0].error).not.toBe('');
+    expect(forms[1].configRows[0].error).not.toBe('');
+  });
+
+  // SNRGY-4701: two modules with a same-named config ref used to render duplicate
+  // ids, which cross-wired the label and aria-describedby of the second form.
+  it('gives the value controls of two module forms distinct ids', () => {
+    create('mod-a,mod-b', [moduleWithRequiredConfig('mod-a'), moduleWithRequiredConfig('mod-b')]);
+
+    const wrappers = fixture.nativeElement.querySelectorAll('[data-field="cfg-cfg"]');
+    expect(wrappers.length).toBe(2);
+    const ids = Array.from(wrappers).map((wrapper) => (wrapper as HTMLElement).querySelector('input')?.id);
+
+    expect(ids[0]).toBeTruthy();
+    expect(ids[1]).toBeTruthy();
+    expect(ids[0]).not.toBe(ids[1]);
   });
 });
