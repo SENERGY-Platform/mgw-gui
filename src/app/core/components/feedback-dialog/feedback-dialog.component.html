@@ -45,6 +45,11 @@
       @if (screenshotError) {
         <p class="error" role="alert">{{ screenshotError }}</p>
       }
+    } @else if (!screenshotSupported) {
+      <!-- Said rather than left blank: the capture API is missing outside a
+           secure context, so on a gateway served over http the button is gone
+           with no way to tell it from a feature that was never built. -->
+      <p class="hint">{{ 'core.feedbackDialog.screenshotUnavailable' | transloco }}</p>
     }
   </div>
 

@@ -356,6 +356,16 @@ describe('FeedbackDialogComponent', () => {
       expect(fixture.nativeElement.textContent).not.toContain('Add screenshot');
     });
 
+    it('says why instead of leaving the place empty', async () => {
+      // The capture API is absent outside a secure context, which is how a
+      // gateway served over http looks - and a button that is simply gone
+      // reads as a feature nobody built.
+      vi.spyOn(screenshotService, 'isSupported').mockReturnValue(false);
+      await createComponent();
+
+      expect(fixture.nativeElement.textContent).toContain('secure (https) connection');
+    });
+
     it('does not report an error when the screenshot picker is dismissed', async () => {
       vi.spyOn(screenshotService, 'isSupported').mockReturnValue(true);
       vi.spyOn(screenshotService, 'captureScreen').mockResolvedValue(null);

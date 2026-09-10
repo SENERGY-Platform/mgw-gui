@@ -65,6 +65,7 @@
     "cancel": "Cancel",
     "send": "Send",
     "screenshotError": "The screenshot could not be taken.",
+    "screenshotUnavailable": "Adding a screenshot needs a secure (https) connection, which this page is not served over.",
     "sendFailed": "The report could not be sent. Please try again.",
     "sentSuccess": "Feedback sent. Thank you."
   },
