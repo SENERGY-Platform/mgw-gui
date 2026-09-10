@@ -32,13 +32,13 @@
     }
   },
   "auxDeployments": {
-    "empty": "No auxiliary deployments. Modules spawn and manage them on their own; the UI only shows their state.",
+    "empty": "No extra containers. Modules spawn and manage them on their own; the UI only shows their state.",
     "status": "Status",
     "name": "Name",
     "reference": "Reference",
     "image": "Image",
     "updated": "Updated",
-    "loadFailed": "Loading the auxiliary deployments failed",
+    "loadFailed": "Loading the extra containers failed",
     "containerMissing": "container missing",
     "statuses": {
       "running": "Running",
@@ -56,50 +56,50 @@
     "jobMessage": "Create endpoint"
   },
   "addDeployment": {
-    "title": "Create deployment",
+    "title": "Set up module",
     "description": "Set the values this module needs before its containers are created.",
     "descriptionMultiple": "Set the values these modules need before their containers are created.",
-    "dependenciesNotice": "This module pulls in dependencies. All {{count}} modules are deployed together — one section per module.",
-    "selectionNotice": "All {{count}} modules are deployed together — one section per module, dependencies included.",
-    "nothingToDeploy": "Nothing to deploy",
-    "alreadyDeployedMessage": "The module and all its dependencies already have a deployment.",
-    "allAlreadyDeployedMessage": "Every selected module and its dependencies already have a deployment.",
+    "dependenciesNotice": "This module pulls in dependencies. All {{count}} modules are set up together — one section per module.",
+    "selectionNotice": "All {{count}} modules are set up together — one section per module, dependencies included.",
+    "nothingToDeploy": "Nothing to set up",
+    "alreadyDeployedMessage": "The module and all its dependencies are already set up.",
+    "allAlreadyDeployedMessage": "Every selected module and its dependencies are already set up.",
     "backToModules": "Back to modules",
     "cancel": "Cancel",
-    "deploy": "Deploy",
-    "loadFailed": "Loading the deployment form failed",
-    "creatingJob": "Creating deployments",
-    "jobResultTitle": "Create deployments",
-    "deploymentCreated": "Deployment created",
-    "createFailed": "Creating the deployment failed"
+    "deploy": "Set up",
+    "loadFailed": "Loading the setup form failed",
+    "creatingJob": "Setting up modules",
+    "jobResultTitle": "Set up modules",
+    "deploymentCreated": "Module set up",
+    "createFailed": "Setting the module up failed"
   },
   "editDeployment": {
     "title": {
-      "one": "Edit deployment",
-      "other": "Edit deployments"
+      "one": "Edit setup",
+      "other": "Edit setups"
     },
     "description": {
-      "one": "Change the values of this deployment. Saving recreates the containers.",
-      "other": "Change the values of {{count}} deployments. They are saved as one job."
+      "one": "Change the values of this setup. Saving recreates the containers.",
+      "other": "Change the values of {{count}} setups. They are saved as one job."
     },
-    "updateNotice": "At least one installed module is newer than the version its deployment was created for. Saving applies that update to the deployment.",
+    "updateNotice": "At least one installed module is newer than the version it was set up from. Saving applies that update.",
     "nothingToEdit": "Nothing to edit",
-    "noneEditableMessage": "None of the selected modules has a deployment.",
+    "noneEditableMessage": "None of the selected modules is set up.",
     "backToModules": "Back to modules",
     "cancel": "Cancel",
     "save": "Save",
-    "loadFailed": "Loading the deployment failed",
-    "updatingJob": "Updating deployment",
-    "jobResultTitle": "Update deployments",
-    "deploymentUpdated": "Deployment(s) updated",
-    "updateFailed": "Updating the deployment failed"
+    "loadFailed": "Loading the setup failed",
+    "updatingJob": "Updating setup",
+    "jobResultTitle": "Update setups",
+    "deploymentUpdated": "Setup(s) updated",
+    "updateFailed": "Updating the setup failed"
   },
   "endpointsPage": {
     "title": "Endpoints",
-    "description": "HTTP endpoints the running deployments expose through the gateway. Generated endpoints come from the module itself; aliases are the shorter URLs you define.",
+    "description": "HTTP endpoints the running modules expose through the gateway. Generated endpoints come from the module itself; aliases are the shorter URLs you define.",
     "emptyTitle": "No endpoints",
-    "emptyMessage": "Endpoints appear here once a deployed module exposes one. Deploy a module that serves HTTP to get started.",
+    "emptyMessage": "Endpoints appear here once a module that is set up exposes one. Set up a module that serves HTTP to get started.",
     "goToModules": "Go to modules",
-    "unlabelledHint": "The core did not name a module for these endpoints, so only the deployment identifies them."
+    "unlabelledHint": "The core did not name a module for these endpoints, so only the setup identifies them."
   }
 }

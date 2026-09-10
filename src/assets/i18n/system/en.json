@@ -73,7 +73,7 @@
   },
   "jobs": {
     "title": "Jobs",
-    "description": "Long-running operations the gateway performed. Deployment and module changes run as jobs."
+    "description": "Long-running operations the gateway performed. Setup and module changes run as jobs."
   },
   "listApps": {
     "title": "Applications",

@@ -64,7 +64,7 @@ describe('AuxDeploymentsListComponent', () => {
     fixture.componentInstance.deploymentID = '';
     fixture.detectChanges();
 
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('No auxiliary deployments');
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('No extra containers');
   });
 
   it('loads and keeps polling once there is a deployment to ask about', fakeAsync(() => {

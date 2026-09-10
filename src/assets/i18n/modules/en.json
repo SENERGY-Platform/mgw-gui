@@ -1,7 +1,7 @@
 {
   "list": {
     "title": "Modules",
-    "description": "Modules installed on this gateway and the state of their deployments.",
+    "description": "Modules installed on this gateway, and whether they are set up and running.",
     "refresh": "Refresh",
     "installModules": "Install modules",
     "searchModules": "Search modules",
@@ -10,7 +10,7 @@
       "healthy": "Running",
       "disabled": "Stopped",
       "unhealthy": "Unhealthy",
-      "none": "Not deployed",
+      "none": "Not set up",
       "update": "Update pending"
     },
     "selected": "{{count}} selected",
@@ -18,7 +18,7 @@
     "stop": "Stop",
     "recreate": "Recreate",
     "edit": "Edit",
-    "deleteDeployments": "Delete deployments",
+    "deleteDeployments": "Remove setups",
     "clearSelection": "Clear selection",
     "empty": {
       "title": "No modules installed",
@@ -37,35 +37,35 @@
       "version": "Version"
     },
     "loadedWithErrors": "Loaded with errors — click for details",
-    "updateHint": "The installed module changed (installed: {{version}} / {{channel}}, deployed: {{deployedVersion}} / {{deployedChannel}}). Edit the deployment to apply the change.",
-    "deployedVersion": "deployed {{version}}",
-    "deploy": "Deploy",
+    "updateHint": "The installed module changed (installed: {{version}} / {{channel}}, set up from: {{deployedVersion}} / {{deployedChannel}}). Edit the setup to apply the change.",
+    "deployedVersion": "running {{version}}",
+    "deploy": "Set up",
     "moreActions": "More actions",
     "details": "Details",
-    "editDeployment": "Edit deployment",
+    "editDeployment": "Edit setup",
     "recreateContainers": "Recreate containers",
-    "deleteDeployment": "Delete deployment",
+    "deleteDeployment": "Remove setup",
     "statuses": {
       "running": "Running",
       "unhealthy": "Unhealthy",
       "stopped": "Stopped",
       "unknown": "Unknown",
-      "notDeployed": "Not deployed"
+      "notDeployed": "Not set up"
     },
     "errors": {
       "loadFailed": "Loading the modules failed",
-      "startFailed": "Starting the deployments failed",
-      "stopFailed": "Stopping the deployments failed",
+      "startFailed": "Starting the modules failed",
+      "stopFailed": "Stopping the modules failed",
       "recreateFailed": "Recreating the containers failed",
-      "deleteFailed": "Deleting the deployments failed"
+      "deleteFailed": "Removing the setups failed"
     },
     "jobs": {
-      "recreating": "Deployments are recreating",
+      "recreating": "Containers are recreating",
       "recreated": "Containers recreated",
-      "deleting": "Deployments are being deleted",
-      "deleted": "Deployments deleted"
+      "deleting": "Setups are being removed",
+      "deleted": "Setups removed"
     },
-    "confirmDelete": "Delete the deployment(s) of {{count}} module(s)? Data stored in volumes will be removed.",
+    "confirmDelete": "Remove the setup(s) of {{count}} module(s)? Data stored in volumes will be removed.",
     "moduleLoadedWithErrors": "The module was loaded with errors"
   },
   "manage": {
@@ -142,16 +142,16 @@
     "repositoryRefresh": "Repository refresh"
   },
   "info": {
-    "deploy": "Deploy",
+    "deploy": "Set up",
     "stop": "Stop",
     "start": "Start",
-    "editDeployment": "Edit deployment",
+    "editDeployment": "Edit setup",
     "moreActions": "More actions",
     "recreateContainers": "Recreate containers",
-    "deleteDeployment": "Delete deployment",
+    "deleteDeployment": "Remove setup",
     "loadedWithErrors": "The module was loaded with errors.",
     "summary": {
-      "deployment": "Deployment",
+      "deployment": "Setup",
       "version": "Version",
       "repository": "Repository",
       "containers": "Containers"
@@ -161,7 +161,7 @@
       "configs": "Configuration",
       "containers": "Containers",
       "endpoints": "Endpoints",
-      "auxDeployments": "Auxiliary deployments"
+      "auxDeployments": "Extra containers"
     },
     "module": {
       "title": "Module",
@@ -176,14 +176,14 @@
     },
     "tags": "Tags",
     "deployment": {
-      "title": "Deployment",
-      "none": "This module has no deployment yet.",
-      "create": "Create deployment",
+      "title": "Setup",
+      "none": "This module is not set up yet.",
+      "create": "Set up module",
       "state": "State",
       "id": "ID",
-      "deployedVersion": "Deployed version",
-      "drift": "installed {{version}} — edit the deployment to apply",
-      "deployedFrom": "Deployed from",
+      "deployedVersion": "Running version",
+      "drift": "installed {{version}} — edit the setup to apply",
+      "deployedFrom": "Set up from",
       "created": "Created",
       "updated": "Updated"
     },
@@ -198,7 +198,7 @@
     "auxDeploymentsHint": "Extra containers this module spawned at runtime. Read-only — modules manage them themselves.",
     "containerMissing": "missing",
     "statuses": {
-      "notDeployed": "Not deployed",
+      "notDeployed": "Not set up",
       "stopped": "Stopped",
       "running": "Running",
       "unhealthy": "Unhealthy",
@@ -206,23 +206,23 @@
     },
     "errors": {
       "loadFailed": "Loading the module failed",
-      "startFailed": "Starting the deployment failed",
-      "stopFailed": "Stopping the deployment failed",
+      "startFailed": "Starting the module failed",
+      "stopFailed": "Stopping the module failed",
       "recreateFailed": "Recreating the containers failed",
-      "deleteFailed": "Deleting the deployment failed"
+      "deleteFailed": "Removing the setup failed"
     },
     "jobs": {
-      "recreating": "Deployment is recreating",
+      "recreating": "Containers are recreating",
       "recreated": "Containers recreated",
-      "deleting": "Deployment is being deleted",
-      "deleted": "Deployment deleted"
+      "deleting": "Setup is being removed",
+      "deleted": "Setup removed"
     },
-    "confirmDelete": "Delete the deployment of {{name}}? Data stored in volumes will be removed.",
+    "confirmDelete": "Remove the setup of {{name}}? Data stored in volumes will be removed.",
     "configs": {
       "title": "Configuration",
       "none": "This module declares no configuration values.",
-      "hintDeployed": "The module declares these values; the deployment answers some of them. Anything it does not answer keeps the module default.",
-      "hintNotDeployed": "The module declares these values. Deploying it is where they get answered; until then the module defaults apply.",
+      "hintDeployed": "The module declares these values; the setup answers some of them. Anything it does not answer keeps the module default.",
+      "hintNotDeployed": "The module declares these values. Setting it up is where they get answered; until then the module defaults apply.",
       "required": "Required",
       "columns": {
         "config": "Config",
@@ -267,11 +267,11 @@
   },
   "globalConfigs": {
     "title": "Global configs",
-    "description": "Values that several deployments can reference instead of each setting them separately.",
+    "description": "Values that several modules can reference instead of each setting them separately.",
     "addGlobalConfig": "Add global config",
     "empty": {
       "title": "No global configs defined",
-      "message": "A global config holds one value centrally. In a deployment form, switch a field to “Global config” to point at it instead of typing the value again."
+      "message": "A global config holds one value centrally. In a module's setup form, switch a field to “Global config” to point at it instead of typing the value again."
     },
     "columns": {
       "name": "Name",
@@ -286,7 +286,7 @@
       "editFailed": "Saving the global config failed",
       "deleteFailed": "Deleting the global config failed"
     },
-    "confirmDelete": "Delete global config '{{name}}'? Deployments referencing it will lose the value.",
+    "confirmDelete": "Delete global config '{{name}}'? Modules referencing it will lose the value.",
     "typeUnknown": "unknown",
     "typeList": "{{type}} list"
   },
@@ -308,7 +308,7 @@
     "change": "Change {{count}}",
     "remove": "Remove {{count}}",
     "blockHint": "including automatically resolved dependencies",
-    "removeHint": "A module can only be removed while it has no deployment. Delete its deployment on the Modules page first.",
+    "removeHint": "A module can only be removed while it is not set up. Remove its setup on the Modules page first.",
     "discardRequest": "Discard request",
     "keepForLater": "Keep for later",
     "applyChanges": "Apply changes"
@@ -319,7 +319,7 @@
     "name": "Name",
     "dataType": "Data type",
     "listOfValues": "List of values",
-    "editHint": "Deployments referencing this config use the value as declared by their module config — changing the data type can break them.",
+    "editHint": "Modules referencing this config use the value as declared by their module config — changing the data type can break them.",
     "values": "Values",
     "valuesHint": "One value per line",
     "valuesHintBool": "One value per line (true or false)",

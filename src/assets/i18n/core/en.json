@@ -100,12 +100,12 @@
   },
   "jobResultView": {
     "hints": {
-      "deploymentExists": "A module can only be removed while it has no deployment. Delete its deployment on the Modules page first.",
+      "deploymentExists": "A module can only be removed while it is not set up. Remove its setup on the Modules page first.",
       "notFound": "The item may have been changed or removed in the meantime. Reload the page and try again."
     }
   },
   "listEndpoints": {
-    "empty": "This deployment exposes no endpoints.",
+    "empty": "This module exposes no endpoints.",
     "generated": "Generated",
     "aliases": "Aliases",
     "url": "URL",

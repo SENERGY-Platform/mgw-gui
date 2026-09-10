@@ -145,7 +145,7 @@ describe('InfoComponent', () => {
   it('offers an endpoints tab', fakeAsync(() => {
     create();
 
-    expect(tabLabels()).toEqual(['Overview', 'Configuration', 'Containers', 'Endpoints', 'Auxiliary deployments']);
+    expect(tabLabels()).toEqual(['Overview', 'Configuration', 'Containers', 'Endpoints', 'Extra containers']);
     discardPeriodicTasks();
   }));
 

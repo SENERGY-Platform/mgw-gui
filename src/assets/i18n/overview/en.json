@@ -12,18 +12,18 @@
     "unhealthy": "Unhealthy",
     "stopped": "Stopped",
     "updates": "Updates",
-    "deployedOf": "of {{count}} deployments",
+    "deployedOf": "of {{count}} set up",
     "unknownState": "{{count}} in an unknown state",
-    "notDeployed": "{{count}} not deployed",
+    "notDeployed": "{{count}} not set up",
     "modulesInstalled": "{{count}} modules installed"
   },
   "attention": {
     "heading": "Needs attention",
     "openCount": "{{count}} open",
-    "empty": "Nothing to do — every deployment is healthy and up to date.",
-    "unhealthy": "The deployment is running but reports an unhealthy state.",
+    "empty": "Nothing to do — every module is healthy and up to date.",
+    "unhealthy": "The module is running but reports an unhealthy state.",
     "moduleError": "The module was loaded with errors.",
-    "updateAvailable": "Installed {{installed}}, deployed {{deployed}} — edit the deployment to apply the change.",
+    "updateAvailable": "Installed {{installed}}, set up from {{deployed}} — edit the setup to apply the change.",
     "updatesAvailableTitle": {
       "one": "{{count}} module update available",
       "other": "{{count}} module updates available"
