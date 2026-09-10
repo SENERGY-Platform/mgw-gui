@@ -151,14 +151,27 @@
 }
 
 .attention {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 11px 10px;
   margin: 0 -10px;
   border-radius: 10px;
-  border-top: 1px solid var(--mat-sys-outline-variant);
   color: inherit;
+}
+
+/* The separator is drawn rather than bordered: the radius above is there for
+   the hover background, and a border on one side only gets its corners drawn
+   with it, so each line ended in a hook curving down at both ends. */
+.attention::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--mat-sys-outline-variant);
 }
 
 .attention:hover {
