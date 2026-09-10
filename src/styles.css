@@ -231,6 +231,16 @@ mat-icon.mat-icon {
   gap: 4px;
 }
 
+/* The page header projects its actions into a plain div, so buttons of
+   different kinds line up on the text baseline: an icon-only button sits
+   higher than one carrying a label. Every page that has more than one action
+   needs this, so it lives here rather than in each of them. */
+[pageActions] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .mgw-cell-stack {
   display: flex;
   flex-direction: column;
