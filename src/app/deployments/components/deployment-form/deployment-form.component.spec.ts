@@ -664,8 +664,9 @@ describe('DeploymentFormComponent', () => {
     expect(scrollSpy.mock.contexts[0]).toBe(resourceWrapper);
   });
 
-  // The first file's content is left empty on purpose: a blank field that is
-  // allowed to be blank must not outrank the path the message is about.
+  // The first file's content is left blank on purpose: the error sits on the
+  // file, so a field that is allowed to be empty must never stand in for the
+  // path that is missing.
   function groupWithOneMissingPath(): void {
     create(makeModule({fileGroupInputs: {extra: moduleInput('Extra files')}}));
     const row = component.fileGroupRows[0];
