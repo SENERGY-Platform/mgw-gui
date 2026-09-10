@@ -273,7 +273,14 @@ export function parseModuleConfigValue(config: ModuleConfigValue, raw: string): 
 
 // base64 helpers for file contents (UTF-8 safe)
 export function encodeFileData(text: string): string {
-  return btoa(String.fromCharCode(...new TextEncoder().encode(text)));
+  const bytes = new TextEncoder().encode(text);
+  // in chunks: spreading the whole array into String.fromCharCode overflows
+  // the call stack somewhere above 100 kB of content
+  let binary = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(binary);
 }
 
 export function decodeFileData(data: string): string {

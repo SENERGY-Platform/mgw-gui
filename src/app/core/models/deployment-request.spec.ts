@@ -107,6 +107,14 @@ describe('file data encoding', () => {
   it('decodes empty data to an empty string', () => {
     expect(decodeFileData('')).toBe('');
   });
+
+  // SNRGY-4701: spreading the whole byte array into String.fromCharCode overflowed
+  // the call stack above ~130 kB; the repeated multi-byte character also puts some
+  // of its UTF-8 sequences across the 0x8000-byte chunk boundary.
+  it('round-trips a large multi-byte content across chunk boundaries', () => {
+    const text = '日本語🚀'.repeat(10000);
+    expect(decodeFileData(encodeFileData(text))).toBe(text);
+  });
 });
 
 describe('moduleInputGroupLabel', () => {
