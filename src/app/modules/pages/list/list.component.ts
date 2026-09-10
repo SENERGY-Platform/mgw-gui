@@ -220,6 +220,20 @@ export class ListComponent implements OnInit, OnDestroy {
   // current criteria are encoded into it; the predicate ignores the value.
   applyFilters() {
     this.dataSource.filter = this.statusFilter + '|' + this.search.trim().toLowerCase();
+    this.pruneSelection();
+  }
+
+  // A bulk action reads the selection rather than the table, so a row the
+  // filter just hid would still be acted on - and the master checkbox is the
+  // quickest way into that state.
+  private pruneSelection(): void {
+    const hidden = this.selection.selected.filter((id) => {
+      const module = this.modulesById[id];
+      return !module || !this.matchesFilters(module);
+    });
+    if (hidden.length > 0) {
+      this.selection.deselect(...hidden);
+    }
   }
 
   setStatusFilter(key: StatusFilter['key']) {
