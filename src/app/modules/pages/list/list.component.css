@@ -54,9 +54,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  /* module IDs are repository URLs and can be long; the full value is on the
-     detail page, the row only needs enough to tell two modules apart */
-  max-width: 46ch;
+  /* module IDs are repository URLs and can be long, so they stay on one line
+     and end in an ellipsis - but only once the column really runs out. A cap
+     in characters cut ids off with a third of the column still empty. */
+  max-width: 100%;
 }
 
 .warn-btn {
