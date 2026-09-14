@@ -8,12 +8,12 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]-beta[0-9]+'
 
 jobs:
-  build:
+  # gate: test — a tag must never publish an image from an untested state
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
-      # gate: test — a tag must never publish an image from an untested state
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -27,8 +27,28 @@ jobs:
       - name: Test
         run: npm test -- --watch=false --browsers=ChromiumHeadless
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
+  # arm64 builds run on a native runner because QEMU-emulated node:24-alpine
+  # crashes on npm ci with "illegal instruction" — V8 uses CPU features
+  # qemu-user does not faithfully emulate.
+  build:
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-latest
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Prepare platform pair
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> "$GITHUB_ENV"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
       - name: Login to GitHub Container Registry
@@ -37,16 +57,61 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
-      - name: Build and push
+
+      - name: Build and push by digest
+        id: build
         uses: docker/build-push-action@v7
         with:
           context: .
           file: ./build/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
+          platforms: ${{ matrix.platform }}
           target: serve_prod
           build-args: |
             VERSION=${{ github.ref_name }}
-          tags: |
-            ghcr.io/senergy-platform/mgw-gui:latest
-            ghcr.io/senergy-platform/mgw-gui:${{ github.ref_name }}
+          outputs: type=image,name=ghcr.io/senergy-platform/mgw-gui,push-by-digest=true,name-canonical=true,push=true
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v5
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create \
+            -t ghcr.io/senergy-platform/mgw-gui:latest \
+            -t ghcr.io/senergy-platform/mgw-gui:${{ github.ref_name }} \
+            $(printf 'ghcr.io/senergy-platform/mgw-gui@sha256:%s ' *)
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ghcr.io/senergy-platform/mgw-gui:${{ github.ref_name }}
