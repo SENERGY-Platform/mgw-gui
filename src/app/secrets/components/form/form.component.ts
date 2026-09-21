@@ -15,7 +15,7 @@
  */
 
 import {Component, Inject, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
 import {SecretManagerServiceService} from 'src/app/core/services/secret-manager/secret-manager-service.service';
 import {ErrorService} from 'src/app/core/services/util/error.service';
@@ -28,6 +28,7 @@ import {MatOption} from '@angular/material/core';
 import {MatInput} from '@angular/material/input';
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
@@ -45,6 +46,7 @@ import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
     MatInput,
     CdkTextareaAutosize,
     MatButton,
+    MatIcon,
     RouterLink,
     PageHeaderComponent,
     TranslocoPipe,
@@ -116,19 +118,24 @@ export class FormComponent implements OnChanges, OnInit {
       secretType = secret.type;
     }
 
+    // The secret manager never hands a stored value back, so the value fields
+    // start empty in both modes. What they hold is what gets stored, so an
+    // empty one would create or leave behind a secret without a value.
+    const valueValidators = [Validators.required];
+
     if (this.selectedSecretType == this.SecretTypesConst.BasicAuth) {
       const username = '';
       const password = '';
 
       this.form = this.fb.group({
         name: this.fb.control(secretName),
-        username: this.fb.control(username),
-        password: this.fb.control(password),
+        username: this.fb.control(username, valueValidators),
+        password: this.fb.control(password, valueValidators),
         type: this.fb.control(secretType),
       });
     } else {
       this.form = this.fb.group({
-        value: this.fb.control(secretValue),
+        value: this.fb.control(secretValue, valueValidators),
         name: this.fb.control(secretName),
         type: this.fb.control(secretType),
       });
