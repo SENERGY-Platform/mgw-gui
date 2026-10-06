@@ -80,3 +80,36 @@ Two guards on that redirect:
 `return_to` is `window.location.pathname + search`, the browser's own path. The
 router's URL starts below the base href the gateway serves the application
 under, so using it would drop that prefix in production.
+
+## Single sign-on goes through Kratos flows, never their URLs
+
+The login page and the account page drive Kratos' self-service flows over the
+JSON API (`core/services/auth/kratos-flow.ts` holds the shared helpers). Four
+rules carry the design:
+
+- **`ui.action` and Kratos' own redirect targets are never used.** They carry
+  Kratos' internal base URL. Request URLs are built from `authApiUrl`, which
+  the gateway maps onto `/self-service/...`.
+- **The CSRF token is read by name.** With a provider configured the `oidc`
+  node comes first, so the former `nodes[0]` broke the password login the
+  moment single sign-on was switched on.
+- **The provider id comes from the flow.** It is derived from the issuer by
+  the core-manager (`sso-` plus 12 hex digits) and changes with it; the first
+  `oidc` node whose value starts with `sso` is the gateway's provider.
+- **A 422 `redirect_browser_to` is followed only to the current origin.** The
+  provider's `redirect_uri` is bound to the configured external URL and the
+  CSRF cookie to the origin; under another address the page links to the same
+  page there instead of following.
+
+The login page loads its flow once on open and reuses it for the submit, both
+password and SSO. Two flow requests without a CSRF cookie in flight at the same
+time each set a cookie, and only one matches the token that gets submitted.
+
+`return_to` stays on the application side. Kratos resolves even a relative one
+against its internal base URL and then refuses the whole flow, password login
+included; after a single sign-on the user therefore lands on the default page.
+
+An unlinked provider account comes back as a login flow with the generic error
+4000001 and the reason "Registration is not allowed because it was disabled.".
+The login page recognises it by `context.reason` and says that the account is
+not linked instead.
