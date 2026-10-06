@@ -67,6 +67,10 @@
   <mat-menu #userMenu="matMenu" [overlapTrigger]="false">
     <div class="menu-caption">{{ 'core.shell.signedIn' | transloco }}</div>
     <mat-divider></mat-divider>
+    <a mat-menu-item routerLink="/account">
+      <mat-icon>account_circle</mat-icon>
+      <span>{{ 'core.shell.accountSettings' | transloco }}</span>
+    </a>
     <button (click)="openTelemetryConsent()" mat-menu-item>
       <mat-icon>bug_report</mat-icon>
       <span>{{ 'core.shell.errorReporting' | transloco }}</span>

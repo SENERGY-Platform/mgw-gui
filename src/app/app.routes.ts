@@ -51,6 +51,7 @@ export const routes: Routes = [
       {path: '', loadChildren: () => import('./modules/modules.routes').then((m) => m.routes)},
       {path: '', loadChildren: () => import('./secrets/secrets.routes').then((m) => m.routes)},
       {path: '', loadChildren: () => import('./system/system.routes').then((m) => m.routes)},
+      {path: '', loadChildren: () => import('./auth/account/account.routes').then((m) => m.routes)},
     ],
   },
 ];

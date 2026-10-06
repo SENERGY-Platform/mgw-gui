@@ -19,6 +19,7 @@ import {Injectable} from '@angular/core';
 import {catchError, map, Observable, of, shareReplay} from 'rxjs';
 import {environment} from 'src/environments/environment';
 import {InitLogoutResponse} from './auth.models';
+import {KratosFlow} from './kratos-flow';
 import {SKIP_AUTH_REDIRECT} from './interceptor/auth.interceptor';
 
 @Injectable({
@@ -29,6 +30,7 @@ export class AuthService {
   loginPath = '/login';
   logoutPath = '/logout';
   registerPath = '/register';
+  settingsPath = '/settings';
 
   // The gateway keeps its session check to itself: /validate-session is an
   // internal nginx location and /core/auth exposes only the login and logout
@@ -62,9 +64,21 @@ export class AuthService {
     );
   }
 
+  // Every request below asks for JSON: without it Kratos answers a browser
+  // flow with a redirect to its own UI instead of the flow. Flow ids go
+  // through encodeURIComponent because one of them arrives in the page URL.
+  private readonly jsonHeaders = new HttpHeaders().set('Accept', 'application/json');
+
+  // No return_to: the identity service resolves even a relative one against
+  // its internal base URL and refuses the whole flow, password login included.
   initFlow() {
     const url = this.basePath + this.loginPath + '/browser?refresh=true';
-    return this.httpClient.get(url, {withCredentials: true});
+    return this.httpClient.get<KratosFlow>(url, {headers: this.jsonHeaders, withCredentials: true});
+  }
+
+  getLoginFlow(flowID: string) {
+    const url = this.basePath + this.loginPath + '/flows?id=' + encodeURIComponent(flowID);
+    return this.httpClient.get<KratosFlow>(url, {headers: this.jsonHeaders, withCredentials: true});
   }
 
   login(flowID: string, username: string, password: string, csrf: string) {
@@ -78,6 +92,39 @@ export class AuthService {
     const headers = new HttpHeaders().set('Accept', 'application/json');
     // .set("X-CSRF-Token", csrf) dont use -> or set allowed headers in kratos cors setting to this
     return this.httpClient.post(url, payload, {headers: headers, withCredentials: true});
+  }
+
+  // Kratos answers with 422 and the identity provider's address; the caller
+  // follows it. The provider id is the one the flow offers.
+  loginWithOidc(flowID: string, csrf: string, provider: string) {
+    const payload = {method: 'oidc', provider: provider, csrf_token: csrf};
+    const url = this.basePath + this.loginPath + '?flow=' + encodeURIComponent(flowID);
+    return this.httpClient.post<KratosFlow>(url, payload, {headers: this.jsonHeaders, withCredentials: true});
+  }
+
+  initSettingsFlow() {
+    const url = this.basePath + this.settingsPath + '/browser';
+    return this.httpClient.get<KratosFlow>(url, {headers: this.jsonHeaders, withCredentials: true});
+  }
+
+  getSettingsFlow(flowID: string) {
+    const url = this.basePath + this.settingsPath + '/flows?id=' + encodeURIComponent(flowID);
+    return this.httpClient.get<KratosFlow>(url, {headers: this.jsonHeaders, withCredentials: true});
+  }
+
+  // Like the OIDC login, linking ends in a 422 pointing at the provider.
+  linkOidc(flowID: string, csrf: string, provider: string) {
+    return this.submitSettings(flowID, {method: 'oidc', link: provider, csrf_token: csrf});
+  }
+
+  // Answered with the updated flow.
+  unlinkOidc(flowID: string, csrf: string, provider: string) {
+    return this.submitSettings(flowID, {method: 'oidc', unlink: provider, csrf_token: csrf});
+  }
+
+  private submitSettings(flowID: string, payload: object) {
+    const url = this.basePath + this.settingsPath + '?flow=' + encodeURIComponent(flowID);
+    return this.httpClient.post<KratosFlow>(url, payload, {headers: this.jsonHeaders, withCredentials: true});
   }
 
   initLogout() {

@@ -14,6 +14,31 @@
 
     <h1>{{ 'auth.login.title' | transloco }}</h1>
 
+    @if (refresh) {
+      <div class="mgw-notice warn">
+        <mat-icon>info</mat-icon>
+        <span>{{ 'auth.login.refreshNotice' | transloco }}</span>
+      </div>
+    }
+
+    @for (message of messages; track $index) {
+      <div [class.danger]="message.type === 'error'" class="mgw-notice flow-message" role="alert">
+        <mat-icon>{{ message.type === 'error' ? 'error' : 'info' }}</mat-icon>
+        <span>{{ isUnlinkedAccount(message) ? ('auth.login.notLinked' | transloco) : message.text }}</span>
+      </div>
+    }
+
+    @if (otherOriginUrl) {
+      <div class="mgw-notice warn other-origin" role="alert">
+        <mat-icon>warning</mat-icon>
+        <span>{{ 'auth.login.otherOrigin' | transloco }}</span>
+        <a [href]="otherOriginUrl" mat-button>
+          <mat-icon>open_in_new</mat-icon>
+          {{ 'auth.login.otherOriginLink' | transloco }}
+        </a>
+      </div>
+    }
+
     <div (keydown.enter)="login()" [formGroup]="form" class="form">
       <mat-form-field appearance="outline">
         <mat-label>{{ 'auth.login.username' | transloco }}</mat-label>
@@ -29,5 +54,15 @@
         {{ 'auth.login.submit' | transloco }}
       </button>
     </div>
+
+    @if (ssoAvailable) {
+      <div class="divider">
+        <span>{{ 'auth.login.or' | transloco }}</span>
+      </div>
+      <button (click)="loginWithSso()" class="sso" mat-stroked-button type="button">
+        <mat-icon>key</mat-icon>
+        {{ 'auth.login.sso' | transloco }}
+      </button>
+    }
   </div>
 </div>

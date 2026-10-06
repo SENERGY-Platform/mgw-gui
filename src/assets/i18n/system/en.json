@@ -1,7 +1,7 @@
 {
   "configuration": {
     "title": "Configuration",
-    "description": "Host-level settings of the gateway: which host applications modules may reach, and which network interfaces and ranges are off limits."
+    "description": "Host-level settings of the gateway: which host applications modules may reach, which network interfaces and ranges are off limits, and how users can sign in."
   },
   "hostApplications": {
     "title": "Host applications",
@@ -130,5 +130,33 @@
     "autoRefresh": "Auto refresh",
     "lines": "Lines",
     "loading": "Loading log…"
+  },
+  "singleSignOn": {
+    "title": "Single sign-on",
+    "description": "Let users sign in through an OpenID Connect provider. Saving restarts the identity service.",
+    "loadFailed": "The single sign-on settings could not be loaded.",
+    "enabled": "Enable single sign-on",
+    "issuerUrl": "Issuer URL",
+    "issuerUrlHint": "Exactly as the provider states it in its discovery document, trailing slash included.",
+    "clientId": "Client ID",
+    "clientSecret": "Client secret",
+    "clientSecretHint": "No secret is stored yet. It is required while single sign-on is enabled.",
+    "clientSecretNewProvider": "A new identity provider needs its client secret.",
+    "clientSecretStored": "A secret is stored and never shown again. Leave the field empty to keep it, or enter a new one to replace it.",
+    "scope": "Scope",
+    "scopeHint": "Separated by spaces, for example: openid email profile",
+    "scopeOpenid": "Must include openid while single sign-on is enabled.",
+    "externalUrl": "External URL",
+    "externalUrlHint": "The address users open the gateway under, without a path. The provider sends them back there after signing in.",
+    "callbackUrl": "Callback URL",
+    "callbackUrlHint": "Register this address as the redirect URI of the client at the provider.",
+    "callbackUrlAfterSave": "The callback URL depends on the issuer and is shown here once the settings are saved.",
+    "copyCallbackUrl": "Copy callback URL",
+    "required": "Required while single sign-on is enabled.",
+    "invalidUrl": "Enter an http or https URL.",
+    "invalidOrigin": "Enter an http or https address without a path, for example https://gateway.example.org.",
+    "save": "Save",
+    "saveJob": "Saving the single sign-on settings",
+    "saved": "Single sign-on settings saved."
   }
 }

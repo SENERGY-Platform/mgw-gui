@@ -71,10 +71,13 @@ export class ApiService {
     return this.httpClient.post<T>(this.baseUrl + path, payload, options);
   }
 
-  public put(path: string, payload: any): Observable<unknown> {
+  public put(path: string, payload: any, responseType?: string): Observable<unknown> {
     const options: any = {
       withCredentials: true,
     };
+    if (responseType) {
+      options['responseType'] = responseType;
+    }
     return this.httpClient.put(this.baseUrl + path, payload, options);
   }
 

@@ -23,6 +23,10 @@ import {InfoResponse} from '../../models/info';
 import {ApiService} from '../api/api.service';
 import {Log} from '../../../system/models/logs';
 import {HttpParams} from '@angular/common/http';
+import {OidcSettings, OidcSettingsRequest} from 'src/app/system/models/oidc';
+
+// The single sign-on setting on the core manager's restricted router.
+export const OIDC_SETTINGS_PATH = '/oidc';
 
 @Injectable({
   providedIn: 'root',
@@ -88,6 +92,15 @@ export class CoreManagerService {
   getLogs(): Observable<Log[]> {
     const url = this.coreManagerPath + '/logs';
     return this.http.get(url) as Observable<Log[]>;
+  }
+
+  getOidcSettings(): Observable<OidcSettings> {
+    return this.http.get(this.coreManagerPath + OIDC_SETTINGS_PATH) as Observable<OidcSettings>;
+  }
+
+  // Answers with the id of the job that restarts the identity service.
+  updateOidcSettings(settings: OidcSettingsRequest): Observable<string> {
+    return this.http.put(this.coreManagerPath + OIDC_SETTINGS_PATH, settings, 'text') as Observable<string>;
   }
 
   getLog(logID: string, max_lines: number): Observable<string> {

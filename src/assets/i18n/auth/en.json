@@ -5,6 +5,27 @@
     "title": "Sign in",
     "username": "Username",
     "password": "Password",
-    "submit": "Sign in"
+    "submit": "Sign in",
+    "or": "or",
+    "sso": "Sign in with single sign-on",
+    "refreshNotice": "This change needs a recent sign-in. Sign in again to continue.",
+    "notLinked": "This account at the identity provider is not linked to a gateway account. Sign in with your password and link it under Account settings.",
+    "otherOrigin": "Single sign-on is set up for another address of this gateway. Sign in there instead.",
+    "otherOriginLink": "Open sign-in page"
+  },
+  "account": {
+    "title": "Account",
+    "description": "Settings of the account you are signed in with.",
+    "otherOrigin": "Single sign-on is set up for another address of this gateway. Open this page there to continue.",
+    "otherOriginLink": "Open account page",
+    "sso": {
+      "title": "Single sign-on",
+      "description": "Link this account to your account at the identity provider to sign in without a password.",
+      "linked": "Linked",
+      "notLinked": "Not linked",
+      "link": "Link",
+      "unlink": "Unlink",
+      "unavailable": "Single sign-on is not set up on this gateway."
+    }
   }
 }

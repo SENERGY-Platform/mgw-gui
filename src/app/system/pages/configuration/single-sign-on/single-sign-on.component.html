@@ -1,0 +1,148 @@
+<section class="config-group">
+  <header class="group-head">
+    <div>
+      <h2>{{ 'system.singleSignOn.title' | transloco }}</h2>
+      <p>{{ 'system.singleSignOn.description' | transloco }}</p>
+    </div>
+  </header>
+
+  @if (loadFailed) {
+    <p class="none">{{ 'system.singleSignOn.loadFailed' | transloco }}</p>
+  } @else if (loaded) {
+    <div [formGroup]="form" class="mgw-card card">
+      <div class="field">
+        <mat-checkbox formControlName="enabled">{{ 'system.singleSignOn.enabled' | transloco }}</mat-checkbox>
+      </div>
+
+      <div class="field">
+        <label for="sso-issuer">{{ 'system.singleSignOn.issuerUrl' | transloco }}</label>
+        <p class="desc">{{ 'system.singleSignOn.issuerUrlHint' | transloco }}</p>
+        <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+          <input autocomplete="off" formControlName="issuerUrl" id="sso-issuer" matInput type="url" />
+        </mat-form-field>
+        @if (form.controls.issuerUrl.touched && form.controls.issuerUrl.errors) {
+          <p class="field-error">
+            <mat-icon>error</mat-icon>
+            {{
+              (form.controls.issuerUrl.hasError('required')
+                ? 'system.singleSignOn.required'
+                : 'system.singleSignOn.invalidUrl'
+              ) | transloco
+            }}
+          </p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="sso-client-id">{{ 'system.singleSignOn.clientId' | transloco }}</label>
+        <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+          <input autocomplete="off" formControlName="clientId" id="sso-client-id" matInput />
+        </mat-form-field>
+        @if (form.controls.clientId.touched && form.controls.clientId.hasError('required')) {
+          <p class="field-error">
+            <mat-icon>error</mat-icon>
+            {{ 'system.singleSignOn.required' | transloco }}
+          </p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="sso-client-secret">{{ 'system.singleSignOn.clientSecret' | transloco }}</label>
+        @let requirement = secretRequirement;
+        <p class="desc secret-hint">
+          {{
+            (requirement === 'new-provider'
+              ? 'system.singleSignOn.clientSecretNewProvider'
+              : hasSecret
+                ? 'system.singleSignOn.clientSecretStored'
+                : 'system.singleSignOn.clientSecretHint'
+            ) | transloco
+          }}
+        </p>
+        <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+          <input
+            autocomplete="new-password"
+            formControlName="clientSecret"
+            id="sso-client-secret"
+            matInput
+            type="password"
+          />
+        </mat-form-field>
+        @if (form.controls.clientSecret.touched && form.controls.clientSecret.hasError('required')) {
+          <p class="field-error">
+            <mat-icon>error</mat-icon>
+            {{
+              (requirement === 'new-provider'
+                ? 'system.singleSignOn.clientSecretNewProvider'
+                : 'system.singleSignOn.required'
+              ) | transloco
+            }}
+          </p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="sso-scope">{{ 'system.singleSignOn.scope' | transloco }}</label>
+        <p class="desc">{{ 'system.singleSignOn.scopeHint' | transloco }}</p>
+        <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+          <input autocomplete="off" formControlName="scope" id="sso-scope" matInput />
+        </mat-form-field>
+        @if (form.controls.scope.touched && form.controls.scope.hasError('openid')) {
+          <p class="field-error">
+            <mat-icon>error</mat-icon>
+            {{ 'system.singleSignOn.scopeOpenid' | transloco }}
+          </p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="sso-external-url">{{ 'system.singleSignOn.externalUrl' | transloco }}</label>
+        <p class="desc">{{ 'system.singleSignOn.externalUrlHint' | transloco }}</p>
+        <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+          <input autocomplete="off" formControlName="externalUrl" id="sso-external-url" matInput type="url" />
+        </mat-form-field>
+        @if (form.controls.externalUrl.touched && form.controls.externalUrl.errors) {
+          <p class="field-error">
+            <mat-icon>error</mat-icon>
+            {{
+              (form.controls.externalUrl.hasError('required')
+                ? 'system.singleSignOn.required'
+                : 'system.singleSignOn.invalidOrigin'
+              ) | transloco
+            }}
+          </p>
+        }
+      </div>
+
+      @if (callback; as info) {
+        <div class="field">
+          <span class="label">{{ 'system.singleSignOn.callbackUrl' | transloco }}</span>
+          @if (info.kind === 'known') {
+            <p class="desc">{{ 'system.singleSignOn.callbackUrlHint' | transloco }}</p>
+            <div class="callback">
+              <code class="mgw-mono callback-url">{{ info.url }}</code>
+              <button
+                (click)="copyCallback()"
+                [attr.aria-label]="'system.singleSignOn.copyCallbackUrl' | transloco"
+                [matTooltip]="'system.singleSignOn.copyCallbackUrl' | transloco"
+                mat-icon-button
+                type="button"
+              >
+                <mat-icon>content_copy</mat-icon>
+              </button>
+            </div>
+          } @else {
+            <p class="desc callback-after-save">{{ 'system.singleSignOn.callbackUrlAfterSave' | transloco }}</p>
+          }
+        </div>
+      }
+
+      <div class="form-actions">
+        <button (click)="save()" [disabled]="form.invalid || form.pristine || saving" mat-flat-button type="button">
+          <mat-icon>save</mat-icon>
+          {{ 'system.singleSignOn.save' | transloco }}
+        </button>
+      </div>
+    </div>
+  }
+</section>

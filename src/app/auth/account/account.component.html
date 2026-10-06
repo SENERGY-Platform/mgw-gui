@@ -1,0 +1,59 @@
+<div class="mgw-page mgw-page-narrow">
+  <spinner [show]="!ready || busy" class="global-centered-spinner"></spinner>
+
+  <mgw-page-header
+    [description]="'auth.account.description' | transloco"
+    [title]="'auth.account.title' | transloco"
+  ></mgw-page-header>
+
+  @for (message of messages; track $index) {
+    <div [class.danger]="message.type === 'error'" class="mgw-notice flow-message" role="alert">
+      <mat-icon>{{ message.type === 'error' ? 'error' : 'info' }}</mat-icon>
+      <span>{{ message.text }}</span>
+    </div>
+  }
+
+  @if (otherOriginUrl) {
+    <div class="mgw-notice warn other-origin" role="alert">
+      <mat-icon>warning</mat-icon>
+      <span>{{ 'auth.account.otherOrigin' | transloco }}</span>
+      <a [href]="otherOriginUrl" mat-button>
+        <mat-icon>open_in_new</mat-icon>
+        {{ 'auth.account.otherOriginLink' | transloco }}
+      </a>
+    </div>
+  }
+
+  @if (ready) {
+    <section class="mgw-card card">
+      <header class="section-head">
+        <div>
+          <h2>{{ 'auth.account.sso.title' | transloco }}</h2>
+          <p>{{ 'auth.account.sso.description' | transloco }}</p>
+        </div>
+        @if (linked) {
+          <mgw-status-pill [label]="'auth.account.sso.linked' | transloco" tone="ok"></mgw-status-pill>
+        } @else if (linkable) {
+          <mgw-status-pill [label]="'auth.account.sso.notLinked' | transloco" tone="idle"></mgw-status-pill>
+        }
+      </header>
+
+      @if (linked) {
+        <div class="actions">
+          <button (click)="unlink()" [disabled]="busy" class="mgw-danger unlink" mat-button type="button">
+            {{ 'auth.account.sso.unlink' | transloco }}
+          </button>
+        </div>
+      } @else if (linkable) {
+        <div class="actions">
+          <button (click)="link()" [disabled]="busy" class="link" mat-flat-button type="button">
+            <mat-icon>add_link</mat-icon>
+            {{ 'auth.account.sso.link' | transloco }}
+          </button>
+        </div>
+      } @else {
+        <p class="none">{{ 'auth.account.sso.unavailable' | transloco }}</p>
+      }
+    </section>
+  }
+</div>

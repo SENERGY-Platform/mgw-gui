@@ -20,6 +20,7 @@ import {HostApplicationsComponent} from './host-applications/host-applications.c
 import {HostNetItfBlacklistComponent} from './host-net-itf-blacklist/host-net-itf-blacklist.component';
 import {HostNetRngBlacklistComponent} from './host-net-rng-blacklist/host-net-rng-blacklist.component';
 import {PageHeaderComponent} from '../../../core/components/page-header/page-header.component';
+import {SingleSignOnComponent} from './single-sign-on/single-sign-on.component';
 
 @Component({
   selector: 'app-configuration',
@@ -28,6 +29,7 @@ import {PageHeaderComponent} from '../../../core/components/page-header/page-hea
     HostNetItfBlacklistComponent,
     HostNetRngBlacklistComponent,
     PageHeaderComponent,
+    SingleSignOnComponent,
     TranslocoPipe,
   ],
   templateUrl: './configuration.component.html',
