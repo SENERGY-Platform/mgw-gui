@@ -27,6 +27,13 @@ import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 
 import {PageHeaderComponent} from 'src/app/core/components/page-header/page-header.component';
 import {LogViewerComponent} from 'src/app/core/components/log-viewer/log-viewer.component';
+import {
+  clampLogLines,
+  DEFAULT_LOG_LINES,
+  LOG_LINES_DEBOUNCE_MS,
+  MAX_LOG_LINES,
+} from 'src/app/core/components/log-viewer/log-lines';
+import {debounceTime, Subject, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-logs',
@@ -55,7 +62,12 @@ export class LogsComponent implements OnDestroy {
   ready = false;
   init = true;
   interval: any;
-  maxLines: any = 100;
+  /** What the line count field shows; may be empty or out of range while typing. */
+  maxLines: number | null = DEFAULT_LOG_LINES;
+  readonly maxLogLines = MAX_LOG_LINES;
+  private lines = DEFAULT_LOG_LINES;
+  private maxLinesInput = new Subject<number | null>();
+  private maxLinesSubscription: Subscription;
   logs = '';
   autoRefreshEnabled = true;
 
@@ -64,6 +76,9 @@ export class LogsComponent implements OnDestroy {
     private errorService: ErrorService,
     private route: ActivatedRoute,
   ) {
+    this.maxLinesSubscription = this.maxLinesInput
+      .pipe(debounceTime(LOG_LINES_DEBOUNCE_MS))
+      .subscribe((value) => this.applyMaxLines(value));
     this.route.params.subscribe((params) => {
       this.containerID = params['containerId'];
       this.setBackTarget(params['id']);
@@ -89,7 +104,7 @@ export class LogsComponent implements OnDestroy {
   }
 
   getLogs() {
-    this.containerService.getContainerLogs(this.containerID, this.maxLines).subscribe({
+    this.containerService.getContainerLogs(this.containerID, this.lines).subscribe({
       next: (logs) => {
         this.logs = logs;
         this.ready = true;
@@ -103,6 +118,7 @@ export class LogsComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     clearTimeout(this.interval);
+    this.maxLinesSubscription.unsubscribe();
   }
 
   startAutoRefresh() {
@@ -119,8 +135,16 @@ export class LogsComponent implements OnDestroy {
     }
   }
 
-  maxLinesChanges(newValue: Event) {
-    this.maxLines = newValue;
-    this.getLogs();
+  maxLinesChanges(value: number | null) {
+    this.maxLinesInput.next(value);
+  }
+
+  private applyMaxLines(value: number | null) {
+    const lines = clampLogLines(value) ?? this.lines;
+    this.maxLines = lines;
+    if (lines !== this.lines) {
+      this.lines = lines;
+      this.getLogs();
+    }
   }
 }

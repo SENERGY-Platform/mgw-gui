@@ -11,7 +11,14 @@
       </mat-slide-toggle>
       <mat-form-field appearance="outline" class="lines" subscriptSizing="dynamic">
         <mat-label>{{ 'container.logs.lines' | transloco }}</mat-label>
-        <input (ngModelChange)="maxLinesChanges($event)" [(ngModel)]="maxLines" matInput type="number" />
+        <input
+          (ngModelChange)="maxLinesChanges($event)"
+          [(ngModel)]="maxLines"
+          [max]="maxLogLines"
+          matInput
+          min="1"
+          type="number"
+        />
       </mat-form-field>
     </div>
   </mgw-page-header>
