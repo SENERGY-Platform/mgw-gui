@@ -65,7 +65,18 @@
     <mat-icon>account_circle</mat-icon>
   </button>
   <mat-menu #userMenu="matMenu" [overlapTrigger]="false">
-    <div class="menu-caption">{{ 'core.shell.signedIn' | transloco }}</div>
+    @if (whoami(); as who) {
+      <div class="menu-caption menu-identity">
+        <span class="menu-username">{{ who.username }}</span>
+        @if (who.method) {
+          <span class="menu-method">{{
+            (who.method === 'oidc' ? 'core.shell.signedInSso' : 'core.shell.signedInPassword') | transloco
+          }}</span>
+        }
+      </div>
+    } @else {
+      <div class="menu-caption">{{ 'core.shell.signedIn' | transloco }}</div>
+    }
     <mat-divider></mat-divider>
     <a mat-menu-item routerLink="/account">
       <mat-icon>account_circle</mat-icon>

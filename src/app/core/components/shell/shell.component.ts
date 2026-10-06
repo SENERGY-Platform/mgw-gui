@@ -27,7 +27,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Subscription, concatMap, filter} from 'rxjs';
 import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {environment} from 'src/environments/environment';
-import {AuthService} from '../../services/auth/auth.service';
+import {AuthService, Whoami} from '../../services/auth/auth.service';
 import {ErrorService} from '../../services/util/error.service';
 import {ThemeService} from '../../services/theme/theme.service';
 import {TelemetryConsentService} from '../../services/telemetry/telemetry-consent.service';
@@ -73,6 +73,8 @@ export class ShellComponent implements OnInit, OnDestroy {
   // desktop only: icon-width rail instead of the full drawer
   readonly collapsed = signal(false);
   readonly expandedSection = signal<string | null>(null);
+  /** Null until known and whenever the gateway cannot say; the menu then shows no identity. */
+  readonly whoami = signal<Whoami | null>(null);
 
   private subscriptions = new Subscription();
   // The constructor below predates the inject() convention; new dependencies
@@ -107,6 +109,8 @@ export class ShellComponent implements OnInit, OnDestroy {
         this.openTelemetryConsent();
       });
     }
+
+    this.subscriptions.add(this.authService.whoami().subscribe((who) => this.whoami.set(who)));
 
     this.subscriptions.add(
       this.breakpointObserver.observe(HANDSET).subscribe((state) => {

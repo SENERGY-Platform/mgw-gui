@@ -18,9 +18,10 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {ActivatedRoute} from '@angular/router';
-import {of, throwError} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import type {Mock} from 'vitest';
 import {AuthService} from 'src/app/core/services/auth/auth.service';
+import {CoreManagerService} from 'src/app/core/services/core-manager/core-manager.service';
 import {KratosFlow} from 'src/app/core/services/auth/kratos-flow';
 import {ErrorService} from 'src/app/core/services/util/error.service';
 import {environment} from 'src/environments/environment';
@@ -43,12 +44,15 @@ function settingsFlow(oidc: 'link' | 'unlink' | null, message?: string): KratosF
 describe('AccountComponent', () => {
   let fixture: ComponentFixture<AccountComponent>;
   let component: AccountComponent;
-  let auth: {initSettingsFlow: Mock; getSettingsFlow: Mock; linkOidc: Mock; unlinkOidc: Mock};
+  let auth: {initSettingsFlow: Mock; getSettingsFlow: Mock; linkOidc: Mock; unlinkOidc: Mock; whoami: Mock};
+  let coreManager: {getOidcSettings: Mock};
   let errorService: {handleError: Mock};
   let leaveTo: Mock;
 
-  function render(initial: KratosFlow, params: Record<string, string> = {}) {
+  function render(initial: KratosFlow, params: Record<string, string> = {}, oidc: Observable<unknown> = of({})) {
+    coreManager = {getOidcSettings: vi.fn(() => oidc)};
     auth = {
+      whoami: vi.fn(() => of({username: 'alice', method: 'password'})),
       initSettingsFlow: vi.fn(() => of(initial)),
       getSettingsFlow: vi.fn(() => of(settingsFlow('unlink', 'Your changes have been saved!'))),
       linkOidc: vi.fn(),
@@ -61,6 +65,7 @@ describe('AccountComponent', () => {
         provideNoopAnimations(),
         {provide: AuthService, useValue: auth},
         {provide: ErrorService, useValue: errorService},
+        {provide: CoreManagerService, useValue: coreManager},
         {provide: ActivatedRoute, useValue: {snapshot: {queryParamMap: {get: (key: string) => params[key] ?? null}}}},
       ],
     });
@@ -89,6 +94,30 @@ describe('AccountComponent', () => {
     expect(el().textContent).toContain('Linked');
     expect(el().querySelector('button.unlink')).not.toBeNull();
     expect(el().querySelector('button.link')).toBeNull();
+  });
+
+  it('shows who is signed in and how', () => {
+    render(settingsFlow('link'));
+
+    expect(el().querySelector('.identity-name')?.textContent).toContain('alice');
+    expect(el().querySelector('.identity')?.textContent).toContain('Signed in with password');
+  });
+
+  it('shows the host of the identity provider when linked', () => {
+    render(settingsFlow('unlink'), {}, of({enabled: true, issuer_url: 'https://idp.example.com/realms/main'}));
+
+    expect(el().querySelector('.linked-with')?.textContent).toContain('Linked with idp.example.com');
+  });
+
+  it('shows plain Linked when the provider setting cannot be read', () => {
+    render(
+      settingsFlow('unlink'),
+      {},
+      throwError(() => new HttpErrorResponse({status: 500})),
+    );
+
+    expect(el().querySelector('.linked-with')).toBeNull();
+    expect(el().textContent).toContain('Linked');
   });
 
   it('unlinks the gateway provider named by the flow, not another one', () => {

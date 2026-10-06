@@ -240,3 +240,16 @@
 .content {
   background: var(--mat-sys-surface-container-low);
 }
+
+.menu-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.menu-username {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+  overflow-wrap: anywhere;
+}

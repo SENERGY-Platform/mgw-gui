@@ -20,7 +20,8 @@ import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {TranslocoPipe, provideTranslocoScope} from '@jsverse/transloco';
 import {Observable} from 'rxjs';
-import {AuthService} from 'src/app/core/services/auth/auth.service';
+import {AuthService, Whoami} from 'src/app/core/services/auth/auth.service';
+import {CoreManagerService} from 'src/app/core/services/core-manager/core-manager.service';
 import {
   browserRedirect,
   csrfToken,
@@ -53,7 +54,11 @@ export class AccountComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
   private readonly errorService = inject(ErrorService);
+  private readonly coreManager = inject(CoreManagerService);
 
+  whoami: Whoami | null = null;
+  /** Hostname of the configured identity provider; empty when it cannot be told. */
+  providerHost = '';
   flow: KratosFlow | null = null;
   ready = false;
   busy = false;
@@ -69,6 +74,12 @@ export class AccountComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.authService.whoami().subscribe((who) => (this.whoami = who));
+    // Decoration only: without the host the card says plain "Linked".
+    this.coreManager.getOidcSettings().subscribe({
+      next: (settings) => (this.providerHost = hostOf(settings?.issuer_url)),
+      error: () => (this.providerHost = ''),
+    });
     const flowID = this.route.snapshot.queryParamMap.get('flow');
     if (isFlowId(flowID)) {
       this.authService.getSettingsFlow(flowID).subscribe({
@@ -159,6 +170,14 @@ export class AccountComponent implements OnInit {
     this.errorService.handleError(AccountComponent.name, method, err);
     // An expired or rejected flow cannot be submitted again.
     this.loadFreshFlow();
+  }
+}
+
+function hostOf(url: string | undefined): string {
+  try {
+    return url ? new URL(url).hostname : '';
+  } catch {
+    return '';
   }
 }
 

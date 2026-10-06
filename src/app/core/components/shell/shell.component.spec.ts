@@ -17,10 +17,13 @@
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {TestBed, fakeAsync, tick} from '@angular/core/testing';
 import {MatDialog} from '@angular/material/dialog';
-import {Router} from '@angular/router';
-import {EMPTY, Subject, of} from 'rxjs';
+import {Router, provideRouter} from '@angular/router';
+import {ComponentFixture} from '@angular/core/testing';
+import {provideNoopAnimations} from '@angular/platform-browser/animations';
+import {provideTranslocoTesting} from 'src/testing/transloco-testing';
+import {EMPTY, Observable, Subject, of} from 'rxjs';
 import type {Mock} from 'vitest';
-import {AuthService} from '../../services/auth/auth.service';
+import {AuthService, Whoami} from '../../services/auth/auth.service';
 import {telemetryConsent} from '../../services/telemetry/telemetry-consent';
 import {ThemeService} from '../../services/theme/theme.service';
 import {ErrorService} from '../../services/util/error.service';
@@ -44,7 +47,7 @@ describe('ShellComponent', () => {
         ShellComponent,
         {provide: MatDialog, useValue: dialog},
         {provide: Router, useValue: {url: '/', events: EMPTY, navigateByUrl: () => undefined}},
-        {provide: AuthService, useValue: {}},
+        {provide: AuthService, useValue: {whoami: () => of(null)}},
         {provide: ErrorService, useValue: {}},
         {provide: BreakpointObserver, useValue: {observe: () => of({matches: false, breakpoints: {}})}},
         {provide: ThemeService, useValue: {}},
@@ -114,5 +117,57 @@ describe('ShellComponent', () => {
 
       expect(dialog.open).toHaveBeenCalledTimes(2);
     });
+  });
+});
+
+describe('ShellComponent account menu', () => {
+  let fixture: ComponentFixture<ShellComponent>;
+
+  function open(who: Observable<Whoami | null>): string {
+    telemetryConsent.set(0);
+    TestBed.configureTestingModule({
+      imports: [ShellComponent, provideTranslocoTesting('core')],
+      providers: [
+        provideNoopAnimations(),
+        provideRouter([]),
+        {provide: AuthService, useValue: {whoami: () => who}},
+        {provide: ErrorService, useValue: {}},
+        {provide: BreakpointObserver, useValue: {observe: () => of({matches: false, breakpoints: {}})}},
+        {provide: ThemeService, useValue: {icon: () => 'light_mode', label: () => 'core.shell.switchTheme'}},
+      ],
+    });
+    fixture = TestBed.createComponent(ShellComponent);
+    fixture.detectChanges();
+    const trigger = (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
+      'button[aria-label="Account"]',
+    )!;
+    trigger.click();
+    fixture.detectChanges();
+    return document.querySelector('.mat-mdc-menu-panel')?.textContent ?? '';
+  }
+
+  afterEach(() => {
+    telemetryConsent.reset();
+    fixture.destroy();
+  });
+
+  it('shows the user name and the sign-in method above the account settings', () => {
+    const text = open(of({username: 'alice', method: 'oidc'}));
+
+    expect(text).toContain('alice');
+    expect(text).toContain('Signed in with single sign-on');
+    expect(text.indexOf('alice')).toBeLessThan(text.indexOf('Account settings'));
+  });
+
+  it('names the password method', () => {
+    expect(open(of({username: 'alice', method: 'password'}))).toContain('Signed in with password');
+  });
+
+  it('shows no identity when the gateway cannot say who is signed in', () => {
+    const text = open(of(null));
+
+    expect(text).not.toContain('alice');
+    expect(text).not.toContain('Signed in with');
+    expect(text).toContain('Account settings');
   });
 });

@@ -22,6 +22,18 @@ import {InitLogoutResponse} from './auth.models';
 import {KratosFlow} from './kratos-flow';
 import {SKIP_AUTH_REDIRECT} from './interceptor/auth.interceptor';
 
+interface WhoamiResponse {
+  identity?: {traits?: {username?: string}};
+  authentication_methods?: {method?: string}[];
+}
+
+export type SignInMethod = 'password' | 'oidc';
+
+export interface Whoami {
+  username: string;
+  method: SignInMethod | null;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -40,6 +52,7 @@ export class AuthService {
   // so is its entire job.
   private readonly sessionProbePath = environment.coreApiUrl + '/module-manager/health/service';
   private sessionCheck?: Observable<boolean>;
+  private whoamiCheck?: Observable<Whoami | null>;
 
   constructor(private httpClient: HttpClient) {}
 
@@ -51,6 +64,32 @@ export class AuthService {
       this.sessionCheck = this.probeSession().pipe(shareReplay(1));
     }
     return this.sessionCheck;
+  }
+
+  // Who is signed in and how, or null when that cannot be told. Cached like
+  // the session probe and dropped on logout; a failure, 401 included, is
+  // never a redirect because the callers only decorate the page with it.
+  whoami(): Observable<Whoami | null> {
+    if (!this.whoamiCheck) {
+      const context = new HttpContext().set(SKIP_AUTH_REDIRECT, true);
+      this.whoamiCheck = this.httpClient
+        .get<WhoamiResponse>(this.basePath + '/whoami', {
+          headers: this.jsonHeaders,
+          withCredentials: true,
+          context: context,
+        })
+        .pipe(
+          map((res): Whoami | null => {
+            const username = res?.identity?.traits?.username;
+            if (typeof username !== 'string') return null;
+            const last = res.authentication_methods?.at(-1)?.method;
+            return {username, method: last === 'password' || last === 'oidc' ? last : null};
+          }),
+          catchError(() => of(null)),
+          shareReplay(1),
+        );
+    }
+    return this.whoamiCheck;
   }
 
   private probeSession(): Observable<boolean> {
@@ -134,6 +173,7 @@ export class AuthService {
   }
 
   logout(logoutToken: string) {
+    this.whoamiCheck = undefined;
     const url = this.basePath + this.logoutPath + '?token=' + logoutToken;
     const headers = new HttpHeaders().set('Accept', 'application/json');
     return this.httpClient.get(url, {headers: headers, withCredentials: true});

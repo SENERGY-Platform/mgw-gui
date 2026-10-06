@@ -7,6 +7,8 @@
     "switchTheme": "Switch theme",
     "account": "Account",
     "signedIn": "Signed in",
+    "signedInPassword": "Signed in with password",
+    "signedInSso": "Signed in with single sign-on",
     "accountSettings": "Account settings",
     "errorReporting": "Error reporting",
     "logOut": "Log out",

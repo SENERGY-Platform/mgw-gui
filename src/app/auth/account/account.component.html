@@ -24,6 +24,17 @@
     </div>
   }
 
+  @if (whoami; as who) {
+    <section class="mgw-card card identity">
+      <div class="identity-name">{{ who.username }}</div>
+      @if (who.method) {
+        <div class="identity-method">
+          {{ (who.method === 'oidc' ? 'auth.account.signedInSso' : 'auth.account.signedInPassword') | transloco }}
+        </div>
+      }
+    </section>
+  }
+
   @if (ready) {
     <section class="mgw-card card">
       <header class="section-head">
@@ -39,6 +50,9 @@
       </header>
 
       @if (linked) {
+        @if (providerHost) {
+          <p class="linked-with">{{ 'auth.account.sso.linkedWith' | transloco: {host: providerHost} }}</p>
+        }
         <div class="actions">
           <button (click)="unlink()" [disabled]="busy" class="mgw-danger unlink" mat-button type="button">
             {{ 'auth.account.sso.unlink' | transloco }}

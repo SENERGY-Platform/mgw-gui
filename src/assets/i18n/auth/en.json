@@ -16,6 +16,8 @@
   "account": {
     "title": "Account",
     "description": "Settings of the account you are signed in with.",
+    "signedInPassword": "Signed in with password",
+    "signedInSso": "Signed in with single sign-on",
     "otherOrigin": "Single sign-on is set up for another address of this gateway. Open this page there to continue.",
     "otherOriginLink": "Open account page",
     "sso": {
@@ -25,7 +27,8 @@
       "notLinked": "Not linked",
       "link": "Link",
       "unlink": "Unlink",
-      "unavailable": "Single sign-on is not set up on this gateway."
+      "unavailable": "Single sign-on is not set up on this gateway.",
+      "linkedWith": "Linked with {{host}}"
     }
   }
 }
