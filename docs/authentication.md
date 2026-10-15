@@ -43,11 +43,17 @@ so a new feature added elsewhere in the array is unprotected.
 
 ## The session probe asks a health endpoint, deliberately
 
-There is no `whoami` to ask. The gateway keeps `/validate-session` as an
-internal nginx location and exposes only the login and logout flows under
-`/core/auth`. Every `/core/api` path sits behind the same `auth_request`, which
-makes a health endpoint the cheapest honest stand-in: it answers 200 with a
-session and 401 without one, and being asked is its entire job.
+The gateway keeps `/validate-session` as an internal nginx location. Every
+`/core/api` path sits behind the same `auth_request`, which makes a health
+endpoint the cheapest honest stand-in: it answers 200 with a session and 401
+without one, and being asked is its entire job.
+
+From installer `v0.30.0-beta5`, and from `v0.31.1` on, the gateway also routes
+`/core/auth/whoami` to Kratos; `v0.31.0` was tagged without it.
+`AuthService.whoami()` reads the username and the sign-in method from it for the
+account menu and the account page. The probe deliberately stays on the
+health endpoint: the UI runs against cores without that route, and there a
+missing `whoami` must only cost the account display, not the session.
 
 `AuthService.hasSession()` probes
 `/core/api/module-manager/health/service` and caches the answer for the life of
