@@ -282,6 +282,61 @@
     "confirmDelete": "Delete repository '{{source}}'? Its modules can no longer be installed or updated.",
     "notRemovable": "This repository is part of the core installation and cannot be removed."
   },
+  "autoUpdate": {
+    "title": "Automatic updates",
+    "description": "Let the gateway update installed modules and their setups by itself, inside a daily time window.",
+    "saved": "Settings saved",
+    "unavailable": {
+      "title": "Not available on this core",
+      "message": "This core does not offer automatic updates. Update the core to use them."
+    },
+    "settings": {
+      "title": "Settings",
+      "enabled": "Update modules automatically",
+      "level": "Highest version change to apply",
+      "levelHint": "Below 1.0.0 versions are compared literally: 0.4 to 0.5 counts as a minor change.",
+      "windowStart": "Window start",
+      "windowEnd": "Window end",
+      "windowHint": "Updates only start inside this window, which may cross midnight. The end is exclusive and must differ from the start.",
+      "timeZone": "Time zone",
+      "save": "Save"
+    },
+    "levels": {
+      "patch": "Patch",
+      "minor": "Minor",
+      "major": "Major"
+    },
+    "lastRun": {
+      "title": "Last run",
+      "empty": {
+        "title": "No run yet",
+        "message": "The first run happens inside the next time window once automatic updates are enabled."
+      },
+      "times": "Started {{start}}, finished {{end}}",
+      "aborted": "The run was aborted: {{message}}",
+      "updated": "Updated",
+      "skipped": "Skipped",
+      "failed": "Failed",
+      "none": "Nothing.",
+      "openSetup": "Open the setup form"
+    },
+    "reasons": {
+      "level_exceeded": "The version change exceeds the configured level.",
+      "dependency_level_exceeded": "A dependency would change beyond the configured level, to an older version, or to another source or channel.",
+      "new_dependency": "The update would install a module that is not installed yet.",
+      "needs_input": "The setup needs input for the new version.",
+      "invalid_version": "The installed or the available version is not a valid version.",
+      "module_error": "An affected module could not be read.",
+      "deployment_error": "The setup of an affected module could not be read.",
+      "dependency_not_deployed": "An affected setup depends on a module that has no setup.",
+      "dependent_range_violated": "Another installed module requires a different version range.",
+      "deployment_variant_differs": "The setup was created for another repository or channel, or for a version not older than the new one."
+    },
+    "errors": {
+      "loadFailed": "Loading the automatic update settings failed",
+      "saveFailed": "Saving the automatic update settings failed"
+    }
+  },
   "globalConfigs": {
     "title": "Global configs",
     "description": "Values that several modules can reference instead of each setting them separately.",

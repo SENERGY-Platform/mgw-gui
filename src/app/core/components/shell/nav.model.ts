@@ -39,6 +39,7 @@ export const NAV_ITEMS: NavItem[] = [
       {label: 'core.nav.modulesInstalled', icon: 'inventory_2', route: '/modules', exact: true},
       {label: 'core.nav.modulesCatalog', icon: 'storefront', route: '/modules/catalog', exact: true},
       {label: 'core.nav.modulesRepositories', icon: 'cloud_download', route: '/modules/repositories', exact: true},
+      {label: 'core.nav.modulesAutoUpdate', icon: 'update', route: '/modules/auto-update', exact: true},
     ],
   },
   {

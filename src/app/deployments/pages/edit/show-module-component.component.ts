@@ -33,6 +33,7 @@ import {NotificationService} from 'src/app/core/services/util/notifications.serv
 import {SpinnerComponent} from 'src/app/core/components/spinner/spinner.component';
 import {DeploymentFormComponent} from '../../components/deployment-form/deployment-form.component';
 import {DeploymentRequestModule, DeploymentUserInput} from 'src/app/core/models/deployment-request';
+import {CarryOverMissing, CarryOverNavigationState} from 'src/app/core/models/carry-over';
 import {GlobalConfig} from 'src/app/core/models/global-configs';
 import {HostResource} from 'src/app/host/models/models';
 import {Secret} from 'src/app/secrets/models/secret_models';
@@ -68,6 +69,9 @@ export class ShowModuleComponentComponent implements OnInit {
   hostResources: HostResource[] = [];
   secrets: Secret[] = [];
   globalConfigs: GlobalConfig[] = [];
+  // per module ID: the inputs an update left unanswered, handed over by the
+  // page that sent the user here; empty on a direct visit
+  missing: Record<string, CarryOverMissing[]> = {};
   ready = false;
   submitting = false;
   @ViewChildren(DeploymentFormComponent) forms!: QueryList<DeploymentFormComponent>;
@@ -83,6 +87,9 @@ export class ShowModuleComponentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // history.state also survives a reload
+    const state = history.state as Partial<CarryOverNavigationState> | null;
+    this.missing = state?.carryOverMissing ?? {};
     // one or more module IDs, each URI-encoded, joined by commas (batch edit)
     const moduleIDs = String(this.route.snapshot.params['ids'])
       .split(',')

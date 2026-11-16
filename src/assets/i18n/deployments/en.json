@@ -2,6 +2,7 @@
   "form": {
     "noInputs": "This module needs no configuration.",
     "required": "Required",
+    "needsInput": "Needs input after the update:",
     "defaultGroup": "Configuration",
     "globalConfigHint": "Reference a global config instead of entering a value here",
     "globalConfigLabel": "Global config",

@@ -20,6 +20,7 @@
     "modulesInstalled": "Installed",
     "modulesCatalog": "Catalog",
     "modulesRepositories": "Repositories",
+    "modulesAutoUpdate": "Automatic updates",
     "resources": "Resources",
     "resourcesSecrets": "Secrets",
     "resourcesGlobalConfigs": "Global configs",
@@ -166,5 +167,25 @@
     "removeThisRegion": "Remove this region",
     "regions": "Drawn regions",
     "discardedDrag": "That region was too small to keep, so nothing was covered. Drag a larger box."
+  },
+  "carryOver": {
+    "kinds": {
+      "config": "Config",
+      "secret": "Secret",
+      "host_resource": "Host resource",
+      "file": "File",
+      "file_group": "File group"
+    },
+    "reasons": {
+      "not_declared": "the module does not define this input",
+      "not_set": "no value is set and the module has no default",
+      "empty_value": "the stored value is empty",
+      "type_mismatch": "the stored value has another type than the new version declares",
+      "invalid_value": "the stored value violates the constraints of the new version",
+      "missing_path": "a file has no path",
+      "global_config_not_found": "the referenced global config no longer exists",
+      "secret_not_found": "the referenced secret no longer exists",
+      "secret_type_unknown": "the type of the stored secret could not be checked"
+    }
   }
 }

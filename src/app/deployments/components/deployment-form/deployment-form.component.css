@@ -133,6 +133,14 @@
   color: var(--mat-sys-on-surface-variant);
 }
 
+.field-needs {
+  margin: 3px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 550;
+  color: var(--mgw-warn);
+}
+
 .control {
   width: 100%;
   margin-top: 8px;

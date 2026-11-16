@@ -53,8 +53,8 @@ import {EmptyStateComponent} from 'src/app/core/components/empty-state/empty-sta
 import {RepoModule, Repository} from 'src/app/core/models/repositories';
 import {ChangeRequestItem, ModulesChangeRequest, needsDeploymentUpdate} from 'src/app/core/models/modules';
 import {ChangeReportItem} from 'src/app/core/models/jobs';
-import {DeploymentRequestModule, DeploymentUserInput} from 'src/app/core/models/deployment-request';
-import {carryOverSetup} from 'src/app/core/models/deployment-carry-over';
+import {DeploymentUserInput} from 'src/app/core/models/deployment-request';
+import {CarryOverNavigationState, DeploymentCarryOver} from 'src/app/core/models/carry-over';
 import {
   mapDeploymentResults,
   mapModulesChangeResult,
@@ -574,15 +574,13 @@ export class ManageComponent implements OnInit {
             this.setupFollowUpRunning = false;
             return;
           }
-          // One request for both sides: /modules carries the new version's
-          // declarations next to the deployment created for the old one.
-          // Deliberately not /deployment-request - that one omits every module
-          // that already has a deployment, which is all of these.
+          // The backend decides per module whether the setup answers everything
+          // the installed version declares; the GUI only routes the outcome.
           this.moduleService
-            .loadModulesFull(ids)
+            .getDeploymentsCarryOver(ids)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
-              next: (loaded) => this.applyCarriedOverSetups(ids, loaded || []),
+              next: (results) => this.applyCarriedOverSetups(ids, results || []),
               error: (err) => this.failSetupFollowUp(err),
             });
         },
@@ -590,22 +588,27 @@ export class ManageComponent implements OnInit {
       });
   }
 
-  private applyCarriedOverSetups(ids: string[], loaded: DeploymentRequestModule[]) {
-    const byId = new Map(loaded.map((module) => [module.id, module]));
+  private applyCarriedOverSetups(ids: string[], results: DeploymentCarryOver[]) {
+    const byId = new Map(results.map((result) => [result.module_id, result]));
     const inputs: DeploymentUserInput[] = [];
     const needInput: string[] = [];
+    const missing: CarryOverNavigationState['carryOverMissing'] = {};
     for (const id of ids) {
-      const input = carryOverSetup(byId.get(id));
-      if (input) {
-        inputs.push(input);
+      const result = byId.get(id);
+      // an error result or a module the answer left out has no input either
+      if (result?.input) {
+        inputs.push(result.input);
       } else {
         needInput.push(id);
+        if (result?.missing?.length) {
+          missing[id] = result.missing;
+        }
       }
     }
     if (inputs.length === 0) {
       this.setupFollowUpRunning = false;
       if (needInput.length > 0) {
-        this.offerSetupForm(needInput);
+        this.offerSetupForm(needInput, missing);
       }
       return;
     }
@@ -637,7 +640,7 @@ export class ManageComponent implements OnInit {
           // that the user stopped this - and then dragging them into a form is
           // the last thing they asked for. The drift stays on the list.
           if (needInput.length > 0 && jobResult?.result) {
-            this.offerSetupForm(needInput);
+            this.offerSetupForm(needInput, missing);
             return;
           }
           this.load();
@@ -648,13 +651,17 @@ export class ManageComponent implements OnInit {
 
   // The setups the new version asks something new of are never skipped
   // silently: they go to the edit form, all of them in one navigation.
-  private offerSetupForm(moduleIDs: string[]) {
+  private offerSetupForm(moduleIDs: string[], missing: CarryOverNavigationState['carryOverMissing']) {
     this.notifications.showInfo(
       this.translate(`modules.manage.setupUpdate.needsInput.${moduleIDs.length === 1 ? 'one' : 'other'}`, {
         count: moduleIDs.length,
       }),
     );
-    this.router.navigateByUrl('/deployments/edit/' + moduleIDs.map((id) => encodeURIComponent(id)).join(','));
+    // the edit form marks the inputs the setup does not answer
+    const state: CarryOverNavigationState = {carryOverMissing: missing};
+    this.router.navigateByUrl('/deployments/edit/' + moduleIDs.map((id) => encodeURIComponent(id)).join(','), {
+      state: state,
+    });
   }
 
   private failSetupFollowUp(err: unknown) {

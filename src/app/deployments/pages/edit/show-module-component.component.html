@@ -47,6 +47,7 @@
       <deployment-form
         [globalConfigs]="globalConfigs"
         [hostResources]="hostResources"
+        [missing]="missing[module.id] || []"
         [module]="module"
         [prefill]="true"
         [secrets]="secrets"

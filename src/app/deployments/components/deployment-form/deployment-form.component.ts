@@ -38,6 +38,7 @@ import {
   ModuleInput,
   parseModuleConfigValue,
 } from 'src/app/core/models/deployment-request';
+import {CARRY_OVER_REASONS, CarryOverMissing} from 'src/app/core/models/carry-over';
 import {formatConfigValue, GlobalConfig} from 'src/app/core/models/global-configs';
 import {Secret} from 'src/app/secrets/models/secret_models';
 import {HostResource} from 'src/app/host/models/models';
@@ -137,7 +138,7 @@ interface ConfigGroup {
     MatTooltip,
     TranslocoPipe,
   ],
-  providers: [provideTranslocoScope('deployments')],
+  providers: [provideTranslocoScope('deployments', 'core')],
 })
 export class DeploymentFormComponent implements OnInit {
   // Resolved directly rather than through the `transloco` pipe: the errors
@@ -158,6 +159,18 @@ export class DeploymentFormComponent implements OnInit {
 
   errorId(kind: string, ref: string): string {
     return `${this.fieldId(kind, ref)}-error`;
+  }
+
+  // The translated reason this input needs an answer after the update, or
+  // '' if the setup answered it. An unknown reason is shown as sent.
+  needsInputReason(kind: string, ref: string): string {
+    const item = (this.missing || []).find((entry) => entry.kind === kind && entry.ref === ref);
+    if (!item) {
+      return '';
+    }
+    return (CARRY_OVER_REASONS as readonly string[]).includes(item.reason)
+      ? this.transloco.translate<string>(`core.carryOver.reasons.${item.reason}`)
+      : item.reason;
   }
 
   private readonly errorMatchers = new WeakMap<object, ErrorStateMatcher>();
@@ -183,6 +196,9 @@ export class DeploymentFormComponent implements OnInit {
   @Input() globalConfigs: GlobalConfig[] = [];
   // prefill from the existing deployment (edit mode)
   @Input() prefill = false;
+  // inputs the stored setup does not answer for this module version, marked
+  // with a hint; empty outside the update path
+  @Input() missing: CarryOverMissing[] = [];
 
   configRows: ConfigRow[] = [];
   configGroups: ConfigGroup[] = [];

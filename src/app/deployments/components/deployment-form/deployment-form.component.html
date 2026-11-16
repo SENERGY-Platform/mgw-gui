@@ -70,6 +70,9 @@
               </mat-slide-toggle>
             }
           </div>
+          @if (needsInputReason('config', row.ref); as reason) {
+            <p class="field-needs">{{ 'deployments.form.needsInput' | transloco }} {{ reason }}</p>
+          }
           @if (row.input.description) {
             <p class="field-desc">{{ row.input.description }}</p>
           }
@@ -170,6 +173,9 @@
               }
             </label>
           </div>
+          @if (needsInputReason('host_resource', row.ref); as reason) {
+            <p class="field-needs">{{ 'deployments.form.needsInput' | transloco }} {{ reason }}</p>
+          }
           @if (row.input.description) {
             <p class="field-desc">{{ row.input.description }}</p>
           }
@@ -214,6 +220,9 @@
               <span class="type-tag">{{ row.type }}</span>
             }
           </div>
+          @if (needsInputReason('secret', row.ref); as reason) {
+            <p class="field-needs">{{ 'deployments.form.needsInput' | transloco }} {{ reason }}</p>
+          }
           @if (row.input.description) {
             <p class="field-desc">{{ row.input.description }}</p>
           }
@@ -272,6 +281,9 @@
               </button>
             }
           </div>
+          @if (needsInputReason('file', row.ref); as reason) {
+            <p class="field-needs">{{ 'deployments.form.needsInput' | transloco }} {{ reason }}</p>
+          }
           @if (row.input.description) {
             <p class="field-desc">{{ row.input.description }}</p>
           }
@@ -307,6 +319,9 @@
           <div class="field-head">
             <label>{{ row.input.name }}</label>
           </div>
+          @if (needsInputReason('file_group', row.ref); as reason) {
+            <p class="field-needs">{{ 'deployments.form.needsInput' | transloco }} {{ reason }}</p>
+          }
           @if (row.input.description) {
             <p class="field-desc">{{ row.input.description }}</p>
           }

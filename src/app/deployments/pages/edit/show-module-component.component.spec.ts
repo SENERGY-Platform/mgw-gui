@@ -84,7 +84,7 @@ describe('ShowModuleComponentComponent', () => {
     updateDeploymentsSpy = vi.fn().mockReturnValue(of({id: 'job-1'}));
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
-      imports: [ShowModuleComponentComponent, provideTranslocoTesting('deployments')],
+      imports: [ShowModuleComponentComponent, provideTranslocoTesting('deployments', 'core')],
       providers: [
         provideNoopAnimations(),
         {provide: ActivatedRoute, useValue: {snapshot: {params: {ids: ids}}}},
@@ -118,5 +118,32 @@ describe('ShowModuleComponentComponent', () => {
     const forms = fixture.componentInstance.forms.toArray();
     expect(forms[0].configRows[0].error).not.toBe('');
     expect(forms[1].configRows[0].error).not.toBe('');
+  });
+
+  describe('inputs an update left unanswered', () => {
+    afterEach(() => history.replaceState(null, ''));
+
+    it('marks the input the navigation named, with the translated reason', () => {
+      history.replaceState({carryOverMissing: {'mod-a': [{kind: 'config', ref: 'cfg', reason: 'not_set'}]}}, '');
+      create('mod-a,mod-b', [deployedModuleWithRequiredConfig('mod-a'), deployedModuleWithRequiredConfig('mod-b')]);
+
+      const hints = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.field-needs'));
+      expect(hints.length).toBe(1);
+      expect(hints[0].textContent).toContain('Needs input after the update:');
+      expect(hints[0].textContent).toContain('no value is set and the module has no default');
+    });
+
+    it('shows an unknown reason as sent', () => {
+      history.replaceState({carryOverMissing: {'mod-a': [{kind: 'config', ref: 'cfg', reason: 'brand_new'}]}}, '');
+      create('mod-a', [deployedModuleWithRequiredConfig('mod-a')]);
+
+      expect((fixture.nativeElement as HTMLElement).querySelector('.field-needs')!.textContent).toContain('brand_new');
+    });
+
+    it('shows no hint on a direct visit', () => {
+      create('mod-a', [deployedModuleWithRequiredConfig('mod-a')]);
+
+      expect((fixture.nativeElement as HTMLElement).querySelector('.field-needs')).toBeNull();
+    });
   });
 });

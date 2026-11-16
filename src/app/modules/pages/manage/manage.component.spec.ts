@@ -21,8 +21,8 @@ import {of, throwError} from 'rxjs';
 import {ManageComponent} from './manage.component';
 import {RepoModule} from 'src/app/core/models/repositories';
 import {ModuleReduced} from 'src/app/core/models/modules';
-import {DeploymentRequestModule, DeploymentUserInput} from 'src/app/core/models/deployment-request';
-import {DATA_TYPE_INT} from 'src/app/core/models/global-configs';
+import {DeploymentUserInput} from 'src/app/core/models/deployment-request';
+import {CarryOverMissing, DeploymentCarryOver} from 'src/app/core/models/carry-over';
 import {NotificationService} from 'src/app/core/services/util/notifications.service';
 
 const UPDATE_SCOPE_KEY = 'mgw-update-scope';
@@ -75,68 +75,23 @@ function driftedModule(id: string): ModuleReduced {
   };
 }
 
-function requestModule(id: string, needsInput: boolean): DeploymentRequestModule {
+// What the backend answers for one module: an update payload if the setup
+// answers everything, otherwise the items it does not (or an error).
+function carryOverResult(id: string, needsInput: boolean, missing: CarryOverMissing[] = []): DeploymentCarryOver {
   return {
-    id: id,
-    name: id,
-    description: '',
-    version: 'v2.0.0',
-    // a required config without a default that the setup holds no value for is
-    // the one thing the follow-up cannot answer on its own
-    // Either way the new version declares something: a config the setup
-    // answers, or - for needsInput - one it does not.
-    inputs: {
-      configs: needsInput
-        ? {token: {name: 'Token', description: '', group: ''}}
-        : {port: {name: 'Port', description: '', group: ''}},
-      resources: null,
-      secrets: null,
-      files: null,
-      file_groups: null,
-      groups: null,
-    },
-    configs: needsInput
-      ? {
-          token: {
-            default: null,
-            options: null,
-            opt_ext: false,
-            type: 'text',
-            type_opt: null,
-            data_type: 'string',
-            is_slice: false,
-            required: true,
-          },
-        }
+    module_id: id,
+    input: needsInput
+      ? null
       : {
-          port: {
-            default: null,
-            options: null,
-            opt_ext: false,
-            type: 'number',
-            type_opt: null,
-            data_type: 'int',
-            is_slice: false,
-            required: true,
-          },
+          module_id: id,
+          host_resources: {},
+          secrets: {},
+          configs: {port: 8081},
+          global_configs: {},
+          files: {},
+          file_groups: {},
         },
-    secrets: null,
-    host_resources: null,
-    files: null,
-    is_deployed: true,
-    deployment: {
-      id: 'dep-' + id,
-      module_version: 'v1.0.0',
-      enabled: true,
-      host_resources: null,
-      secrets: null,
-      configs: needsInput ? null : {port: {data_type: DATA_TYPE_INT, is_slice: false, value: 8081}},
-      global_configs: null,
-      files: null,
-      file_groups: null,
-      has_error: false,
-      error_msg: '',
-    },
+    missing: needsInput ? missing : [],
     has_error: false,
     error_msg: '',
   };
@@ -147,7 +102,7 @@ function requestModule(id: string, needsInput: boolean): DeploymentRequestModule
 interface ServiceSpies {
   executeModulesChangeRequest: ReturnType<typeof vi.fn>;
   loadModulesReduced: ReturnType<typeof vi.fn>;
-  loadModulesFull: ReturnType<typeof vi.fn>;
+  getDeploymentsCarryOver: ReturnType<typeof vi.fn>;
   updateDeployments: ReturnType<typeof vi.fn>;
 }
 
@@ -174,6 +129,8 @@ function makeHarness(
   // what the loader reports for the setup-update job; an absent result is what
   // cancelling looks like
   setupJob: {result?: unknown} = {result: {has_error: false, error_msg: '', results: []}},
+  // overrides the backend's carry-over answer per module ID
+  carryOver: Record<string, DeploymentCarryOver> = {},
 ): Harness {
   const moduleService: any = {
     loadRepositoryModules: () => of(modules),
@@ -182,10 +139,9 @@ function makeHarness(
     createModulesChangeRequest: vi.fn(() => of({install: null, change: null, remove: null, created: ''})),
     executeModulesChangeRequest: vi.fn(() => of({id: 'job-1'})),
     loadModulesReduced: vi.fn(() => of(drifted)),
-    // /modules answers with the installed version's declarations next to the
-    // stored deployment. /deployment-request would not: it omits every module
-    // that already has one, which is every module a follow-up looks at.
-    loadModulesFull: vi.fn((ids: string[]) => of(ids.map((id) => requestModule(id, needsInput.includes(id))))),
+    getDeploymentsCarryOver: vi.fn((ids: string[]) =>
+      of(ids.map((id) => carryOver[id] ?? carryOverResult(id, needsInput.includes(id)))),
+    ),
     updateDeployments: vi.fn(() => of({id: 'job-2'})),
   };
   const utilService = {
@@ -444,7 +400,7 @@ describe('ManageComponent update scope', () => {
 
     expect(harness.service.updateDeployments).not.toHaveBeenCalled();
     expect(harness.showInfo).toHaveBeenCalledOnce();
-    expect(harness.navigateByUrl).toHaveBeenCalledWith('/deployments/edit/mod-a');
+    expect(harness.navigateByUrl).toHaveBeenCalledWith('/deployments/edit/mod-a', {state: {carryOverMissing: {}}});
   });
 
   it('does not drag the user into a form when the setup job was cancelled', () => {
@@ -478,7 +434,7 @@ describe('ManageComponent update scope', () => {
     expect(harness.service.updateDeployments).toHaveBeenCalledTimes(1);
     const inputs = harness.service.updateDeployments.mock.calls[0][0] as DeploymentUserInput[];
     expect(inputs.map((input) => input.module_id)).toEqual(['mod-a']);
-    expect(harness.navigateByUrl).toHaveBeenCalledWith('/deployments/edit/mod-b');
+    expect(harness.navigateByUrl).toHaveBeenCalledWith('/deployments/edit/mod-b', {state: {carryOverMissing: {}}});
   });
 
   it('does not touch the setups of modules that did not drift', () => {
@@ -489,7 +445,7 @@ describe('ManageComponent update scope', () => {
     harness.component.reviewCart();
 
     expect(harness.service.loadModulesReduced).toHaveBeenCalledOnce();
-    expect(harness.service.loadModulesFull).not.toHaveBeenCalled();
+    expect(harness.service.getDeploymentsCarryOver).not.toHaveBeenCalled();
     expect(harness.service.updateDeployments).not.toHaveBeenCalled();
     expect(harness.navigateByUrl).not.toHaveBeenCalled();
   });
@@ -502,8 +458,89 @@ describe('ManageComponent update scope', () => {
 
     harness.component.reviewCart();
 
-    expect(harness.service.loadModulesFull).not.toHaveBeenCalled();
+    expect(harness.service.getDeploymentsCarryOver).not.toHaveBeenCalled();
     expect(harness.service.updateDeployments).not.toHaveBeenCalled();
     expect(harness.navigateByUrl).not.toHaveBeenCalled();
+  });
+
+  it('asks the backend once, for the drifted modules only', () => {
+    const harness = makeHarness(
+      [repoModule('mod-a', true, 'v2.0.0'), repoModule('mod-b', true, 'v2.0.0')],
+      [driftedModule('mod-a')],
+      [],
+      ['mod-a', 'mod-b'],
+    );
+    harness.component.setUpdateScope('modules-and-setups');
+
+    harness.component.reviewCart();
+
+    expect(harness.service.getDeploymentsCarryOver).toHaveBeenCalledOnce();
+    expect(harness.service.getDeploymentsCarryOver).toHaveBeenCalledWith(['mod-a']);
+  });
+
+  it('hands the missing items to the form with the navigation', () => {
+    const missing: CarryOverMissing[] = [{kind: 'config', ref: 'token', reason: 'not_set'}];
+    const harness = makeHarness(
+      [repoModule('mod-a', true, 'v2.0.0')],
+      [driftedModule('mod-a')],
+      [],
+      ['mod-a'],
+      undefined,
+      {'mod-a': carryOverResult('mod-a', true, missing)},
+    );
+    harness.component.setUpdateScope('modules-and-setups');
+
+    harness.component.reviewCart();
+
+    expect(harness.navigateByUrl).toHaveBeenCalledWith('/deployments/edit/mod-a', {
+      state: {carryOverMissing: {'mod-a': missing}},
+    });
+  });
+
+  it('sends a module whose check failed to the form instead of updating it', () => {
+    const failed: DeploymentCarryOver = {
+      module_id: 'mod-a',
+      input: null,
+      missing: [],
+      has_error: true,
+      error_msg: 'module not deployed',
+    };
+    const harness = makeHarness(
+      [repoModule('mod-a', true, 'v2.0.0')],
+      [driftedModule('mod-a')],
+      [],
+      ['mod-a'],
+      undefined,
+      {'mod-a': failed},
+    );
+    harness.component.setUpdateScope('modules-and-setups');
+
+    harness.component.reviewCart();
+
+    expect(harness.service.updateDeployments).not.toHaveBeenCalled();
+    expect(harness.navigateByUrl).toHaveBeenCalledWith('/deployments/edit/mod-a', {state: {carryOverMissing: {}}});
+  });
+
+  it('treats a module the answer leaves out as needing input', () => {
+    const harness = makeHarness([repoModule('mod-a', true, 'v2.0.0')], [driftedModule('mod-a')]);
+    harness.service.getDeploymentsCarryOver.mockReturnValue(of([]));
+    harness.component.setUpdateScope('modules-and-setups');
+
+    harness.component.reviewCart();
+
+    expect(harness.service.updateDeployments).not.toHaveBeenCalled();
+    expect(harness.navigateByUrl).toHaveBeenCalledOnce();
+  });
+
+  it('reports a failing check once and allows the next follow-up', () => {
+    const harness = makeHarness([repoModule('mod-a', true, 'v2.0.0')], [driftedModule('mod-a')]);
+    harness.service.getDeploymentsCarryOver.mockReturnValueOnce(throwError(() => ({status: 503})));
+    harness.component.setUpdateScope('modules-and-setups');
+
+    harness.component.reviewCart();
+    expect(harness.service.updateDeployments).not.toHaveBeenCalled();
+
+    harness.component.reviewCart();
+    expect(harness.service.updateDeployments).toHaveBeenCalledTimes(1);
   });
 });

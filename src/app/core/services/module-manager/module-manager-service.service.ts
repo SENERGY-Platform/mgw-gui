@@ -32,6 +32,8 @@ import {ChangeRequestItem, ModuleReduced, ModulesChangeRequest} from '../../mode
 import {RepoModule, RepoModulesFilter, Repository} from '../../models/repositories';
 import {GlobalConfig, GlobalConfigInput} from '../../models/global-configs';
 import {DeploymentRequestModule, DeploymentUserInput} from '../../models/deployment-request';
+import {DeploymentCarryOver} from '../../models/carry-over';
+import {AutoUpdateSettings, AutoUpdateStatus} from '../../models/auto-update';
 
 @Injectable({
   providedIn: 'root',
@@ -75,6 +77,14 @@ export class ModuleManagerService {
     const url = this.moduleManagerPath + '/modules';
     const queryParams = new HttpParams().set('ids', moduleIDs.join(','));
     return this.http.get(url, queryParams) as Observable<DeploymentRequestModule[]>;
+  }
+
+  // synchronous check whether the current setups answer everything the installed
+  // modules declare; entries with an input can go to updateDeployments as is
+  getDeploymentsCarryOver(moduleIDs: string[]): Observable<DeploymentCarryOver[]> {
+    const url = this.moduleManagerPath + '/deployments-carry-over';
+    const queryParams = new HttpParams().set('module_ids', moduleIDs.join(','));
+    return this.http.get(url, queryParams) as Observable<DeploymentCarryOver[]>;
   }
 
   // Auxiliary deployments are read-only at the management API; the write
@@ -197,6 +207,24 @@ export class ModuleManagerService {
   deleteGlobalConfig(configID: string): Observable<any> {
     const url = this.moduleManagerPath + '/global-configs/' + configID;
     return this.http.delete(url, undefined, undefined, 'text');
+  }
+
+  // Auto-update (answers 404 on a core without it)
+
+  getAutoUpdateSettings(): Observable<AutoUpdateSettings> {
+    const url = this.moduleManagerPath + '/auto-update';
+    return this.http.get(url) as Observable<AutoUpdateSettings>;
+  }
+
+  // 400 with a message if the settings are invalid
+  updateAutoUpdateSettings(settings: AutoUpdateSettings): Observable<unknown> {
+    const url = this.moduleManagerPath + '/auto-update';
+    return this.http.put(url, settings, 'text');
+  }
+
+  getAutoUpdateStatus(): Observable<AutoUpdateStatus> {
+    const url = this.moduleManagerPath + '/auto-update/status';
+    return this.http.get(url) as Observable<AutoUpdateStatus>;
   }
 
   // Modules change request (singleton: POST creates or replaces, PATCH

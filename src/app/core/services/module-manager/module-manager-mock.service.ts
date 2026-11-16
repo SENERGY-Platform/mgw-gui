@@ -32,6 +32,8 @@ import {RepoModule, RepoModulesFilter, Repository} from '../../models/repositori
 import {GlobalConfig, GlobalConfigInput} from '../../models/global-configs';
 import {DeploymentRequestModule, DeploymentUserInput} from '../../models/deployment-request';
 import {AuxDeployment} from '../../models/aux-deployments';
+import {DeploymentCarryOver} from '../../models/carry-over';
+import {AutoUpdateSettings, AutoUpdateStatus} from '../../models/auto-update';
 
 @Injectable({
   providedIn: 'root',
@@ -196,6 +198,80 @@ export class ModuleManagerMockService {
         return module;
       }),
     ).pipe(delay(300));
+  }
+
+  getDeploymentsCarryOver(moduleIDs: string[]): Observable<DeploymentCarryOver[]> {
+    return of(
+      moduleIDs.map((id) => ({
+        module_id: id,
+        input: {
+          module_id: id,
+          host_resources: {},
+          secrets: {},
+          configs: {greeting: 'servus'},
+          global_configs: {},
+          files: {},
+          file_groups: {},
+        },
+        missing: [],
+        has_error: false,
+        error_msg: '',
+      })),
+    ).pipe(delay(300));
+  }
+
+  private autoUpdateSettings: AutoUpdateSettings = {
+    enabled: false,
+    level: 'patch',
+    window_start: '02:00',
+    window_end: '05:00',
+    time_zone: 'Europe/Berlin',
+  };
+
+  getAutoUpdateSettings(): Observable<AutoUpdateSettings> {
+    return of({...this.autoUpdateSettings}).pipe(delay(300));
+  }
+
+  updateAutoUpdateSettings(settings: AutoUpdateSettings): Observable<unknown> {
+    this.autoUpdateSettings = {...settings};
+    return of(true);
+  }
+
+  getAutoUpdateStatus(): Observable<AutoUpdateStatus> {
+    const start = new Date(Date.now() - 3600_000).toISOString();
+    return of({
+      ...this.autoUpdateSettings,
+      last_run: {
+        start: start,
+        end: new Date().toISOString(),
+        updated: [
+          {
+            id: 'github.com/SENERGY-Platform/mgw-test-module-a',
+            from: 'v1.1.0',
+            to: 'v1.1.1',
+          },
+        ],
+        skipped: [
+          {
+            id: 'github.com/SENERGY-Platform/mgw-test-module-c',
+            version: 'v2.0.0',
+            next_version: 'v3.0.0',
+            reason: 'level_exceeded',
+            missing: null,
+          },
+          {
+            id: 'github.com/SENERGY-Platform/mgw-test-module-d',
+            version: 'v0.3.0',
+            next_version: 'v0.3.1',
+            reason: 'needs_input',
+            missing: [{kind: 'config', ref: 'greeting', reason: 'not_set'}],
+          },
+        ],
+        failed: [],
+        has_error: false,
+        error_msg: '',
+      },
+    }).pipe(delay(300));
   }
 
   getAuxDeployments(deploymentID: string): Observable<Record<string, AuxDeployment>> {

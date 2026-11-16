@@ -12,7 +12,7 @@ conventions below; it went end of life when `next-gen` became `master` on
 ## Navigation follows what is managed
 
 Not which service owns it: Overview, then Modules (installed, catalog,
-repositories), then Resources (secrets, global configs, endpoints), then System.
+repositories, automatic updates), then Resources (secrets, global configs, endpoints), then System.
 
 Endpoints used to be reachable by URL only and are now linked — the reason the
 grouping is by subject rather than by backend is exactly that: a page nobody can

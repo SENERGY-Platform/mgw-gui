@@ -1,0 +1,177 @@
+<!--
+~ Copyright (c) 2026 InfAI (CC SES)
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~     http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
+
+<div class="mgw-page mgw-page-narrow">
+  <mgw-page-header
+    [description]="'modules.autoUpdate.description' | transloco"
+    [title]="'modules.autoUpdate.title' | transloco"
+  ></mgw-page-header>
+
+  <spinner [show]="!ready" class="global-centered-spinner"></spinner>
+
+  @if (ready && !available) {
+    <mgw-empty-state
+      icon="update_disabled"
+      [message]="'modules.autoUpdate.unavailable.message' | transloco"
+      [title]="'modules.autoUpdate.unavailable.title' | transloco"
+    ></mgw-empty-state>
+  } @else if (ready) {
+    <section class="mgw-card card">
+      <h2>{{ 'modules.autoUpdate.settings.title' | transloco }}</h2>
+
+      <mat-slide-toggle [(ngModel)]="form.enabled" name="enabled">
+        {{ 'modules.autoUpdate.settings.enabled' | transloco }}
+      </mat-slide-toggle>
+
+      <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+        <mat-label>{{ 'modules.autoUpdate.settings.level' | transloco }}</mat-label>
+        <mat-select [(ngModel)]="form.level" name="level">
+          @for (level of levels; track level) {
+            <mat-option [value]="level">{{ 'modules.autoUpdate.levels.' + level | transloco }}</mat-option>
+          }
+        </mat-select>
+        <mat-hint>{{ 'modules.autoUpdate.settings.levelHint' | transloco }}</mat-hint>
+      </mat-form-field>
+
+      <div class="window">
+        <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+          <mat-label>{{ 'modules.autoUpdate.settings.windowStart' | transloco }}</mat-label>
+          <input [(ngModel)]="form.windowStart" matInput name="windowStart" type="time" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+          <mat-label>{{ 'modules.autoUpdate.settings.windowEnd' | transloco }}</mat-label>
+          <input [(ngModel)]="form.windowEnd" matInput name="windowEnd" type="time" />
+        </mat-form-field>
+      </div>
+      <p class="hint">{{ 'modules.autoUpdate.settings.windowHint' | transloco }}</p>
+
+      <mat-form-field appearance="outline" class="control" subscriptSizing="dynamic">
+        <mat-label>{{ 'modules.autoUpdate.settings.timeZone' | transloco }}</mat-label>
+        <mat-select [(ngModel)]="form.timeZone" name="timeZone">
+          @for (zone of timeZones; track zone) {
+            <mat-option [value]="zone">{{ zone }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      @if (saveError) {
+        <div class="mgw-notice danger save-error" role="alert">
+          <mat-icon>error</mat-icon>
+          <span>{{ saveError }}</span>
+        </div>
+      }
+
+      <div class="actions">
+        <button (click)="save()" [disabled]="!canSave()" mat-flat-button>
+          <mat-icon>save</mat-icon>
+          {{ 'modules.autoUpdate.settings.save' | transloco }}
+        </button>
+      </div>
+    </section>
+
+    <section class="mgw-card card">
+      <h2>{{ 'modules.autoUpdate.lastRun.title' | transloco }}</h2>
+
+      @if (!lastRun) {
+        <mgw-empty-state
+          icon="history"
+          [message]="'modules.autoUpdate.lastRun.empty.message' | transloco"
+          [title]="'modules.autoUpdate.lastRun.empty.title' | transloco"
+        ></mgw-empty-state>
+      } @else {
+        <p class="run-times">
+          {{
+            'modules.autoUpdate.lastRun.times'
+              | transloco: {start: (lastRun.start | date: 'medium'), end: (lastRun.end | date: 'medium')}
+          }}
+        </p>
+
+        @if (lastRun.has_error) {
+          <div class="mgw-notice danger run-error" role="alert">
+            <mat-icon>error</mat-icon>
+            <span>{{ 'modules.autoUpdate.lastRun.aborted' | transloco: {message: lastRun.error_msg} }}</span>
+          </div>
+        }
+
+        <h3>{{ 'modules.autoUpdate.lastRun.updated' | transloco }}</h3>
+        @if (lastRun.updated?.length) {
+          <ul class="run-list updated">
+            @for (item of lastRun.updated; track item.id) {
+              <li>
+                <span class="module">
+                  @if (moduleName(item.id)) {
+                    <span class="mgw-cell-primary">{{ moduleName(item.id) }}</span>
+                  }
+                  <span class="mgw-mono">{{ item.id }}</span>
+                </span>
+                <span class="mgw-mono">{{ item.from }} → {{ item.to }}</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="none">{{ 'modules.autoUpdate.lastRun.none' | transloco }}</p>
+        }
+
+        <h3>{{ 'modules.autoUpdate.lastRun.skipped' | transloco }}</h3>
+        @if (lastRun.skipped?.length) {
+          <ul class="run-list skipped">
+            @for (item of lastRun.skipped; track item.id) {
+              <li>
+                <span class="module">
+                  @if (moduleName(item.id)) {
+                    <span class="mgw-cell-primary">{{ moduleName(item.id) }}</span>
+                  }
+                  <span class="mgw-mono">{{ item.id }}</span>
+                  <span class="reason">{{ skipReasonText(item.reason) }}</span>
+                  @for (missing of item.missing || []; track missing.kind + missing.ref) {
+                    <span class="missing">{{ missingText(missing) }}</span>
+                  }
+                  @if (item.reason === 'needs_input') {
+                    <a [routerLink]="editUrl(item.id)" [state]="formState(item.id, item.missing)" class="setup-link">
+                      {{ 'modules.autoUpdate.lastRun.openSetup' | transloco }}
+                    </a>
+                  }
+                </span>
+                <span class="mgw-mono">{{ item.version }} → {{ item.next_version }}</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="none">{{ 'modules.autoUpdate.lastRun.none' | transloco }}</p>
+        }
+
+        <h3>{{ 'modules.autoUpdate.lastRun.failed' | transloco }}</h3>
+        @if (lastRun.failed?.length) {
+          <ul class="run-list failed">
+            @for (item of lastRun.failed; track item.id) {
+              <li>
+                <span class="module">
+                  @if (moduleName(item.id)) {
+                    <span class="mgw-cell-primary">{{ moduleName(item.id) }}</span>
+                  }
+                  <span class="mgw-mono">{{ item.id }}</span>
+                  <span class="error">{{ item.error }}</span>
+                </span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="none">{{ 'modules.autoUpdate.lastRun.none' | transloco }}</p>
+        }
+      }
+    </section>
+  }
+</div>

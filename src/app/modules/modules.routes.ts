@@ -19,6 +19,7 @@ import {ListComponent} from './pages/list/list.component';
 import {ManageComponent} from './pages/manage/manage.component';
 import {GlobalConfigsComponent} from './pages/global-configs/global-configs.component';
 import {RepositoriesComponent} from './pages/repositories/repositories.component';
+import {AutoUpdateComponent} from './pages/auto-update/auto-update.component';
 import {InfoComponent} from './pages/info/info.component';
 import {LogsComponent} from '../container/pages/logs/logs.component';
 
@@ -33,6 +34,7 @@ export const routes: Routes = [
       {path: '', component: ListComponent},
       {path: 'catalog', component: ManageComponent},
       {path: 'repositories', component: RepositoriesComponent},
+      {path: 'auto-update', component: AutoUpdateComponent},
       // ahead of 'detail/:id' so the longer path wins; the logs page reads
       // the module id from here to find its way back
       {path: 'detail/:id/containers/:containerId/logs', component: LogsComponent},
