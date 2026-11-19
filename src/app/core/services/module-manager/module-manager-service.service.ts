@@ -120,6 +120,12 @@ export class ModuleManagerService {
   }
 
   // job, result via getDeploymentsResult
+  restartDeployments(moduleIDs: string[]): Observable<Job> {
+    const url = this.moduleManagerPath + '/deployments-restart';
+    return this.http.post(url, moduleIDs) as Observable<Job>;
+  }
+
+  // job, result via getDeploymentsResult
   recreateDeployments(moduleIDs: string[]): Observable<Job> {
     const url = this.moduleManagerPath + '/deployments-recreate';
     return this.http.post(url, moduleIDs) as Observable<Job>;

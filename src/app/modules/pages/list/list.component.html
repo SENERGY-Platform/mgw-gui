@@ -67,6 +67,10 @@
         <mat-icon>stop</mat-icon>
         {{ 'modules.list.stop' | transloco }}
       </button>
+      <button (click)="restartMultiple()" mat-button>
+        <mat-icon>refresh</mat-icon>
+        {{ 'modules.list.restart' | transloco }}
+      </button>
       <button (click)="recreateMultiple()" mat-button>
         <mat-icon>restart_alt</mat-icon>
         {{ 'modules.list.recreate' | transloco }}
@@ -230,6 +234,14 @@
                 <button (click)="edit(module.id)" [disabled]="!module.is_deployed" mat-menu-item>
                   <mat-icon>tune</mat-icon>
                   <span>{{ 'modules.list.editDeployment' | transloco }}</span>
+                </button>
+                <button
+                  (click)="restart(module.id)"
+                  [disabled]="!module.is_deployed || !module.deployment.enabled"
+                  mat-menu-item
+                >
+                  <mat-icon>refresh</mat-icon>
+                  <span>{{ 'modules.list.restartContainers' | transloco }}</span>
                 </button>
                 <button (click)="recreate(module.id)" [disabled]="!module.is_deployed" mat-menu-item>
                   <mat-icon>restart_alt</mat-icon>

@@ -363,6 +363,30 @@ export class ListComponent implements OnInit, OnDestroy {
     });
   }
 
+  restart(moduleID: string) {
+    this.tryRestart([moduleID]);
+  }
+
+  restartMultiple() {
+    this.tryRestart(this.selectedDeployedIds());
+  }
+
+  private tryRestart(moduleIDs: string[]) {
+    if (moduleIDs.length === 0) {
+      return;
+    }
+    // same result kind as recreate, the backend answers with the same result type
+    this.runJob(
+      this.moduleService.restartDeployments(moduleIDs),
+      this.translate('modules.list.jobs.restarting'),
+      'deployments',
+      'restart',
+      this.translate('modules.list.restartContainers'),
+      this.translate('modules.list.jobs.restarted'),
+      this.translate('modules.list.errors.restartFailed'),
+    );
+  }
+
   recreate(moduleID: string) {
     this.tryRecreate([moduleID]);
   }

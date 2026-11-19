@@ -26,7 +26,7 @@ import {ErrorService} from 'src/app/core/services/util/error.service';
 import {UtilService} from 'src/app/core/services/util/util.service';
 import {ListComponent} from './list.component';
 
-function makeModule(id: string, deployed: boolean): ModuleReduced {
+function makeModule(id: string, deployed: boolean, enabled = deployed): ModuleReduced {
   return {
     id,
     source: 'github.com',
@@ -45,7 +45,7 @@ function makeModule(id: string, deployed: boolean): ModuleReduced {
       module_source: 'github.com',
       module_channel: 'main',
       module_version: 'v1.0.0',
-      enabled: deployed,
+      enabled,
       created: '',
       updated: '',
       state: deployed ? DEPLOYMENT_STATE_HEALTHY : 0,
@@ -60,8 +60,12 @@ describe('ListComponent', () => {
   let component: ListComponent;
 
   const modules = [makeModule('running-a', true), makeModule('running-b', true), makeModule('installed-only', false)];
+  const restartDeployments = vi.fn();
+  const checkJobStatus = vi.fn();
 
   beforeEach(() => {
+    restartDeployments.mockReset().mockReturnValue(of({id: 'job-1'}));
+    checkJobStatus.mockReset().mockReturnValue(of({result: []}));
     TestBed.configureTestingModule({
       imports: [ListComponent, provideTranslocoTesting('modules', 'core')],
       providers: [
@@ -79,10 +83,10 @@ describe('ListComponent', () => {
         {provide: MatDialog, useValue: {open: vi.fn()}},
         {
           provide: 'ModuleManagerService',
-          useValue: {loadModulesReduced: vi.fn().mockReturnValue(of(modules))},
+          useValue: {loadModulesReduced: vi.fn().mockReturnValue(of(modules)), restartDeployments},
         },
         {provide: ErrorService, useValue: {handleError: vi.fn()}},
-        {provide: UtilService, useValue: {checkJobStatus: vi.fn(), askForConfirmation: vi.fn()}},
+        {provide: UtilService, useValue: {checkJobStatus, askForConfirmation: vi.fn(), presentJobResult: vi.fn()}},
       ],
     });
 
@@ -120,5 +124,36 @@ describe('ListComponent', () => {
     component.setStatusFilter('all');
 
     expect(component.selection.selected.length).toBe(3);
+  });
+
+  it('restarts one module as a job with the deployment result kind', () => {
+    component.restart('running-a');
+
+    expect(restartDeployments).toHaveBeenCalledWith(['running-a']);
+    expect(checkJobStatus).toHaveBeenCalledWith('job-1', expect.any(String), 'module-manager', 'deployments');
+  });
+
+  it('restarts only the selected modules that are set up', () => {
+    component.masterToggle();
+
+    component.restartMultiple();
+
+    expect(restartDeployments).toHaveBeenCalledWith(['running-a', 'running-b']);
+  });
+
+  it('starts no job when nothing is selected', () => {
+    component.restartMultiple();
+
+    expect(restartDeployments).not.toHaveBeenCalled();
+  });
+
+  it('offers restart in the bulk actions once a module is selected', () => {
+    component.masterToggle();
+    fixture.detectChanges();
+
+    const labels = Array.from(fixture.nativeElement.querySelectorAll('button')).map((b) =>
+      (b as HTMLElement).textContent!.trim(),
+    );
+    expect(labels.some((l) => l.endsWith('Restart'))).toBe(true);
   });
 });

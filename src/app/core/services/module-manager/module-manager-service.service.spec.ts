@@ -88,3 +88,27 @@ describe('ModuleManagerService auto-update and carry-over', () => {
     req.flush([]);
   });
 });
+
+describe('ModuleManagerService restart', () => {
+  let service: ModuleManagerService;
+  let http: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({providers: [provideHttpClient(), provideHttpClientTesting()]});
+    service = TestBed.inject(ModuleManagerService);
+    http = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => http.verify());
+
+  it('posts the module ids to the restart route and returns the job', () => {
+    let job: unknown;
+    service.restartDeployments(['m1', 'm2']).subscribe((j) => (job = j));
+
+    const req = http.expectOne(environment.coreApiUrl + '/module-manager/deployments-restart');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(['m1', 'm2']);
+    req.flush({id: 'job-1'});
+    expect(job).toEqual({id: 'job-1'});
+  });
+});

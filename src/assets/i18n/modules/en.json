@@ -16,6 +16,7 @@
     "selected": "{{count}} selected",
     "start": "Start",
     "stop": "Stop",
+    "restart": "Restart",
     "recreate": "Recreate",
     "edit": "Edit",
     "deleteDeployments": "Remove setups",
@@ -43,6 +44,7 @@
     "moreActions": "More actions",
     "details": "Details",
     "editDeployment": "Edit setup",
+    "restartContainers": "Restart containers",
     "recreateContainers": "Recreate containers",
     "deleteDeployment": "Remove setup",
     "statuses": {
@@ -56,10 +58,13 @@
       "loadFailed": "Loading the modules failed",
       "startFailed": "Starting the modules failed",
       "stopFailed": "Stopping the modules failed",
+      "restartFailed": "Restarting the containers failed",
       "recreateFailed": "Recreating the containers failed",
       "deleteFailed": "Removing the setups failed"
     },
     "jobs": {
+      "restarting": "Containers are restarting",
+      "restarted": "Containers restarted",
       "recreating": "Containers are recreating",
       "recreated": "Containers recreated",
       "deleting": "Setups are being removed",
@@ -164,6 +169,8 @@
     "start": "Start",
     "editDeployment": "Edit setup",
     "moreActions": "More actions",
+    "restart": "Restart",
+    "restartContainers": "Restart containers",
     "recreateContainers": "Recreate containers",
     "deleteDeployment": "Remove setup",
     "loadedWithErrors": "The module was loaded with errors.",
@@ -225,10 +232,13 @@
       "loadFailed": "Loading the module failed",
       "startFailed": "Starting the module failed",
       "stopFailed": "Stopping the module failed",
+      "restartFailed": "Restarting the containers failed",
       "recreateFailed": "Recreating the containers failed",
       "deleteFailed": "Removing the setup failed"
     },
     "jobs": {
+      "restarting": "Containers are restarting",
+      "restarted": "Containers restarted",
       "recreating": "Containers are recreating",
       "recreated": "Containers recreated",
       "deleting": "Setup is being removed",

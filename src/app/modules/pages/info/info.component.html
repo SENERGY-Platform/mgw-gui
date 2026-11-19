@@ -33,6 +33,10 @@
               <mat-icon>stop</mat-icon>
               {{ 'modules.info.stop' | transloco }}
             </button>
+            <button (click)="restart()" mat-stroked-button>
+              <mat-icon>refresh</mat-icon>
+              {{ 'modules.info.restart' | transloco }}
+            </button>
           } @else {
             <button (click)="start()" mat-stroked-button>
               <mat-icon>play_arrow</mat-icon>

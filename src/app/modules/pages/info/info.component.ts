@@ -371,6 +371,18 @@ export class InfoComponent implements OnInit, OnDestroy {
     );
   }
 
+  restart() {
+    this.runJob(
+      this.moduleService.restartDeployments([this.moduleID]),
+      this.translate('modules.info.jobs.restarting'),
+      'deployments',
+      'restart',
+      this.translate('modules.info.restartContainers'),
+      this.translate('modules.info.jobs.restarted'),
+      this.translate('modules.info.errors.restartFailed'),
+    );
+  }
+
   recreate() {
     this.runJob(
       this.moduleService.recreateDeployments([this.moduleID]),

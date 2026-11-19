@@ -55,7 +55,7 @@ function moduleConfig(overrides: Partial<ModuleConfigValue> = {}): ModuleConfigV
   };
 }
 
-function makeModule(deployed: boolean, configs: ConfigOpts = {}): ModuleInfo {
+function makeModule(deployed: boolean, configs: ConfigOpts = {}, enabled = true): ModuleInfo {
   return {
     id: MODULE_ID,
     name: 'Cloud proxy',
@@ -76,7 +76,7 @@ function makeModule(deployed: boolean, configs: ConfigOpts = {}): ModuleInfo {
       module_source: 'github.com',
       module_channel: 'main',
       module_version: 'v1.0.0',
-      enabled: true,
+      enabled,
       created: '',
       updated: '',
       state: DEPLOYMENT_STATE_HEALTHY,
@@ -103,7 +103,9 @@ describe('InfoComponent', () => {
   let component: InfoComponent;
   let navigate: Mock;
 
-  function create(opts: {deployed?: boolean; tab?: string; configs?: ConfigOpts; globalConfigs?: unknown} = {}) {
+  function create(
+    opts: {deployed?: boolean; enabled?: boolean; tab?: string; configs?: ConfigOpts; globalConfigs?: unknown} = {},
+  ) {
     navigate = vi.fn();
     TestBed.configureTestingModule({
       imports: [InfoComponent, provideTranslocoTesting('modules', 'core')],
@@ -120,15 +122,25 @@ describe('InfoComponent', () => {
         {
           provide: 'ModuleManagerService',
           useValue: {
-            loadModule: vi.fn().mockReturnValue(of(makeModule(opts.deployed ?? true, opts.configs))),
+            loadModule: vi
+              .fn()
+              .mockReturnValue(of(makeModule(opts.deployed ?? true, opts.configs, opts.enabled ?? true))),
             // the aux tab's body is built when that tab is selected
+            restartDeployments: vi.fn().mockReturnValue(of({id: 'job-1'})),
             getAuxDeployments: vi.fn().mockReturnValue(of({})),
             getGlobalConfigs: vi.fn().mockReturnValue(of(opts.globalConfigs ?? {})),
           },
         },
         {provide: CoreManagerService, useValue: {getEndpoints: vi.fn().mockReturnValue(of({}))}},
         {provide: ErrorService, useValue: {handleError: vi.fn()}},
-        {provide: UtilService, useValue: {checkJobStatus: vi.fn(), askForConfirmation: vi.fn()}},
+        {
+          provide: UtilService,
+          useValue: {
+            checkJobStatus: vi.fn().mockReturnValue(of({result: []})),
+            askForConfirmation: vi.fn(),
+            presentJobResult: vi.fn(),
+          },
+        },
       ],
     });
 
@@ -141,6 +153,45 @@ describe('InfoComponent', () => {
     const labels = fixture.nativeElement.querySelectorAll('.mat-mdc-tab .mdc-tab__text-label');
     return Array.from(labels).map((label) => (label as HTMLElement).textContent!.trim());
   }
+
+  function actionLabels(): string[] {
+    return Array.from(fixture.nativeElement.querySelectorAll('[pageActions] button')).map((b) =>
+      (b as HTMLElement).textContent!.trim(),
+    );
+  }
+
+  it('offers restart next to stop while the module runs', fakeAsync(() => {
+    create();
+
+    expect(actionLabels()).toContain('refresh Restart');
+    discardPeriodicTasks();
+  }));
+
+  it('hides restart for a stopped module', fakeAsync(() => {
+    create({enabled: false});
+
+    expect(actionLabels().some((l) => l.includes('Restart'))).toBe(false);
+    discardPeriodicTasks();
+  }));
+
+  it('hides restart for a module that is not set up', fakeAsync(() => {
+    create({deployed: false});
+
+    expect(actionLabels().some((l) => l.includes('Restart'))).toBe(false);
+    discardPeriodicTasks();
+  }));
+
+  it('restarts the module as a job with the deployment result kind', fakeAsync(() => {
+    create();
+    const service = TestBed.inject('ModuleManagerService' as never) as {restartDeployments: Mock};
+    const util = TestBed.inject(UtilService) as unknown as {checkJobStatus: Mock};
+
+    component.restart();
+
+    expect(service.restartDeployments).toHaveBeenCalledWith([MODULE_ID]);
+    expect(util.checkJobStatus).toHaveBeenCalledWith('job-1', expect.any(String), 'module-manager', 'deployments');
+    discardPeriodicTasks();
+  }));
 
   it('offers an endpoints tab', fakeAsync(() => {
     create();

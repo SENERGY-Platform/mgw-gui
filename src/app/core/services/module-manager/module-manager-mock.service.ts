@@ -609,6 +609,15 @@ export class ModuleManagerMockService {
     return of(moduleIDs);
   }
 
+  restartDeployments(): Observable<Job> {
+    return of({
+      id: 'job-restart',
+      description: 'restart deployments',
+      start: new Date().toISOString(),
+      end: new Date().toISOString(),
+    });
+  }
+
   recreateDeployments(moduleIDs: string[]): Observable<Job> {
     return of({
       id: 'job-recreate',
